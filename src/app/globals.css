@@ -1,0 +1,328 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f1f5f9;
+  --foreground: #0f172a;
+  --card: rgba(255, 255, 255, 0.82);
+  --card-solid: #ffffff;
+  --card-border: rgba(148, 163, 184, 0.35);
+  --muted: #64748b;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-soft: #eff6ff;
+  --accent: #0ea5e9;
+  --header-bg: #020617;
+  --header-fg: #f8fafc;
+  --radius: 0.75rem;
+  --radius-lg: 1rem;
+  --shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04), 0 2px 8px rgb(15 23 42 / 0.04);
+  --shadow-md: 0 4px 16px -2px rgb(15 23 42 / 0.08), 0 8px 24px -4px rgb(15 23 42 / 0.06);
+  --shadow-lg: 0 12px 40px -8px rgb(15 23 42 / 0.12);
+  --ring: 0 0 0 3px rgb(37 99 235 / 0.22);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* App shell backdrop */
+.mc-app-bg {
+  background-color: #eef2f7;
+  background-image:
+    radial-gradient(ellipse 90% 60% at 0% -10%, rgb(37 99 235 / 0.09), transparent 55%),
+    radial-gradient(ellipse 70% 50% at 100% 0%, rgb(14 165 233 / 0.07), transparent 50%),
+    radial-gradient(ellipse 80% 40% at 50% 100%, rgb(99 102 241 / 0.05), transparent 55%);
+}
+
+/* Panels & sections */
+.mc-panel {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(12px);
+  transition:
+    box-shadow 0.25s var(--ease-smooth),
+    border-color 0.25s var(--ease-smooth),
+    transform 0.25s var(--ease-smooth);
+}
+
+.mc-panel-solid {
+  background: var(--card-solid);
+}
+
+.mc-section-title {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.875rem;
+}
+
+.mc-input {
+  height: 2.5rem;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 0.875rem;
+  padding-right: 0.875rem;
+  font-size: 0.875rem;
+  border: 1px solid rgb(203 213 225 / 0.9);
+  border-radius: 0.625rem;
+  background: rgb(255 255 255 / 0.9);
+  color: var(--foreground);
+  transition:
+    border-color 0.2s var(--ease-smooth),
+    box-shadow 0.2s var(--ease-smooth),
+    background 0.2s var(--ease-smooth);
+}
+
+/* Left icon: left-3 (12px) + 16px icon + 10px gap */
+.mc-input-icon-left {
+  padding-left: 2.625rem;
+}
+
+/* Chevron on right: right-3 + icon + gap */
+.mc-input-icon-right {
+  padding-right: 2.25rem;
+}
+
+.mc-input:hover:not(:disabled) {
+  border-color: rgb(148 163 184 / 0.9);
+}
+
+.mc-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: var(--ring);
+  background: #fff;
+}
+
+.mc-input:disabled {
+  background: rgb(248 250 252 / 0.8);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.mc-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #334155;
+  margin-bottom: 0.4rem;
+}
+
+/* Login page */
+.mc-login-bg {
+  position: relative;
+  background:
+    radial-gradient(ellipse 100% 80% at 50% -20%, rgb(37 99 235 / 0.18), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 0% 50%, rgb(99 102 241 / 0.1), transparent 50%),
+    radial-gradient(ellipse 60% 50% at 100% 80%, rgb(14 165 233 / 0.12), transparent 50%),
+    linear-gradient(165deg, #f8fafc 0%, #eef2f7 45%, #e2e8f0 100%);
+}
+
+.mc-login-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+}
+
+.mc-login-card {
+  background: rgb(255 255 255 / 0.82);
+  border: 1px solid rgb(255 255 255 / 0.7);
+  border-radius: 1.25rem;
+  box-shadow:
+    0 0 0 1px rgb(15 23 42 / 0.03),
+    0 20px 50px -12px rgb(15 23 42 / 0.12),
+    0 8px 16px -8px rgb(15 23 42 / 0.06);
+  backdrop-filter: blur(24px);
+}
+
+.mc-login-input {
+  height: 3rem;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: 0.9375rem;
+  border: 1px solid rgb(203 213 225 / 0.8);
+  border-radius: 0.75rem;
+  background: rgb(255 255 255 / 0.95);
+  color: var(--foreground);
+  transition:
+    border-color 0.2s var(--ease-smooth),
+    box-shadow 0.2s var(--ease-smooth),
+    background 0.2s var(--ease-smooth),
+    transform 0.15s var(--ease-smooth);
+}
+
+.mc-login-input-icon-left {
+  padding-left: 2.75rem;
+}
+
+.mc-login-input::placeholder {
+  color: rgb(148 163 184);
+}
+
+.mc-login-input:hover:not(:disabled) {
+  border-color: rgb(148 163 184);
+  background: #fff;
+}
+
+.mc-login-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: var(--ring);
+  background: #fff;
+  transform: translateY(-1px);
+}
+
+/* Animated orbs on login brand panel */
+.mc-login-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  animation: mc-orb-float 12s ease-in-out infinite;
+}
+
+.mc-login-orb-1 {
+  width: 420px;
+  height: 420px;
+  top: -10%;
+  left: -15%;
+  background: rgb(37 99 235 / 0.35);
+}
+
+.mc-login-orb-2 {
+  width: 320px;
+  height: 320px;
+  bottom: -5%;
+  right: -10%;
+  background: rgb(14 165 233 / 0.25);
+  animation-delay: -4s;
+}
+
+.mc-login-orb-3 {
+  width: 200px;
+  height: 200px;
+  top: 50%;
+  left: 40%;
+  background: rgb(99 102 241 / 0.2);
+  animation-delay: -8s;
+}
+
+@keyframes mc-orb-float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(20px, -20px) scale(1.05);
+  }
+  66% {
+    transform: translate(-15px, 15px) scale(0.95);
+  }
+}
+
+/* Motion */
+@keyframes mc-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mc-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes mc-shimmer {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+.mc-animate-in {
+  animation: mc-fade-up 0.55s var(--ease-out) both;
+}
+
+.mc-animate-in-delay-1 {
+  animation-delay: 0.08s;
+}
+
+.mc-animate-in-delay-2 {
+  animation-delay: 0.16s;
+}
+
+.mc-animate-in-delay-3 {
+  animation-delay: 0.24s;
+}
+
+/* Primary gradient button shimmer on hover */
+.mc-btn-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
+  transition:
+    transform 0.2s var(--ease-smooth),
+    box-shadow 0.2s var(--ease-smooth),
+    filter 0.2s var(--ease-smooth);
+}
+
+.mc-btn-primary:hover:not(:disabled) {
+  filter: brightness(1.05);
+  box-shadow: 0 4px 14px -2px rgb(37 99 235 / 0.45);
+}
+
+.mc-btn-primary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* Smooth scrollbar for data grid */
+.mc-scroll-smooth {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(203 213 225) transparent;
+}
+
+.mc-scroll-smooth::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.mc-scroll-smooth::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mc-scroll-smooth::-webkit-scrollbar-thumb {
+  background: rgb(203 213 225);
+  border-radius: 999px;
+}
+
+.mc-scroll-smooth::-webkit-scrollbar-thumb:hover {
+  background: rgb(148 163 184);
+}
