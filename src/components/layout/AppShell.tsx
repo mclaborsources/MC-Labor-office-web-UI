@@ -33,9 +33,7 @@ export function AppShell({ children, userDisplayName }: AppShellProps) {
           {userDisplayName && (
             <div className="flex items-center gap-2.5 text-sm">
               <span className="hidden sm:inline text-slate-400">Signed in as</span>
-              <span
-                className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 font-medium text-slate-100 shadow-inner shadow-white/5 backdrop-blur-sm transition-colors hover:bg-white/10"
-              >
+              <span className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 font-medium text-slate-100 shadow-inner shadow-white/5 backdrop-blur-sm transition-colors hover:bg-white/10">
                 <Icon icon={User} size="xs" className="text-slate-400" />
                 {userDisplayName}
               </span>
@@ -43,7 +41,7 @@ export function AppShell({ children, userDisplayName }: AppShellProps) {
           )}
         </div>
       </header>
-      <TopNav activeTab="tracking" />
+      <TopNav />
       <main className="mx-auto max-w-[1600px] px-3 py-4 sm:px-4 lg:px-6 lg:py-6 mc-animate-in">
         {children}
       </main>

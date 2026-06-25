@@ -1,4 +1,4 @@
-import { Info, Palette } from "lucide-react";
+import { Palette } from "lucide-react";
 import { Icon } from "@/components/ui/Icon";
 
 const LEGEND_ITEMS = [
