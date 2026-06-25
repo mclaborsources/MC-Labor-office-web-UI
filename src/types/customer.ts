@@ -44,13 +44,12 @@ export interface CustomerFilters {
   customerTypeId: string;
 }
 
-/** Raw row from tblCustomer + lookup JOINs — column names confirmed from McLabor schema */
+/** Raw row from tblCustomer — confirmed column names from McLabor schema.
+ *  Type and salesman names are resolved separately via app-level lookup maps. */
 export interface CustomerRow {
   CustomerID: number | string | null;
   CustBusName: string | null;
-  CustomerType: string | null;        // aliased from lookup
   CustomerTypeID: number | string | null;
-  SalesmanName: string | null;        // aliased from lookup
   SalesmanID: number | string | null;
   Phone: string | null;
   CustEmail: string | null;
@@ -60,23 +59,23 @@ export interface CustomerRow {
   Zip: string | null;
 }
 
+/** Confirmed column names from tblCustomerContacts */
 export interface CustomerContactRow {
-  ContactID: number | string | null;
+  CustomerContactID: number | string | null;
   CustomerID: number | string | null;
-  FirstName: string | null;
-  LastName: string | null;
-  Title: string | null;
-  Email: string | null;
-  CellPhone: string | null;
-  OfficePhone: string | null;
-  Notes: string | null;
+  CustomerContactFName: string | null;
+  CustomerContactLName: string | null;
+  CustomerContactEmail: string | null;
+  CustomerContactCell: string | null;
+  CustomerContactOfficePhone: string | null;
+  CustomerContactNotes: string | null;
 }
 
+/** Confirmed column names from tblCustomerForeman */
 export interface CustomerForemanRow {
-  ForemanID: number | string | null;
+  CustomerForemanID: number | string | null;
   CustomerID: number | string | null;
-  ForemanName: string | null;
-  Phone: string | null;
-  Email: string | null;
-  Notes: string | null;
+  CustomerForeman: string | null;
+  CustomerForemanPhone: string | null;
+  CustomerForemanDefault: boolean | number | null;
 }

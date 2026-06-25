@@ -101,8 +101,7 @@ function ForemenTable({ foremen }: { foremen: CustomerForeman[] }) {
           <tr className="border-b border-slate-200 bg-slate-50/80 text-slate-600">
             <th className="px-3 py-2 text-left text-xs font-semibold">Foreman Name</th>
             <th className="px-3 py-2 text-left text-xs font-semibold">Phone</th>
-            <th className="px-3 py-2 text-left text-xs font-semibold">Email</th>
-            <th className="px-3 py-2 text-left text-xs font-semibold">Notes</th>
+            <th className="px-3 py-2 text-left text-xs font-semibold">Default</th>
           </tr>
         </thead>
         <tbody>
@@ -122,14 +121,11 @@ function ForemenTable({ foremen }: { foremen: CustomerForeman[] }) {
                 ) : "—"}
               </td>
               <td className="px-3 py-2.5 whitespace-nowrap">
-                {f.email ? (
-                  <a href={`mailto:${f.email}`} className="text-blue-700 hover:underline">
-                    {f.email}
-                  </a>
+                {f.notes === "Default" ? (
+                  <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-blue-200">
+                    Default
+                  </span>
                 ) : "—"}
-              </td>
-              <td className="px-3 py-2.5 text-slate-500 max-w-[200px] truncate">
-                {f.notes || "—"}
               </td>
             </tr>
           ))}
