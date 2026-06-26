@@ -13,12 +13,12 @@ import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { DetailSection } from "@/components/ui/DetailSection";
 import { DetailField } from "@/components/ui/DetailField";
-import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { Icon } from "@/components/ui/Icon";
 import { getSessionOrDefault } from "@/lib/auth/session";
 import { getEmployeeById } from "@/lib/employees";
+import { statusPillClass } from "@/lib/statusStyles";
 import type { EmployeeDetail } from "@/types/employee";
 
 interface PageProps {
@@ -70,15 +70,9 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
           {/* Summary strip */}
           <div className="mc-panel p-4 flex flex-wrap items-center gap-4">
             {employee.status && (
-              <Badge
-                variant={
-                  employee.status.toLowerCase().includes("active")
-                    ? "success"
-                    : "muted"
-                }
-              >
+              <span className={`rounded-full px-2.5 py-1 text-xs font-medium ring-1 ${statusPillClass(employee.status)}`}>
                 {employee.status}
-              </Badge>
+              </span>
             )}
             {employee.trade && (
               <span className="flex items-center gap-1.5 text-sm text-slate-600">

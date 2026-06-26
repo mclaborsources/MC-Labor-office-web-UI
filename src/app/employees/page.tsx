@@ -7,10 +7,10 @@ import { Panel } from "@/components/ui/Panel";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { Spinner } from "@/components/ui/Spinner";
-import { Badge } from "@/components/ui/Badge";
 import { EmployeeFilters } from "@/components/employees/EmployeeFilters";
 import { getSessionOrDefault } from "@/lib/auth/session";
 import { getEmployees, getEmployeeFilterOptions } from "@/lib/employees";
+import { statusPillClass } from "@/lib/statusStyles";
 import type { EmployeeSummary } from "@/types/employee";
 import type { FilterOption } from "@/types/search";
 
@@ -113,17 +113,9 @@ async function EmployeeResults({
                 </td>
                 <td className="px-4 py-2.5 border-r border-slate-100/80 whitespace-nowrap">
                   {emp.status ? (
-                    <Badge
-                      variant={
-                        emp.status.toLowerCase().includes("active")
-                          ? "success"
-                          : emp.status.toLowerCase().includes("inactive")
-                          ? "muted"
-                          : "muted"
-                      }
-                    >
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ring-1 ${statusPillClass(emp.status)}`}>
                       {emp.status}
-                    </Badge>
+                    </span>
                   ) : (
                     "—"
                   )}

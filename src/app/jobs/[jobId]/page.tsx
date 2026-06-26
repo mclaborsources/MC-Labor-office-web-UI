@@ -19,6 +19,7 @@ import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { Icon } from "@/components/ui/Icon";
 import { getSessionOrDefault } from "@/lib/auth/session";
 import { getJobById } from "@/lib/jobs";
+import { statusPillClass } from "@/lib/statusStyles";
 import type { JobDetail } from "@/types/job";
 
 interface PageProps {
@@ -68,7 +69,7 @@ export default async function JobDetailPage({ params }: PageProps) {
           {/* Quick-info strip */}
           <div className="mc-panel p-4 flex flex-wrap items-center gap-4">
             {job.status && (
-              <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 ring-1 ring-slate-200">
+              <span className={`rounded-full px-2.5 py-1 text-xs font-medium ring-1 ${statusPillClass(job.status)}`}>
                 {job.status}
               </span>
             )}

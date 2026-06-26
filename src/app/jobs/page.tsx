@@ -10,6 +10,7 @@ import { Spinner } from "@/components/ui/Spinner";
 import { JobFilters } from "@/components/jobs/JobFilters";
 import { getSessionOrDefault } from "@/lib/auth/session";
 import { getJobs, getJobFilterOptions } from "@/lib/jobs";
+import { statusPillClass } from "@/lib/statusStyles";
 import type { JobSummary } from "@/types/job";
 import type { FilterOption } from "@/types/search";
 
@@ -84,7 +85,7 @@ function JobResultsTable({ jobs }: { jobs: JobSummary[] }) {
                 </td>
                 <td className="px-3 py-2.5 border-r border-slate-100/80 whitespace-nowrap">
                   {job.status ? (
-                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 ring-1 ring-slate-200">
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ring-1 ${statusPillClass(job.status)}`}>
                       {job.status}
                     </span>
                   ) : "—"}
