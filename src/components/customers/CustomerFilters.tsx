@@ -2,41 +2,54 @@
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useTransition } from "react";
-import { Search, X } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Icon } from "@/components/ui/Icon";
+import { AccessButton } from "@/components/access/AccessButton";
 import type { FilterOption } from "@/types/search";
 
 interface CustomerFiltersProps {
   salesmen: FilterOption[];
   customerTypes: FilterOption[];
+  statuses: FilterOption[];
+  cities: FilterOption[];
+  states: FilterOption[];
   currentSearch: string;
   currentSalesmanId: string;
   currentCustomerTypeId: string;
+  currentStatusId: string;
+  currentCity: string;
+  currentState: string;
 }
 
 export function CustomerFilters({
   salesmen,
   customerTypes,
+  statuses,
+  cities,
+  states,
   currentSearch,
   currentSalesmanId,
   currentCustomerTypeId,
+  currentStatusId,
+  currentCity,
+  currentState,
 }: CustomerFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
-  const hasFilters = currentSearch || currentSalesmanId || currentCustomerTypeId;
+  const hasFilters =
+    currentSearch ||
+    currentSalesmanId ||
+    currentCustomerTypeId ||
+    currentStatusId ||
+    currentCity ||
+    currentState;
 
   const updateParam = useCallback(
     (key: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
-      if (value) {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
+      if (value) params.set(key, value);
+      else params.delete(key);
       startTransition(() => {
         router.push(`${pathname}?${params.toString()}`);
       });
@@ -45,9 +58,7 @@ export function CustomerFilters({
   );
 
   function clearAll() {
-    startTransition(() => {
-      router.push(pathname);
-    });
+    startTransition(() => router.push(pathname));
   }
 
   return (
@@ -56,107 +67,84 @@ export function CustomerFilters({
         e.preventDefault();
         const fd = new FormData(e.currentTarget);
         const params = new URLSearchParams();
-        const search = fd.get("search") as string;
-        const salesmanId = fd.get("salesmanId") as string;
-        const customerTypeId = fd.get("customerTypeId") as string;
-        if (search) params.set("search", search);
-        if (salesmanId) params.set("salesmanId", salesmanId);
-        if (customerTypeId) params.set("customerTypeId", customerTypeId);
-        startTransition(() => {
-          router.push(`${pathname}?${params.toString()}`);
-        });
+        for (const f of ["search", "salesmanId", "customerTypeId", "statusId", "city", "state"] as const) {
+          const v = fd.get(f) as string;
+          if (v) params.set(f, v);
+        }
+        startTransition(() => router.push(`${pathname}?${params.toString()}`));
       }}
-      className="mc-panel p-4 flex flex-wrap items-end gap-3"
+      className="ac-toolbar items-end gap-x-3 gap-y-1.5"
     >
-      {/* Search box */}
-      <div className="flex flex-col min-w-[220px] flex-1">
-        <label className="mc-label" htmlFor="cust-search">
-          Search
-        </label>
-        <div className="relative">
-          <Icon
-            icon={Search}
-            size="sm"
-            className="absolute left-3 top-1/2 z-10 -translate-y-1/2 text-slate-400 pointer-events-none"
-          />
-          <input
-            id="cust-search"
-            name="search"
-            type="search"
-            defaultValue={currentSearch}
-            placeholder="Name, ID, phone, city, salesman…"
-            className="mc-input mc-input-icon-left w-full"
-          />
-        </div>
+      <div className="flex min-w-[220px] flex-1 flex-col">
+        <label className="ac-flabel" htmlFor="cust-search">Search</label>
+        <input
+          id="cust-search"
+          name="search"
+          type="search"
+          defaultValue={currentSearch}
+          placeholder="Name, ID, phone, city, salesman…"
+          className="ac-input"
+        />
       </div>
 
-      {/* Salesman filter */}
       {salesmen.length > 0 && (
-        <div className="flex flex-col min-w-[180px]">
-          <label className="mc-label" htmlFor="cust-salesman">
-            Salesman
-          </label>
-          <select
-            id="cust-salesman"
-            name="salesmanId"
-            defaultValue={currentSalesmanId}
-            onChange={(e) => updateParam("salesmanId", e.target.value)}
-            className="mc-input mc-input-icon-right appearance-none"
-          >
+        <div className="flex min-w-[170px] flex-col">
+          <label className="ac-flabel" htmlFor="cust-salesman">Salesman</label>
+          <select id="cust-salesman" name="salesmanId" defaultValue={currentSalesmanId}
+            onChange={(e) => updateParam("salesmanId", e.target.value)} className="ac-select">
             <option value="">All salesmen</option>
-            {salesmen.map((s) => (
-              <option key={s.value} value={s.value}>
-                {s.label}
-              </option>
-            ))}
+            {salesmen.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
         </div>
       )}
 
-      {/* Customer Type filter */}
       {customerTypes.length > 0 && (
-        <div className="flex flex-col min-w-[160px]">
-          <label className="mc-label" htmlFor="cust-type">
-            Customer Type
-          </label>
-          <select
-            id="cust-type"
-            name="customerTypeId"
-            defaultValue={currentCustomerTypeId}
-            onChange={(e) => updateParam("customerTypeId", e.target.value)}
-            className="mc-input mc-input-icon-right appearance-none"
-          >
+        <div className="flex min-w-[150px] flex-col">
+          <label className="ac-flabel" htmlFor="cust-type">Customer Type</label>
+          <select id="cust-type" name="customerTypeId" defaultValue={currentCustomerTypeId}
+            onChange={(e) => updateParam("customerTypeId", e.target.value)} className="ac-select">
             <option value="">All types</option>
-            {customerTypes.map((t) => (
-              <option key={t.value} value={t.value}>
-                {t.label}
-              </option>
-            ))}
+            {customerTypes.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
           </select>
         </div>
       )}
 
-      <div className="flex gap-2">
-        <Button
-          type="submit"
-          variant="primary"
-          disabled={isPending}
-          className="whitespace-nowrap"
-        >
-          <Icon icon={Search} size="sm" />
-          Search
-        </Button>
-        {hasFilters && (
-          <Button
-            type="button"
-            variant="toolbar"
-            onClick={clearAll}
-            className="whitespace-nowrap"
-          >
-            <Icon icon={X} size="sm" />
-            Clear
-          </Button>
-        )}
+      {statuses.length > 0 && (
+        <div className="flex min-w-[140px] flex-col">
+          <label className="ac-flabel" htmlFor="cust-status">Status</label>
+          <select id="cust-status" name="statusId" defaultValue={currentStatusId}
+            onChange={(e) => updateParam("statusId", e.target.value)} className="ac-select">
+            <option value="">All statuses</option>
+            {statuses.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+          </select>
+        </div>
+      )}
+
+      {cities.length > 0 && (
+        <div className="flex min-w-[140px] flex-col">
+          <label className="ac-flabel" htmlFor="cust-city">City</label>
+          <select id="cust-city" name="city" defaultValue={currentCity}
+            onChange={(e) => updateParam("city", e.target.value)} className="ac-select">
+            <option value="">All cities</option>
+            {cities.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+          </select>
+        </div>
+      )}
+
+      {states.length > 0 && (
+        <div className="flex min-w-[90px] flex-col">
+          <label className="ac-flabel" htmlFor="cust-state">State</label>
+          <select id="cust-state" name="state" defaultValue={currentState}
+            onChange={(e) => updateParam("state", e.target.value)} className="ac-select">
+            <option value="">All</option>
+            {states.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+          </select>
+        </div>
+      )}
+
+      <div className="flex shrink-0 items-center gap-1">
+        <AccessButton type="submit" variant="primary" disabled={isPending}>Search</AccessButton>
+        {hasFilters && <AccessButton type="button" onClick={clearAll}>Clear</AccessButton>}
       </div>
     </form>
   );

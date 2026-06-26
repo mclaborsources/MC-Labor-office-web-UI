@@ -16,16 +16,45 @@ export interface JobSummary {
 
 export interface JobDetail extends JobSummary {
   street: string;
+  projectWeeks: ProjectWeek[];
   foremanPhone: string;
   notes: string;
+  officeNote: string;
+  jobNote: string;
+  customerContact: string;
   customerPhone: string;
   customerEmail: string;
   customerStreet: string;
   customerCity: string;
   customerState: string;
   customerZip: string;
+  customerNotes: string;
+  // Contract / financial
+  contractAmount: string;
+  contractTotalPayments: string;
+  contractBalanceOwed: string;
+  numberOfEmployees: string;
+  gcOnSite: string;
+  // System
+  entryUserName: string;
+  entryTimestamp: string;
   /** Expanded in Milestone 4 */
   recentAssignments: JobAssignmentPreview[];
+}
+
+/** Extended raw row from tblProject for the detail screen. */
+export interface JobDetailRow extends JobRow {
+  ProjOfficeNote: string | null;
+  JobNote: string | null;
+  CustomerContact: string | null;
+  CustomerNotes: string | null;
+  ContractAmount: number | string | null;
+  ContractTotalPayments: number | string | null;
+  ContractBalanceOwed: number | string | null;
+  NumberOfEmployees: number | string | null;
+  GCOnSite: string | null;
+  ProjectEntryUserName: string | null;
+  ProjectEntryTimestamp: string | null;
 }
 
 export interface JobAssignmentPreview {
@@ -37,6 +66,14 @@ export interface JobAssignmentPreview {
   assignYear: number;
   payRate: string;
   billRate: string;
+}
+
+export interface ProjectWeek {
+  weekId: string;
+  weekEnding: string;
+  assignWeek: string;
+  assignYear: string;
+  rateReportLink: string;
 }
 
 export interface JobFilters {
@@ -59,7 +96,7 @@ export interface JobRow {
   SiteName: string | null;          // job/site name (was ProjName)
   SiteStreet: string | null;        // site street (was Street)
   SiteZip: string | null;           // site zip (was Zip)
-  // City/State stored as SiteStateCityID — no direct text columns on tblProject
+  SiteStateCityID: number | string | null; // FK → tblPullDownStateCities
   ProjStatusID: number | string | null;
   SiteForemanID: number | string | null; // FK to tblCustomerForeman.CustomerForemanID
   StartDate: string | null;
@@ -68,4 +105,13 @@ export interface JobRow {
   // Denormalized customer contact info stored directly on tblProject
   CustomerPhone: string | null;
   CustomerEmail: string | null;
+}
+
+/** Confirmed columns from tblProjectWeeks */
+export interface ProjectWeekRow {
+  ProjectWeekID: number | string | null;
+  AssignWeek: number | string | null;
+  AssignYear: number | string | null;
+  WeekEndingDate: string | null;
+  HLinkRateReport: string | null;
 }

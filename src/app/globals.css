@@ -327,6 +327,258 @@ body {
   background: rgb(148 163 184);
 }
 
+/* =====================================================================
+   ACCESS-STYLE THEME (.ac-*)
+   A cleaned-up Microsoft Access desktop look: dense, compact, bordered,
+   gray panels, small fonts, light-blue grid headers, plain rectangular
+   buttons. Used by the tracking screen, search grids and profiles so the
+   app feels like Raymond's existing Access system rather than a web app.
+   ===================================================================== */
+
+/* Desktop background + base type scale for Access screens */
+.ac-screen {
+  font-size: 12px;
+  color: #1b1b1b;
+  line-height: 1.35;
+}
+.ac-desktop {
+  background: #d8dde6;
+}
+
+/* Window tab strip (Menu | Tracking | Customer Menu …) */
+.ac-wintabs {
+  display: flex;
+  gap: 2px;
+  background: #cdd3dc;
+  border-bottom: 1px solid #97a0ad;
+  padding: 3px 6px 0;
+  overflow-x: auto;
+}
+.ac-wintab {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 12px;
+  font-size: 12px;
+  background: #e6e8ec;
+  border: 1px solid #97a0ad;
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  color: #3a3a3a;
+  white-space: nowrap;
+}
+.ac-wintab:hover { background: #eef0f3; }
+.ac-wintab-active {
+  background: #fff;
+  font-weight: 600;
+  color: #0b0b0b;
+  position: relative;
+  top: 1px;
+}
+
+/* Menu bar (File Home Create …) */
+.ac-menubar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: linear-gradient(#fbfbfb, #eceef1);
+  border-bottom: 1px solid #b3b9c2;
+  padding: 0 6px;
+  height: 26px;
+}
+.ac-menuitem {
+  padding: 3px 9px;
+  font-size: 12px;
+  color: #2a2a2a;
+  border-radius: 2px;
+}
+.ac-menuitem:hover { background: #dde6f2; }
+
+/* Toolbar band */
+.ac-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  background: #ededed;
+  border: 1px solid #bcbcbc;
+  padding: 4px 6px;
+}
+
+/* Buttons */
+.ac-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 22px;
+  padding: 1px 9px;
+  font-size: 11px;
+  line-height: 1.2;
+  color: #1a1a1a;
+  background: linear-gradient(#fdfdfd, #e4e4e4);
+  border: 1px solid #9c9c9c;
+  border-radius: 2px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.12s linear, border-color 0.12s linear;
+}
+.ac-btn:hover:not(:disabled) { background: linear-gradient(#fff, #ededed); border-color: #6f6f6f; }
+.ac-btn:active:not(:disabled) { background: #dcdcdc; }
+.ac-btn:disabled { color: #828282; opacity: 0.9; cursor: not-allowed; }
+.ac-btn-warn {
+  color: #b00000;
+  border-color: #cf9a9a;
+  background: linear-gradient(#fff, #f7ecec);
+  font-weight: 600;
+}
+.ac-btn-go {
+  color: #4a3d00;
+  border-color: #cdb96a;
+  background: linear-gradient(#fffceb, #f1e6b2);
+  font-weight: 600;
+}
+.ac-btn-primary {
+  color: #fff;
+  border-color: #2c5d99;
+  background: linear-gradient(#4a87cc, #2f6cb0);
+  font-weight: 600;
+}
+.ac-btn-primary:hover:not(:disabled) { background: linear-gradient(#5694d8, #3576bd); border-color: #244e80; }
+.ac-btn-xs { min-height: 18px; padding: 0 6px; font-size: 10px; }
+
+/* Fields */
+.ac-flabel {
+  font-size: 11px;
+  color: #2a2a2a;
+  margin-bottom: 1px;
+}
+.ac-input,
+.ac-select {
+  height: 21px;
+  width: 100%;
+  font-size: 11px;
+  padding: 1px 5px;
+  border: 1px solid #7f9db9;
+  background: #fff;
+  color: #111;
+  border-radius: 0;
+}
+.ac-select { padding-right: 18px; }
+.ac-input:focus,
+.ac-select:focus { outline: 1px solid #2f6fb3; outline-offset: -1px; }
+.ac-input:disabled,
+.ac-select:disabled { background: #eef0f2; color: #5a5a5a; }
+.ac-input::placeholder { color: #9aa3ad; }
+/* read-only "display" value box (sunken) */
+.ac-readonly {
+  min-height: 21px;
+  font-size: 11px;
+  padding: 2px 5px;
+  border: 1px solid #c4ccd6;
+  background: #f7f8fa;
+  color: #1a1a1a;
+}
+
+/* Panels / section boxes */
+.ac-panel {
+  background: #f3f3f3;
+  border: 1px solid #b6b6b6;
+}
+.ac-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #33485f;
+  background: #dde4ec;
+  border-bottom: 1px solid #b6c2d0;
+  padding: 3px 7px;
+}
+
+/* In-screen rectangular tabs */
+.ac-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border-bottom: 1px solid #9bb0c7;
+  background: #eef1f5;
+}
+.ac-tab {
+  padding: 3px 11px;
+  font-size: 12px;
+  color: #1c3a5e;
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.ac-tab:hover { background: #e2eaf4; }
+.ac-tab-active {
+  background: #fff;
+  border-color: #9bb0c7;
+  font-weight: 600;
+  color: #0b2440;
+  position: relative;
+  top: 1px;
+}
+
+/* Data grid */
+.ac-grid {
+  border: 1px solid #9db4d4;
+  background: #fff;
+  overflow: auto;
+}
+.ac-grid table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 11px;
+}
+.ac-grid th {
+  background: #cfdcf0;
+  color: #16263c;
+  border: 1px solid #a9bcd8;
+  padding: 2px 6px;
+  text-align: left;
+  font-weight: 600;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.ac-grid td {
+  border: 1px solid #dbe3ef;
+  padding: 1px 6px;
+  white-space: nowrap;
+  color: #1a1a1a;
+  vertical-align: top;
+}
+.ac-grid tbody tr:nth-child(even) td { background: #f4f8fd; }
+.ac-grid tbody tr:hover td { background: #fdf6d8; }
+.ac-grid a { color: #0b50a0; text-decoration: none; }
+.ac-grid a:hover { text-decoration: underline; }
+
+/* Record navigator strip */
+.ac-recordbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ececec;
+  border: 1px solid #bcbcbc;
+  border-top: none;
+  padding: 2px 6px;
+  font-size: 11px;
+  color: #3a3a3a;
+}
+
+/* Color swatch row (as on the Access tracking screen) */
+.ac-swatches { display: inline-flex; gap: 2px; }
+.ac-swatch { width: 15px; height: 15px; border: 1px solid #7d7d7d; }
+
 /* Skeleton loading shimmer */
 .mc-skeleton {
   background: linear-gradient(

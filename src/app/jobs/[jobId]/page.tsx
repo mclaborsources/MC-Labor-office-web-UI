@@ -5,26 +5,60 @@ import {
   Briefcase,
   Building2,
   CalendarClock,
-  CalendarDays,
+  CreditCard,
   HardHat,
   MapPin,
+  StickyNote,
   User,
 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { DetailSection } from "@/components/ui/DetailSection";
-import { DetailField } from "@/components/ui/DetailField";
-import { Button } from "@/components/ui/Button";
+import { AccessWindowTabs } from "@/components/access/AccessWindowTabs";
+import { AccessButton } from "@/components/access/AccessButton";
 import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { Icon } from "@/components/ui/Icon";
+import { AccessTabs } from "@/components/access/AccessTabs";
+import { AccessFieldSection } from "@/components/access/AccessFieldSection";
+import { AccessDataTable, type AccessColumn } from "@/components/access/AccessDataTable";
+import { DataValue } from "@/components/access/DataValue";
+import { statusPillClass } from "@/lib/statusStyles";
 import { getSessionOrDefault } from "@/lib/auth/session";
 import { getJobById } from "@/lib/jobs";
-import { statusPillClass } from "@/lib/statusStyles";
-import type { JobDetail } from "@/types/job";
+import type { JobDetail, ProjectWeek } from "@/types/job";
 
 interface PageProps {
   params: Promise<{ jobId: string }>;
 }
+
+const projectWeekColumns: AccessColumn<ProjectWeek>[] = [
+  { header: "Wk Ending", cell: (w) => <DataValue value={w.weekEnding} kind="date" />, nowrap: true },
+  { header: "Year", cell: (w) => w.assignYear || "—", nowrap: true },
+  { header: "Week", cell: (w) => w.assignWeek || "—", nowrap: true },
+  {
+    header: "Rate Report",
+    cell: (w) =>
+      w.rateReportLink ? (
+        <a href={w.rateReportLink} className="text-blue-700 hover:underline" target="_blank" rel="noreferrer">
+          Open
+        </a>
+      ) : (
+        <span className="text-slate-300">—</span>
+      ),
+  },
+];
+
+const TABS = [
+  { id: "main", label: "Job Main Info" },
+  { id: "customer", label: "Customer Info" },
+  { id: "site", label: "Site Address" },
+  { id: "foreman", label: "Foreman" },
+  { id: "status", label: "Status / Dates" },
+  { id: "contract", label: "Contract" },
+  { id: "weeks", label: "Project Weeks" },
+  { id: "assignments", label: "Assignments" },
+  { id: "notes", label: "Notes" },
+  { id: "system", label: "System" },
+];
 
 export default async function JobDetailPage({ params }: PageProps) {
   const { jobId } = await params;
@@ -47,172 +81,176 @@ export default async function JobDetailPage({ params }: PageProps) {
 
   return (
     <AppShell userDisplayName={session.user?.displayName}>
-      <div className="mb-4">
+      <div className="-mx-2 -mt-2 mb-1.5 sm:-mx-3">
+        <AccessWindowTabs
+          tabs={[
+            { label: "Menu", href: "/dashboard" },
+            { label: "Job Search", href: "/jobs" },
+            { label: "Job Profile", active: true },
+          ]}
+        />
+      </div>
+
+      <div className="mb-1.5">
         <Link href="/jobs">
-          <Button variant="ghost" className="text-slate-500 hover:text-slate-800">
-            <Icon icon={ArrowLeft} size="sm" />
-            Back to Jobs / Projects
-          </Button>
+          <AccessButton icon={ArrowLeft}>Back to Jobs / Projects</AccessButton>
         </Link>
       </div>
 
-      <PageHeader
-        title={title}
-        icon={HardHat}
-        subtitle={`Job ID: ${jobId}`}
-      />
+      <PageHeader title={title} icon={HardHat} subtitle={`Job ID: ${jobId}`} />
 
       {loadError && <ErrorAlert title="Could not load job" message={loadError} />}
 
       {job && (
-        <div className="flex flex-col gap-4">
-          {/* Quick-info strip */}
-          <div className="mc-panel p-4 flex flex-wrap items-center gap-4">
+        <div className="flex flex-col gap-1.5">
+          {/* Status strip */}
+          <div className="ac-panel flex flex-wrap items-center gap-3 px-2 py-1.5">
             {job.status && (
-              <span className={`rounded-full px-2.5 py-1 text-xs font-medium ring-1 ${statusPillClass(job.status)}`}>
+              <span className={`rounded px-1.5 py-px text-[10px] font-medium ring-1 ${statusPillClass(job.status)}`}>
                 {job.status}
               </span>
             )}
-            {job.customerType && (
-              <span className="flex items-center gap-1.5 text-sm text-slate-600">
-                <Icon icon={Briefcase} size="xs" className="text-slate-400" />
-                {job.customerType}
-              </span>
-            )}
-            {job.salesman && (
-              <span className="flex items-center gap-1.5 text-sm text-slate-600">
-                <Icon icon={User} size="xs" className="text-slate-400" />
-                {job.salesman}
-              </span>
-            )}
-            {job.startDate && (
-              <span className="flex items-center gap-1.5 text-xs text-slate-500">
-                <Icon icon={CalendarDays} size="xs" className="text-slate-400" />
-                {job.startDate}
-                {job.endDate ? ` — ${job.endDate}` : ""}
-              </span>
+            {job.customerType && <span className="text-[12px] text-[#444]">{job.customerType}</span>}
+            {job.salesman && <span className="text-[12px] text-[#6a6a6a]">{job.salesman}</span>}
+            {job.customerId && (
+              <Link href={`/customers/${job.customerId}`} className="ml-auto">
+                <AccessButton icon={Building2}>View Customer</AccessButton>
+              </Link>
             )}
           </div>
 
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            {/* Job information */}
-            <DetailSection title="Job / Project Details" icon={HardHat}>
-              <dl className="grid grid-cols-2 gap-x-6 gap-y-4">
-                <DetailField label="Job ID" value={job.jobId} mono />
-                <DetailField label="Status" value={job.status} />
-                <DetailField label="Job / Site Name" value={job.jobName} span={2} />
-                <DetailField label="Start Date" value={job.startDate} />
-                <DetailField label="End Date" value={job.endDate} />
-                <DetailField label="Customer Type" value={job.customerType} />
-                <DetailField label="Salesman" value={job.salesman} />
-              </dl>
-            </DetailSection>
+          <AccessTabs tabs={TABS} />
 
-            {/* Address */}
-            <DetailSection title="Job Address" icon={MapPin}>
-              <dl className="grid grid-cols-2 gap-x-6 gap-y-4">
-                <DetailField label="Street" value={job.street} span={2} />
-                <DetailField label="City" value={job.city} />
-                <DetailField label="State" value={job.state} />
-                <DetailField label="Zip" value={job.zip} />
-              </dl>
-            </DetailSection>
-          </div>
+          <AccessFieldSection
+            id="main"
+            title="Job Main Info"
+            icon={HardHat}
+            fields={[
+              { label: "Job ID", value: job.jobId, mono: true },
+              { label: "Job / Site Name", value: job.jobName },
+              { label: "Status", value: job.status },
+              { label: "Customer Type", value: job.customerType },
+              { label: "Salesman", value: job.salesman },
+              { label: "GC On Site", value: job.gcOnSite },
+              { label: "# Employees", value: job.numberOfEmployees },
+            ]}
+          />
 
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            {/* Foreman */}
-            <DetailSection title="Foreman" icon={User}>
-              {job.foremanName ? (
-                <dl className="grid grid-cols-2 gap-x-6 gap-y-4">
-                  <DetailField label="Foreman Name" value={job.foremanName} span={2} />
-                  {job.foremanPhone && (
-                    <div>
-                      <dt className="text-xs font-medium text-slate-500 mb-0.5">Phone</dt>
-                      <dd>
-                        <a
-                          href={`tel:${job.foremanPhone}`}
-                          className="text-sm font-medium text-blue-700 hover:underline"
-                        >
-                          {job.foremanPhone}
-                        </a>
-                      </dd>
-                    </div>
-                  )}
-                </dl>
-              ) : (
-                <p className="text-sm text-slate-400 italic">No foreman on record for this job.</p>
-              )}
-            </DetailSection>
+          <AccessFieldSection
+            id="customer"
+            title="Customer Info"
+            icon={Building2}
+            fields={[
+              { label: "Customer ID", value: job.customerId, mono: true },
+              { label: "Customer Name", value: job.customerName },
+              { label: "Customer Type", value: job.customerType },
+              { label: "Salesman", value: job.salesman },
+              { label: "Job Contact", value: job.customerContact },
+              { label: "Phone", value: job.customerPhone, kind: "phone" },
+              { label: "Email", value: job.customerEmail, kind: "email" },
+              {
+                label: "Customer Address",
+                value: [job.customerStreet, job.customerCity, job.customerState, job.customerZip]
+                  .filter(Boolean)
+                  .join(", "),
+                wide: true,
+              },
+            ]}
+          />
 
-            {/* Customer card */}
-            <DetailSection title="Customer" icon={Building2}>
-              {job.customerId ? (
-                <div className="flex flex-col gap-3">
-                  <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
-                    <DetailField label="Customer ID" value={job.customerId} mono />
-                    <DetailField label="Customer Name" value={job.customerName} />
-                    {job.customerPhone && (
-                      <div>
-                        <dt className="text-xs font-medium text-slate-500 mb-0.5">Phone</dt>
-                        <dd>
-                          <a href={`tel:${job.customerPhone}`} className="text-sm font-medium text-blue-700 hover:underline">
-                            {job.customerPhone}
-                          </a>
-                        </dd>
-                      </div>
-                    )}
-                    {job.customerEmail && (
-                      <div>
-                        <dt className="text-xs font-medium text-slate-500 mb-0.5">Email</dt>
-                        <dd>
-                          <a href={`mailto:${job.customerEmail}`} className="text-sm font-medium text-blue-700 hover:underline">
-                            {job.customerEmail}
-                          </a>
-                        </dd>
-                      </div>
-                    )}
-                    <DetailField
-                      label="Address"
-                      value={[job.customerStreet, job.customerCity, job.customerState, job.customerZip]
-                        .filter(Boolean).join(", ")}
-                      span={2}
-                    />
-                  </dl>
-                  <div className="pt-1">
-                    <Link href={`/customers/${job.customerId}`}>
-                      <Button variant="secondary" className="gap-1.5">
-                        <Icon icon={Building2} size="sm" />
-                        View Customer
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              ) : (
-                <p className="text-sm text-slate-400 italic">No customer linked to this job.</p>
-              )}
-            </DetailSection>
-          </div>
+          <AccessFieldSection
+            id="site"
+            title="Site Address"
+            icon={MapPin}
+            fields={[
+              { label: "Street", value: job.street, wide: true },
+              { label: "City", value: job.city },
+              { label: "State", value: job.state },
+              { label: "Zip", value: job.zip },
+            ]}
+          />
 
-          {/* Notes */}
-          {job.notes && (
-            <DetailSection title="Notes" icon={Briefcase}>
-              <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">
-                {job.notes}
-              </p>
-            </DetailSection>
-          )}
+          <AccessFieldSection
+            id="foreman"
+            title="Foreman / Contact"
+            icon={User}
+            fields={[
+              { label: "Foreman Name", value: job.foremanName },
+              { label: "Foreman Phone", value: job.foremanPhone, kind: "phone" },
+              { label: "Job Contact", value: job.customerContact },
+            ]}
+          />
 
-          {/* Assignment placeholder */}
-          <DetailSection title="Recent / Current Assignments" icon={CalendarClock}>
-            <div className="flex items-center gap-3 rounded-xl border border-slate-200/60 bg-slate-50/60 px-4 py-4 text-sm text-slate-500">
-              <Icon icon={CalendarClock} size="sm" className="text-slate-400 shrink-0" />
-              <span>
-                Assignment details will be expanded in{" "}
-                <span className="font-medium text-slate-700">Milestone 4</span>{" "}
-                when the full tracking grid is built.
-              </span>
+          <AccessFieldSection
+            id="status"
+            title="Status / Dates"
+            icon={CalendarClock}
+            fields={[
+              { label: "Status", value: job.status },
+              { label: "Start Date", value: job.startDate, kind: "date" },
+              { label: "End Date", value: job.endDate, kind: "date" },
+            ]}
+          />
+
+          <AccessFieldSection
+            id="contract"
+            title="Contract / Financial"
+            icon={CreditCard}
+            fields={[
+              { label: "Contract Amount", value: job.contractAmount, kind: "money" },
+              { label: "Total Payments", value: job.contractTotalPayments, kind: "money" },
+              { label: "Balance Owed", value: job.contractBalanceOwed, kind: "money" },
+            ]}
+          />
+
+          <section id="weeks">
+            <h3 className="mb-1.5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-600">
+              <Icon icon={CalendarClock} size="xs" className="text-slate-500" />
+              Project Weeks
+            </h3>
+            <AccessDataTable
+              columns={projectWeekColumns}
+              rows={job.projectWeeks}
+              rowKey={(w) => w.weekId}
+              emptyMessage="No project week records on file (tblProjectWeeks)."
+              footer={`${job.projectWeeks.length} week(s) — most recent first`}
+              maxHeight="40vh"
+            />
+          </section>
+
+          <section id="assignments" className="ac-panel">
+            <div className="ac-panel-head">
+              <Icon icon={Briefcase} size="xs" className="text-[#5a6c82]" />
+              <span>Current / Recent Assignments</span>
             </div>
-          </DetailSection>
+            <p className="px-2 py-3 text-[12px] italic text-[#6a6a6a]">
+              Assignment details will be expanded in Milestone 4 (tblTracking / Portal_Assignment_Export).
+            </p>
+          </section>
+
+          <AccessFieldSection
+            id="notes"
+            title="Notes / Misc"
+            icon={StickyNote}
+            columns={2}
+            fields={[
+              { label: "Project Note", value: job.notes, wide: true },
+              { label: "Office Note", value: job.officeNote, wide: true },
+              { label: "Job Note", value: job.jobNote, wide: true },
+              { label: "Customer Notes", value: job.customerNotes, wide: true },
+            ]}
+          />
+
+          <AccessFieldSection
+            id="system"
+            title="System Fields"
+            icon={Briefcase}
+            fields={[
+              { label: "Entered By", value: job.entryUserName },
+              { label: "Entered On", value: job.entryTimestamp },
+              { label: "Job ID", value: job.jobId, mono: true },
+            ]}
+          />
         </div>
       )}
     </AppShell>

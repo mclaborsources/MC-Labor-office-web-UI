@@ -3,8 +3,7 @@ import { Suspense } from "react";
 import { HardHat } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { Panel } from "@/components/ui/Panel";
-import { EmptyState } from "@/components/ui/EmptyState";
+import { AccessWindowTabs } from "@/components/access/AccessWindowTabs";
 import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { Spinner } from "@/components/ui/Spinner";
 import { JobFilters } from "@/components/jobs/JobFilters";
@@ -18,103 +17,78 @@ interface PageProps {
   searchParams: Promise<Record<string, string | undefined>>;
 }
 
-function JobResultsTable({ jobs }: { jobs: JobSummary[] }) {
-  if (jobs.length === 0) {
-    return (
-      <EmptyState
-        icon={HardHat}
-        title="No jobs found"
-        message="Try adjusting your search or clearing the filters."
-      />
-    );
-  }
+const JOB_HEADERS = [
+  "Job ID", "Customer", "Job / Site Name", "City / State",
+  "Status", "Salesman", "Type", "Foreman", "Start", "End", "",
+];
 
+function JobResultsTable({ jobs }: { jobs: JobSummary[] }) {
   return (
-    <div className="mc-panel overflow-hidden">
-      <div className="overflow-x-auto mc-scroll-smooth">
-        <table className="w-full text-sm border-collapse">
-          <thead className="sticky top-0 z-10">
-            <tr className="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white">
-              {[
-                "Job ID", "Customer", "Job / Site Name", "City / State",
-                "Status", "Salesman", "Type", "Foreman", "Start", "End",
-              ].map((h) => (
-                <th
-                  key={h}
-                  className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider whitespace-nowrap border-r border-white/10 last:border-r-0"
-                >
-                  {h}
-                </th>
+    <div>
+      <div className="ac-grid mc-scroll-smooth" style={{ maxHeight: "70vh" }}>
+        <table>
+          <thead>
+            <tr>
+              {JOB_HEADERS.map((h, i) => (
+                <th key={i}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {jobs.map((job, i) => (
-              <tr
-                key={job.jobId}
-                style={i < 10 ? { animationDelay: `${i * 25}ms` } : undefined}
-                className={`border-b border-slate-100/80 transition-colors duration-100 ${
-                  i % 2 === 0 ? "bg-white/60" : "bg-slate-50/50"
-                } hover:bg-blue-50/60 group ${i < 10 ? "mc-animate-in" : ""}`}
-              >
-                <td className="px-3 py-2.5 border-r border-slate-100/80 font-mono text-xs text-slate-500 whitespace-nowrap">
-                  {job.jobId || "—"}
-                </td>
-                <td className="px-3 py-2.5 border-r border-slate-100/80 whitespace-nowrap">
-                  {job.customerId ? (
-                    <Link
-                      href={`/customers/${job.customerId}`}
-                      className="text-slate-600 hover:text-blue-700 hover:underline"
-                    >
-                      {job.customerName || "—"}
-                    </Link>
-                  ) : (
-                    job.customerName || "—"
-                  )}
-                </td>
-                <td className="px-3 py-2.5 border-r border-slate-100/80 whitespace-nowrap font-medium">
-                  <Link
-                    href={`/jobs/${job.jobId}`}
-                    className="text-blue-700 hover:text-blue-900 hover:underline"
-                  >
-                    {job.jobName || "—"}
-                  </Link>
-                </td>
-                <td className="px-3 py-2.5 border-r border-slate-100/80 text-slate-600 whitespace-nowrap">
-                  {[job.city, job.state].filter(Boolean).join(", ") || "—"}
-                </td>
-                <td className="px-3 py-2.5 border-r border-slate-100/80 whitespace-nowrap">
-                  {job.status ? (
-                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ring-1 ${statusPillClass(job.status)}`}>
-                      {job.status}
-                    </span>
-                  ) : "—"}
-                </td>
-                <td className="px-3 py-2.5 border-r border-slate-100/80 text-slate-600 whitespace-nowrap">
-                  {job.salesman || "—"}
-                </td>
-                <td className="px-3 py-2.5 border-r border-slate-100/80 text-slate-600 whitespace-nowrap">
-                  {job.customerType || "—"}
-                </td>
-                <td className="px-3 py-2.5 border-r border-slate-100/80 text-slate-600 whitespace-nowrap">
-                  {job.foremanName || "—"}
-                </td>
-                <td className="px-3 py-2.5 border-r border-slate-100/80 text-slate-500 whitespace-nowrap text-xs">
-                  {job.startDate || "—"}
-                </td>
-                <td className="px-3 py-2.5 text-slate-500 whitespace-nowrap text-xs">
-                  {job.endDate || "—"}
+            {jobs.length === 0 ? (
+              <tr>
+                <td colSpan={JOB_HEADERS.length} className="!whitespace-normal py-6 text-center italic text-[#7a7a7a]">
+                  No jobs found. Try adjusting your search or clearing the filters.
                 </td>
               </tr>
-            ))}
+            ) : (
+              jobs.map((job) => (
+                <tr key={job.jobId}>
+                  <td className="font-mono text-[#555]">{job.jobId || "—"}</td>
+                  <td>
+                    {job.customerId ? (
+                      <Link href={`/customers/${job.customerId}`}>{job.customerName || "—"}</Link>
+                    ) : (
+                      job.customerName || "—"
+                    )}
+                  </td>
+                  <td>
+                    <Link href={`/jobs/${job.jobId}`} className="font-semibold">
+                      {job.jobName || "—"}
+                    </Link>
+                  </td>
+                  <td>{[job.city, job.state].filter(Boolean).join(", ") || "—"}</td>
+                  <td>
+                    {job.status ? (
+                      <span className={`rounded px-1.5 py-px text-[10px] font-medium ring-1 ${statusPillClass(job.status)}`}>
+                        {job.status}
+                      </span>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
+                  <td>{job.salesman || "—"}</td>
+                  <td>{job.customerType || "—"}</td>
+                  <td>{job.foremanName || "—"}</td>
+                  <td>{job.startDate || "—"}</td>
+                  <td>{job.endDate || "—"}</td>
+                  <td>
+                    <Link href={`/jobs/${job.jobId}`} className="font-semibold">
+                      View Profile
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
-      <div className="flex items-center justify-between border-t border-slate-200/70 bg-slate-50/60 px-4 py-2.5 text-xs text-slate-500 backdrop-blur-sm">
-        <span>
-          Showing <span className="font-semibold text-slate-700">{jobs.length}</span> result{jobs.length !== 1 ? "s" : ""}
+      <div className="ac-recordbar">
+        <span className="font-mono">
+          Record: |◄ ◄ {jobs.length === 0 ? 0 : 1} of {jobs.length} ► ►|
         </span>
-        <span className="text-slate-400">Max 200 per page</span>
+        <span className="text-[#7a7a7a]">Unfiltered</span>
+        <span className="ml-auto text-[#7a7a7a]">Max 200 per page</span>
       </div>
     </div>
   );
@@ -129,6 +103,8 @@ export default async function JobsPage({ searchParams }: PageProps) {
   const salesmanId     = params.salesmanId     ?? "";
   const customerTypeId = params.customerTypeId ?? "";
   const statusId       = params.statusId       ?? "";
+  const city           = params.city           ?? "";
+  const stateId        = params.stateId        ?? "";
 
   let jobs: JobSummary[] = [];
   let loadError: string | undefined;
@@ -136,6 +112,8 @@ export default async function JobsPage({ searchParams }: PageProps) {
   let salesmen: FilterOption[] = [];
   let customerTypes: FilterOption[] = [];
   let statuses: FilterOption[] = [];
+  let cities: FilterOption[] = [];
+  let states: FilterOption[] = [];
 
   try {
     const [result, filterOpts] = await Promise.all([
@@ -145,9 +123,11 @@ export default async function JobsPage({ searchParams }: PageProps) {
         salesmanId:     salesmanId     || undefined,
         customerTypeId: customerTypeId || undefined,
         statusId:       statusId       || undefined,
+        city:           city           || undefined,
+        stateId:        stateId        || undefined,
       }),
       getJobFilterOptions().catch(() => ({
-        customers: [], salesmen: [], customerTypes: [], statuses: [],
+        customers: [], salesmen: [], customerTypes: [], statuses: [], cities: [], states: [],
       })),
     ]);
     jobs         = result.data;
@@ -155,6 +135,8 @@ export default async function JobsPage({ searchParams }: PageProps) {
     salesmen     = filterOpts.salesmen;
     customerTypes = filterOpts.customerTypes;
     statuses     = filterOpts.statuses;
+    cities       = filterOpts.cities;
+    states       = filterOpts.states;
   } catch (err) {
     loadError = err instanceof Error
       ? err.message
@@ -163,32 +145,38 @@ export default async function JobsPage({ searchParams }: PageProps) {
 
   return (
     <AppShell userDisplayName={session.user?.displayName}>
-      <PageHeader
-        title="Jobs / Projects"
-        icon={HardHat}
-        subtitle="Read-only · Milestone 3"
-      />
-      <div className="flex flex-col gap-4">
+      <div className="-mx-2 -mt-2 mb-1.5 sm:-mx-3">
+        <AccessWindowTabs
+          tabs={[
+            { label: "Menu", href: "/dashboard" },
+            { label: "Job Search", active: true },
+          ]}
+        />
+      </div>
+      <PageHeader title="Jobs / Projects" icon={HardHat} subtitle="Read-only" />
+      <div className="flex flex-col gap-1.5">
         <Suspense fallback={null}>
           <JobFilters
             customers={customers}
             salesmen={salesmen}
             customerTypes={customerTypes}
             statuses={statuses}
+            cities={cities}
+            states={states}
             currentSearch={search}
             currentCustomerId={customerId}
             currentSalesmanId={salesmanId}
             currentCustomerTypeId={customerTypeId}
             currentStatusId={statusId}
+            currentCity={city}
+            currentStateId={stateId}
           />
         </Suspense>
 
         {loadError ? (
-          <Panel>
-            <ErrorAlert title="Could not load jobs" message={loadError} />
-          </Panel>
+          <ErrorAlert title="Could not load jobs" message={loadError} />
         ) : (
-          <Suspense fallback={<Panel><Spinner label="Loading jobs…" /></Panel>}>
+          <Suspense fallback={<div className="ac-panel p-3"><Spinner label="Loading jobs…" /></div>}>
             <JobResultsTable jobs={jobs} />
           </Suspense>
         )}

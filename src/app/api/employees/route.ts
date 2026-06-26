@@ -10,8 +10,10 @@ export async function GET(request: Request): Promise<NextResponse<ApiListRespons
     const tradeId = searchParams.get("tradeId") ?? undefined;
     const statusId = searchParams.get("statusId") ?? undefined;
     const gradeId = searchParams.get("gradeId") ?? undefined;
+    const city = searchParams.get("city") ?? undefined;
+    const state = searchParams.get("state") ?? undefined;
 
-    const result = await getEmployees({ search, tradeId, statusId, gradeId });
+    const result = await getEmployees({ search, tradeId, statusId, gradeId, city, state });
 
     return NextResponse.json({
       ok: true,

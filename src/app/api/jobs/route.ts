@@ -13,7 +13,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiListRespons
       customerTypeId: searchParams.get("customerTypeId") ?? undefined,
       statusId:       searchParams.get("statusId")       ?? undefined,
       city:           searchParams.get("city")           ?? undefined,
-      state:          searchParams.get("state")          ?? undefined,
+      stateId:        searchParams.get("stateId")        ?? undefined,
     });
 
     return NextResponse.json({

@@ -9,25 +9,16 @@ interface PageHeaderProps {
   icon?: LucideIcon;
 }
 
+/** Compact Access-style screen caption bar. */
 export function PageHeader({ title, subtitle, actions, icon }: PageHeaderProps) {
   return (
-    <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-      <div className="flex items-start gap-3">
-        {icon && (
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600/10 ring-1 ring-blue-600/20">
-            <Icon icon={icon} size="md" className="text-blue-600" />
-          </div>
-        )}
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-            {title}
-          </h1>
-          {subtitle && (
-            <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
-          )}
-        </div>
+    <div className="mb-2 flex items-center justify-between gap-3 border-b border-[#b6c2d0] pb-1.5">
+      <div className="flex items-baseline gap-2">
+        {icon && <Icon icon={icon} size="xs" className="text-[#5a6c82]" />}
+        <h1 className="text-[15px] font-bold tracking-tight text-[#1f2d3d]">{title}</h1>
+        {subtitle && <span className="text-[11px] text-[#6a6a6a]">— {subtitle}</span>}
       </div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
+      {actions && <div className="flex items-center gap-1">{actions}</div>}
     </div>
   );
 }

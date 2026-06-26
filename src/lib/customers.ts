@@ -4,9 +4,16 @@ import type {
   CustomerDetail,
   CustomerContact,
   CustomerForeman,
+  CustomerJobPreview,
+  CustomerBillRate,
+  CustomerWeek,
   CustomerRow,
+  CustomerDetailRow,
   CustomerContactRow,
   CustomerForemanRow,
+  CustomerJobRow,
+  CustomerBillRateRow,
+  CustomerWeekRow,
 } from "@/types/customer";
 import type { FilterOption, PaginatedResult } from "@/types/search";
 
@@ -20,26 +27,24 @@ function safeStr(v: unknown): string {
 }
 
 // ---------------------------------------------------------------------------
-// Customer base query — no lookup JOINs; lookups merged in app code so
-// a wrong lookup column name can never crash the customer list.
-//
-// Confirmed column names from McLabor tblCustomer:
-//   CustomerID, CustBusName, CustomerTypeID, SalesmanID,
-//   Phone, CustEmail, Street, City, State, Zip
+// Customer base/list query — Street/City/State/Zip are all confirmed columns.
+// Lookup names (type, salesman) merged in app code so a wrong lookup column
+// can never crash the list.
 // ---------------------------------------------------------------------------
 
 const CUSTOMER_LIST_SQL = `
-SELECT TOP (200)
+SELECT TOP (300)
   c.CustomerID,
   ISNULL(c.CustBusName,    '')  AS CustBusName,
   ISNULL(c.CustomerTypeID, 0)   AS CustomerTypeID,
   ISNULL(c.SalesmanID,     0)   AS SalesmanID,
+  ISNULL(c.CustStatusID,   0)   AS CustStatusID,
   ISNULL(c.Phone,          '')  AS Phone,
   ISNULL(c.CustEmail,      '')  AS CustEmail,
-  NULL                          AS Street,
+  ISNULL(c.Street,         '')  AS Street,
   ISNULL(c.City,           '')  AS City,
   ISNULL(c.State,          '')  AS State,
-  NULL                          AS Zip
+  ISNULL(c.Zip,            '')  AS Zip
 FROM  tblCustomer c WITH (NOLOCK)
 WHERE
   (@searchPat IS NULL
@@ -47,9 +52,13 @@ WHERE
     OR CAST(c.CustomerID AS NVARCHAR(20)) LIKE @searchPat
     OR c.Phone       LIKE @searchPat
     OR c.CustEmail   LIKE @searchPat
+    OR c.Street      LIKE @searchPat
     OR c.City        LIKE @searchPat)
   AND (@salesmanId     IS NULL OR CAST(c.SalesmanID     AS NVARCHAR(20)) = @salesmanId)
   AND (@customerTypeId IS NULL OR CAST(c.CustomerTypeID AS NVARCHAR(20)) = @customerTypeId)
+  AND (@statusId       IS NULL OR CAST(c.CustStatusID   AS NVARCHAR(20)) = @statusId)
+  AND (@city  IS NULL OR c.City  = @city)
+  AND (@state IS NULL OR c.State = @state)
   AND LEN(LTRIM(RTRIM(ISNULL(c.CustBusName, '')))) > 1
   AND c.CustBusName NOT IN ('-', '--', '---')
 ORDER BY c.CustBusName
@@ -61,21 +70,35 @@ SELECT TOP (1)
   ISNULL(c.CustBusName,    '')  AS CustBusName,
   ISNULL(c.CustomerTypeID, 0)   AS CustomerTypeID,
   ISNULL(c.SalesmanID,     0)   AS SalesmanID,
+  ISNULL(c.CustStatusID,   0)   AS CustStatusID,
   ISNULL(c.Phone,          '')  AS Phone,
   ISNULL(c.CustEmail,      '')  AS CustEmail,
   ISNULL(c.Street,         '')  AS Street,
   ISNULL(c.City,           '')  AS City,
   ISNULL(c.State,          '')  AS State,
-  ISNULL(c.Zip,            '')  AS Zip
+  ISNULL(c.Zip,            '')  AS Zip,
+  ISNULL(c.Address,        '')  AS Address,
+  ISNULL(c.MailStreet,     '')  AS MailStreet,
+  ISNULL(c.MailCity,       '')  AS MailCity,
+  ISNULL(c.MailState,      '')  AS MailState,
+  ISNULL(c.MailZip,        '')  AS MailZip,
+  ISNULL(c.CustFaxNum,     '')  AS CustFaxNum,
+  ISNULL(c.CustWebSiteHLink,     '') AS CustWebSiteHLink,
+  ISNULL(c.CustCorpWebSiteHLink, '') AS CustCorpWebSiteHLink,
+  ISNULL(c.CreditLimit,    0)   AS CreditLimit,
+  ISNULL(c.QBCustomerID,   '')  AS QBCustomerID,
+  ISNULL(c.CustomerLicenseNumber, '') AS CustomerLicenseNumber,
+  ISNULL(c.CustomerNote,   '')  AS CustomerNote,
+  ISNULL(c.InvoiceNote,    '')  AS InvoiceNote,
+  ISNULL(c.CollectionsNote,'')  AS CollectionsNote,
+  ISNULL(c.CustEntryUserName, '') AS CustEntryUserName,
+  CONVERT(VARCHAR(19), c.CustEntryTimestamp, 120) AS CustEntryTimestamp
 FROM  tblCustomer c WITH (NOLOCK)
 WHERE c.CustomerID = @customerId
 `;
 
 // ---------------------------------------------------------------------------
-// Lookup maps — each query is tried independently and falls back to empty.
-// PK column names confirmed (SalesmanID, CustomerTypeID worked in JOIN ON).
-// Display column names follow the PullDown* pattern used by employee lookups.
-// Update column names here if wrong — won't affect the customer list query.
+// Lookup maps — each tried independently, falls back to empty on failure.
 // ---------------------------------------------------------------------------
 
 async function loadCustomerTypeMap(): Promise<Map<string, string>> {
@@ -92,19 +115,14 @@ async function loadCustomerTypeMap(): Promise<Map<string, string>> {
         map.set(String(r.PullDownCustomerTypeID), r.TypeName ?? "");
       }
     }
-  } catch {
-    // Fail silently — customer list still loads without type names
-  }
+  } catch { /* fail silently */ }
   return map;
 }
 
 async function loadSalesmanMap(): Promise<Map<string, string>> {
   const map = new Map<string, string>();
   try {
-    const rows = await queryReadOnly<{
-      PullDownSalesmanID: unknown;
-      SalesmanLabel: string | null;
-    }>(
+    const rows = await queryReadOnly<{ PullDownSalesmanID: unknown; SalesmanLabel: string | null }>(
       `SELECT PullDownSalesmanID,
               LTRIM(RTRIM(
                 ISNULL(PullDownSalesmanFName, '') + ' ' + ISNULL(PullDownSalesmanLName, '')
@@ -117,15 +135,46 @@ async function loadSalesmanMap(): Promise<Map<string, string>> {
         map.set(String(r.PullDownSalesmanID), r.SalesmanLabel ?? "");
       }
     }
-  } catch {
-    // Fail silently — customer list still loads without salesman names
-  }
+  } catch { /* fail silently */ }
+  return map;
+}
+
+async function loadCustStatusMap(): Promise<Map<string, string>> {
+  const map = new Map<string, string>();
+  try {
+    const rows = await queryReadOnly<{ PulldownCustStatusID: unknown; StatusName: string | null }>(
+      `SELECT PulldownCustStatusID,
+              ISNULL(PulldownCustStatus, '') AS StatusName
+       FROM   tblPullDownCustStatus WITH (NOLOCK)
+       ORDER  BY PulldownCustStatusSort, PulldownCustStatus`,
+    );
+    for (const r of rows) {
+      if (r.PulldownCustStatusID != null) {
+        map.set(String(r.PulldownCustStatusID), r.StatusName ?? "");
+      }
+    }
+  } catch { /* fail silently */ }
+  return map;
+}
+
+async function loadProjStatusMap(): Promise<Map<string, string>> {
+  const map = new Map<string, string>();
+  try {
+    const rows = await queryReadOnly<{ PullDownProjStatusID: unknown; StatusName: string | null }>(
+      `SELECT PullDownProjStatusID, ISNULL(PullDownProjStatus, '') AS StatusName
+       FROM   tblPullDownProjStatus WITH (NOLOCK)`,
+    );
+    for (const r of rows) {
+      if (r.PullDownProjStatusID != null) {
+        map.set(String(r.PullDownProjStatusID), r.StatusName ?? "");
+      }
+    }
+  } catch { /* fail silently */ }
   return map;
 }
 
 // ---------------------------------------------------------------------------
-// Contacts — wrapped in catch(); column names unconfirmed.
-// Common Access pattern used; adjust if wrong.
+// Related records
 // ---------------------------------------------------------------------------
 
 const CUSTOMER_CONTACTS_SQL = `
@@ -155,18 +204,95 @@ WHERE CustomerID = @customerId
 ORDER BY CustomerForemanDefault DESC, CustomerForeman
 `;
 
+const CUSTOMER_JOBS_SQL = `
+SELECT TOP (25)
+  p.ProjectID,
+  ISNULL(p.SiteName,     '') AS SiteName,
+  ISNULL(p.ProjStatusID, 0)  AS ProjStatusID,
+  ISNULL(p.SiteStreet,   '') AS SiteStreet,
+  ISNULL(p.SiteZip,      '') AS SiteZip
+FROM tblProject p WITH (NOLOCK)
+WHERE p.CustomerID = @customerId
+ORDER BY p.ProjectID DESC
+`;
+
+const CUSTOMER_BILLRATES_SQL = `
+SELECT
+  ISNULL(CustomerBillRateID, 0)  AS CustomerBillRateID,
+  ISNULL(BillRateGrade,      '') AS BillRateGrade,
+  ISNULL(BillRate,           0)  AS BillRate,
+  ISNULL(BillRateNote,       '') AS BillRateNote,
+  ISNULL(BillRateActive,     0)  AS BillRateActive
+FROM tblCustomerBillRates WITH (NOLOCK)
+WHERE CustomerID = @customerId
+ORDER BY BillRateActive DESC, BillRateSort, BillRateGrade
+`;
+
+const CUSTOMER_WEEKS_SQL = `
+SELECT TOP (26)
+  ISNULL(CustomerWeekID, 0) AS CustomerWeekID,
+  ISNULL(AssignWeek,     0) AS AssignWeek,
+  ISNULL(AssignYear,     0) AS AssignYear,
+  CONVERT(VARCHAR(10), WeekEndingDate, 101) AS WeekEndingDate,
+  ISNULL(InvoiceNum,     '') AS InvoiceNum,
+  ISNULL(InvoiceTotal,   0)  AS InvoiceTotal,
+  ISNULL(OpenBalance,    0)  AS OpenBalance,
+  ISNULL(Paid,           0)  AS Paid,
+  ISNULL(InvoiceSent,    0)  AS InvoiceSent,
+  ISNULL(WeekLocked,     0)  AS WeekLocked
+FROM tblCustomerWeeks WITH (NOLOCK)
+WHERE CustomerID = @customerId
+ORDER BY AssignYear DESC, AssignWeek DESC
+`;
+
 // ---------------------------------------------------------------------------
 // Mapping helpers
 // ---------------------------------------------------------------------------
 
-function toCustomerBase(row: CustomerRow): Omit<CustomerSummary, "customerType" | "salesman"> {
+function money(v: unknown): string {
+  if (v === null || v === undefined || v === "") return "";
+  const n = Number(v);
+  if (!Number.isFinite(n)) return "";
+  return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function toCustomerBase(
+  row: CustomerRow,
+): Omit<CustomerSummary, "customerType" | "salesman" | "status"> {
   return {
     customerId: safeStr(row.CustomerID),
     customerName: safeStr(row.CustBusName),
     phone: safeStr(row.Phone),
     email: safeStr(row.CustEmail),
+    street: safeStr(row.Street),
     city: safeStr(row.City),
     state: safeStr(row.State),
+    zip: safeStr(row.Zip),
+  };
+}
+
+function toCustomerBillRate(row: CustomerBillRateRow): CustomerBillRate {
+  return {
+    billRateId: safeStr(row.CustomerBillRateID),
+    grade: safeStr(row.BillRateGrade) || "—",
+    billRate: money(row.BillRate),
+    note: safeStr(row.BillRateNote),
+    active: row.BillRateActive === true || row.BillRateActive === 1,
+  };
+}
+
+function toCustomerWeek(row: CustomerWeekRow): CustomerWeek {
+  return {
+    weekId: safeStr(row.CustomerWeekID),
+    weekEnding: safeStr(row.WeekEndingDate),
+    assignWeek: safeStr(row.AssignWeek),
+    assignYear: safeStr(row.AssignYear),
+    invoiceNum: safeStr(row.InvoiceNum),
+    invoiceTotal: money(row.InvoiceTotal),
+    openBalance: money(row.OpenBalance),
+    paid: row.Paid === true || row.Paid === 1,
+    invoiceSent: row.InvoiceSent === true || row.InvoiceSent === 1,
+    locked: row.WeekLocked === true || row.WeekLocked === 1,
   };
 }
 
@@ -178,7 +304,7 @@ function toCustomerContact(row: CustomerContactRow): CustomerContact {
     firstName,
     lastName,
     fullName: [firstName, lastName].filter(Boolean).join(" ") || "—",
-    title: "",  // CustomerContactTitleID is a lookup ID — expanded in a later milestone if needed
+    title: "",
     email: safeStr(row.CustomerContactEmail),
     cellPhone: safeStr(row.CustomerContactCell),
     officePhone: safeStr(row.CustomerContactOfficePhone),
@@ -191,7 +317,7 @@ function toCustomerForeman(row: CustomerForemanRow): CustomerForeman {
     foremanId: safeStr(row.CustomerForemanID),
     foremanName: safeStr(row.CustomerForeman) || "—",
     phone: safeStr(row.CustomerForemanPhone),
-    email: "",   // no email column in tblCustomerForeman
+    email: "",
     notes: row.CustomerForemanDefault ? "Default" : "",
   };
 }
@@ -204,6 +330,9 @@ export interface GetCustomersParams {
   search?: string;
   salesmanId?: string;
   customerTypeId?: string;
+  statusId?: string;
+  city?: string;
+  state?: string;
 }
 
 export async function getCustomers(
@@ -212,74 +341,161 @@ export async function getCustomers(
   const searchPat = params.search ? `%${params.search}%` : null;
   const salesmanId = params.salesmanId || null;
   const customerTypeId = params.customerTypeId || null;
+  const statusId = params.statusId || null;
+  const city = params.city || null;
+  const state = params.state || null;
 
-  const [rows, typeMap, salesmanMap] = await Promise.all([
+  const [rows, typeMap, salesmanMap, statusMap] = await Promise.all([
     queryReadOnly<CustomerRow>(CUSTOMER_LIST_SQL, [
       { name: "searchPat", value: searchPat },
       { name: "salesmanId", value: salesmanId },
       { name: "customerTypeId", value: customerTypeId },
+      { name: "statusId", value: statusId },
+      { name: "city", value: city },
+      { name: "state", value: state },
     ]),
     loadCustomerTypeMap(),
     loadSalesmanMap(),
+    loadCustStatusMap(),
   ]);
 
   const data = rows.map((row) => ({
     ...toCustomerBase(row),
     customerType: typeMap.get(String(row.CustomerTypeID ?? "")) ?? "",
     salesman: salesmanMap.get(String(row.SalesmanID ?? "")) ?? "",
+    status: statusMap.get(String(row.CustStatusID ?? "")) ?? "",
   }));
 
-  return { data, total: data.length, page: 1, pageSize: 200, hasMore: false };
+  return { data, total: data.length, page: 1, pageSize: 300, hasMore: false };
 }
 
 export async function getCustomerById(
   customerId: string,
 ): Promise<CustomerDetail | null> {
-  const [customerRows, typeMap, salesmanMap, contactRows, foremanRows] = await Promise.all([
-    queryReadOnly<CustomerRow>(CUSTOMER_DETAIL_SQL, [
-      { name: "customerId", value: customerId },
-    ]),
+  const [
+    customerRows,
+    typeMap,
+    salesmanMap,
+    statusMap,
+    projStatusMap,
+    contactRows,
+    foremanRows,
+    jobRows,
+    billRateRows,
+    weekRows,
+  ] = await Promise.all([
+    queryReadOnly<CustomerDetailRow>(CUSTOMER_DETAIL_SQL, [{ name: "customerId", value: customerId }]),
     loadCustomerTypeMap(),
     loadSalesmanMap(),
+    loadCustStatusMap(),
+    loadProjStatusMap(),
     queryReadOnly<CustomerContactRow>(CUSTOMER_CONTACTS_SQL, [
       { name: "customerId", value: customerId },
     ]).catch(() => [] as CustomerContactRow[]),
     queryReadOnly<CustomerForemanRow>(CUSTOMER_FOREMEN_SQL, [
       { name: "customerId", value: customerId },
     ]).catch(() => [] as CustomerForemanRow[]),
+    queryReadOnly<CustomerJobRow>(CUSTOMER_JOBS_SQL, [
+      { name: "customerId", value: customerId },
+    ]).catch(() => [] as CustomerJobRow[]),
+    queryReadOnly<CustomerBillRateRow>(CUSTOMER_BILLRATES_SQL, [
+      { name: "customerId", value: customerId },
+    ]).catch(() => [] as CustomerBillRateRow[]),
+    queryReadOnly<CustomerWeekRow>(CUSTOMER_WEEKS_SQL, [
+      { name: "customerId", value: customerId },
+    ]).catch(() => [] as CustomerWeekRow[]),
   ]);
 
   const row = customerRows[0];
   if (!row) return null;
 
+  const jobs: CustomerJobPreview[] = jobRows.map((j) => ({
+    jobId: safeStr(j.ProjectID),
+    jobName: safeStr(j.SiteName),
+    status: projStatusMap.get(String(j.ProjStatusID ?? "")) ?? "",
+    address: [safeStr(j.SiteStreet), safeStr(j.SiteZip)].filter(Boolean).join(", "),
+  }));
+
   return {
     ...toCustomerBase(row),
     customerType: typeMap.get(String(row.CustomerTypeID ?? "")) ?? "",
     salesman: salesmanMap.get(String(row.SalesmanID ?? "")) ?? "",
-    street: safeStr(row.Street),
-    zip: safeStr(row.Zip),
+    status: statusMap.get(String(row.CustStatusID ?? "")) ?? "",
+    fullAddress: safeStr(row.Address),
+    mailStreet: safeStr(row.MailStreet),
+    mailCity: safeStr(row.MailCity),
+    mailState: safeStr(row.MailState),
+    mailZip: safeStr(row.MailZip),
+    fax: safeStr(row.CustFaxNum),
+    website: safeStr(row.CustWebSiteHLink),
+    corpWebsite: safeStr(row.CustCorpWebSiteHLink),
+    creditLimit: safeStr(row.CreditLimit),
+    qbCustomerId: safeStr(row.QBCustomerID),
+    licenseNumber: safeStr(row.CustomerLicenseNumber),
+    customerNote: safeStr(row.CustomerNote),
+    invoiceNote: safeStr(row.InvoiceNote),
+    collectionsNote: safeStr(row.CollectionsNote),
+    entryUserName: safeStr(row.CustEntryUserName),
+    entryTimestamp: safeStr(row.CustEntryTimestamp),
     contacts: contactRows.map(toCustomerContact),
     foremen: foremanRows.map(toCustomerForeman),
-    jobsPlaceholder: true,
+    jobs,
+    billRates: billRateRows.map(toCustomerBillRate),
+    weeks: weekRows.map(toCustomerWeek),
   };
 }
 
 export async function getCustomerFilterOptions(): Promise<{
   salesmen: FilterOption[];
   customerTypes: FilterOption[];
+  statuses: FilterOption[];
+  cities: FilterOption[];
+  states: FilterOption[];
 }> {
-  const [typeMap, salesmanMap] = await Promise.all([
+  const [typeMap, salesmanMap, statusMap, cityRows, stateRows] = await Promise.all([
     loadCustomerTypeMap(),
     loadSalesmanMap(),
+    loadCustStatusMap(),
+    queryReadOnly<{ City: string | null }>(
+      `SELECT DISTINCT City FROM tblCustomer WITH (NOLOCK)
+       WHERE LEN(LTRIM(RTRIM(ISNULL(City, '')))) > 1 ORDER BY City`,
+    ).catch(() => [] as { City: string | null }[]),
+    queryReadOnly<{ State: string | null }>(
+      `SELECT DISTINCT State FROM tblCustomer WITH (NOLOCK)
+       WHERE LEN(LTRIM(RTRIM(ISNULL(State, '')))) > 0 ORDER BY State`,
+    ).catch(() => [] as { State: string | null }[]),
   ]);
 
   return {
-    // Sort alphabetically by label for the dropdowns
     salesmen: Array.from(salesmanMap.entries())
       .map(([value, label]) => ({ value, label }))
       .sort((a, b) => a.label.localeCompare(b.label)),
     customerTypes: Array.from(typeMap.entries())
       .map(([value, label]) => ({ value, label }))
       .sort((a, b) => a.label.localeCompare(b.label)),
+    statuses: Array.from(statusMap.entries())
+      .map(([value, label]) => ({ value, label }))
+      .filter((o) => o.label)
+      .sort((a, b) => a.label.localeCompare(b.label)),
+    cities: toUniqueOptions(cityRows.map((r) => safeStr(r.City))),
+    states: toUniqueOptions(stateRows.map((r) => safeStr(r.State))),
   };
+}
+
+/**
+ * Build a de-duplicated FilterOption list from raw strings. DISTINCT at the SQL
+ * level can still yield duplicates once values are trimmed (e.g. "Salem" vs
+ * "Salem "), which breaks React keys — so we dedupe case-insensitively here.
+ */
+function toUniqueOptions(values: string[]): FilterOption[] {
+  const seen = new Set<string>();
+  const options: FilterOption[] = [];
+  for (const value of values) {
+    if (!value) continue;
+    const key = value.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    options.push({ value, label: value });
+  }
+  return options;
 }

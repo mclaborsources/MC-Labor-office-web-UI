@@ -72,7 +72,11 @@ export function formatDateUS(date: Date): string {
 
 export function getCurrentWeekContext(referenceDate = new Date()) {
   const weekEnding = thisWeekDayDate(referenceDate, 7);
-  const weekStart = thisWeekDayDate(referenceDate, 1);
+  // Work week is Saturday→Friday, so the Saturday that starts the week is always
+  // exactly 6 days before the Friday week-ending date. Deriving it this way keeps
+  // start/end in the same work week (thisWeekDayDate(ref, 1) can land on the next
+  // week's Saturday for mid-week reference dates).
+  const weekStart = new Date(weekEnding.getTime() - 6 * MS_PER_DAY);
 
   return {
     weekEndingDate: formatDateUS(weekEnding),
