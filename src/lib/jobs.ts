@@ -95,14 +95,17 @@ async function loadStatusMap(): Promise<Map<string, string>> {
   return map;
 }
 
+// Only customers that actually have projects, so every customer that can
+// appear in the jobs table is selectable in the filter (no alphabetical cap).
 async function loadCustomerOptions(): Promise<FilterOption[]> {
   try {
     const rows = await queryReadOnly<{ CustomerID: unknown; CustBusName: string | null }>(
-      `SELECT TOP 500 CustomerID, ISNULL(CustBusName, '') AS CustBusName
-       FROM   tblCustomer
-       WHERE  LEN(LTRIM(RTRIM(ISNULL(CustBusName, '')))) > 1
-         AND  CustBusName NOT IN ('-', '--')
-       ORDER  BY CustBusName`,
+      `SELECT DISTINCT c.CustomerID, ISNULL(c.CustBusName, '') AS CustBusName
+       FROM   tblProject  p WITH (NOLOCK)
+       JOIN   tblCustomer c WITH (NOLOCK) ON c.CustomerID = p.CustomerID
+       WHERE  LEN(LTRIM(RTRIM(ISNULL(c.CustBusName, '')))) > 1
+         AND  c.CustBusName NOT IN ('-', '--')
+       ORDER  BY c.CustBusName`,
     );
     return rows.map((r) => ({
       value: String(r.CustomerID ?? ""),
