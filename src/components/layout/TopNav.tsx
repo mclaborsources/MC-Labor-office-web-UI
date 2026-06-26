@@ -43,11 +43,11 @@ const NAV_ITEMS: {
     enabled: true,
   },
   {
-    href: "#",
+    href: "/jobs",
     label: "Jobs",
     icon: HardHat,
     match: (p) => p.startsWith("/jobs"),
-    enabled: false,
+    enabled: true,
   },
 ];
 

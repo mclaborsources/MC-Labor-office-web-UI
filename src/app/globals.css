@@ -326,3 +326,24 @@ body {
 .mc-scroll-smooth::-webkit-scrollbar-thumb:hover {
   background: rgb(148 163 184);
 }
+
+/* Skeleton loading shimmer */
+.mc-skeleton {
+  background: linear-gradient(
+    90deg,
+    rgb(226 232 240 / 0.6) 0%,
+    rgb(241 245 249 / 0.8) 40%,
+    rgb(226 232 240 / 0.6) 80%
+  );
+  background-size: 200% 100%;
+  animation: mc-skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes mc-skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

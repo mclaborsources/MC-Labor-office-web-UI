@@ -40,7 +40,7 @@ SELECT TOP (200)
   ISNULL(c.City,           '')  AS City,
   ISNULL(c.State,          '')  AS State,
   NULL                          AS Zip
-FROM  tblCustomer c
+FROM  tblCustomer c WITH (NOLOCK)
 WHERE
   (@searchPat IS NULL
     OR c.CustBusName LIKE @searchPat
@@ -67,7 +67,7 @@ SELECT TOP (1)
   ISNULL(c.City,           '')  AS City,
   ISNULL(c.State,          '')  AS State,
   ISNULL(c.Zip,            '')  AS Zip
-FROM  tblCustomer c
+FROM  tblCustomer c WITH (NOLOCK)
 WHERE c.CustomerID = @customerId
 `;
 
@@ -84,7 +84,7 @@ async function loadCustomerTypeMap(): Promise<Map<string, string>> {
     const rows = await queryReadOnly<{ PullDownCustomerTypeID: unknown; TypeName: string | null }>(
       `SELECT PullDownCustomerTypeID,
               ISNULL(PullDownCustomerType, '') AS TypeName
-       FROM   tblPullDownCustomerTypes
+       FROM   tblPullDownCustomerTypes WITH (NOLOCK)
        ORDER  BY PullDownCustomerType`,
     );
     for (const r of rows) {
@@ -109,7 +109,7 @@ async function loadSalesmanMap(): Promise<Map<string, string>> {
               LTRIM(RTRIM(
                 ISNULL(PullDownSalesmanFName, '') + ' ' + ISNULL(PullDownSalesmanLName, '')
               )) AS SalesmanLabel
-       FROM   tblPullDownSalesman
+       FROM   tblPullDownSalesman WITH (NOLOCK)
        ORDER  BY PullDownSalesmanLName, PullDownSalesmanFName`,
     );
     for (const r of rows) {
@@ -138,7 +138,7 @@ SELECT
   ISNULL(CustomerContactCell,       '')  AS CustomerContactCell,
   ISNULL(CustomerContactOfficePhone,'')  AS CustomerContactOfficePhone,
   ISNULL(CustomerContactNotes,      '')  AS CustomerContactNotes
-FROM tblCustomerContacts
+FROM tblCustomerContacts WITH (NOLOCK)
 WHERE CustomerID = @customerId
 ORDER BY CustomerContactSort, CustomerContactLName, CustomerContactFName
 `;
@@ -150,7 +150,7 @@ SELECT
   ISNULL(CustomerForeman,      '')  AS CustomerForeman,
   ISNULL(CustomerForemanPhone, '')  AS CustomerForemanPhone,
   CustomerForemanDefault
-FROM tblCustomerForeman
+FROM tblCustomerForeman WITH (NOLOCK)
 WHERE CustomerID = @customerId
 ORDER BY CustomerForemanDefault DESC, CustomerForeman
 `;

@@ -244,14 +244,18 @@ export default async function CustomerDetailPage({ params }: PageProps) {
             <ForemenTable foremen={customer.foremen} />
           </DetailSection>
 
-          {/* Jobs placeholder */}
+          {/* Jobs — link to jobs list filtered by this customer */}
           <DetailSection title="Jobs / Projects" icon={Briefcase}>
-            <div className="flex items-center gap-3 rounded-xl border border-slate-200/60 bg-slate-50/60 px-4 py-4 text-sm text-slate-500">
-              <Icon icon={Briefcase} size="sm" className="text-slate-400 shrink-0" />
-              <span>
-                Job and project details will be available in{" "}
-                <span className="font-medium text-slate-700">Milestone 3</span>.
-              </span>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-slate-500">
+                View all jobs and project sites linked to this customer.
+              </p>
+              <Link href={`/jobs?customerId=${customer.customerId}`}>
+                <Button variant="secondary" className="whitespace-nowrap">
+                  <Icon icon={Briefcase} size="sm" />
+                  View Jobs for this Customer
+                </Button>
+              </Link>
             </div>
           </DetailSection>
         </div>

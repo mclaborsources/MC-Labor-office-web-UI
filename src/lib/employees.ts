@@ -55,10 +55,10 @@ SELECT TOP (200)
   NULL AS EmCity,
   NULL AS EmState,
   NULL AS EmZip
-FROM  tblEmployee e
-LEFT  JOIN tblPullDownTrade           t  ON t.PullDownTradeID          = e.EmTradeID
-LEFT  JOIN tblPullDownEmployeeStatus  s  ON s.PullDownEmployeeStatusID = e.EmEmployeeStatusID
-LEFT  JOIN tblPullDownGrades          g  ON g.PullDownGradeID          = e.EmGradeID
+FROM  tblEmployee e WITH (NOLOCK)
+LEFT  JOIN tblPullDownTrade           t WITH (NOLOCK) ON t.PullDownTradeID          = e.EmTradeID
+LEFT  JOIN tblPullDownEmployeeStatus  s WITH (NOLOCK) ON s.PullDownEmployeeStatusID = e.EmEmployeeStatusID
+LEFT  JOIN tblPullDownGrades          g WITH (NOLOCK) ON g.PullDownGradeID          = e.EmGradeID
 WHERE
   (@searchPat IS NULL
     OR e.EmLastName      LIKE @searchPat
@@ -89,10 +89,10 @@ SELECT TOP (1)
   ISNULL(e.EmCity,              '')  AS EmCity,
   ISNULL(e.EmState,             '')  AS EmState,
   ISNULL(e.EmZip,               '')  AS EmZip
-FROM  tblEmployee e
-LEFT  JOIN tblPullDownTrade           t  ON t.PullDownTradeID          = e.EmTradeID
-LEFT  JOIN tblPullDownEmployeeStatus  s  ON s.PullDownEmployeeStatusID = e.EmEmployeeStatusID
-LEFT  JOIN tblPullDownGrades          g  ON g.PullDownGradeID          = e.EmGradeID
+FROM  tblEmployee e WITH (NOLOCK)
+LEFT  JOIN tblPullDownTrade           t WITH (NOLOCK) ON t.PullDownTradeID          = e.EmTradeID
+LEFT  JOIN tblPullDownEmployeeStatus  s WITH (NOLOCK) ON s.PullDownEmployeeStatusID = e.EmEmployeeStatusID
+LEFT  JOIN tblPullDownGrades          g WITH (NOLOCK) ON g.PullDownGradeID          = e.EmGradeID
 WHERE e.EmployeeID = @employeeId
 `;
 
@@ -154,13 +154,13 @@ export async function getEmployeeFilterOptions(): Promise<{
 }> {
   const [tradeRows, statusRows, gradeRows] = await Promise.all([
     queryReadOnly<{ PullDownTradeID: unknown; PullDownTrade: string | null }>(
-      "SELECT PullDownTradeID, ISNULL(PullDownTrade, '') AS PullDownTrade FROM tblPullDownTrade ORDER BY PullDownTrade",
+      "SELECT PullDownTradeID, ISNULL(PullDownTrade, '') AS PullDownTrade FROM tblPullDownTrade WITH (NOLOCK) ORDER BY PullDownTrade",
     ).catch(() => []),
     queryReadOnly<{ PullDownEmployeeStatusID: unknown; PullDownEmployeeStatus: string | null }>(
-      "SELECT PullDownEmployeeStatusID, ISNULL(PullDownEmployeeStatus, '') AS PullDownEmployeeStatus FROM tblPullDownEmployeeStatus ORDER BY PullDownEmployeeStatus",
+      "SELECT PullDownEmployeeStatusID, ISNULL(PullDownEmployeeStatus, '') AS PullDownEmployeeStatus FROM tblPullDownEmployeeStatus WITH (NOLOCK) ORDER BY PullDownEmployeeStatus",
     ).catch(() => []),
     queryReadOnly<{ PullDownGradeID: unknown; PullDownGrade: string | null }>(
-      "SELECT PullDownGradeID, ISNULL(PullDownGrade, '') AS PullDownGrade FROM tblPullDownGrades ORDER BY PullDownGrade",
+      "SELECT PullDownGradeID, ISNULL(PullDownGrade, '') AS PullDownGrade FROM tblPullDownGrades WITH (NOLOCK) ORDER BY PullDownGrade",
     ).catch(() => []),
   ]);
 

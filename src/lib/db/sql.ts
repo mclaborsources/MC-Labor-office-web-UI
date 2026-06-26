@@ -12,6 +12,7 @@ function buildConfig(): sql.config {
     database: env.SQL_DATABASE,
     user: env.SQL_USER,
     password: env.SQL_PASSWORD,
+    requestTimeout: 60000, // 60 s — tblProject JOIN queries can be slow without indexes
     options: {
       encrypt: env.SQL_ENCRYPT,
       trustServerCertificate: env.SQL_TRUST_CERT,

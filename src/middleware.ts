@@ -6,6 +6,7 @@ const PROTECTED_PREFIXES = [
   "/tracking",
   "/employees",
   "/customers",
+  "/jobs",
   "/dashboard",
 ];
 
@@ -43,5 +44,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/tracking/:path*", "/employees/:path*", "/customers/:path*", "/dashboard/:path*", "/login"],
+  matcher: ["/tracking/:path*", "/employees/:path*", "/customers/:path*", "/jobs/:path*", "/dashboard/:path*", "/login"],
 };

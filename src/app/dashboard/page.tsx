@@ -1,10 +1,13 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
+  ArrowUpRight,
   Briefcase,
   Building2,
   ClipboardList,
   HardHat,
   LayoutDashboard,
+  Lock,
   Users,
 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
@@ -16,110 +19,125 @@ const SECTIONS = [
   {
     href: "/tracking",
     icon: ClipboardList,
+    image: "/Dashboard/tracking_card.png",
     title: "Tracking",
-    description: "View current-week assignment tracking layout.",
+    description: "View the current-week assignment tracking layout.",
     enabled: true,
-    badge: null,
   },
   {
     href: "/employees",
     icon: Users,
+    image: "/Dashboard/empolyees_card.png",
     title: "Employees",
     description: "Search and view employee details from the database.",
     enabled: true,
-    badge: "Milestone 2",
   },
   {
     href: "/customers",
     icon: Building2,
+    image: "/Dashboard/customers_card.png",
     title: "Customers",
-    description: "Search customers, view contacts and foremen.",
+    description: "Browse customers with their contacts and foremen.",
     enabled: true,
-    badge: "Milestone 2",
   },
   {
-    href: "#",
+    href: "/jobs",
     icon: HardHat,
+    image: "/Dashboard/jobs_projects_card.png",
     title: "Jobs / Projects",
-    description: "Job and project search — coming in Milestone 3.",
-    enabled: false,
-    badge: "Milestone 3",
+    description: "Search jobsites, view details and customer links.",
+    enabled: true,
   },
   {
     href: "#",
     icon: Briefcase,
+    image: "/Dashboard/assignment_grid_card.png",
     title: "Assignment Grid",
-    description: "Full tracking grid with CSV export — Milestone 4.",
+    description: "Full tracking grid with CSV export, coming in Milestone 4.",
     enabled: false,
-    badge: "Milestone 4",
   },
 ] as const;
 
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 12) return "Good morning";
+  if (h < 18) return "Good afternoon";
+  return "Good evening";
+}
+
 export default async function DashboardPage() {
   const session = await getSessionOrDefault();
+  const name = session.user?.displayName?.split(" ")[0];
 
   return (
     <AppShell userDisplayName={session.user?.displayName}>
-      <PageHeader
-        title="Dashboard"
-        icon={LayoutDashboard}
-        subtitle="MC Labor Office Portal — Phase 1"
-      />
+      <div className="flex min-h-[calc(100vh-9.5rem)] flex-col">
+        <PageHeader
+          title="Dashboard"
+          icon={LayoutDashboard}
+          subtitle={`${greeting()}${name ? `, ${name}` : ""} — MC Labor Office Portal`}
+        />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {SECTIONS.map((item) => {
-          const card = (
-            <div
-              className={`mc-panel p-5 h-full flex flex-col gap-3 transition-all duration-200 ${
-                item.enabled
-                  ? "hover:shadow-md hover:border-blue-200/60 cursor-pointer"
-                  : "opacity-60 cursor-not-allowed"
-              }`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-600/10 ring-1 ring-blue-600/20">
-                  <Icon
-                    icon={item.icon}
-                    size="md"
-                    className={item.enabled ? "text-blue-600" : "text-slate-400"}
-                  />
+        <div className="grid flex-1 auto-rows-fr grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {SECTIONS.map((item) => {
+            const card = (
+              <div
+                className={`group relative flex h-full min-h-[200px] flex-col justify-end overflow-hidden rounded-2xl border border-slate-200/80 shadow-sm ${
+                  item.enabled
+                    ? "cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                    : "cursor-not-allowed"
+                }`}
+              >
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                  className={`object-cover transition-transform duration-500 ${
+                    item.enabled
+                      ? "group-hover:scale-105"
+                      : "grayscale"
+                  }`}
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/45 to-slate-950/10" />
+
+                <div className="absolute inset-x-0 top-0 flex items-start justify-between p-4">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 text-white ring-1 ring-white/25 backdrop-blur-md">
+                    <Icon icon={item.icon} size="md" />
+                  </div>
+                  {item.enabled ? (
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white/90 ring-1 ring-white/20 backdrop-blur-md transition-all duration-300 group-hover:bg-white group-hover:text-slate-900">
+                      <ArrowUpRight className="h-5 w-5" />
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white ring-1 ring-white/25 backdrop-blur-md">
+                      <Lock className="h-3.5 w-3.5" />
+                      Coming soon
+                    </span>
+                  )}
                 </div>
-                {item.badge && (
-                  <span
-                    className={`mt-0.5 rounded-full px-2 py-0.5 text-xs font-medium ${
-                      item.enabled
-                        ? "bg-blue-50 text-blue-700 ring-1 ring-blue-200"
-                        : "bg-slate-100 text-slate-500 ring-1 ring-slate-200"
-                    }`}
-                  >
-                    {item.badge}
-                  </span>
-                )}
-              </div>
-              <div>
-                <h3 className="font-semibold text-slate-900">{item.title}</h3>
-                <p className="mt-1 text-sm text-slate-500 leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-              {!item.enabled && (
-                <p className="text-xs text-slate-400 italic mt-auto">
-                  Not yet available
-                </p>
-              )}
-            </div>
-          );
 
-          return item.enabled ? (
-            <Link key={item.title} href={item.href} className="block h-full">
-              {card}
-            </Link>
-          ) : (
-            <div key={item.title} className="block h-full">
-              {card}
-            </div>
-          );
-        })}
+                <div className="relative p-5">
+                  <h3 className="text-lg font-semibold tracking-tight text-white drop-shadow-sm">
+                    {item.title}
+                  </h3>
+                  <p className="mt-1 text-sm leading-relaxed text-slate-200/90 drop-shadow-sm">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            );
+
+            return item.enabled ? (
+              <Link key={item.title} href={item.href} className="block">
+                {card}
+              </Link>
+            ) : (
+              <div key={item.title}>{card}</div>
+            );
+          })}
+        </div>
       </div>
     </AppShell>
   );

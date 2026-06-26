@@ -33,7 +33,7 @@ function CustomerResultsTable({ customers }: { customers: CustomerSummary[] }) {
       <div className="overflow-x-auto mc-scroll-smooth">
         <table className="w-full text-sm border-collapse">
           <thead className="sticky top-0 z-10">
-            <tr className="bg-gradient-to-r from-slate-800 via-slate-900 to-slate-800 text-white">
+            <tr className="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white">
               <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider whitespace-nowrap border-r border-white/10">
                 ID
               </th>
@@ -61,9 +61,10 @@ function CustomerResultsTable({ customers }: { customers: CustomerSummary[] }) {
             {customers.map((c, i) => (
               <tr
                 key={c.customerId}
+                style={i < 10 ? { animationDelay: `${i * 25}ms` } : undefined}
                 className={`border-b border-slate-100/80 transition-colors duration-100 ${
                   i % 2 === 0 ? "bg-white/60" : "bg-slate-50/50"
-                } hover:bg-blue-50/60`}
+                } hover:bg-blue-50/60 group ${i < 10 ? "mc-animate-in" : ""}`}
               >
                 <td className="px-4 py-2.5 border-r border-slate-100/80 font-mono text-xs text-slate-500 whitespace-nowrap">
                   {c.customerId || "—"}
@@ -105,8 +106,11 @@ function CustomerResultsTable({ customers }: { customers: CustomerSummary[] }) {
           </tbody>
         </table>
       </div>
-      <div className="border-t border-slate-200/70 bg-slate-50/60 px-4 py-2.5 text-xs text-slate-500">
-        Showing {customers.length} customer{customers.length !== 1 ? "s" : ""} (max 200 per search)
+      <div className="flex items-center justify-between border-t border-slate-200/70 bg-slate-50/60 px-4 py-2.5 text-xs text-slate-500 backdrop-blur-sm">
+        <span>
+          Showing <span className="font-semibold text-slate-700">{customers.length}</span> result{customers.length !== 1 ? "s" : ""}
+        </span>
+        <span className="text-slate-400">Max 200 per page</span>
       </div>
     </div>
   );
