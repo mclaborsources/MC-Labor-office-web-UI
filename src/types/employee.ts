@@ -2,12 +2,14 @@ export interface EmployeeSummary {
   employeeId: string;
   firstName: string;
   lastName: string;
+  middleInitial: string;
   fullName: string;
   cellPhone: string;
   email: string;
   trade: string;
   status: string;
   grade: string;
+  street: string;
   city: string;
   state: string;
   /** Latest assignment (customer · site) from tblTracking, for the search list */
@@ -86,6 +88,7 @@ export interface EmployeeRow {
   EmployeeID: number | string | null;
   EmFirstName: string | null;
   EmLastName: string | null;
+  EmMiddle: string | null;
   EmMobilePhone: string | null;
   EmEmail: string | null;
   EmTradeID: number | string | null;

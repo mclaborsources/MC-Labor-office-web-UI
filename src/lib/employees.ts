@@ -42,6 +42,7 @@ function toEmployeeSummary(row: EmployeeRow): EmployeeSummary {
     firstName,
     lastName,
     fullName: [firstName, lastName].filter(Boolean).join(" ") || "Unknown",
+    middleInitial: safeStr(row.EmMiddle),
     cellPhone: safeStr(row.EmMobilePhone),
     email: safeStr(row.EmEmail),
     trade: safeStr(row.TradeName),
@@ -49,6 +50,7 @@ function toEmployeeSummary(row: EmployeeRow): EmployeeSummary {
     grade: safeStr(row.GradeName),
     city: safeStr(row.EmCity),
     state: safeStr(row.EmState),
+    street: safeStr(row.EmStreet),
     currentAssignment: "",
   };
 }
@@ -62,6 +64,7 @@ SELECT TOP (200)
   e.EmployeeID,
   ISNULL(e.EmFirstName,         '')  AS EmFirstName,
   ISNULL(e.EmLastName,          '')  AS EmLastName,
+  ISNULL(e.EmMiddle,            '')  AS EmMiddle,
   ISNULL(e.EmMobilePhone,       '')  AS EmMobilePhone,
   ISNULL(e.EmEmail,             '')  AS EmEmail,
   ISNULL(e.EmTradeID,           0)   AS EmTradeID,
@@ -70,7 +73,7 @@ SELECT TOP (200)
   ISNULL(s.PullDownEmployeeStatus, '') AS StatusName,
   ISNULL(e.EmGradeID,           0)   AS EmGradeID,
   ISNULL(g.PullDownGrade,       '')  AS GradeName,
-  NULL AS EmStreet,
+  ISNULL(e.EmStreet,            '')  AS EmStreet,
   ISNULL(e.EmCity,              '')  AS EmCity,
   ISNULL(e.EmState,             '')  AS EmState,
   NULL AS EmZip

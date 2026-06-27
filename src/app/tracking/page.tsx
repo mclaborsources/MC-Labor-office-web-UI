@@ -1,37 +1,64 @@
 import { AppShell } from "@/components/layout/AppShell";
-import { AccessWindowTabs } from "@/components/access/AccessWindowTabs";
 import { TrackingScreen } from "@/components/tracking/TrackingScreen";
 import { getSessionOrDefault } from "@/lib/auth/session";
-import { getCurrentWeekContext } from "@/lib/week";
-import { getTrackingPreview } from "@/lib/tracking";
-import type { TrackingPreview } from "@/types/tracking";
+import { resolveTrackingWeek } from "@/lib/trackingWeek";
+import {
+  getTrackingPreview,
+  getTrackingCustomerOptions,
+  getTrackingJobOptions,
+  getTrackingJobInfo,
+} from "@/lib/tracking";
 
-export default async function TrackingPage() {
+interface PageProps {
+  searchParams: Promise<Record<string, string | undefined>>;
+}
+
+export default async function TrackingPage({ searchParams }: PageProps) {
   const session = await getSessionOrDefault();
-  const week = getCurrentWeekContext();
+  const params = await searchParams;
 
-  let preview: TrackingPreview = { rows: [], source: null };
-  try {
-    preview = await getTrackingPreview({
+  const weekOffset = params.weekOffset ? Number(params.weekOffset) : undefined;
+  const week = await resolveTrackingWeek({
+    weekOffset:
+      weekOffset !== undefined && Number.isFinite(weekOffset) ? weekOffset : undefined,
+    explicitWeek:
+      params.week && !params.weekOffset ? Number(params.week) : undefined,
+    explicitYear:
+      params.year && !params.weekOffset ? Number(params.year) : undefined,
+  });
+
+  const customerId = params.customerId?.trim() ?? "";
+  const projectId = params.projectId?.trim() ?? "";
+
+  const [preview, customers, jobs, jobInfo] = await Promise.all([
+    getTrackingPreview({
       week: week.assignWeek,
       year: week.assignYear,
+      customerId: customerId || undefined,
+      projectId: projectId || undefined,
       limit: 300,
-    });
-  } catch {
-    // Tracking grid stays in safe preview mode if the source is unreachable.
-  }
+    }),
+    getTrackingCustomerOptions(week.assignWeek, week.assignYear),
+    customerId
+      ? getTrackingJobOptions(week.assignWeek, week.assignYear, customerId)
+      : Promise.resolve([]),
+    customerId ? getTrackingJobInfo(customerId) : Promise.resolve(null),
+  ]);
 
   return (
-    <AppShell userDisplayName={session.user?.displayName}>
-      <div className="-mx-2 -mt-2 mb-1.5 sm:-mx-3">
-        <AccessWindowTabs
-          tabs={[
-            { label: "Menu", href: "/dashboard" },
-            { label: "Tracking", active: true },
-          ]}
+    <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth>
+      <div className="ac-tracking-page flex min-h-0 flex-1 flex-col">
+        <TrackingScreen
+          week={week}
+          preview={preview}
+          customers={customers}
+          jobs={jobs}
+          jobInfo={jobInfo}
+          selectedCustomerId={customerId}
+          selectedProjectId={projectId}
+          userDisplayName={session.user?.displayName}
         />
       </div>
-      <TrackingScreen week={week} preview={preview} />
     </AppShell>
   );
 }

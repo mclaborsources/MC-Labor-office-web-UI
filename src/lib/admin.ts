@@ -71,6 +71,63 @@ export async function getConnectionStatus(): Promise<ConnectionStatus> {
   }
 }
 
+export interface OfficeStaffRecord {
+  staffId: string;
+  firstName: string;
+  lastName: string;
+  initials: string;
+  title: string;
+  email: string;
+  active: boolean;
+  canDelete: boolean;
+  profile: boolean;
+  employeeResearch: boolean;
+}
+
+export async function getOfficeStaffList(): Promise<OfficeStaffRecord[]> {
+  try {
+    const rows = await queryReadOnly<{
+      OfficeStaffID: unknown;
+      OfficeStaffFirstName: string | null;
+      OfficeStaffLastName: string | null;
+      Initials: string | null;
+      OfficeStaffTitle: string | null;
+      OfficeStaffEmail: string | null;
+      OfficeStaffActive: boolean | number | null;
+      OfficeStaffCanDelete: boolean | number | null;
+      Profile: boolean | number | null;
+      OfficeStaffEmployeeResearch: boolean | number | null;
+    }>(
+      `SELECT OfficeStaffID,
+              ISNULL(OfficeStaffFirstName, '') AS OfficeStaffFirstName,
+              ISNULL(OfficeStaffLastName, '') AS OfficeStaffLastName,
+              ISNULL(Initials, '') AS Initials,
+              ISNULL(OfficeStaffTitle, '') AS OfficeStaffTitle,
+              ISNULL(OfficeStaffEmail, '') AS OfficeStaffEmail,
+              ISNULL(OfficeStaffActive, 0) AS OfficeStaffActive,
+              ISNULL(OfficeStaffCanDelete, 0) AS OfficeStaffCanDelete,
+              ISNULL(Profile, 0) AS Profile,
+              ISNULL(OfficeStaffEmployeeResearch, 0) AS OfficeStaffEmployeeResearch
+       FROM tblOfficeStaff WITH (NOLOCK)
+       ORDER BY OfficeStaffActive DESC, OfficeStaffLastName, OfficeStaffFirstName`,
+    );
+    return rows.map((r) => ({
+      staffId: safeStr(r.OfficeStaffID),
+      firstName: safeStr(r.OfficeStaffFirstName),
+      lastName: safeStr(r.OfficeStaffLastName),
+      initials: safeStr(r.Initials),
+      title: safeStr(r.OfficeStaffTitle),
+      email: safeStr(r.OfficeStaffEmail),
+      active: r.OfficeStaffActive === true || r.OfficeStaffActive === 1,
+      canDelete: r.OfficeStaffCanDelete === true || r.OfficeStaffCanDelete === 1,
+      profile: r.Profile === true || r.Profile === 1,
+      employeeResearch: r.OfficeStaffEmployeeResearch === true || r.OfficeStaffEmployeeResearch === 1,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 export async function getPermissionOverview(): Promise<PermissionOverview> {
   try {
     const [staffRows, featureRows] = await Promise.all([

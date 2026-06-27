@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { AccessWindowTabs } from "@/components/access/AccessWindowTabs";
 import { AccessButton } from "@/components/access/AccessButton";
 import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { Icon } from "@/components/ui/Icon";
@@ -105,16 +104,6 @@ export default async function EmployeeDetailPage({ params }: PageProps) {
 
   return (
     <AppShell userDisplayName={session.user?.displayName}>
-      <div className="-mx-2 -mt-2 mb-1.5 sm:-mx-3">
-        <AccessWindowTabs
-          tabs={[
-            { label: "Menu", href: "/dashboard" },
-            { label: "Employee Search", href: "/employees" },
-            { label: "Employee Profile", active: true },
-          ]}
-        />
-      </div>
-
       <div className="mb-1.5">
         <Link href="/employees">
           <AccessButton icon={ArrowLeft}>Back to Employee Search</AccessButton>

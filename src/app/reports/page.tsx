@@ -1,7 +1,6 @@
 import { FileBarChart } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { AccessWindowTabs } from "@/components/access/AccessWindowTabs";
 import { AccessPanel } from "@/components/access/AccessPanel";
 import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { getSessionOrDefault } from "@/lib/auth/session";
@@ -22,15 +21,6 @@ export default async function ReportsPage() {
 
   return (
     <AppShell userDisplayName={session.user?.displayName}>
-      <div className="-mx-2 -mt-2 mb-1.5 sm:-mx-3">
-        <AccessWindowTabs
-          tabs={[
-            { label: "Menu", href: "/dashboard" },
-            { label: "Reports", active: true },
-          ]}
-        />
-      </div>
-
       <PageHeader title="Reports" icon={FileBarChart} subtitle="Read-only catalog (navigation only)" />
 
       <div className="mb-2 border border-[#cdb96a] bg-[#f7f1d8] px-3 py-2 text-[12px] text-[#4a3d00]">

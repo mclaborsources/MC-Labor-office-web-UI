@@ -1,6 +1,7 @@
 import { queryReadOnly } from "@/lib/db/sql";
 import type {
   CustomerSummary,
+  CustomerSearchRow,
   CustomerDetail,
   CustomerContact,
   CustomerForeman,
@@ -8,6 +9,7 @@ import type {
   CustomerBillRate,
   CustomerWeek,
   CustomerRow,
+  CustomerSearchListRow,
   CustomerDetailRow,
   CustomerContactRow,
   CustomerForemanRow,
@@ -46,6 +48,57 @@ SELECT TOP (300)
   ISNULL(c.State,          '')  AS State,
   ISNULL(c.Zip,            '')  AS Zip
 FROM  tblCustomer c WITH (NOLOCK)
+WHERE
+  (@searchPat IS NULL
+    OR c.CustBusName LIKE @searchPat
+    OR CAST(c.CustomerID AS NVARCHAR(20)) LIKE @searchPat
+    OR c.Phone       LIKE @searchPat
+    OR c.CustEmail   LIKE @searchPat
+    OR c.Street      LIKE @searchPat
+    OR c.City        LIKE @searchPat)
+  AND (@salesmanId     IS NULL OR CAST(c.SalesmanID     AS NVARCHAR(20)) = @salesmanId)
+  AND (@customerTypeId IS NULL OR CAST(c.CustomerTypeID AS NVARCHAR(20)) = @customerTypeId)
+  AND (@statusId       IS NULL OR CAST(c.CustStatusID   AS NVARCHAR(20)) = @statusId)
+  AND (@city  IS NULL OR c.City  = @city)
+  AND (@state IS NULL OR c.State = @state)
+  AND LEN(LTRIM(RTRIM(ISNULL(c.CustBusName, '')))) > 1
+  AND c.CustBusName NOT IN ('-', '--', '---')
+ORDER BY c.CustBusName
+`;
+
+const CUSTOMER_SEARCH_LIST_SQL = `
+SELECT TOP (300)
+  c.CustomerID,
+  ISNULL(c.CustBusName,    '')  AS CustBusName,
+  ISNULL(c.CustomerTypeID, 0)   AS CustomerTypeID,
+  ISNULL(c.SalesmanID,     0)   AS SalesmanID,
+  ISNULL(c.CustStatusID,   0)   AS CustStatusID,
+  ISNULL(c.Phone,          '')  AS Phone,
+  ISNULL(c.CustEmail,      '')  AS CustEmail,
+  ISNULL(c.Street,         '')  AS Street,
+  ISNULL(c.City,           '')  AS City,
+  ISNULL(c.State,          '')  AS State,
+  ISNULL(c.Zip,            '')  AS Zip,
+  ISNULL(c.CustomerLicenseNumber, '') AS CustomerLicenseNumber,
+  CONVERT(VARCHAR(10), firstWeek.FirstWeekEnding, 101) AS FirstWeekEnding,
+  CONVERT(VARCHAR(10), lastWeek.LastWeekEnding, 101) AS LastWeekEnding,
+  ISNULL(cc.ContactCount, 0) AS ContactCount
+FROM  tblCustomer c WITH (NOLOCK)
+OUTER APPLY (
+  SELECT MIN(cw.WeekEndingDate) AS FirstWeekEnding
+  FROM tblCustomerWeeks cw WITH (NOLOCK)
+  WHERE cw.CustomerID = c.CustomerID
+) firstWeek
+OUTER APPLY (
+  SELECT MAX(cw.WeekEndingDate) AS LastWeekEnding
+  FROM tblCustomerWeeks cw WITH (NOLOCK)
+  WHERE cw.CustomerID = c.CustomerID
+) lastWeek
+OUTER APPLY (
+  SELECT COUNT(*) AS ContactCount
+  FROM tblCustomerContacts cc WITH (NOLOCK)
+  WHERE cc.CustomerID = c.CustomerID
+) cc
 WHERE
   (@searchPat IS NULL
     OR c.CustBusName LIKE @searchPat
@@ -322,6 +375,78 @@ function toCustomerForeman(row: CustomerForemanRow): CustomerForeman {
   };
 }
 
+function toCustomerSearchRow(
+  row: CustomerSearchListRow,
+  typeMap: Map<string, string>,
+  salesmanMap: Map<string, string>,
+  statusMap: Map<string, string>,
+): CustomerSearchRow {
+  const base = toCustomerBase(row);
+  const status = statusMap.get(String(row.CustStatusID ?? "")) ?? "";
+  return {
+    ...base,
+    customerType: typeMap.get(String(row.CustomerTypeID ?? "")) ?? "",
+    salesman: salesmanMap.get(String(row.SalesmanID ?? "")) ?? "",
+    status,
+    noCommunication: "",
+    act: status,
+    lastWeekEnding: safeStr(row.LastWeekEnding),
+    firstWeekEnding: safeStr(row.FirstWeekEnding),
+    internetSalesReadyUser: "",
+    internetSalesReadyDate: "",
+    internetSalesReady: "",
+    lastActionUser: "",
+    lastActionDate: "",
+    lastAction: "",
+    futureCallUser: "",
+    futureCallUserDate: "",
+    futureCallUserTime: "",
+    futureCall: "",
+    futureCallHistory: "",
+    salesHStatus: "",
+    contacts: "",
+    licenseNumber: safeStr(row.CustomerLicenseNumber),
+    licenseIssueDate: "",
+    licenseExpireDate: "",
+    salesPackageSentFilter: "",
+    salesPackageSentDate: "",
+    salesPackageSentUser: "",
+    contactCount: safeStr(row.ContactCount),
+  };
+}
+
+function emptyCustomerSearchFields(): Omit<
+  CustomerSearchRow,
+  keyof CustomerSummary | "customerType" | "salesman" | "status"
+> {
+  return {
+    noCommunication: "",
+    act: "",
+    lastWeekEnding: "",
+    firstWeekEnding: "",
+    internetSalesReadyUser: "",
+    internetSalesReadyDate: "",
+    internetSalesReady: "",
+    lastActionUser: "",
+    lastActionDate: "",
+    lastAction: "",
+    futureCallUser: "",
+    futureCallUserDate: "",
+    futureCallUserTime: "",
+    futureCall: "",
+    futureCallHistory: "",
+    salesHStatus: "",
+    contacts: "",
+    licenseNumber: "",
+    licenseIssueDate: "",
+    licenseExpireDate: "",
+    salesPackageSentFilter: "",
+    salesPackageSentDate: "",
+    salesPackageSentUser: "",
+    contactCount: "",
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
@@ -338,6 +463,19 @@ export interface GetCustomersParams {
 export async function getCustomers(
   params: GetCustomersParams = {},
 ): Promise<PaginatedResult<CustomerSummary>> {
+  const result = await getCustomerSearchRows(params);
+  return {
+    data: result.data,
+    total: result.total,
+    page: result.page,
+    pageSize: result.pageSize,
+    hasMore: result.hasMore,
+  };
+}
+
+export async function getCustomerSearchRows(
+  params: GetCustomersParams = {},
+): Promise<PaginatedResult<CustomerSearchRow>> {
   const searchPat = params.search ? `%${params.search}%` : null;
   const salesmanId = params.salesmanId || null;
   const customerTypeId = params.customerTypeId || null;
@@ -346,25 +484,44 @@ export async function getCustomers(
   const state = params.state || null;
 
   const [rows, typeMap, salesmanMap, statusMap] = await Promise.all([
-    queryReadOnly<CustomerRow>(CUSTOMER_LIST_SQL, [
+    queryReadOnly<CustomerSearchListRow>(CUSTOMER_SEARCH_LIST_SQL, [
       { name: "searchPat", value: searchPat },
       { name: "salesmanId", value: salesmanId },
       { name: "customerTypeId", value: customerTypeId },
       { name: "statusId", value: statusId },
       { name: "city", value: city },
       { name: "state", value: state },
-    ]),
+    ]).catch(() =>
+      queryReadOnly<CustomerRow>(CUSTOMER_LIST_SQL, [
+        { name: "searchPat", value: searchPat },
+        { name: "salesmanId", value: salesmanId },
+        { name: "customerTypeId", value: customerTypeId },
+        { name: "statusId", value: statusId },
+        { name: "city", value: city },
+        { name: "state", value: state },
+      ]),
+    ),
     loadCustomerTypeMap(),
     loadSalesmanMap(),
     loadCustStatusMap(),
   ]);
 
-  const data = rows.map((row) => ({
-    ...toCustomerBase(row),
-    customerType: typeMap.get(String(row.CustomerTypeID ?? "")) ?? "",
-    salesman: salesmanMap.get(String(row.SalesmanID ?? "")) ?? "",
-    status: statusMap.get(String(row.CustStatusID ?? "")) ?? "",
-  }));
+  const data = rows.map((row) => {
+    if ("FirstWeekEnding" in row || "ContactCount" in row || "CustomerLicenseNumber" in row) {
+      return toCustomerSearchRow(row as CustomerSearchListRow, typeMap, salesmanMap, statusMap);
+    }
+    const base = {
+      ...toCustomerBase(row),
+      customerType: typeMap.get(String(row.CustomerTypeID ?? "")) ?? "",
+      salesman: salesmanMap.get(String(row.SalesmanID ?? "")) ?? "",
+      status: statusMap.get(String(row.CustStatusID ?? "")) ?? "",
+      ...emptyCustomerSearchFields(),
+    };
+    return {
+      ...base,
+      act: base.status,
+    };
+  });
 
   return { data, total: data.length, page: 1, pageSize: 300, hasMore: false };
 }

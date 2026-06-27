@@ -1,7 +1,6 @@
 import { Database, Server, ShieldCheck, Users } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { AccessWindowTabs } from "@/components/access/AccessWindowTabs";
 import { AccessPanel } from "@/components/access/AccessPanel";
 import { AccessDataTable, type AccessColumn } from "@/components/access/AccessDataTable";
 import { getSessionOrDefault } from "@/lib/auth/session";
@@ -45,15 +44,6 @@ export default async function AdminConnectionPage() {
 
   return (
     <AppShell userDisplayName={session.user?.displayName}>
-      <div className="-mx-2 -mt-2 mb-1.5 sm:-mx-3">
-        <AccessWindowTabs
-          tabs={[
-            { label: "Menu", href: "/dashboard" },
-            { label: "Admin — Connection", active: true },
-          ]}
-        />
-      </div>
-
       <PageHeader title="Admin — Connection & Access" icon={Server} subtitle="Read-only status" />
 
       <div className="grid grid-cols-1 gap-2 md:grid-cols-2">

@@ -4,6 +4,7 @@ import {
   thisWeekDayDate,
   getCurrentWeekContext,
   formatDateUS,
+  datesForAssignWeek,
 } from "./week";
 
 // JS getDay(): Sun=0 … Sat=6. The work week is Saturday→Friday, week ending Friday.
@@ -46,8 +47,14 @@ test("getCurrentWeekContext: start is Saturday, end is Friday, exactly 6 days ap
   }
 });
 
-test("getCurrentWeekContext returns a positive assign week and sane year", () => {
-  const ctx = getCurrentWeekContext(new Date(2024, 5, 12));
-  assert.ok(ctx.assignWeek >= 1 && ctx.assignWeek <= 54, "assignWeek in range");
-  assert.ok(ctx.assignYear >= 2000, "assignYear sane");
+test("Access-aligned: Fri 6/26/2026 is assign week 26", () => {
+  const ctx = getCurrentWeekContext(new Date(2026, 5, 26));
+  assert.equal(ctx.assignWeek, 26);
+  assert.equal(formatDateUS(new Date(ctx.weekEndingDate)), "6/26/2026");
+});
+
+test("datesForAssignWeek(26, 2026) matches current week ending 6/26", () => {
+  const d = datesForAssignWeek(26, 2026);
+  assert.equal(d.weekStartDate, "6/20/2026");
+  assert.equal(d.weekEndingDate, "6/26/2026");
 });

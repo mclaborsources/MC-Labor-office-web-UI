@@ -33,14 +33,25 @@ export function thisWeekDayDate(currentDate: Date, thisWeekDay: number): Date {
 }
 
 /**
- * VBA DatePart("ww", date, 7, 1) — week of year, first day of week = Saturday.
+ * VBA DatePart("ww", date, 7, 1) — week of year, first day of week = Saturday,
+ * first week = week containing January 1 (starts Saturday on/before Jan 1).
  */
+function saturdayOnOrBefore(date: Date): Date {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  const wd = weekdaySaturdayFirst(d);
+  d.setDate(d.getDate() - (wd - 1));
+  return d;
+}
+
 export function assignWeekFromDate(date: Date): number {
   const year = date.getFullYear();
-  const jan1 = new Date(year, 0, 1);
-  const firstSaturday = thisWeekDayDate(jan1, 1);
+  const week1Start = saturdayOnOrBefore(new Date(year, 0, 1));
+
+  const target = new Date(date);
+  target.setHours(0, 0, 0, 0);
   const diffDays = Math.floor(
-    (date.getTime() - firstSaturday.getTime()) / MS_PER_DAY,
+    (target.getTime() - week1Start.getTime()) / MS_PER_DAY,
   );
   if (diffDays < 0) {
     return assignWeekFromDate(new Date(year - 1, 11, 31));
@@ -81,8 +92,31 @@ export function getCurrentWeekContext(referenceDate = new Date()) {
   return {
     weekEndingDate: formatDateUS(weekEnding),
     weekStartDate: formatDateUS(weekStart),
-    displayDate: formatDateUS(weekEnding),
+    displayDate: formatDateUS(referenceDate),
     assignWeek: assignWeekFromDate(weekEnding),
     assignYear: assignYearFromDate(weekEnding),
   };
+}
+
+/** Shift the work week by N weeks (negative = last week, positive = next week). */
+export function getWeekContextForOffset(weekOffset: number, referenceDate = new Date()) {
+  const baseFriday = thisWeekDayDate(referenceDate, 7);
+  const shifted = new Date(baseFriday.getTime() + weekOffset * 7 * MS_PER_DAY);
+  return getCurrentWeekContext(shifted);
+}
+
+/** Sat–Fri date range for a given Access assign week/year (independent of "today"). */
+export function datesForAssignWeek(assignWeek: number, assignYear: number) {
+  const week1Start = saturdayOnOrBefore(new Date(assignYear, 0, 1));
+  const weekStart = new Date(week1Start.getTime() + (assignWeek - 1) * 7 * MS_PER_DAY);
+  const weekEnd = new Date(weekStart.getTime() + 6 * MS_PER_DAY);
+  return {
+    weekStartDate: formatDateUS(weekStart),
+    weekEndingDate: formatDateUS(weekEnd),
+  };
+}
+
+export function parseDateUS(value: string): Date {
+  const [m, d, y] = value.split("/").map(Number);
+  return new Date(y, m - 1, d);
 }

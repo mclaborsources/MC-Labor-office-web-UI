@@ -12,6 +12,34 @@ export interface CustomerSummary {
   zip: string;
 }
 
+/** Extended row for Customer Search grid (Access frmCustomerSearch). */
+export interface CustomerSearchRow extends CustomerSummary {
+  noCommunication: string;
+  act: string;
+  lastWeekEnding: string;
+  firstWeekEnding: string;
+  internetSalesReadyUser: string;
+  internetSalesReadyDate: string;
+  internetSalesReady: string;
+  lastActionUser: string;
+  lastActionDate: string;
+  lastAction: string;
+  futureCallUser: string;
+  futureCallUserDate: string;
+  futureCallUserTime: string;
+  futureCall: string;
+  futureCallHistory: string;
+  salesHStatus: string;
+  contacts: string;
+  licenseNumber: string;
+  licenseIssueDate: string;
+  licenseExpireDate: string;
+  salesPackageSentFilter: string;
+  salesPackageSentDate: string;
+  salesPackageSentUser: string;
+  contactCount: string;
+}
+
 export interface CustomerJobPreview {
   jobId: string;
   jobName: string;
@@ -111,6 +139,13 @@ export interface CustomerRow {
   City: string | null;
   State: string | null;
   Zip: string | null;
+}
+
+export interface CustomerSearchListRow extends CustomerRow {
+  CustomerLicenseNumber?: string | null;
+  FirstWeekEnding?: string | null;
+  LastWeekEnding?: string | null;
+  ContactCount?: number | string | null;
 }
 
 /** Confirmed column names from tblCustomerBillRates */

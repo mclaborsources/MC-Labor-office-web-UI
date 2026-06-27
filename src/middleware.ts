@@ -8,6 +8,9 @@ const PROTECTED_PREFIXES = [
   "/customers",
   "/jobs",
   "/dashboard",
+  "/customer-menu",
+  "/admin",
+  "/reports",
 ];
 
 function isProtected(pathname: string): boolean {
@@ -44,5 +47,15 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/tracking/:path*", "/employees/:path*", "/customers/:path*", "/jobs/:path*", "/dashboard/:path*", "/login"],
+  matcher: [
+    "/tracking/:path*",
+    "/employees/:path*",
+    "/customers/:path*",
+    "/jobs/:path*",
+    "/dashboard/:path*",
+    "/customer-menu/:path*",
+    "/admin/:path*",
+    "/reports/:path*",
+    "/login",
+  ],
 };

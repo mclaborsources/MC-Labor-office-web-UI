@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { AccessWindowTabs } from "@/components/access/AccessWindowTabs";
 import { AccessButton } from "@/components/access/AccessButton";
 import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { Icon } from "@/components/ui/Icon";
@@ -48,16 +47,17 @@ const projectWeekColumns: AccessColumn<ProjectWeek>[] = [
 ];
 
 const TABS = [
+  { id: "site-data", label: "Site Data" },
+  { id: "job-order", label: "Job Order" },
+  { id: "contacts", label: "Contacts" },
+  { id: "payroll", label: "Certified Payroll" },
+  { id: "directions", label: "Directions" },
   { id: "main", label: "Job Main Info" },
   { id: "customer", label: "Customer Info" },
-  { id: "site", label: "Site Address" },
   { id: "foreman", label: "Foreman" },
-  { id: "status", label: "Status / Dates" },
-  { id: "contract", label: "Contract" },
   { id: "weeks", label: "Project Weeks" },
   { id: "assignments", label: "Assignments" },
   { id: "notes", label: "Notes" },
-  { id: "system", label: "System" },
 ];
 
 export default async function JobDetailPage({ params }: PageProps) {
@@ -81,16 +81,6 @@ export default async function JobDetailPage({ params }: PageProps) {
 
   return (
     <AppShell userDisplayName={session.user?.displayName}>
-      <div className="-mx-2 -mt-2 mb-1.5 sm:-mx-3">
-        <AccessWindowTabs
-          tabs={[
-            { label: "Menu", href: "/dashboard" },
-            { label: "Job Search", href: "/jobs" },
-            { label: "Job Profile", active: true },
-          ]}
-        />
-      </div>
-
       <div className="mb-1.5">
         <Link href="/jobs">
           <AccessButton icon={ArrowLeft}>Back to Jobs / Projects</AccessButton>
@@ -120,6 +110,34 @@ export default async function JobDetailPage({ params }: PageProps) {
           </div>
 
           <AccessTabs tabs={TABS} />
+
+          <AccessFieldSection
+            id="site-data"
+            title="Site Data"
+            icon={MapPin}
+            fields={[
+              { label: "Job Status", value: job.status },
+              { label: "Job Name", value: job.jobName, wide: true },
+              { label: "Street", value: job.street, wide: true },
+              { label: "City", value: job.city },
+              { label: "State", value: job.state },
+              { label: "Zip", value: job.zip },
+              { label: "Foreman", value: job.foremanName },
+              { label: "Foreman Cell", value: job.foremanPhone, kind: "phone" },
+              { label: "Start Date", value: job.startDate, kind: "date" },
+              { label: "End Date", value: job.endDate, kind: "date" },
+            ]}
+          />
+
+          <div id="job-order" className="ac-panel p-3 text-[11px] italic text-[#6a6a6a]">
+            Job Order tab — UNMAPPED (see OPEN_QUESTIONS #20).
+          </div>
+          <div id="payroll" className="ac-panel p-3 text-[11px] italic text-[#6a6a6a]">
+            Certified Payroll — UNMAPPED.
+          </div>
+          <div id="directions" className="ac-panel p-3 text-[11px] italic text-[#6a6a6a]">
+            Directions / Special Job Instructions — child table UNMAPPED.
+          </div>
 
           <AccessFieldSection
             id="main"
@@ -155,18 +173,6 @@ export default async function JobDetailPage({ params }: PageProps) {
                   .join(", "),
                 wide: true,
               },
-            ]}
-          />
-
-          <AccessFieldSection
-            id="site"
-            title="Site Address"
-            icon={MapPin}
-            fields={[
-              { label: "Street", value: job.street, wide: true },
-              { label: "City", value: job.city },
-              { label: "State", value: job.state },
-              { label: "Zip", value: job.zip },
             ]}
           />
 
