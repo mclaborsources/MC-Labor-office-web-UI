@@ -85,7 +85,14 @@ function CustomerSearchTable({
     disabled ? (
       <span className="ac-customer-search-page-nav is-disabled" aria-disabled="true" title={title}>{label}</span>
     ) : (
-      <Link className="ac-customer-search-page-nav" href={hrefForPage(targetPage)} title={title}>{label}</Link>
+      <Link
+        className="ac-customer-search-page-nav"
+        href={hrefForPage(targetPage)}
+        title={title}
+        prefetch={false}
+      >
+        {label}
+      </Link>
     );
 
   return (
