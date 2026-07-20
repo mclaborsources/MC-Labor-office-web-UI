@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useTransition } from "react";
 import { HelpCircle, Table2 } from "lucide-react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { CustomerSearchViewsPanel } from "@/components/customers/CustomerSearchViewsPanel";
 import { CustomerSearchPagination } from "@/components/customers/CustomerSearchPagination";
+import { CustomerSearchLoadingOverlay } from "@/components/customers/CustomerSearchLoadingOverlay";
 import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { Icon } from "@/components/ui/Icon";
 import { Spinner } from "@/components/ui/Spinner";
@@ -30,6 +32,8 @@ interface CustomerSearchScreenProps {
   currentStatusId: string;
   currentCity: string;
   currentState: string;
+  currentSortKey: string;
+  currentSortDirection: "asc" | "desc";
   page: number;
   pageSize: number;
   total: number;
@@ -65,6 +69,8 @@ function CustomerSearchTable({
   total,
   hasMore,
   query,
+  currentSortKey,
+  currentSortDirection,
 }: {
   customers: CustomerSearchRow[];
   page: number;
@@ -72,35 +78,20 @@ function CustomerSearchTable({
   total: number;
   hasMore: boolean;
   query: Record<string, string>;
+  currentSortKey: string;
+  currentSortDirection: "asc" | "desc";
 }) {
-  const [sort, setSort] = useState<{
-    key: CustomerSearchColumnKey;
-    direction: "asc" | "desc";
-  } | null>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isSorting, startSorting] = useTransition();
 
-  const sortedCustomers = useMemo(() => {
-    if (!sort || sort.key === "select") return customers;
-
-    const datePattern = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
-    return [...customers].sort((left, right) => {
-      const leftValue = cellValue(left, sort.key).trim();
-      const rightValue = cellValue(right, sort.key).trim();
-      let comparison: number;
-
-      if (datePattern.test(leftValue) && datePattern.test(rightValue)) {
-        comparison = new Date(leftValue).getTime() - new Date(rightValue).getTime();
-      } else if (leftValue !== "" && rightValue !== "" && !Number.isNaN(Number(leftValue)) && !Number.isNaN(Number(rightValue))) {
-        comparison = Number(leftValue) - Number(rightValue);
-      } else {
-        comparison = leftValue.localeCompare(rightValue, undefined, {
-          numeric: true,
-          sensitivity: "base",
-        });
-      }
-
-      return sort.direction === "asc" ? comparison : -comparison;
-    });
-  }, [customers, sort]);
+  function applySort(key: CustomerSearchColumnKey, direction: "asc" | "desc") {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("sortKey", key);
+    params.set("sortDirection", direction);
+    params.delete("page");
+    startSorting(() => router.push(`/customers?${params.toString()}`, { scroll: false }));
+  }
 
   return (
     <div className="ac-customer-search-grid-wrap">
@@ -126,9 +117,9 @@ function CustomerSearchTable({
                         <input
                           type="radio"
                           name={`sort-${col.key}`}
-                          checked={sort?.key === col.key && sort.direction === "asc"}
+                          checked={currentSortKey === col.key && currentSortDirection === "asc"}
                           onChange={(event) => {
-                            setSort({ key: col.key, direction: "asc" });
+                            applySort(col.key, "asc");
                             const menu = event.currentTarget.closest("details");
                             if (menu) menu.open = false;
                           }}
@@ -139,9 +130,9 @@ function CustomerSearchTable({
                         <input
                           type="radio"
                           name={`sort-${col.key}`}
-                          checked={sort?.key === col.key && sort.direction === "desc"}
+                          checked={currentSortKey === col.key && currentSortDirection === "desc"}
                           onChange={(event) => {
-                            setSort({ key: col.key, direction: "desc" });
+                            applySort(col.key, "desc");
                             const menu = event.currentTarget.closest("details");
                             if (menu) menu.open = false;
                           }}
@@ -155,7 +146,7 @@ function CustomerSearchTable({
             </tr>
           </thead>
           <tbody>
-            {sortedCustomers.length === 0 ? (
+            {customers.length === 0 ? (
               <tr>
                 <td
                   colSpan={CUSTOMER_SEARCH_COLUMNS.length}
@@ -165,7 +156,7 @@ function CustomerSearchTable({
                 </td>
               </tr>
             ) : (
-              sortedCustomers.map((row) => (
+              customers.map((row) => (
                 <tr key={row.customerId}>
                   {CUSTOMER_SEARCH_COLUMNS.map((col) => {
                     if (col.key === "select") {
@@ -216,6 +207,7 @@ function CustomerSearchTable({
           query={query}
         />
       </div>
+      {isSorting && <CustomerSearchLoadingOverlay />}
     </div>
   );
 }
@@ -388,6 +380,8 @@ export function CustomerSearchScreen({
   currentStatusId,
   currentCity,
   currentState,
+  currentSortKey,
+  currentSortDirection,
   page,
   pageSize,
   total,
@@ -401,6 +395,8 @@ export function CustomerSearchScreen({
       statusId: currentStatusId,
       city: currentCity,
       state: currentState,
+      sortKey: currentSortKey,
+      sortDirection: currentSortKey ? currentSortDirection : "",
     }).filter(([, value]) => Boolean(value)),
   );
   return (
@@ -456,6 +452,8 @@ export function CustomerSearchScreen({
                   total={total}
                   hasMore={hasMore}
                   query={paginationQuery}
+                  currentSortKey={currentSortKey}
+                  currentSortDirection={currentSortDirection}
                 />
               </Suspense>
             )}

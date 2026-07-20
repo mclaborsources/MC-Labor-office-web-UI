@@ -67,12 +67,6 @@ WITH FilteredCustomers AS (
     AND (@state IS NULL OR c.State = @state)
     AND LEN(LTRIM(RTRIM(ISNULL(c.CustBusName, '')))) > 1
     AND c.CustBusName NOT IN ('-', '--', '---')
-),
-CandidateCustomers AS (
-  SELECT *
-  FROM FilteredCustomers
-  ORDER BY CustBusName, CustomerID
-  OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY
 )
 SELECT
   c.TotalCount,
@@ -109,7 +103,9 @@ SELECT
   CONVERT(VARCHAR(10), salesPackage.CustomerSalesHistoryTimestamp, 101) AS SalesPackageSentDate,
   ISNULL(salesPackage.CustomerSalesHistoryUserName, '') AS SalesPackageSentUser,
   ISNULL(cc.ContactCount, 0) AS ContactCount
-FROM CandidateCustomers c
+FROM __CUSTOMER_SOURCE__ c
+LEFT JOIN tblPullDownCustomerTypes customerType WITH (NOLOCK)
+  ON c.CustomerTypeID = customerType.PullDownCustomerTypeID
 LEFT JOIN tblPullDownInternetSalesReady internetReady WITH (NOLOCK)
   ON c.InternetSalesReadyID = internetReady.PullDownInternetSalesReadyID
 LEFT JOIN tblPullDownSalesHistoryStatus salesStatus WITH (NOLOCK)
@@ -156,9 +152,77 @@ OUTER APPLY (
     AND shPackage.CustomerSalesHistoryActionTypeID = -3
   ORDER BY shPackage.CustomerSalesHistoryTimestamp DESC, shPackage.CustomerSalesHistoryID DESC
 ) salesPackage
-ORDER BY c.CustBusName
+ORDER BY __CUSTOMER_SORT__, c.CustomerID
+OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY
 OPTION (RECOMPILE)
 `;
+
+const CUSTOMER_SEARCH_SORT_COLUMNS: Record<string, string> = {
+  select: "c.CustomerID",
+  name: "c.CustBusName",
+  noCommunication: "c.CustomerNoCommunication",
+  street: "c.Street",
+  city: "c.City",
+  state: "c.State",
+  customerType: "customerType.PullDownCustomerType",
+  lastWeekEnding: "customerWeeks.LastWeekEnding",
+  firstWeekEnding: "customerWeeks.FirstWeekEnding",
+  act: "ActionCount",
+  internetSalesReadyUser: "InternetSalesReadyUser",
+  internetSalesReadyDate: "c.InternetSalesReadyTimestamp",
+  internetSalesReady: "internetReady.PullDownInternetSalesReadyDesc",
+  lastActionUser: "lastAction.CustomerSalesHistoryUserName",
+  lastActionDate: "lastAction.CustomerSalesHistoryTimestamp",
+  lastAction: "lastAction.ActionLabel",
+  futureCallUser: "FutureCallUser",
+  futureCallUserDate: "c.FutureCallTimestamp",
+  futureCallUserTime: "c.FutureCallTimestamp",
+  futureCall: "c.FutureCall",
+  futureCallHistory: "c.FutureCall",
+  salesHStatus: "salesStatus.PullDownSalesHistoryStatusDesc",
+  contacts: "ContactCount",
+  licenseNumber: "CustomerLicenseNumber",
+  licenseIssueDate: "c.CustomerLicenseIssueDate",
+  licenseExpireDate: "c.CustomerLicenseExpDate",
+  salesPackageSentFilter: "SalesPackageSentFilter",
+  salesPackageSentDate: "salesPackage.CustomerSalesHistoryTimestamp",
+  salesPackageSentUser: "salesPackage.CustomerSalesHistoryUserName",
+  contactCount: "ContactCount",
+};
+
+function customerSearchSql(sortKey?: string, sortDirection?: string): string {
+  const column = CUSTOMER_SEARCH_SORT_COLUMNS[sortKey ?? ""] ?? "c.CustBusName";
+  const direction = sortDirection === "desc" ? "DESC" : "ASC";
+  const order = `${column} ${direction}`;
+  let sqlText = CUSTOMER_SEARCH_LIST_SQL
+    .replace("__CUSTOMER_SORT__", order)
+    .replace("__CUSTOMER_SOURCE__", column.startsWith("c.") ? "CandidateCustomers" : "FilteredCustomers");
+
+  // Direct tblCustomer fields can be sorted and paged before the expensive
+  // history/contact lookups while still sorting the complete filtered set.
+  if (column.startsWith("c.")) {
+    sqlText = sqlText
+      .replace(
+        ")\nSELECT\n",
+        `),
+CandidateCustomers AS (
+  SELECT *
+  FROM FilteredCustomers c
+  ORDER BY ${order}, c.CustomerID
+  OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY
+)
+SELECT
+`,
+      )
+      .replace(
+        `ORDER BY ${order}, c.CustomerID
+OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY`,
+        `ORDER BY ${order}, c.CustomerID`,
+      );
+  }
+
+  return sqlText;
+}
 
 const CUSTOMER_DETAIL_SQL = `
 SELECT TOP (1)
@@ -503,6 +567,8 @@ export interface GetCustomersParams {
   state?: string;
   page?: number;
   pageSize?: number;
+  sortKey?: string;
+  sortDirection?: "asc" | "desc";
 }
 
 export async function getCustomers(
@@ -534,7 +600,7 @@ export async function getCustomerSearchRows(
   const offset = (page - 1) * pageSize;
 
   const [rows, typeMap, salesmanMap, statusMap] = await Promise.all([
-    queryReadOnly<CustomerSearchListRow>(CUSTOMER_SEARCH_LIST_SQL, [
+    queryReadOnly<CustomerSearchListRow>(customerSearchSql(params.sortKey, params.sortDirection), [
       { name: "searchPat", value: searchPat },
       { name: "salesmanId", value: salesmanId },
       { name: "customerTypeId", value: customerTypeId },

@@ -17,6 +17,8 @@ export default async function CustomersPage({ searchParams }: PageProps) {
   const statusId = params.statusId ?? "";
   const city = params.city ?? "";
   const state = params.state ?? "";
+  const sortKey = params.sortKey ?? "";
+  const sortDirection = params.sortDirection === "desc" ? "desc" : "asc";
   const requestedPage = Number(params.page ?? "1");
   const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
 
@@ -43,6 +45,8 @@ export default async function CustomersPage({ searchParams }: PageProps) {
         state: state || undefined,
         page,
         pageSize: 300,
+        sortKey: sortKey || undefined,
+        sortDirection,
       }),
       getCustomerFilterOptions().catch(() => ({
         salesmen: [],
@@ -85,6 +89,8 @@ export default async function CustomersPage({ searchParams }: PageProps) {
         currentStatusId={statusId}
         currentCity={city}
         currentState={state}
+        currentSortKey={sortKey}
+        currentSortDirection={sortDirection}
         page={currentPage}
         pageSize={pageSize}
         total={total}
