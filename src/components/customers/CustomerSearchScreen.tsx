@@ -8,6 +8,7 @@ import { AccessButton } from "@/components/access/AccessButton";
 import { CustomerSearchViewsPanel } from "@/components/customers/CustomerSearchViewsPanel";
 import { CustomerSearchPagination } from "@/components/customers/CustomerSearchPagination";
 import { CustomerSearchLoadingOverlay } from "@/components/customers/CustomerSearchLoadingOverlay";
+import { CustomerPlaceholderControls } from "@/components/customers/CustomerPlaceholderControls";
 import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { Icon } from "@/components/ui/Icon";
 import { Spinner } from "@/components/ui/Spinner";
@@ -401,6 +402,7 @@ export function CustomerSearchScreen({
   );
   return (
     <div className="ac-customer-search-page flex min-h-0 flex-1 flex-col">
+      <CustomerPlaceholderControls />
       <div className="ac-customer-search ac-tracking--modern flex min-h-0 flex-1 flex-col">
         <div className="ac-customer-search-titlebar shrink-0">
           <span className="ac-customer-search-title">Customer Search</span>
