@@ -3474,16 +3474,16 @@ body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 0;
+  flex: 0 0 auto;
+  min-height: auto;
 }
 
 .ac-customer-search-shell-inner {
   display: flex;
   align-items: stretch;
   min-width: 0;
-  flex: 1;
-  min-height: 0;
+  flex: 0 0 auto;
+  min-height: auto;
 }
 
 .ac-customer-search-sidebar {
@@ -3709,8 +3709,8 @@ body {
   flex-direction: column;
   min-width: 0;
   background: #fff;
-  flex: 1;
-  min-height: 0;
+  flex: 1 1 auto;
+  min-height: auto;
 }
 
 .ac-customer-search-view-tabs {
@@ -3727,8 +3727,8 @@ body {
   padding: 0.35rem 0.45rem 0.45rem;
   background: #fff;
   min-width: 0;
-  flex: 1;
-  min-height: 0;
+  flex: 0 0 auto;
+  min-height: auto;
 }
 
 .ac-customer-search-views-tab {
@@ -3742,8 +3742,8 @@ body {
   border-radius: 4px;
   background: #fff;
   padding: 0.35rem;
-  flex: 1;
-  min-height: 10rem;
+  flex: 0 0 auto;
+  min-height: 0;
 }
 
 .ac-customer-search-views-tab .ac-customer-search-filter-row {
@@ -3759,13 +3759,13 @@ body {
   display: flex;
   align-items: stretch;
   gap: 0.35rem;
-  flex: 1;
+  flex: 0 0 auto;
   min-width: 0;
   min-height: 0;
 }
 
 .ac-customer-search-views-left {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
   min-height: 0;
   display: flex;
@@ -3776,7 +3776,7 @@ body {
 
 /* Tab panes fill the views content area */
 .ac-search-views-tab-pane {
-  flex: 1;
+  flex: 0 0 auto;
   min-height: 0;
   width: 100%;
   display: flex;
@@ -3909,7 +3909,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
-  margin-top: auto;
+  margin-top: 0;
   padding-top: 0.15rem;
 }
 
