@@ -35,6 +35,22 @@ function cellValue(row: CustomerSearchRow, key: CustomerSearchColumnKey): string
   return value === null || value === undefined ? "" : String(value);
 }
 
+function customerSearchCellClass(key: CustomerSearchColumnKey): string | undefined {
+  if (key === "noCommunication") return "ac-customer-search-cell--alert";
+  if (key === "act") return "ac-customer-search-cell--activity";
+  if (["internetSalesReadyUser", "internetSalesReadyDate", "internetSalesReady"].includes(key)) {
+    return "ac-customer-search-cell--internet";
+  }
+  if (["lastActionUser", "lastActionDate", "lastAction"].includes(key)) {
+    return "ac-customer-search-cell--last-action";
+  }
+  if (["futureCallUser", "futureCallUserDate", "futureCallUserTime", "futureCall", "futureCallHistory", "salesHStatus"].includes(key)) {
+    return "ac-customer-search-cell--future";
+  }
+  if (key === "contacts") return "ac-customer-search-cell--contacts";
+  return undefined;
+}
+
 function CustomerSearchTable({ customers }: { customers: CustomerSearchRow[] }) {
   return (
     <div className="ac-customer-search-grid-wrap">
@@ -43,7 +59,13 @@ function CustomerSearchTable({ customers }: { customers: CustomerSearchRow[] }) 
           <thead>
             <tr>
               {CUSTOMER_SEARCH_COLUMNS.map((col) => (
-                <th key={col.key} className={col.key === "select" ? "ac-customer-search-col-select" : undefined}>
+                <th
+                  key={col.key}
+                  className={[
+                    col.key === "select" ? "ac-customer-search-col-select" : "",
+                    customerSearchCellClass(col.key) ?? "",
+                  ].filter(Boolean).join(" ") || undefined}
+                >
                   {col.label}
                 </th>
               ))}
@@ -79,8 +101,21 @@ function CustomerSearchTable({ customers }: { customers: CustomerSearchRow[] }) 
                         </td>
                       );
                     }
+                    if (col.key === "contacts") {
+                      return (
+                        <td key={col.key} className={customerSearchCellClass(col.key)}>
+                          <Link href={`/customers/${row.customerId}`} className="ac-customer-search-contacts-link">
+                            {cellValue(row, col.key) || "Contacts"}
+                          </Link>
+                        </td>
+                      );
+                    }
                     const value = cellValue(row, col.key);
-                    return <td key={col.key}>{value || "—"}</td>;
+                    return (
+                      <td key={col.key} className={customerSearchCellClass(col.key)}>
+                        {value || (col.key === "noCommunication" ? "" : "—")}
+                      </td>
+                    );
                   })}
                 </tr>
               ))

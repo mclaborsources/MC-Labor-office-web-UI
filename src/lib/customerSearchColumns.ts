@@ -1,6 +1,6 @@
 /** Customer Search grid columns — Access frmCustomerSearch parity (Phase A). */
 export const CUSTOMER_SEARCH_COLUMNS = [
-  { key: "select", label: "Select" },
+  { key: "select", label: "" },
   { key: "name", label: "Name" },
   { key: "noCommunication", label: "No Communication" },
   { key: "street", label: "Street" },

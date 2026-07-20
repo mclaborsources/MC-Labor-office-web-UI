@@ -4876,6 +4876,54 @@ body {
   text-overflow: ellipsis;
 }
 
+/* Palette exported from Access frmCustomerSearchHolding. */
+.ac-customer-search-grid th.ac-customer-search-cell--internet,
+.ac-customer-search-grid td.ac-customer-search-cell--internet {
+  background: #c2d69a !important;
+}
+
+.ac-customer-search-grid th.ac-customer-search-cell--last-action,
+.ac-customer-search-grid td.ac-customer-search-cell--last-action {
+  background: #fcd5b4 !important;
+}
+
+.ac-customer-search-grid th.ac-customer-search-cell--future,
+.ac-customer-search-grid td.ac-customer-search-cell--future {
+  background: #c5d9f1 !important;
+}
+
+.ac-customer-search-grid th.ac-customer-search-cell--contacts,
+.ac-customer-search-grid td.ac-customer-search-cell--contacts {
+  background: #ffff99 !important;
+}
+
+.ac-customer-search-contacts-link {
+  display: block;
+  color: #6b9f25;
+  text-decoration: underline;
+}
+
+.ac-customer-search-grid th.ac-customer-search-cell--alert,
+.ac-customer-search-grid td.ac-customer-search-cell--alert {
+  width: 0.875rem;
+  min-width: 0.875rem;
+  max-width: 0.875rem;
+  padding-inline: 0 !important;
+  background: #ff2d2d !important;
+  color: #111;
+  text-align: center;
+}
+
+.ac-customer-search-grid td.ac-customer-search-cell--activity {
+  color: #f20d0d;
+  font-weight: 700;
+  text-align: right;
+}
+
+.ac-customer-search-grid td:has(> a[href^="/customers/"]:focus-visible) {
+  background: #9fd3f2 !important;
+}
+
 .ac-customer-search-col-select {
   width: 2.5rem;
   min-width: 2.5rem;
