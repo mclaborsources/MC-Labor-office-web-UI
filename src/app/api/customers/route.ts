@@ -12,8 +12,19 @@ export async function GET(request: Request): Promise<NextResponse<ApiListRespons
     const statusId = searchParams.get("statusId") ?? undefined;
     const city = searchParams.get("city") ?? undefined;
     const state = searchParams.get("state") ?? undefined;
+    const requestedPage = Number(searchParams.get("page") ?? "1");
+    const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
 
-    const result = await getCustomers({ search, salesmanId, customerTypeId, statusId, city, state });
+    const result = await getCustomers({
+      search,
+      salesmanId,
+      customerTypeId,
+      statusId,
+      city,
+      state,
+      page,
+      pageSize: 300,
+    });
 
     return NextResponse.json({
       ok: true,

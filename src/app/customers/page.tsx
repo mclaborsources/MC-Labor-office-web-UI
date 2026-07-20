@@ -17,6 +17,8 @@ export default async function CustomersPage({ searchParams }: PageProps) {
   const statusId = params.statusId ?? "";
   const city = params.city ?? "";
   const state = params.state ?? "";
+  const requestedPage = Number(params.page ?? "1");
+  const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
 
   let customers: Awaited<ReturnType<typeof getCustomerSearchRows>>["data"] = [];
   let loadError: string | undefined;
@@ -25,6 +27,10 @@ export default async function CustomersPage({ searchParams }: PageProps) {
   let statuses: Awaited<ReturnType<typeof getCustomerFilterOptions>>["statuses"] = [];
   let cities: Awaited<ReturnType<typeof getCustomerFilterOptions>>["cities"] = [];
   let states: Awaited<ReturnType<typeof getCustomerFilterOptions>>["states"] = [];
+  let total = 0;
+  let currentPage = page;
+  let pageSize = 300;
+  let hasMore = false;
 
   try {
     const [result, filterOpts] = await Promise.all([
@@ -35,6 +41,8 @@ export default async function CustomersPage({ searchParams }: PageProps) {
         statusId: statusId || undefined,
         city: city || undefined,
         state: state || undefined,
+        page,
+        pageSize: 300,
       }),
       getCustomerFilterOptions().catch(() => ({
         salesmen: [],
@@ -45,6 +53,10 @@ export default async function CustomersPage({ searchParams }: PageProps) {
       })),
     ]);
     customers = result.data;
+    total = result.total;
+    currentPage = result.page;
+    pageSize = result.pageSize;
+    hasMore = result.hasMore;
     salesmen = filterOpts.salesmen;
     customerTypes = filterOpts.customerTypes;
     statuses = filterOpts.statuses;
@@ -73,6 +85,10 @@ export default async function CustomersPage({ searchParams }: PageProps) {
         currentStatusId={statusId}
         currentCity={city}
         currentState={state}
+        page={currentPage}
+        pageSize={pageSize}
+        total={total}
+        hasMore={hasMore}
       />
     </AppShell>
   );

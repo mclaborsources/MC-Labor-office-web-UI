@@ -27,6 +27,10 @@ interface CustomerSearchScreenProps {
   currentStatusId: string;
   currentCity: string;
   currentState: string;
+  page: number;
+  pageSize: number;
+  total: number;
+  hasMore: boolean;
 }
 
 function cellValue(row: CustomerSearchRow, key: CustomerSearchColumnKey): string {
@@ -51,7 +55,39 @@ function customerSearchCellClass(key: CustomerSearchColumnKey): string | undefin
   return undefined;
 }
 
-function CustomerSearchTable({ customers }: { customers: CustomerSearchRow[] }) {
+function CustomerSearchTable({
+  customers,
+  page,
+  pageSize,
+  total,
+  hasMore,
+  query,
+}: {
+  customers: CustomerSearchRow[];
+  page: number;
+  pageSize: number;
+  total: number;
+  hasMore: boolean;
+  query: Record<string, string>;
+}) {
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const firstRecord = total === 0 ? 0 : (page - 1) * pageSize + 1;
+  const lastRecord = Math.min((page - 1) * pageSize + customers.length, total);
+  const hrefForPage = (targetPage: number) => {
+    const params = new URLSearchParams(query);
+    if (targetPage <= 1) params.delete("page");
+    else params.set("page", String(targetPage));
+    const search = params.toString();
+    return search ? `/customers?${search}` : "/customers";
+  };
+
+  const nav = (label: string, targetPage: number, disabled: boolean, title: string) =>
+    disabled ? (
+      <span className="ac-customer-search-page-nav is-disabled" aria-disabled="true" title={title}>{label}</span>
+    ) : (
+      <Link className="ac-customer-search-page-nav" href={hrefForPage(targetPage)} title={title}>{label}</Link>
+    );
+
   return (
     <div className="ac-customer-search-grid-wrap">
       <div className="ac-grid ac-grid-tracking ac-customer-search-grid mc-scroll-smooth">
@@ -124,11 +160,16 @@ function CustomerSearchTable({ customers }: { customers: CustomerSearchRow[] }) 
         </table>
       </div>
       <div className="ac-recordbar ac-customer-search-recordbar">
-        <span className="font-mono">
-          Record: |◄ ◄ {customers.length === 0 ? 0 : 1} of {customers.length} ► ►|
+        <span>Record:</span>
+        <span className="ac-customer-search-page-navs">
+          {nav("|◀", 1, page <= 1, "First page")}
+          {nav("◀", page - 1, page <= 1, "Previous page")}
+          <span className="font-mono">{firstRecord}-{lastRecord} of {total}</span>
+          {nav("▶", page + 1, !hasMore, "Next page")}
+          {nav("▶|", totalPages, page >= totalPages || total === 0, "Last page")}
         </span>
-        <span className="text-[#7a7a7a]">Unfiltered</span>
-        <span className="ml-auto text-[#7a7a7a]">Max 300 per page</span>
+        <span className="text-[#7a7a7a]">Page {page} of {totalPages}</span>
+        <span className="ml-auto text-[#7a7a7a]">{pageSize} per page</span>
       </div>
     </div>
   );
@@ -302,7 +343,21 @@ export function CustomerSearchScreen({
   currentStatusId,
   currentCity,
   currentState,
+  page,
+  pageSize,
+  total,
+  hasMore,
 }: CustomerSearchScreenProps) {
+  const paginationQuery = Object.fromEntries(
+    Object.entries({
+      search: currentSearch,
+      salesmanId: currentSalesmanId,
+      customerTypeId: currentCustomerTypeId,
+      statusId: currentStatusId,
+      city: currentCity,
+      state: currentState,
+    }).filter(([, value]) => Boolean(value)),
+  );
   return (
     <div className="ac-customer-search-page flex min-h-0 flex-1 flex-col">
       <div className="ac-customer-search ac-tracking--modern flex min-h-0 flex-1 flex-col">
@@ -349,7 +404,14 @@ export function CustomerSearchScreen({
                   </div>
                 }
               >
-                <CustomerSearchTable customers={customers} />
+                <CustomerSearchTable
+                  customers={customers}
+                  page={page}
+                  pageSize={pageSize}
+                  total={total}
+                  hasMore={hasMore}
+                  query={paginationQuery}
+                />
               </Suspense>
             )}
             </div>

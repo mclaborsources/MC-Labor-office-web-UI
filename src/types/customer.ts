@@ -142,6 +142,7 @@ export interface CustomerRow {
 }
 
 export interface CustomerSearchListRow extends CustomerRow {
+  TotalCount?: number | string | null;
   CustomerLicenseNumber?: string | null;
   CustomerLicenseIssueDate?: string | null;
   CustomerLicenseExpDate?: string | null;

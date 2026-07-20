@@ -52,6 +52,7 @@ export function CustomerFilters({
   const updateParam = useCallback(
     (key: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
+      params.delete("page");
       if (value) params.set(key, value);
       else params.delete(key);
       startTransition(() => {
@@ -85,6 +86,7 @@ export function CustomerFilters({
         const params = compact
           ? new URLSearchParams(searchParams.toString())
           : new URLSearchParams();
+        params.delete("page");
         for (const f of ["search", "salesmanId", "customerTypeId", "statusId", "city", "state"] as const) {
           const v = fd.get(f) as string;
           if (v) params.set(f, v);

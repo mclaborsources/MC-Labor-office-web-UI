@@ -28,46 +28,54 @@ function safeStr(v: unknown): string {
   return String(v).trim();
 }
 
+function numericId(value: string | undefined): number | null {
+  if (!value) return null;
+  const parsed = Number(value);
+  return Number.isSafeInteger(parsed) ? parsed : null;
+}
+
 // ---------------------------------------------------------------------------
 // Customer base/list query — Street/City/State/Zip are all confirmed columns.
 // Lookup names (type, salesman) merged in app code so a wrong lookup column
 // can never crash the list.
 // ---------------------------------------------------------------------------
 
-const CUSTOMER_LIST_SQL = `
-SELECT TOP (300)
-  c.CustomerID,
-  ISNULL(c.CustBusName,    '')  AS CustBusName,
-  ISNULL(c.CustomerTypeID, 0)   AS CustomerTypeID,
-  ISNULL(c.SalesmanID,     0)   AS SalesmanID,
-  ISNULL(c.CustStatusID,   0)   AS CustStatusID,
-  ISNULL(c.Phone,          '')  AS Phone,
-  ISNULL(c.CustEmail,      '')  AS CustEmail,
-  ISNULL(c.Street,         '')  AS Street,
-  ISNULL(c.City,           '')  AS City,
-  ISNULL(c.State,          '')  AS State,
-  ISNULL(c.Zip,            '')  AS Zip
-FROM  tblCustomer c WITH (NOLOCK)
-WHERE
-  (@searchPat IS NULL
-    OR c.CustBusName LIKE @searchPat
-    OR CAST(c.CustomerID AS NVARCHAR(20)) LIKE @searchPat
-    OR c.Phone       LIKE @searchPat
-    OR c.CustEmail   LIKE @searchPat
-    OR c.Street      LIKE @searchPat
-    OR c.City        LIKE @searchPat)
-  AND (@salesmanId     IS NULL OR CAST(c.SalesmanID     AS NVARCHAR(20)) = @salesmanId)
-  AND (@customerTypeId IS NULL OR CAST(c.CustomerTypeID AS NVARCHAR(20)) = @customerTypeId)
-  AND (@statusId       IS NULL OR CAST(c.CustStatusID   AS NVARCHAR(20)) = @statusId)
-  AND (@city  IS NULL OR c.City  = @city)
-  AND (@state IS NULL OR c.State = @state)
-  AND LEN(LTRIM(RTRIM(ISNULL(c.CustBusName, '')))) > 1
-  AND c.CustBusName NOT IN ('-', '--', '---')
-ORDER BY c.CustBusName
-`;
-
 const CUSTOMER_SEARCH_LIST_SQL = `
-SELECT TOP (300)
+WITH FilteredCustomers AS (
+  SELECT
+    c.CustomerID, c.CustBusName, c.CustomerTypeID, c.SalesmanID, c.CustStatusID,
+    c.Phone, c.CustEmail, c.Street, c.City, c.State, c.Zip,
+    c.CustomerLicenseNumber, c.CustomerLicenseIssueDate, c.CustomerLicenseExpDate,
+    c.CustomerNoCommunication,
+    c.InternetSalesReadyID, c.InternetSalesReadyUserName, c.InternetSalesReadyTimestamp,
+    c.SalesHistoryStatusID,
+    c.FutureCall, c.FutureCallUserName, c.FutureCallTimestamp,
+    COUNT_BIG(*) OVER () AS TotalCount
+  FROM tblCustomer c WITH (NOLOCK)
+  WHERE
+    (@searchPat IS NULL
+      OR c.CustBusName LIKE @searchPat
+      OR CAST(c.CustomerID AS NVARCHAR(20)) LIKE @searchPat
+      OR c.Phone       LIKE @searchPat
+      OR c.CustEmail   LIKE @searchPat
+      OR c.Street      LIKE @searchPat
+      OR c.City        LIKE @searchPat)
+    AND (@salesmanId     IS NULL OR c.SalesmanID     = @salesmanId)
+    AND (@customerTypeId IS NULL OR c.CustomerTypeID = @customerTypeId)
+    AND (@statusId       IS NULL OR c.CustStatusID   = @statusId)
+    AND (@city  IS NULL OR c.City  = @city)
+    AND (@state IS NULL OR c.State = @state)
+    AND LEN(LTRIM(RTRIM(ISNULL(c.CustBusName, '')))) > 1
+    AND c.CustBusName NOT IN ('-', '--', '---')
+),
+CandidateCustomers AS (
+  SELECT *
+  FROM FilteredCustomers
+  ORDER BY CustBusName, CustomerID
+  OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY
+)
+SELECT
+  c.TotalCount,
   c.CustomerID,
   ISNULL(c.CustBusName,    '')  AS CustBusName,
   ISNULL(c.CustomerTypeID, 0)   AS CustomerTypeID,
@@ -83,9 +91,9 @@ SELECT TOP (300)
   CONVERT(VARCHAR(10), c.CustomerLicenseIssueDate, 101) AS CustomerLicenseIssueDate,
   CONVERT(VARCHAR(10), c.CustomerLicenseExpDate, 101) AS CustomerLicenseExpDate,
   CASE WHEN ISNULL(c.CustomerNoCommunication, 0) = 1 THEN 'X' ELSE '' END AS NoCommunication,
-  ISNULL(actionStats.ActionCount, 0) AS ActionCount,
-  CONVERT(VARCHAR(10), firstWeek.FirstWeekEnding, 101) AS FirstWeekEnding,
-  CONVERT(VARCHAR(10), lastWeek.LastWeekEnding, 101) AS LastWeekEnding,
+  ISNULL(lastAction.ActionCount, 0) AS ActionCount,
+  CONVERT(VARCHAR(10), customerWeeks.FirstWeekEnding, 101) AS FirstWeekEnding,
+  CONVERT(VARCHAR(10), customerWeeks.LastWeekEnding, 101) AS LastWeekEnding,
   ISNULL(c.InternetSalesReadyUserName, '') AS InternetSalesReadyUser,
   CONVERT(VARCHAR(10), c.InternetSalesReadyTimestamp, 101) AS InternetSalesReadyDate,
   ISNULL(internetReady.PullDownInternetSalesReadyDesc, '') AS InternetSalesReady,
@@ -101,36 +109,29 @@ SELECT TOP (300)
   CONVERT(VARCHAR(10), salesPackage.CustomerSalesHistoryTimestamp, 101) AS SalesPackageSentDate,
   ISNULL(salesPackage.CustomerSalesHistoryUserName, '') AS SalesPackageSentUser,
   ISNULL(cc.ContactCount, 0) AS ContactCount
-FROM  tblCustomer c WITH (NOLOCK)
+FROM CandidateCustomers c
 LEFT JOIN tblPullDownInternetSalesReady internetReady WITH (NOLOCK)
   ON c.InternetSalesReadyID = internetReady.PullDownInternetSalesReadyID
 LEFT JOIN tblPullDownSalesHistoryStatus salesStatus WITH (NOLOCK)
   ON c.SalesHistoryStatusID = salesStatus.PullDownSalesHistoryStatusID
 OUTER APPLY (
-  SELECT MIN(cw.WeekEndingDate) AS FirstWeekEnding
+  SELECT
+    MIN(cw.WeekEndingDate) AS FirstWeekEnding,
+    MAX(cw.WeekEndingDate) AS LastWeekEnding
   FROM tblCustomerWeeks cw WITH (NOLOCK)
   WHERE cw.CustomerID = c.CustomerID
-) firstWeek
-OUTER APPLY (
-  SELECT MAX(cw.WeekEndingDate) AS LastWeekEnding
-  FROM tblCustomerWeeks cw WITH (NOLOCK)
-  WHERE cw.CustomerID = c.CustomerID
-) lastWeek
+) customerWeeks
 OUTER APPLY (
   SELECT COUNT(*) AS ContactCount
   FROM tblCustomerContacts cc WITH (NOLOCK)
   WHERE cc.CustomerID = c.CustomerID
 ) cc
 OUTER APPLY (
-  SELECT COUNT(*) AS ActionCount
-  FROM tblCustomerSalesHistory shCount WITH (NOLOCK)
-  WHERE shCount.CustomerID = c.CustomerID
-    AND shCount.CustomerSalesHistoryActionTypeID NOT IN (-60, -70)
-) actionStats
-OUTER APPLY (
   SELECT TOP (1)
     sh.CustomerSalesHistoryUserName,
     sh.CustomerSalesHistoryTimestamp,
+    SUM(CASE WHEN sh.CustomerSalesHistoryActionTypeID NOT IN (-60, -70) THEN 1 ELSE 0 END)
+      OVER () AS ActionCount,
     COALESCE(
       CASE WHEN sh.CustomerSalesHistoryActionTypeID > 0 THEN et.EmailTemplate END,
       actionType.PullDownActionTypeDesc,
@@ -155,22 +156,8 @@ OUTER APPLY (
     AND shPackage.CustomerSalesHistoryActionTypeID = -3
   ORDER BY shPackage.CustomerSalesHistoryTimestamp DESC, shPackage.CustomerSalesHistoryID DESC
 ) salesPackage
-WHERE
-  (@searchPat IS NULL
-    OR c.CustBusName LIKE @searchPat
-    OR CAST(c.CustomerID AS NVARCHAR(20)) LIKE @searchPat
-    OR c.Phone       LIKE @searchPat
-    OR c.CustEmail   LIKE @searchPat
-    OR c.Street      LIKE @searchPat
-    OR c.City        LIKE @searchPat)
-  AND (@salesmanId     IS NULL OR CAST(c.SalesmanID     AS NVARCHAR(20)) = @salesmanId)
-  AND (@customerTypeId IS NULL OR CAST(c.CustomerTypeID AS NVARCHAR(20)) = @customerTypeId)
-  AND (@statusId       IS NULL OR CAST(c.CustStatusID   AS NVARCHAR(20)) = @statusId)
-  AND (@city  IS NULL OR c.City  = @city)
-  AND (@state IS NULL OR c.State = @state)
-  AND LEN(LTRIM(RTRIM(ISNULL(c.CustBusName, '')))) > 1
-  AND c.CustBusName NOT IN ('-', '--', '---')
 ORDER BY c.CustBusName
+OPTION (RECOMPILE)
 `;
 
 const CUSTOMER_DETAIL_SQL = `
@@ -514,6 +501,8 @@ export interface GetCustomersParams {
   statusId?: string;
   city?: string;
   state?: string;
+  page?: number;
+  pageSize?: number;
 }
 
 export async function getCustomers(
@@ -533,11 +522,16 @@ export async function getCustomerSearchRows(
   params: GetCustomersParams = {},
 ): Promise<PaginatedResult<CustomerSearchRow>> {
   const searchPat = params.search ? `%${params.search}%` : null;
-  const salesmanId = params.salesmanId || null;
-  const customerTypeId = params.customerTypeId || null;
-  const statusId = params.statusId || null;
+  // Bind numeric IDs as numbers so SQL Server can seek indexed integer columns
+  // without converting every row to NVARCHAR first.
+  const salesmanId = numericId(params.salesmanId);
+  const customerTypeId = numericId(params.customerTypeId);
+  const statusId = numericId(params.statusId);
   const city = params.city || null;
   const state = params.state || null;
+  const pageSize = Math.max(1, Math.min(300, Math.floor(params.pageSize ?? 300)));
+  const page = Math.max(1, Math.floor(params.page ?? 1));
+  const offset = (page - 1) * pageSize;
 
   const [rows, typeMap, salesmanMap, statusMap] = await Promise.all([
     queryReadOnly<CustomerSearchListRow>(CUSTOMER_SEARCH_LIST_SQL, [
@@ -547,16 +541,9 @@ export async function getCustomerSearchRows(
       { name: "statusId", value: statusId },
       { name: "city", value: city },
       { name: "state", value: state },
-    ]).catch(() =>
-      queryReadOnly<CustomerRow>(CUSTOMER_LIST_SQL, [
-        { name: "searchPat", value: searchPat },
-        { name: "salesmanId", value: salesmanId },
-        { name: "customerTypeId", value: customerTypeId },
-        { name: "statusId", value: statusId },
-        { name: "city", value: city },
-        { name: "state", value: state },
-      ]),
-    ),
+      { name: "offset", value: offset },
+      { name: "pageSize", value: pageSize },
+    ]),
     loadCustomerTypeMap(),
     loadSalesmanMap(),
     loadCustStatusMap(),
@@ -579,7 +566,14 @@ export async function getCustomerSearchRows(
     };
   });
 
-  return { data, total: data.length, page: 1, pageSize: 300, hasMore: false };
+  const total = Number(rows[0]?.TotalCount ?? 0);
+  return {
+    data,
+    total,
+    page,
+    pageSize,
+    hasMore: offset + data.length < total,
+  };
 }
 
 export async function getCustomerById(
