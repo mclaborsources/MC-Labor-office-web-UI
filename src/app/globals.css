@@ -4961,7 +4961,7 @@ body {
   background: #e2edf8;
 }
 
-.ac-customer-search-page-nav.is-disabled {
+.ac-customer-search-page-nav:disabled {
   color: #a8adb4;
   background: #f1f1f1;
   cursor: default;
