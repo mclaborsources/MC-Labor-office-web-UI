@@ -143,8 +143,26 @@ export interface CustomerRow {
 
 export interface CustomerSearchListRow extends CustomerRow {
   CustomerLicenseNumber?: string | null;
+  CustomerLicenseIssueDate?: string | null;
+  CustomerLicenseExpDate?: string | null;
+  NoCommunication?: string | null;
+  ActionCount?: number | string | null;
   FirstWeekEnding?: string | null;
   LastWeekEnding?: string | null;
+  InternetSalesReadyUser?: string | null;
+  InternetSalesReadyDate?: string | null;
+  InternetSalesReady?: string | null;
+  LastActionUser?: string | null;
+  LastActionDate?: string | null;
+  LastAction?: string | null;
+  FutureCallUser?: string | null;
+  FutureCallUserDate?: string | null;
+  FutureCallUserTime?: string | null;
+  FutureCall?: string | null;
+  SalesHistoryStatus?: string | null;
+  SalesPackageSentFilter?: string | null;
+  SalesPackageSentDate?: string | null;
+  SalesPackageSentUser?: string | null;
   ContactCount?: number | string | null;
 }
 

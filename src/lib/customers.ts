@@ -80,10 +80,32 @@ SELECT TOP (300)
   ISNULL(c.State,          '')  AS State,
   ISNULL(c.Zip,            '')  AS Zip,
   ISNULL(c.CustomerLicenseNumber, '') AS CustomerLicenseNumber,
+  CONVERT(VARCHAR(10), c.CustomerLicenseIssueDate, 101) AS CustomerLicenseIssueDate,
+  CONVERT(VARCHAR(10), c.CustomerLicenseExpDate, 101) AS CustomerLicenseExpDate,
+  CASE WHEN ISNULL(c.CustomerNoCommunication, 0) = 1 THEN 'X' ELSE '' END AS NoCommunication,
+  ISNULL(actionStats.ActionCount, 0) AS ActionCount,
   CONVERT(VARCHAR(10), firstWeek.FirstWeekEnding, 101) AS FirstWeekEnding,
   CONVERT(VARCHAR(10), lastWeek.LastWeekEnding, 101) AS LastWeekEnding,
+  ISNULL(c.InternetSalesReadyUserName, '') AS InternetSalesReadyUser,
+  CONVERT(VARCHAR(10), c.InternetSalesReadyTimestamp, 101) AS InternetSalesReadyDate,
+  ISNULL(internetReady.PullDownInternetSalesReadyDesc, '') AS InternetSalesReady,
+  ISNULL(lastAction.CustomerSalesHistoryUserName, '') AS LastActionUser,
+  CONVERT(VARCHAR(10), lastAction.CustomerSalesHistoryTimestamp, 101) AS LastActionDate,
+  ISNULL(lastAction.ActionLabel, '') AS LastAction,
+  ISNULL(c.FutureCallUserName, '') AS FutureCallUser,
+  CONVERT(VARCHAR(10), c.FutureCallTimestamp, 101) AS FutureCallUserDate,
+  CONVERT(VARCHAR(5), c.FutureCallTimestamp, 108) AS FutureCallUserTime,
+  CONVERT(VARCHAR(10), c.FutureCall, 101) AS FutureCall,
+  ISNULL(salesStatus.PullDownSalesHistoryStatusDesc, '') AS SalesHistoryStatus,
+  CASE WHEN salesPackage.CustomerSalesHistoryID IS NULL THEN '' ELSE 'X' END AS SalesPackageSentFilter,
+  CONVERT(VARCHAR(10), salesPackage.CustomerSalesHistoryTimestamp, 101) AS SalesPackageSentDate,
+  ISNULL(salesPackage.CustomerSalesHistoryUserName, '') AS SalesPackageSentUser,
   ISNULL(cc.ContactCount, 0) AS ContactCount
 FROM  tblCustomer c WITH (NOLOCK)
+LEFT JOIN tblPullDownInternetSalesReady internetReady WITH (NOLOCK)
+  ON c.InternetSalesReadyID = internetReady.PullDownInternetSalesReadyID
+LEFT JOIN tblPullDownSalesHistoryStatus salesStatus WITH (NOLOCK)
+  ON c.SalesHistoryStatusID = salesStatus.PullDownSalesHistoryStatusID
 OUTER APPLY (
   SELECT MIN(cw.WeekEndingDate) AS FirstWeekEnding
   FROM tblCustomerWeeks cw WITH (NOLOCK)
@@ -99,6 +121,40 @@ OUTER APPLY (
   FROM tblCustomerContacts cc WITH (NOLOCK)
   WHERE cc.CustomerID = c.CustomerID
 ) cc
+OUTER APPLY (
+  SELECT COUNT(*) AS ActionCount
+  FROM tblCustomerSalesHistory shCount WITH (NOLOCK)
+  WHERE shCount.CustomerID = c.CustomerID
+    AND shCount.CustomerSalesHistoryActionTypeID NOT IN (-60, -70)
+) actionStats
+OUTER APPLY (
+  SELECT TOP (1)
+    sh.CustomerSalesHistoryUserName,
+    sh.CustomerSalesHistoryTimestamp,
+    COALESCE(
+      CASE WHEN sh.CustomerSalesHistoryActionTypeID > 0 THEN et.EmailTemplate END,
+      actionType.PullDownActionTypeDesc,
+      actionType.PullDownActionType,
+      ''
+    ) AS ActionLabel
+  FROM tblCustomerSalesHistory sh WITH (NOLOCK)
+  LEFT JOIN tblEmailTemplates et WITH (NOLOCK)
+    ON sh.CustomerSalesHistoryActionTypeID = et.EmailTemplateID
+  LEFT JOIN tblPullDownActionTypes actionType WITH (NOLOCK)
+    ON sh.CustomerSalesHistoryActionTypeID = actionType.PullDownActionTypeID
+  WHERE sh.CustomerID = c.CustomerID
+  ORDER BY sh.CustomerSalesHistoryTimestamp DESC, sh.CustomerSalesHistoryID DESC
+) lastAction
+OUTER APPLY (
+  SELECT TOP (1)
+    shPackage.CustomerSalesHistoryID,
+    shPackage.CustomerSalesHistoryTimestamp,
+    shPackage.CustomerSalesHistoryUserName
+  FROM tblCustomerSalesHistory shPackage WITH (NOLOCK)
+  WHERE shPackage.CustomerID = c.CustomerID
+    AND shPackage.CustomerSalesHistoryActionTypeID = -3
+  ORDER BY shPackage.CustomerSalesHistoryTimestamp DESC, shPackage.CustomerSalesHistoryID DESC
+) salesPackage
 WHERE
   (@searchPat IS NULL
     OR c.CustBusName LIKE @searchPat
@@ -388,29 +444,29 @@ function toCustomerSearchRow(
     customerType: typeMap.get(String(row.CustomerTypeID ?? "")) ?? "",
     salesman: salesmanMap.get(String(row.SalesmanID ?? "")) ?? "",
     status,
-    noCommunication: "",
-    act: status,
+    noCommunication: safeStr(row.NoCommunication),
+    act: safeStr(row.ActionCount),
     lastWeekEnding: safeStr(row.LastWeekEnding),
     firstWeekEnding: safeStr(row.FirstWeekEnding),
-    internetSalesReadyUser: "",
-    internetSalesReadyDate: "",
-    internetSalesReady: "",
-    lastActionUser: "",
-    lastActionDate: "",
-    lastAction: "",
-    futureCallUser: "",
-    futureCallUserDate: "",
-    futureCallUserTime: "",
-    futureCall: "",
-    futureCallHistory: "",
-    salesHStatus: "",
-    contacts: "",
+    internetSalesReadyUser: safeStr(row.InternetSalesReadyUser),
+    internetSalesReadyDate: safeStr(row.InternetSalesReadyDate),
+    internetSalesReady: safeStr(row.InternetSalesReady),
+    lastActionUser: safeStr(row.LastActionUser),
+    lastActionDate: safeStr(row.LastActionDate),
+    lastAction: safeStr(row.LastAction),
+    futureCallUser: safeStr(row.FutureCallUser),
+    futureCallUserDate: safeStr(row.FutureCallUserDate),
+    futureCallUserTime: safeStr(row.FutureCallUserTime),
+    futureCall: safeStr(row.FutureCall),
+    futureCallHistory: row.FutureCall ? "Future Call History" : "",
+    salesHStatus: safeStr(row.SalesHistoryStatus),
+    contacts: "Contacts",
     licenseNumber: safeStr(row.CustomerLicenseNumber),
-    licenseIssueDate: "",
-    licenseExpireDate: "",
-    salesPackageSentFilter: "",
-    salesPackageSentDate: "",
-    salesPackageSentUser: "",
+    licenseIssueDate: safeStr(row.CustomerLicenseIssueDate),
+    licenseExpireDate: safeStr(row.CustomerLicenseExpDate),
+    salesPackageSentFilter: safeStr(row.SalesPackageSentFilter),
+    salesPackageSentDate: safeStr(row.SalesPackageSentDate),
+    salesPackageSentUser: safeStr(row.SalesPackageSentUser),
     contactCount: safeStr(row.ContactCount),
   };
 }
