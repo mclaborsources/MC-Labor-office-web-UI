@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { HelpCircle, Table2 } from "lucide-react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { CustomerSearchViewsPanel } from "@/components/customers/CustomerSearchViewsPanel";
@@ -71,6 +73,35 @@ function CustomerSearchTable({
   hasMore: boolean;
   query: Record<string, string>;
 }) {
+  const [sort, setSort] = useState<{
+    key: CustomerSearchColumnKey;
+    direction: "asc" | "desc";
+  } | null>(null);
+
+  const sortedCustomers = useMemo(() => {
+    if (!sort || sort.key === "select") return customers;
+
+    const datePattern = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+    return [...customers].sort((left, right) => {
+      const leftValue = cellValue(left, sort.key).trim();
+      const rightValue = cellValue(right, sort.key).trim();
+      let comparison: number;
+
+      if (datePattern.test(leftValue) && datePattern.test(rightValue)) {
+        comparison = new Date(leftValue).getTime() - new Date(rightValue).getTime();
+      } else if (leftValue !== "" && rightValue !== "" && !Number.isNaN(Number(leftValue)) && !Number.isNaN(Number(rightValue))) {
+        comparison = Number(leftValue) - Number(rightValue);
+      } else {
+        comparison = leftValue.localeCompare(rightValue, undefined, {
+          numeric: true,
+          sensitivity: "base",
+        });
+      }
+
+      return sort.direction === "asc" ? comparison : -comparison;
+    });
+  }, [customers, sort]);
+
   return (
     <div className="ac-customer-search-grid-wrap">
       <div className="ac-grid ac-grid-tracking ac-customer-search-grid mc-scroll-smooth">
@@ -85,13 +116,46 @@ function CustomerSearchTable({
                     customerSearchCellClass(col.key) ?? "",
                   ].filter(Boolean).join(" ") || undefined}
                 >
-                  {col.label}
+                  <details className="ac-customer-column-menu">
+                    <summary title={`Sort ${col.label || "this column"}`}>
+                      <span>{col.label}</span>
+                      <span className="ac-customer-column-menu-arrow" aria-hidden>▼</span>
+                    </summary>
+                    <div className="ac-customer-column-menu-popover">
+                      <label>
+                        <input
+                          type="radio"
+                          name={`sort-${col.key}`}
+                          checked={sort?.key === col.key && sort.direction === "asc"}
+                          onChange={(event) => {
+                            setSort({ key: col.key, direction: "asc" });
+                            const menu = event.currentTarget.closest("details");
+                            if (menu) menu.open = false;
+                          }}
+                        />
+                        Sort A - Z
+                      </label>
+                      <label>
+                        <input
+                          type="radio"
+                          name={`sort-${col.key}`}
+                          checked={sort?.key === col.key && sort.direction === "desc"}
+                          onChange={(event) => {
+                            setSort({ key: col.key, direction: "desc" });
+                            const menu = event.currentTarget.closest("details");
+                            if (menu) menu.open = false;
+                          }}
+                        />
+                        Sort Z - A
+                      </label>
+                    </div>
+                  </details>
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {customers.length === 0 ? (
+            {sortedCustomers.length === 0 ? (
               <tr>
                 <td
                   colSpan={CUSTOMER_SEARCH_COLUMNS.length}
@@ -101,7 +165,7 @@ function CustomerSearchTable({
                 </td>
               </tr>
             ) : (
-              customers.map((row) => (
+              sortedCustomers.map((row) => (
                 <tr key={row.customerId}>
                   {CUSTOMER_SEARCH_COLUMNS.map((col) => {
                     if (col.key === "select") {
