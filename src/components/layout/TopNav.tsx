@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { LogOut } from "lucide-react";
+import { CustomerSearchLoadingOverlay } from "@/components/customers/CustomerSearchLoadingOverlay";
 
 const NAV_ITEMS: { href: string; label: string; match: (p: string) => boolean }[] = [
   { href: "/dashboard", label: "Main Menu", match: (p) => p === "/dashboard" || p === "/" },
@@ -17,34 +19,47 @@ const NAV_ITEMS: { href: string; label: string; match: (p: string) => boolean }[
 
 export function TopNav() {
   const pathname = usePathname();
+  const [isOpeningCustomers, setIsOpeningCustomers] = useState(false);
+
+  useEffect(() => {
+    setIsOpeningCustomers(false);
+  }, [pathname]);
 
   return (
-    <nav className="ac-menubar sticky top-[42px] z-30" aria-label="Main navigation">
-      {NAV_ITEMS.map((item) => {
-        const active = item.match(pathname);
-        return (
-          <Link
-            key={item.label}
-            href={item.href}
-            className={`ac-menuitem ${active ? "ac-menuitem-active" : ""}`}
+    <>
+      <nav className="ac-menubar sticky top-[42px] z-30" aria-label="Main navigation">
+        {NAV_ITEMS.map((item) => {
+          const active = item.match(pathname);
+          return (
+            <Link
+              key={item.label}
+              href={item.href}
+              className={`ac-menuitem ${active ? "ac-menuitem-active" : ""}`}
+              onClick={() => {
+                if (item.href === "/customers" && !pathname.startsWith("/customers")) {
+                  setIsOpeningCustomers(true);
+                }
+              }}
+            >
+              {item.label}
+            </Link>
+          );
+        })}
+        <span className="ml-auto">
+          <button
+            type="button"
+            className="ac-menuitem flex items-center gap-1.5 text-[#b91c1c] hover:bg-red-50"
+            onClick={async () => {
+              await fetch("/api/auth/logout", { method: "POST" });
+              window.location.href = "/login";
+            }}
           >
-            {item.label}
-          </Link>
-        );
-      })}
-      <span className="ml-auto">
-        <button
-          type="button"
-          className="ac-menuitem flex items-center gap-1.5 text-[#b91c1c] hover:bg-red-50"
-          onClick={async () => {
-            await fetch("/api/auth/logout", { method: "POST" });
-            window.location.href = "/login";
-          }}
-        >
-          <LogOut className="h-3.5 w-3.5" />
-          Log out
-        </button>
-      </span>
-    </nav>
+            <LogOut className="h-3.5 w-3.5" />
+            Log out
+          </button>
+        </span>
+      </nav>
+      {isOpeningCustomers && <CustomerSearchLoadingOverlay />}
+    </>
   );
 }
