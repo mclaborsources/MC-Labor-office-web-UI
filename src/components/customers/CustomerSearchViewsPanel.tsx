@@ -63,6 +63,25 @@ const CUSTOMER_SAVED_FILTER_OPTIONS = Array.from({ length: 40 }, (_, index) => {
   return { value: `filter-${number}`, label: `Filter ${number}` };
 });
 
+const CUSTOMER_SAVED_VIEW_OPTIONS = [
+  "01 Default",
+  "01 Default Contract Report",
+  "02 Jake",
+  "03 Michelle",
+  "View 01",
+  "View 01 a",
+  "View 01 New Default",
+  "View 01 New Default Blast E M",
+  "View 01 New Default Blast Text",
+  "View 02",
+  "View 03",
+  "View 05",
+  "View 06",
+  "View 07",
+  "View 08",
+  "View 09",
+] as const;
+
 function ClusterMultiSelect() {
   const [selected, setSelected] = useState<string[]>([]);
   const [filter, setFilter] = useState("");
@@ -367,8 +386,10 @@ function ViewsTab() {
           </div>
           <div className="ac-customer-search-view-controls-group ac-customer-search-view-controls-group--end">
             <span className="ac-flabel">View:</span>
-            <select disabled className="ac-select ac-customer-search-view-select-wide" defaultValue="01" aria-label="View">
-              <option value="01">View 01</option>
+            <select className="ac-select ac-customer-search-view-select-wide" defaultValue="View 01" aria-label="View">
+              {CUSTOMER_SAVED_VIEW_OPTIONS.map((viewName) => (
+                <option key={viewName} value={viewName}>{viewName}</option>
+              ))}
             </select>
             <AccessButton xs disabled>
               Save View
