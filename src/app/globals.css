@@ -5010,12 +5010,67 @@ body {
 
 .ac-customer-search-page .ac-input,
 .ac-customer-search-page .ac-select {
-  min-height: 25px;
+  height: 28px;
+  min-height: 28px;
+  padding-inline: 7px;
 }
 
 .ac-customer-search-page .ac-btn-xs {
-  min-height: 23px;
-  padding-inline: 8px;
+  min-height: 26px;
+  padding-inline: 10px;
+}
+
+.ac-customer-search-page .ac-tab {
+  min-height: 30px;
+  padding: 5px 12px;
+  font-size: 12px;
+}
+
+.ac-customer-search-page input[type="checkbox"],
+.ac-customer-search-page input[type="radio"] {
+  width: 15px;
+  height: 15px;
+}
+
+.ac-customer-search-page .ac-customer-search-shell-inner,
+.ac-customer-search-page .ac-customer-search-action-bar {
+  padding-block: 6px;
+}
+
+.ac-customer-search-page .ac-customer-search-sidebar {
+  width: 23rem;
+  min-width: 23rem;
+  padding: 0.6rem;
+  gap: 0.5rem;
+}
+
+.ac-customer-search-page .ac-customer-search-views-tab {
+  padding: 0.5rem;
+  gap: 0.45rem;
+}
+
+.ac-customer-search-page .ac-customer-search-filter-row {
+  padding: 0.4rem 0.5rem;
+  gap: 0.4rem;
+}
+
+.ac-customer-search-page .ac-customer-search-filter-row .ac-input,
+.ac-customer-search-page .ac-customer-search-filter-row .ac-select,
+.ac-customer-search-page .ac-customer-search-filter-row .ac-btn-xs {
+  height: 28px;
+  min-height: 28px;
+}
+
+.ac-customer-search-page .ac-customer-search-preset-grid {
+  gap: 4px;
+}
+
+.ac-customer-search-page .ac-customer-search-preset-grid .ac-btn,
+.ac-customer-search-page .ac-customer-search-preset-empty {
+  height: 29px;
+  min-height: 29px;
+  max-height: 29px;
+  padding-inline: 6px;
 }
 
 .ac-customer-search-grid th,
