@@ -185,6 +185,11 @@ function PresetGrid({
   rows?: number;
   cols?: number;
 }) {
+  const firstPreset = grid
+    .flat()
+    .find((cell): cell is CustomerSearchPresetCell => Boolean(cell && typeof cell === "object" && "label" in cell));
+  const [selectedPreset, setSelectedPreset] = useState(firstPreset?.label ?? "");
+
   return (
     <div className="ac-customer-search-preset-grid">
       {Array.from({ length: rows }, (_, rowIndex) =>
@@ -195,8 +200,11 @@ function PresetGrid({
               <AccessButton
                 key={`${rowIndex}-${colIndex}-${cell.label}`}
                 xs
-                disabled
-                className={customerSearchPresetBtnClass(cell.style)}
+                aria-pressed={selectedPreset === cell.label}
+                onClick={() => setSelectedPreset(cell.label)}
+                className={`${customerSearchPresetBtnClass(cell.style)} ${
+                  selectedPreset === cell.label ? "ac-customer-search-preset-btn--active" : ""
+                }`}
               >
                 {cell.label}
               </AccessButton>

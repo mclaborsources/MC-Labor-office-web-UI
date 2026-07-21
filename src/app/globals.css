@@ -5093,6 +5093,29 @@ body {
   border-bottom-color: #475569 !important;
 }
 
+.ac-customer-search-preset-grid .ac-btn:not(:disabled) {
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease, color 120ms ease;
+}
+
+.ac-customer-search-preset-grid .ac-btn:not(:disabled):hover {
+  border-color: #2563eb;
+  background: #dbeafe;
+}
+
+.ac-customer-search-preset-grid .ac-customer-search-preset-btn--active,
+.ac-customer-search-preset-grid .ac-customer-search-preset-btn--active:hover {
+  color: #fff !important;
+  background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%) !important;
+  border-color: #1e3a8a !important;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.35), 0 0 0 2px rgb(37 99 235 / 0.22);
+  font-weight: 700;
+}
+
+.ac-customer-search-preset-grid .ac-customer-search-preset-btn--active::before {
+  content: "✓ ";
+}
+
 .ac-customer-search-recordbar {
   flex-shrink: 0;
   margin-top: 0;
