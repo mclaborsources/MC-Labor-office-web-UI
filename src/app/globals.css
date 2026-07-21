@@ -4990,6 +4990,50 @@ body {
 /* Customer Search: stronger visual separation for the dense desktop UI. */
 .ac-customer-search-page {
   --trk-border: #64748b;
+  font-size: 12px;
+}
+
+.ac-customer-search-page .ac-flabel,
+.ac-customer-search-page .ac-input,
+.ac-customer-search-page .ac-select,
+.ac-customer-search-page .ac-readonly,
+.ac-customer-search-page .ac-btn,
+.ac-customer-search-page .ac-btn-xs,
+.ac-customer-search-page label,
+.ac-customer-search-page .ac-recordbar {
+  font-size: 12px;
+}
+
+.ac-customer-search-title {
+  font-size: 15px;
+}
+
+.ac-customer-search-page .ac-input,
+.ac-customer-search-page .ac-select {
+  min-height: 25px;
+}
+
+.ac-customer-search-page .ac-btn-xs {
+  min-height: 23px;
+  padding-inline: 8px;
+}
+
+.ac-customer-search-grid th,
+.ac-customer-search-grid td {
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.ac-customer-search-grid th {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ac-customer-search-action-label,
+.ac-customer-search-action-hint,
+.ac-customer-search-mouse-over,
+.ac-customer-search-screen-size-label {
+  font-size: 11px;
 }
 
 .ac-customer-search-titlebar,
