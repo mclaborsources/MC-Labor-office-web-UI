@@ -5293,6 +5293,7 @@ body {
 .ac-customer-search.ac-tracking--modern,
 .ac-customer-search-body {
   font-family: Arial, Helvetica, sans-serif;
+  font-weight: 600;
   color: #000;
   background: #ededed;
   gap: 0;
@@ -5310,7 +5311,7 @@ body {
 .ac-customer-search-title {
   font-size: 24px;
   line-height: 1;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: 0;
   color: #000;
 }
@@ -5405,6 +5406,7 @@ body {
 .ac-customer-search-page .ac-input,
 .ac-customer-search-page .ac-select,
 .ac-customer-search-page .ac-readonly {
+  font-weight: 600;
   color: #000;
   background: #fff;
   border: 1px solid #7f7f7f;
@@ -5422,6 +5424,7 @@ body {
 .ac-customer-search-page .ac-btn,
 .ac-customer-search-page .ac-btn:not(.ac-customer-search-preset-btn--active):not(.ac-customer-search-btn-transfer),
 .ac-customer-search-page .ac-btn:not(:disabled):not(.ac-customer-search-preset-btn--active):not(.ac-customer-search-btn-transfer):hover {
+  font-weight: 600;
   color: #000;
   background: linear-gradient(180deg, #fafafa 0%, #e1e1e1 100%);
   border: 1px solid #858585;
@@ -5496,6 +5499,7 @@ body {
 }
 
 .ac-customer-search-grid th {
+  font-weight: 700;
   color: #000;
   background: #e5e5e5;
   border-color: #aaa !important;
@@ -5504,6 +5508,7 @@ body {
 }
 
 .ac-customer-search-grid td {
+  font-weight: 600;
   color: #000;
   border-color: #d3d0c8 !important;
 }
@@ -5516,10 +5521,60 @@ body {
 
 .ac-customer-search-page .ac-customer-search-btn-transfer.ac-btn {
   color: #000;
-  background: #bd83d9;
+  background: #bc83d7;
   border: 1px solid #333;
   border-radius: 0;
   box-shadow: none;
+}
+
+/* Exact legacy control and text colors from the Customer Search reference. */
+.ac-customer-search-page .ac-customer-search-btn-warn.ac-btn,
+.ac-customer-search-page .ac-customer-search-btn-warn-underline.ac-btn {
+  color: #f00000 !important;
+}
+
+.ac-customer-search-page .ac-customer-search-btn-info.ac-btn,
+.ac-customer-search-page .ac-customer-search-btn-info-underline.ac-btn {
+  color: #003ca6 !important;
+}
+
+.ac-customer-search-page .ac-customer-search-check,
+.ac-customer-search-page .ac-customer-search-radio,
+.ac-customer-search-page .ac-customer-search-filter-label,
+.ac-customer-search-page .ac-customer-search-compare-label,
+.ac-customer-search-page .ac-customer-search-list-label,
+.ac-customer-search-page .ac-customer-search-size-mb,
+.ac-customer-search-page .ac-customer-column-menu-arrow {
+  color: #000;
+}
+
+.ac-customer-search-page input[type="checkbox"],
+.ac-customer-search-page input[type="radio"] {
+  accent-color: #000;
+}
+
+.ac-customer-search-page .ac-tab,
+.ac-customer-search-page .ac-tab:hover,
+.ac-customer-search-page .ac-tab-active {
+  color: #000 !important;
+}
+
+.ac-customer-search-page .ac-customer-search-action-hint,
+.ac-customer-search-page .ac-customer-search-mouse-over {
+  color: #003b78;
+}
+
+.ac-customer-search-page .ac-customer-search-preset-empty,
+.ac-customer-search-page .ac-customer-search-preset-textured {
+  background: #e9e9e9;
+  border-color: #b2b2b2;
+}
+
+.ac-customer-search-page .ac-customer-search-btn-transfer.ac-btn,
+.ac-customer-search-page .ac-customer-search-btn-transfer.ac-btn:hover {
+  color: #000 !important;
+  background: #bc83d7 !important;
+  border-color: #333 !important;
 }
 
 .ac-customer-search-recordbar {
