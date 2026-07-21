@@ -273,9 +273,8 @@ function CustomerSearchSidebar() {
                   <div className="ac-customer-search-side-field-label">{row.label}</div>
                   {row.customer ? (
                     <input
-                      readOnly
                       className="ac-input ac-customer-search-side-input"
-                      value=""
+                      defaultValue=""
                       aria-label={`Customer ${row.label}`}
                     />
                   ) : (
@@ -283,9 +282,8 @@ function CustomerSearchSidebar() {
                   )}
                   {row.contact ? (
                     <input
-                      readOnly
                       className="ac-input ac-customer-search-side-input"
-                      value=""
+                      defaultValue=""
                       aria-label={`Contact ${row.label}`}
                     />
                   ) : (

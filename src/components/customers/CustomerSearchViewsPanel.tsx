@@ -294,7 +294,7 @@ function DuplicatesPanel() {
       </div>
       <div className="ac-customer-search-merge-row">
         <span>Merge Duplicate Groups | 029 #</span>
-        <input readOnly className="ac-input ac-customer-search-merge-input" aria-label="Merge group number" />
+        <input className="ac-input ac-customer-search-merge-input" aria-label="Merge group number" />
         <AccessButton xs disabled>
           Merge
         </AccessButton>
