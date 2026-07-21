@@ -5723,6 +5723,24 @@ body {
   padding-inline: 20px;
 }
 
+/* Fill the center panel vertically instead of leaving space below its controls. */
+.ac-customer-search-page .ac-customer-search-views-body,
+.ac-customer-search-page .ac-customer-search-views-left {
+  flex: 1 1 auto;
+  align-self: stretch;
+}
+
+.ac-customer-search-page .ac-customer-search-views-preset.ac-search-views-tab-pane {
+  flex: 1 1 auto;
+  min-height: 100%;
+  margin-top: 0;
+}
+
+.ac-customer-search-page .ac-customer-search-views-footer {
+  margin-top: auto;
+  padding-top: 8px;
+}
+
 .ac-customer-search-recordbar {
   flex-shrink: 0;
   margin-top: 0;
