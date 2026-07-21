@@ -5579,8 +5579,31 @@ body {
 
 .ac-customer-cluster-select {
   position: relative;
+  z-index: 130;
   flex: 1.15 1 4.75rem;
   min-width: 0;
+}
+
+.ac-customer-search-page .ac-customer-search-shell,
+.ac-customer-search-page .ac-customer-search-shell-inner,
+.ac-customer-search-page .ac-customer-search-controls,
+.ac-customer-search-page .ac-customer-search-control-panel,
+.ac-customer-search-page .ac-customer-search-views-tab,
+.ac-customer-search-page .ac-customer-search-filter-row,
+.ac-customer-search-page .ac-customer-search-views-body,
+.ac-customer-search-page .ac-customer-search-views-left,
+.ac-customer-search-page .ac-search-views-tab-pane {
+  overflow: visible;
+}
+
+.ac-customer-search-page .ac-customer-search-shell {
+  position: relative;
+  z-index: 20;
+}
+
+.ac-customer-search-page .ac-customer-search-results-panel {
+  position: relative;
+  z-index: 1;
 }
 
 .ac-customer-cluster-select > summary {
@@ -5603,7 +5626,7 @@ body {
 
 .ac-customer-cluster-popup {
   position: absolute;
-  z-index: 120;
+  z-index: 200;
   top: calc(100% + 2px);
   left: 0;
   width: 300px;
