@@ -236,16 +236,32 @@ const CUSTOMER_SEARCH_SIDE_ROWS = [
 ] as const;
 
 function CustomerSearchSidebar() {
+  const [activeScreenSize, setActiveScreenSize] = useState<string>("normal");
+
   return (
     <aside className="ac-customer-search-sidebar shrink-0">
       <div className="ac-customer-search-screen-size">
         <span className="ac-customer-search-screen-size-label">Screen Size</span>
-        <AccessButton disabled className="ac-customer-search-screen-normal">
+        <AccessButton
+          aria-pressed={activeScreenSize === "normal"}
+          onClick={() => setActiveScreenSize("normal")}
+          className={`ac-customer-search-screen-normal ${
+            activeScreenSize === "normal" ? "ac-customer-search-preset-btn--active" : ""
+          }`}
+        >
           Normal
         </AccessButton>
         <div className="ac-customer-search-screen-grid">
           {[1, 2, 3, 4].map((n) => (
-            <AccessButton key={n} xs disabled className="ac-customer-search-screen-num">
+            <AccessButton
+              key={n}
+              xs
+              aria-pressed={activeScreenSize === String(n)}
+              onClick={() => setActiveScreenSize(String(n))}
+              className={`ac-customer-search-screen-num ${
+                activeScreenSize === String(n) ? "ac-customer-search-preset-btn--active" : ""
+              }`}
+            >
               {n}
             </AccessButton>
           ))}
