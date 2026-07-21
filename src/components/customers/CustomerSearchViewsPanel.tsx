@@ -37,6 +37,77 @@ interface CustomerSearchViewsPanelProps {
   currentState: string;
 }
 
+const CUSTOMER_CLUSTER_OPTIONS = [
+  "AA Barnstable County",
+  "AA Berkshire County",
+  "AA Bristol County",
+  "AA Dukes County",
+  "AA Essex County",
+  "AA Franklin County",
+  "AA Hampden County",
+  "AA Hampshire County",
+  "AA Middlesex County",
+  "AA Nantucket County",
+  "AA Norfolk County",
+  "AA Plymouth County",
+  "AA Suffolk County",
+  "AA Worcester County",
+  "aaa Test Test",
+  "Andover Brian",
+] as const;
+
+function ClusterMultiSelect() {
+  const [selected, setSelected] = useState<string[]>([]);
+  const [filter, setFilter] = useState("");
+  const visibleOptions = CUSTOMER_CLUSTER_OPTIONS.filter((option) =>
+    option.toLowerCase().includes(filter.trim().toLowerCase()),
+  );
+
+  function toggleOption(option: string) {
+    setSelected((current) =>
+      current.includes(option) ? current.filter((item) => item !== option) : [...current, option],
+    );
+  }
+
+  return (
+    <details className="ac-customer-cluster-select">
+      <summary className="ac-select ac-customer-search-row-select ac-customer-search-cluster-select">
+        {selected.length === 0 ? "<Cluster>" : `${selected.length} selected`}
+      </summary>
+      <div className="ac-customer-cluster-popup">
+        <p>You can click on more than one.</p>
+        <div className="ac-customer-cluster-actions">
+          <button type="button" onClick={() => setSelected([...CUSTOMER_CLUSTER_OPTIONS])}>All</button>
+          <button type="button" onClick={() => setSelected([])}>Clear</button>
+          <span aria-label="Help">?</span>
+        </div>
+        <label className="ac-customer-cluster-filter">
+          <strong>Filter:</strong>
+          <input value={filter} onChange={(event) => setFilter(event.target.value)} />
+        </label>
+        <div className="ac-customer-cluster-list" role="listbox" aria-multiselectable="true">
+          {visibleOptions.map((option) => (
+            <button
+              key={option}
+              type="button"
+              role="option"
+              aria-selected={selected.includes(option)}
+              className={selected.includes(option) ? "is-selected" : ""}
+              onClick={() => toggleOption(option)}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+        <div className="ac-customer-cluster-footer">
+          <button type="button" onClick={(event) => event.currentTarget.closest("details")?.removeAttribute("open")}>OK</button>
+          <button type="button" onClick={(event) => event.currentTarget.closest("details")?.removeAttribute("open")}>Cancel</button>
+        </div>
+      </div>
+    </details>
+  );
+}
+
 function FilterRadioGroup({
   legend,
   name,
@@ -97,14 +168,7 @@ function CompactFilterRow(props: CustomerSearchViewsPanelProps) {
         <option value="last-12-months">In Last 12 Months</option>
         <option value="custom-range">Custom Range</option>
       </select>
-      <select
-        disabled
-        className="ac-select ac-customer-search-row-select ac-customer-search-cluster-select"
-        defaultValue=""
-        aria-label="Cluster"
-      >
-        <option value="">&lt;Cluster&gt;</option>
-      </select>
+      <ClusterMultiSelect />
       <Suspense fallback={null}>
         <CustomerFilters
           compact

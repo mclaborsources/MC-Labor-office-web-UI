@@ -5577,6 +5577,129 @@ body {
   border-color: #333 !important;
 }
 
+.ac-customer-cluster-select {
+  position: relative;
+  flex: 1.15 1 4.75rem;
+  min-width: 0;
+}
+
+.ac-customer-cluster-select > summary {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  cursor: pointer;
+  list-style: none;
+}
+
+.ac-customer-cluster-select > summary::-webkit-details-marker {
+  display: none;
+}
+
+.ac-customer-cluster-select > summary::after {
+  content: "▼";
+  margin-left: auto;
+  font-size: 9px;
+}
+
+.ac-customer-cluster-popup {
+  position: absolute;
+  z-index: 120;
+  top: calc(100% + 2px);
+  left: 0;
+  width: 300px;
+  padding: 7px 9px 9px;
+  color: #000;
+  background: #e9e9e9;
+  border: 1px solid #888;
+  box-shadow: 2px 3px 5px rgb(0 0 0 / 30%);
+  font-size: 13px;
+}
+
+.ac-customer-cluster-popup p {
+  margin: 0 0 6px 20px;
+  color: #0000b0;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.ac-customer-cluster-actions,
+.ac-customer-cluster-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ac-customer-cluster-actions button,
+.ac-customer-cluster-footer button {
+  min-width: 70px;
+  min-height: 29px;
+  color: #000;
+  background: #f2f2f2;
+  border: 1px solid #777;
+  border-radius: 0;
+  font-weight: 600;
+}
+
+.ac-customer-cluster-actions button {
+  color: #f00;
+}
+
+.ac-customer-cluster-actions span {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  color: #0039b5;
+  background: #00d878;
+  border: 2px solid #ffca00;
+  font-weight: 700;
+}
+
+.ac-customer-cluster-filter {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  align-items: center;
+  gap: 3px;
+  margin: 7px 0 4px;
+}
+
+.ac-customer-cluster-filter input {
+  height: 25px;
+  border: 1px solid #888;
+  background: #fff;
+}
+
+.ac-customer-cluster-list {
+  height: 300px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #aaa;
+}
+
+.ac-customer-cluster-list button {
+  display: block;
+  width: 100%;
+  padding: 2px 5px;
+  color: #000;
+  background: #fff;
+  border: 0;
+  text-align: left;
+  font: inherit;
+  font-weight: 600;
+}
+
+.ac-customer-cluster-list button:hover,
+.ac-customer-cluster-list button.is-selected {
+  color: #fff;
+  background: #000;
+}
+
+.ac-customer-cluster-footer {
+  margin-top: 10px;
+  padding-inline: 20px;
+}
+
 .ac-customer-search-recordbar {
   flex-shrink: 0;
   margin-top: 0;
