@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useTransition } from "react";
+import { Suspense, useState, useTransition } from "react";
 import { HelpCircle, Table2 } from "lucide-react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { CustomerSearchViewsPanel } from "@/components/customers/CustomerSearchViewsPanel";
@@ -72,6 +72,7 @@ function CustomerSearchTable({
   query,
   currentSortKey,
   currentSortDirection,
+  onHoverColumn,
 }: {
   customers: CustomerSearchRow[];
   page: number;
@@ -81,6 +82,7 @@ function CustomerSearchTable({
   query: Record<string, string>;
   currentSortKey: string;
   currentSortDirection: "asc" | "desc";
+  onHoverColumn: (label: string) => void;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -103,6 +105,7 @@ function CustomerSearchTable({
               {CUSTOMER_SEARCH_COLUMNS.map((col) => (
                 <th
                   key={col.key}
+                  onMouseEnter={() => onHoverColumn((col.label as string) || (col.key === "select" ? "Select" : col.key))}
                   className={[
                     col.key === "select" ? "ac-customer-search-col-select" : "",
                     customerSearchCellClass(col.key) ?? "",
@@ -162,14 +165,18 @@ function CustomerSearchTable({
                   {CUSTOMER_SEARCH_COLUMNS.map((col) => {
                     if (col.key === "select") {
                       return (
-                        <td key={col.key} className="ac-customer-search-col-select text-center">
+                        <td
+                          key={col.key}
+                          className="ac-customer-search-col-select text-center"
+                          onMouseEnter={() => onHoverColumn("Select")}
+                        >
                           —
                         </td>
                       );
                     }
                     if (col.key === "name") {
                       return (
-                        <td key={col.key}>
+                        <td key={col.key} onMouseEnter={() => onHoverColumn(col.label)}>
                           <Link href={`/customers/${row.customerId}`} className="font-semibold">
                             {row.customerName || "—"}
                           </Link>
@@ -178,7 +185,11 @@ function CustomerSearchTable({
                     }
                     if (col.key === "contacts") {
                       return (
-                        <td key={col.key} className={customerSearchCellClass(col.key)}>
+                        <td
+                          key={col.key}
+                          className={customerSearchCellClass(col.key)}
+                          onMouseEnter={() => onHoverColumn(col.label)}
+                        >
                           <Link href={`/customers/${row.customerId}`} className="ac-customer-search-contacts-link">
                             {cellValue(row, col.key) || "Contacts"}
                           </Link>
@@ -187,7 +198,11 @@ function CustomerSearchTable({
                     }
                     const value = cellValue(row, col.key);
                     return (
-                      <td key={col.key} className={customerSearchCellClass(col.key)}>
+                      <td
+                        key={col.key}
+                        className={customerSearchCellClass(col.key)}
+                        onMouseEnter={() => onHoverColumn((col.label as string) || col.key)}
+                      >
                         {value || (col.key === "noCommunication" ? "" : "—")}
                       </td>
                     );
@@ -307,7 +322,7 @@ function CustomerSearchSidebar() {
   );
 }
 
-function CustomerSearchActionBar() {
+function CustomerSearchActionBar({ hoveredColumn }: { hoveredColumn: string }) {
   return (
     <div className="ac-customer-search-action-bar shrink-0">
       <div className="ac-customer-search-action-group">
@@ -326,7 +341,7 @@ function CustomerSearchActionBar() {
         </AccessButton>
       </div>
       <span className="ac-customer-search-mouse-over">
-        Your mouse is over: <span className="ac-customer-search-mouse-box" />
+        Your mouse is over: <span className="ac-customer-search-mouse-box">{hoveredColumn}</span>
       </span>
       <div className="ac-customer-search-action-group">
         <span className="ac-customer-search-action-hint">Click in column first</span>
@@ -388,6 +403,7 @@ export function CustomerSearchScreen({
   total,
   hasMore,
 }: CustomerSearchScreenProps) {
+  const [hoveredColumn, setHoveredColumn] = useState("");
   const paginationQuery = Object.fromEntries(
     Object.entries({
       search: currentSearch,
@@ -432,7 +448,7 @@ export function CustomerSearchScreen({
 
               <CustomerSearchUtilityRail />
             </div>
-            <CustomerSearchActionBar />
+            <CustomerSearchActionBar hoveredColumn={hoveredColumn} />
           </div>
 
           <div className="ac-panel ac-panel-elevated ac-customer-search-results-panel min-h-0 flex-1">
@@ -456,6 +472,7 @@ export function CustomerSearchScreen({
                   query={paginationQuery}
                   currentSortKey={currentSortKey}
                   currentSortDirection={currentSortDirection}
+                  onHoverColumn={setHoveredColumn}
                 />
               </Suspense>
             )}

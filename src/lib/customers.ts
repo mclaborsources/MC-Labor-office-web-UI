@@ -190,13 +190,17 @@ const CUSTOMER_SEARCH_SORT_COLUMNS: Record<string, string> = {
   contactCount: "ContactCount",
 };
 
-function customerSearchSql(sortKey?: string, sortDirection?: string): string {
+function customerSearchSql(sortKey?: string, sortDirection?: string, includeTotal = true): string {
   const column = CUSTOMER_SEARCH_SORT_COLUMNS[sortKey ?? ""] ?? "c.CustBusName";
   const direction = sortDirection === "desc" ? "DESC" : "ASC";
   const order = `${column} ${direction}`;
   let sqlText = CUSTOMER_SEARCH_LIST_SQL
     .replace("__CUSTOMER_SORT__", order)
     .replace("__CUSTOMER_SOURCE__", column.startsWith("c.") ? "CandidateCustomers" : "FilteredCustomers");
+
+  if (!includeTotal) {
+    sqlText = sqlText.replace("COUNT_BIG(*) OVER () AS TotalCount", "CAST(0 AS BIGINT) AS TotalCount");
+  }
 
   // Direct tblCustomer fields can be sorted and paged before the expensive
   // history/contact lookups while still sorting the complete filtered set.
@@ -569,6 +573,7 @@ export interface GetCustomersParams {
   pageSize?: number;
   sortKey?: string;
   sortDirection?: "asc" | "desc";
+  includeTotal?: boolean;
 }
 
 export async function getCustomers(
@@ -600,7 +605,7 @@ export async function getCustomerSearchRows(
   const offset = (page - 1) * pageSize;
 
   const [rows, typeMap, salesmanMap, statusMap] = await Promise.all([
-    queryReadOnly<CustomerSearchListRow>(customerSearchSql(params.sortKey, params.sortDirection), [
+    queryReadOnly<CustomerSearchListRow>(customerSearchSql(params.sortKey, params.sortDirection, params.includeTotal), [
       { name: "searchPat", value: searchPat },
       { name: "salesmanId", value: salesmanId },
       { name: "customerTypeId", value: customerTypeId },
@@ -632,13 +637,14 @@ export async function getCustomerSearchRows(
     };
   });
 
-  const total = Number(rows[0]?.TotalCount ?? 0);
+  const includeTotal = params.includeTotal !== false;
+  const total = includeTotal ? Number(rows[0]?.TotalCount ?? 0) : offset + data.length;
   return {
     data,
     total,
     page,
     pageSize,
-    hasMore: offset + data.length < total,
+    hasMore: includeTotal ? offset + data.length < total : false,
   };
 }
 

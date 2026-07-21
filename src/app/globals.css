@@ -4789,12 +4789,17 @@ body {
 }
 
 .ac-customer-search-mouse-box {
-  display: inline-block;
-  width: 5.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16rem;
   height: 1.25rem;
   border: 1px solid #e8c878;
   border-radius: 4px;
   background: #fffbeb;
+  color: #000;
+  font-style: normal;
+  font-weight: 600;
 }
 
 .ac-customer-search-clear-link {
