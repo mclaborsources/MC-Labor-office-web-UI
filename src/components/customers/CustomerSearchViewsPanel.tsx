@@ -56,6 +56,13 @@ const CUSTOMER_CLUSTER_OPTIONS = [
   "Andover Brian",
 ] as const;
 
+const CUSTOMER_SAVED_FILTER_OPTIONS = Array.from({ length: 40 }, (_, index) => {
+  const number = index + 1;
+  if (number === 3) return { value: "filter-3", label: "Siobhan" };
+  if (number === 5) return { value: "filter-5", label: "Dee" };
+  return { value: `filter-${number}`, label: `Filter ${number}` };
+});
+
 function ClusterMultiSelect() {
   const [selected, setSelected] = useState<string[]>([]);
   const [filter, setFilter] = useState("");
@@ -186,7 +193,11 @@ function CompactFilterRow(props: CustomerSearchViewsPanelProps) {
         />
       </Suspense>
       <span className="ac-customer-search-filter-label">Filter:</span>
-      <input readOnly className="ac-input ac-customer-search-filter-input" placeholder="" aria-label="Filter" />
+      <select className="ac-select ac-customer-search-filter-input" defaultValue="filter-12" aria-label="Filter">
+        {CUSTOMER_SAVED_FILTER_OPTIONS.map((option) => (
+          <option key={option.value} value={option.value}>{option.label}</option>
+        ))}
+      </select>
       <select className="ac-select ac-customer-search-duplicates-select" defaultValue="" aria-label="Find Duplicates">
         <option value="">&lt;Find Duplicates&gt;</option>
         <option value="name">Name</option>
