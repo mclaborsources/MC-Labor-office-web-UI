@@ -5288,6 +5288,240 @@ body {
   border-top: 1px solid #526b86;
 }
 
+/* Customer Search: final legacy Microsoft Access appearance. */
+.ac-customer-search-page,
+.ac-customer-search.ac-tracking--modern,
+.ac-customer-search-body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000;
+  background: #ededed;
+  gap: 0;
+}
+
+.ac-customer-search-titlebar {
+  min-height: 42px;
+  padding: 4px 12px;
+  background: #ededed;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.ac-customer-search-title {
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: #000;
+}
+
+.ac-customer-search-titlebar .ac-btn {
+  margin-left: 115px;
+}
+
+.ac-customer-search-shell,
+.ac-customer-search-results-panel,
+.ac-customer-search-page .ac-panel,
+.ac-customer-search-page .ac-panel-elevated {
+  background: #ededed;
+  border: 1px solid #8f8f8f;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.ac-customer-search-page .ac-customer-search-shell-inner {
+  padding: 0;
+  background: #ededed;
+}
+
+.ac-customer-search-sidebar,
+.ac-customer-search-utility-rail,
+.ac-customer-search-control-panel,
+.ac-customer-search-views-tab,
+.ac-customer-search-screen-size,
+.ac-customer-search-side-main,
+.ac-customer-search-duplicates-panel {
+  background: #ededed;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.ac-customer-search-page .ac-customer-search-sidebar {
+  padding: 7px 8px;
+  border-right: 1px solid #b7b7b7;
+}
+
+.ac-customer-search-screen-size,
+.ac-customer-search-side-main,
+.ac-customer-search-views-tab,
+.ac-customer-search-duplicates-panel,
+.ac-customer-search-filter-group,
+.ac-customer-search-duplicates-group {
+  border: 1px solid #969696;
+}
+
+.ac-customer-search-view-tabs {
+  min-height: 31px;
+  padding: 0;
+  background: #ededed;
+  border: 0;
+  border-bottom: 1px solid #aaa;
+}
+
+.ac-customer-search-page .ac-tab,
+.ac-customer-search-page .ac-tab:hover,
+.ac-customer-search-page .ac-tab-active {
+  min-height: 30px;
+  margin: 0;
+  padding: 4px 8px;
+  color: #000;
+  background: #f2f2f2;
+  border: 1px solid #d7d7d7;
+  border-bottom-color: #aaa;
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 12px;
+}
+
+.ac-customer-search-page .ac-tab-active {
+  background: #fff;
+  border-color: #999;
+  border-bottom-color: #fff;
+  font-weight: 700;
+}
+
+.ac-customer-search-page .ac-customer-search-views-tab {
+  padding: 7px;
+  gap: 6px;
+}
+
+.ac-customer-search-page .ac-customer-search-filter-row {
+  padding: 4px 7px;
+  background: #ededed;
+  border: 0;
+  border-radius: 0;
+}
+
+.ac-customer-search-page .ac-input,
+.ac-customer-search-page .ac-select,
+.ac-customer-search-page .ac-readonly {
+  color: #000;
+  background: #fff;
+  border: 1px solid #7f7f7f;
+  border-radius: 0;
+  box-shadow: inset 1px 1px 0 #d5d5d5;
+}
+
+.ac-customer-search-page .ac-input:disabled,
+.ac-customer-search-page .ac-select:disabled {
+  color: #000;
+  background: #fff;
+  opacity: 1;
+}
+
+.ac-customer-search-page .ac-btn,
+.ac-customer-search-page .ac-btn:not(.ac-customer-search-preset-btn--active):not(.ac-customer-search-btn-transfer),
+.ac-customer-search-page .ac-btn:not(:disabled):not(.ac-customer-search-preset-btn--active):not(.ac-customer-search-btn-transfer):hover {
+  color: #000;
+  background: linear-gradient(180deg, #fafafa 0%, #e1e1e1 100%);
+  border: 1px solid #858585;
+  border-radius: 0;
+  box-shadow: inset 1px 1px 0 #fff;
+}
+
+.ac-customer-search-page .ac-btn:active:not(:disabled),
+.ac-customer-search-page .ac-customer-search-preset-btn--active,
+.ac-customer-search-page .ac-customer-search-preset-btn--active:hover {
+  color: #000 !important;
+  background: #c9c9c9 !important;
+  border-color: #555 !important;
+  box-shadow: inset 1px 1px 2px rgb(0 0 0 / 35%) !important;
+}
+
+.ac-customer-search-page .ac-customer-search-btn-warn.ac-btn,
+.ac-customer-search-page .ac-customer-search-btn-warn-underline.ac-btn {
+  color: #f00;
+}
+
+.ac-customer-search-page .ac-customer-search-btn-info.ac-btn,
+.ac-customer-search-page .ac-customer-search-btn-info-underline.ac-btn {
+  color: #0046b8;
+}
+
+.ac-customer-search-side-head {
+  color: #000;
+  background: #d8d8d8;
+  border: 1px solid #707070;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.ac-customer-search-preset-empty,
+.ac-customer-search-preset-textured {
+  background: #e3e3e3;
+  border: 1px solid #b7b7b7;
+  border-radius: 0;
+}
+
+.ac-customer-search-action-bar {
+  padding: 7px 11px;
+  color: #000;
+  background: #ededed;
+  border-top: 1px solid #8f8f8f;
+  border-radius: 0;
+}
+
+.ac-customer-search-action-label,
+.ac-customer-search-action-hint,
+.ac-customer-search-mouse-over,
+.ac-customer-search-filter-label,
+.ac-customer-search-page .ac-flabel {
+  color: #000;
+}
+
+.ac-customer-search-action-hint,
+.ac-customer-search-mouse-over {
+  color: #003c8f;
+}
+
+.ac-customer-search-mouse-box {
+  background: #ffffa6;
+  border-color: #d2c458;
+  border-radius: 0;
+}
+
+.ac-customer-search-grid,
+.ac-customer-search-grid table {
+  background: #fff;
+}
+
+.ac-customer-search-grid th {
+  color: #000;
+  background: #e5e5e5;
+  border-color: #aaa !important;
+  border-bottom-color: #777 !important;
+  box-shadow: none;
+}
+
+.ac-customer-search-grid td {
+  color: #000;
+  border-color: #d3d0c8 !important;
+}
+
+.ac-customer-search-recordbar {
+  color: #000;
+  background: #ededed;
+  border-top: 1px solid #8f8f8f;
+}
+
+.ac-customer-search-page .ac-customer-search-btn-transfer.ac-btn {
+  color: #000;
+  background: #bd83d9;
+  border: 1px solid #333;
+  border-radius: 0;
+  box-shadow: none;
+}
+
 .ac-customer-search-recordbar {
   flex-shrink: 0;
   margin-top: 0;
