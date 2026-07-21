@@ -82,11 +82,20 @@ function CompactFilterRow(props: CustomerSearchViewsPanelProps) {
 
   return (
     <div className="ac-customer-search-filter-row">
-      <select disabled className="ac-select ac-customer-search-row-select" defaultValue="" aria-label="In Tracking">
+      <select className="ac-select ac-customer-search-row-select" defaultValue="" aria-label="In Tracking">
         <option value="">&lt;In Tracking?&gt;</option>
+        <option value="in-tracking">In Tracking</option>
+        <option value="not-in-tracking">Not in Tracking</option>
       </select>
-      <select disabled className="ac-select ac-customer-search-row-select" defaultValue="" aria-label="Date Range">
+      <select className="ac-select ac-customer-search-row-select" defaultValue="" aria-label="Date Range">
         <option value="">&lt;Date Range&gt;</option>
+        <option value="present-week">Present Week</option>
+        <option value="last-2-weeks">In Last 2 Weeks</option>
+        <option value="last-month">In Last 1 Month</option>
+        <option value="last-3-months">In Last 3 Months</option>
+        <option value="last-6-months">In Last 6 Months</option>
+        <option value="last-12-months">In Last 12 Months</option>
+        <option value="custom-range">Custom Range</option>
       </select>
       <select
         disabled
