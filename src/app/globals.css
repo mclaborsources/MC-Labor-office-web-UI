@@ -5737,8 +5737,35 @@ body {
 }
 
 .ac-customer-search-page .ac-customer-search-views-footer {
-  margin-top: auto;
-  padding-top: 8px;
+  flex: 1 1 auto;
+  justify-content: space-evenly;
+  margin-top: 0;
+  padding-top: 4px;
+  padding-bottom: 2px;
+}
+
+.ac-customer-search-page .ac-customer-search-profile-type {
+  min-height: 34px;
+  padding: 4px 6px;
+  background: #ededed;
+  border: 1px solid #a0a0a0;
+}
+
+.ac-customer-search-page .ac-customer-search-view-controls {
+  align-items: stretch;
+}
+
+.ac-customer-search-page .ac-customer-search-view-controls-group {
+  flex: 1 1 50%;
+  min-height: 36px;
+  padding: 4px 6px;
+  background: #ededed;
+  border: 1px solid #a0a0a0;
+}
+
+.ac-customer-search-page .ac-customer-search-view-controls-group--end {
+  justify-content: flex-end;
+  margin-left: 0;
 }
 
 .ac-customer-search-recordbar {
