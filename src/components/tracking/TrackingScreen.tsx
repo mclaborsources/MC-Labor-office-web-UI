@@ -594,7 +594,7 @@ export function TrackingScreen({
             onChange={setTrackingTab}
             className="ac-tracking-action-tabs"
           />
-          <AccessButtonRow className="flex-1 justify-end">
+          <AccessButtonRow className="ac-tracking-action-controls flex-1 justify-end">
             <AccessButton disabled>Hrs AutoText</AccessButton>
             <AccessButton disabled>Payroll Change</AccessButton>
             <AccessToolbarDivider />

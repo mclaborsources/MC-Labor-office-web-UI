@@ -6821,9 +6821,9 @@ body {
 }
 
 .ac-tracking--modern .ac-tracking-filter-panel {
-  height: 192px;
-  min-height: 192px;
-  max-height: 192px;
+  height: 245px;
+  min-height: 245px;
+  max-height: 245px;
   border: 0;
   border-bottom: 1px solid #8c8c8c;
   border-radius: 0;
@@ -6834,9 +6834,9 @@ body {
 .ac-tracking--modern .ac-tracking-job-shell,
 .ac-tracking--modern .ac-tracking-filter-panel--tall .ac-tracking-job-shell {
   grid-template-columns: minmax(365px, 375px) minmax(780px, 1fr) minmax(300px, 330px);
-  height: 192px;
-  min-height: 192px;
-  max-height: 192px;
+  height: 245px;
+  min-height: 245px;
+  max-height: 245px;
   background: #d7d7d7;
 }
 
@@ -6986,6 +6986,11 @@ body {
   flex-wrap: nowrap;
   gap: 6px;
   overflow-x: auto;
+}
+
+.ac-tracking--modern .ac-tracking-actionbar .ac-tracking-action-controls {
+  flex-wrap: nowrap;
+  min-width: max-content;
 }
 
 .ac-tracking--modern .ac-tracking-actionbar .ac-tab,
