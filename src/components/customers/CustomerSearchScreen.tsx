@@ -91,6 +91,7 @@ function CustomerSearchTable({
     CUSTOMER_SEARCH_COLUMNS.some((column) => column.key === initialSortKey) ? initialSortKey as CustomerSearchColumnKey : "",
   );
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">(initialSortDirection);
+  const [openColumnMenu, setOpenColumnMenu] = useState<CustomerSearchColumnKey | null>(null);
 
   const columnOptions = useMemo(() => Object.fromEntries(
     CUSTOMER_SEARCH_COLUMNS.filter((column) => column.key !== "select").map((column) => [
@@ -142,7 +143,14 @@ function CustomerSearchTable({
                     customerSearchCellClass(col.key) ?? "",
                   ].filter(Boolean).join(" ") || undefined}
                 >
-                  <details className="ac-customer-column-menu">
+                  <details
+                    className="ac-customer-column-menu"
+                    open={openColumnMenu === col.key}
+                    onToggle={(event) => {
+                      if (event.currentTarget.open) setOpenColumnMenu(col.key);
+                      else setOpenColumnMenu((current) => current === col.key ? null : current);
+                    }}
+                  >
                     <summary title={`Sort ${col.label || "this column"}`}>
                       <span>{col.label}</span>
                       <span className="ac-customer-column-menu-arrow" aria-hidden>▼</span>
@@ -153,10 +161,9 @@ function CustomerSearchTable({
                           type="radio"
                           name={`sort-${col.key}`}
                           checked={sortKey === col.key && sortDirection === "asc"}
-                          onChange={(event) => {
+                          onChange={() => {
                             applySort(col.key, "asc");
-                            const menu = event.currentTarget.closest("details");
-                            if (menu) menu.open = false;
+                            setOpenColumnMenu(null);
                           }}
                         />
                         Sort A - Z
@@ -166,10 +173,9 @@ function CustomerSearchTable({
                           type="radio"
                           name={`sort-${col.key}`}
                           checked={sortKey === col.key && sortDirection === "desc"}
-                          onChange={(event) => {
+                          onChange={() => {
                             applySort(col.key, "desc");
-                            const menu = event.currentTarget.closest("details");
-                            if (menu) menu.open = false;
+                            setOpenColumnMenu(null);
                           }}
                         />
                         Sort Z - A
