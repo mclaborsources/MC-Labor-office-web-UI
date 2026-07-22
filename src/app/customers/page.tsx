@@ -1,6 +1,9 @@
 import { AppShell } from "@/components/layout/AppShell";
 import { CustomerSearchScreen } from "@/components/customers/CustomerSearchScreen";
 import { getSessionOrDefault } from "@/lib/auth/session";
+import { getOfficeStaffList } from "@/lib/admin";
+import { getCustomerUserFlagOptions } from "@/lib/customers";
+import type { FilterOption } from "@/types/search";
 import type { CustomerSearchRow } from "@/types/customer";
 
 const DUMMY_CUSTOMERS: CustomerSearchRow[] = [
@@ -74,6 +77,21 @@ export default async function CustomersPage({ searchParams }: PageProps) {
   const sortKey = params.sortKey ?? "";
   const sortDirection = params.sortDirection === "desc" ? "desc" : "asc";
   const customers = DUMMY_CUSTOMERS;
+  const [customerUserFlagOptions, officeStaff] = await Promise.all([
+    getCustomerUserFlagOptions(),
+    getOfficeStaffList(),
+  ]);
+  const fallbackLastActionUsers: FilterOption[] = Array.from(
+    new Set(customers.map((customer) => customer.lastActionUser).filter(Boolean)),
+  ).sort().map((value) => ({ value, label: value }));
+  const lastActionUsers = officeStaff.length > 0
+    ? officeStaff
+        .filter((staff) => staff.initials)
+        .map((staff) => ({
+          value: staff.initials,
+          label: `${staff.initials} — ${[staff.firstName, staff.lastName].filter(Boolean).join(" ")}${staff.active ? "" : " (Inactive)"}`,
+        }))
+    : fallbackLastActionUsers;
 
   return (
     <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth>
@@ -84,6 +102,8 @@ export default async function CustomersPage({ searchParams }: PageProps) {
         statuses={[]}
         cities={[]}
         states={[]}
+        customerUserFlagOptions={customerUserFlagOptions}
+        lastActionUsers={lastActionUsers}
         currentSearch={search}
         currentSalesmanId={salesmanId}
         currentCustomerTypeId={customerTypeId}

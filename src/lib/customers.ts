@@ -762,6 +762,29 @@ export async function getCustomerFilterOptions(): Promise<{
 }
 
 /**
+ * Access frmCustomerSearch populates each User Settings combo from the
+ * distinct values in CustomerUserFlag1..8, with [BLANK] supplied by the UI.
+ */
+export async function getCustomerUserFlagOptions(): Promise<FilterOption[][]> {
+  return Promise.all(
+    Array.from({ length: 8 }, async (_, index) => {
+      const column = `CustomerUserFlag${index + 1}`;
+      try {
+        const rows = await queryReadOnly<{ Value: string | null }>(
+          `SELECT DISTINCT LTRIM(RTRIM(${column})) AS Value
+           FROM tblCustomer WITH (NOLOCK)
+           WHERE NULLIF(LTRIM(RTRIM(ISNULL(${column}, ''))), '') IS NOT NULL
+           ORDER BY Value`,
+        );
+        return toUniqueOptions(rows.map((row) => safeStr(row.Value)));
+      } catch {
+        return [] as FilterOption[];
+      }
+    }),
+  );
+}
+
+/**
  * Build a de-duplicated FilterOption list from raw strings. DISTINCT at the SQL
  * level can still yield duplicates once values are trimmed (e.g. "Salem" vs
  * "Salem "), which breaks React keys — so we dedupe case-insensitively here.

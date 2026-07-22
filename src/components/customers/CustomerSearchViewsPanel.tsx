@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, type ComponentType } from "react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { CustomerFilters } from "@/components/customers/CustomerFilters";
 import {
@@ -29,6 +29,8 @@ interface CustomerSearchViewsPanelProps {
   statuses: FilterOption[];
   cities: FilterOption[];
   states: FilterOption[];
+  customerUserFlagOptions: FilterOption[][];
+  lastActionUsers: FilterOption[];
   currentSearch: string;
   currentSalesmanId: string;
   currentCustomerTypeId: string;
@@ -507,7 +509,15 @@ function InternetSearchTab() {
   );
 }
 
-function UserSettingsTab() {
+type UserSettingsTabProps = Pick<
+  CustomerSearchViewsPanelProps,
+  "customerUserFlagOptions" | "lastActionUsers"
+>;
+
+function UserSettingsTab({ customerUserFlagOptions, lastActionUsers }: UserSettingsTabProps) {
+  const [selectedFlags, setSelectedFlags] = useState<string[]>(Array(8).fill(""));
+  const [lastActionUser, setLastActionUser] = useState("all");
+
   return (
     <div className="ac-customer-search-user-settings-tab ac-search-views-tab-pane">
       <div className="ac-customer-search-user-settings-title">User Settings</div>
@@ -516,8 +526,20 @@ function UserSettingsTab() {
           {Array.from({ length: 8 }, (_, i) => (
             <div key={i} className="ac-customer-search-user-setting-slot">
               <span className="ac-customer-search-user-setting-num">{i + 1}:</span>
-              <select disabled className="ac-select ac-customer-search-user-setting-select" defaultValue="" aria-label={`Setting ${i + 1}`}>
-                <option value="" />
+              <select
+                className="ac-select ac-customer-search-user-setting-select"
+                value={selectedFlags[i] ?? ""}
+                onChange={(event) => setSelectedFlags((current) => {
+                  const next = [...current];
+                  next[i] = event.target.value;
+                  return next;
+                })}
+                aria-label={`Setting ${i + 1}`}
+              >
+                <option value="">[BLANK]</option>
+                {(customerUserFlagOptions[i] ?? []).map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
               </select>
               <div className="ac-customer-search-user-setting-btns">
                 <AccessButton xs disabled>
@@ -532,8 +554,16 @@ function UserSettingsTab() {
         </div>
         <div className="ac-customer-search-last-action-user">
           <span className="ac-flabel">Last Action User | 030</span>
-          <select disabled className="ac-select" defaultValue="all" aria-label="Last Action User">
+          <select
+            className="ac-select"
+            value={lastActionUser}
+            onChange={(event) => setLastActionUser(event.target.value)}
+            aria-label="Last Action User"
+          >
             <option value="all">&lt;ALL&gt;</option>
+            {lastActionUsers.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
           </select>
         </div>
       </div>
@@ -716,7 +746,7 @@ function RayTab() {
   );
 }
 
-const TAB_CONTENT = [
+const TAB_CONTENT: readonly ComponentType<UserSettingsTabProps>[] = [
   ViewsTab,
   Views2Tab,
   Views3Tab,
@@ -754,7 +784,10 @@ export function CustomerSearchViewsPanel(props: CustomerSearchViewsPanelProps) {
 
           <div className={`ac-customer-search-views-body ${showDuplicates ? "" : "ac-customer-search-views-body--full"}`}>
             <div className="ac-customer-search-views-left">
-              <TabContent />
+              <TabContent
+                customerUserFlagOptions={props.customerUserFlagOptions}
+                lastActionUsers={props.lastActionUsers}
+              />
             </div>
             {showDuplicates ? <DuplicatesPanel /> : null}
           </div>

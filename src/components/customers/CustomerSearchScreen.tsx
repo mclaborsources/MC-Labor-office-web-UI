@@ -25,6 +25,8 @@ interface CustomerSearchScreenProps {
   statuses: FilterOption[];
   cities: FilterOption[];
   states: FilterOption[];
+  customerUserFlagOptions: FilterOption[][];
+  lastActionUsers: FilterOption[];
   currentSearch: string;
   currentSalesmanId: string;
   currentCustomerTypeId: string;
@@ -512,6 +514,8 @@ export function CustomerSearchScreen({
                 statuses={statuses}
                 cities={cities}
                 states={states}
+                customerUserFlagOptions={customerUserFlagOptions}
+                lastActionUsers={lastActionUsers}
                 currentSearch={currentSearch}
                 currentSalesmanId={currentSalesmanId}
                 currentCustomerTypeId={currentCustomerTypeId}
