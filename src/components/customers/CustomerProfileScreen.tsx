@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo, useState } from "react";
 import { Home, Search } from "lucide-react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { AccessDataTable, type AccessColumn } from "@/components/access/AccessDataTable";
@@ -345,6 +346,133 @@ function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
   );
 }
 
+type BillRateFilter = "active" | "inactive" | "all";
+
+interface EditableBillRate extends CustomerBillRate {
+  userName: string;
+  timestamp: string;
+  sortOrder: number;
+}
+
+function CustomerBillRatesTab({ customer }: { customer: CustomerDetail }) {
+  const [filter, setFilter] = useState<BillRateFilter>("active");
+  const [search, setSearch] = useState("");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [rows, setRows] = useState<EditableBillRate[]>(() =>
+    customer.billRates.map((rate, index) => ({
+      ...rate,
+      userName: "",
+      timestamp: "",
+      sortOrder: index + 1,
+    })),
+  );
+
+  const visibleRows = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    return rows.filter((row) => {
+      const matchesFilter = filter === "all" || row.active === (filter === "active");
+      const matchesSearch = !term || [row.grade, row.billRate, row.note, row.userName].some((value) => String(value).toLowerCase().includes(term));
+      return matchesFilter && matchesSearch;
+    });
+  }, [filter, rows, search]);
+
+  function updateRow(id: string, field: keyof EditableBillRate, value: string | boolean | number) {
+    setRows((current) => current.map((row) => (row.billRateId === id ? { ...row, [field]: value } : row)));
+  }
+
+  function addRow() {
+    const id = `new-${Date.now()}`;
+    setRows((current) => [
+      ...current,
+      {
+        billRateId: id,
+        grade: "",
+        billRate: "",
+        note: "",
+        active: true,
+        userName: "",
+        timestamp: new Date().toLocaleString(),
+        sortOrder: current.length + 1,
+      },
+    ]);
+    setFilter("all");
+    setSelectedId(id);
+  }
+
+  function moveSelected(direction: -1 | 1) {
+    if (!selectedId) return;
+    setRows((current) => {
+      const index = current.findIndex((row) => row.billRateId === selectedId);
+      const nextIndex = index + direction;
+      if (index < 0 || nextIndex < 0 || nextIndex >= current.length) return current;
+      const next = [...current];
+      [next[index], next[nextIndex]] = [next[nextIndex], next[index]];
+      return next.map((row, rowIndex) => ({ ...row, sortOrder: rowIndex + 1 }));
+    });
+  }
+
+  function deleteSelected() {
+    if (!selectedId) return;
+    setRows((current) => current.filter((row) => row.billRateId !== selectedId));
+    setSelectedId(null);
+  }
+
+  return (
+    <section id="03-billrates" className="ac-customer-bill-rates">
+      <div className="ac-customer-bill-rate-actions" aria-label="Bill rate row actions">
+        <button type="button" onClick={() => moveSelected(-1)} disabled={!selectedId} aria-label="Move selected rate up">↑</button>
+        <button type="button" onClick={() => moveSelected(1)} disabled={!selectedId} aria-label="Move selected rate down">↓</button>
+        <button type="button" onClick={deleteSelected} disabled={!selectedId} aria-label="Delete selected rate">×</button>
+        <button type="button" onClick={addRow} className="ac-customer-bill-rate-add">+ Add Rate</button>
+      </div>
+
+      <div className="ac-customer-bill-rate-grid-wrap">
+        <table className="ac-customer-bill-rate-grid">
+          <thead>
+            <tr>
+              <th aria-label="Selected row" />
+              <th>Grade</th>
+              <th>Rate</th>
+              <th>Note</th>
+              <th>User Name</th>
+              <th>Timestamp</th>
+              <th>Sort Order</th>
+              <th>Active</th>
+            </tr>
+          </thead>
+          <tbody>
+            {visibleRows.map((row) => (
+              <tr key={row.billRateId} className={selectedId === row.billRateId ? "is-selected" : ""}>
+                <td>
+                  <input type="radio" name="selected-bill-rate" checked={selectedId === row.billRateId} onChange={() => setSelectedId(row.billRateId)} aria-label={`Select ${row.grade || "new rate"}`} />
+                </td>
+                <td><input value={row.grade} onFocus={() => setSelectedId(row.billRateId)} onChange={(event) => updateRow(row.billRateId, "grade", event.target.value)} /></td>
+                <td><input type="number" min="0" step="0.01" value={row.billRate} onFocus={() => setSelectedId(row.billRateId)} onChange={(event) => updateRow(row.billRateId, "billRate", event.target.value)} /></td>
+                <td><input value={row.note} onFocus={() => setSelectedId(row.billRateId)} onChange={(event) => updateRow(row.billRateId, "note", event.target.value)} /></td>
+                <td><input value={row.userName} onFocus={() => setSelectedId(row.billRateId)} onChange={(event) => updateRow(row.billRateId, "userName", event.target.value)} /></td>
+                <td><input value={row.timestamp} onFocus={() => setSelectedId(row.billRateId)} onChange={(event) => updateRow(row.billRateId, "timestamp", event.target.value)} /></td>
+                <td><input type="number" min="1" value={row.sortOrder} onFocus={() => setSelectedId(row.billRateId)} onChange={(event) => updateRow(row.billRateId, "sortOrder", Number(event.target.value))} /></td>
+                <td><input type="checkbox" checked={row.active} onFocus={() => setSelectedId(row.billRateId)} onChange={(event) => updateRow(row.billRateId, "active", event.target.checked)} /></td>
+              </tr>
+            ))}
+            {visibleRows.length === 0 ? <tr><td colSpan={8} className="ac-customer-bill-rate-empty">No rates match this filter.</td></tr> : null}
+          </tbody>
+        </table>
+        <div className="ac-customer-bill-rate-recordbar">Record: {visibleRows.length ? `1 of ${visibleRows.length}` : "0 of 0"} <span>{filter === "all" && !search ? "No Filter" : "Filtered"}</span><input aria-label="Search bill rates" placeholder="Search" value={search} onChange={(event) => setSearch(event.target.value)} /></div>
+      </div>
+
+      <fieldset className="ac-customer-bill-rate-filter">
+        <legend>Filter</legend>
+        {(["active", "inactive", "all"] as const).map((value) => (
+          <label key={value}><input type="radio" name="bill-rate-filter" checked={filter === value} onChange={() => setFilter(value)} />{value[0].toUpperCase() + value.slice(1)}</label>
+        ))}
+      </fieldset>
+
+      <p className="ac-customer-bill-rate-session-note">Edits on this screen are temporary and are not saved to the database.</p>
+    </section>
+  );
+}
+
 function CustomerProfileStub({ id, title }: { id: string; title: string }) {
   return (
     <section id={id} className="ac-customer-profile-stub">
@@ -355,6 +483,8 @@ function CustomerProfileStub({ id, title }: { id: string; title: string }) {
 }
 
 export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) {
+  const [activeTab, setActiveTab] = useState("01-basic");
+
   return (
     <div className="ac-customer-search-page flex min-h-0 flex-1 flex-col">
       <div className="ac-customer-search ac-customer-profile ac-tracking--modern flex min-h-0 flex-1 flex-col">
@@ -366,24 +496,18 @@ export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) 
               tabs={[...CUSTOMER_PROFILE_TABS]}
               className="ac-customer-search-view-tabs shrink-0 overflow-x-auto"
               sticky={false}
+              activeId={activeTab}
+              onTabChange={setActiveTab}
             />
           </div>
 
           <div className="ac-panel ac-panel-elevated ac-customer-profile-content min-h-0 flex-1">
             <div className="ac-customer-profile-body min-h-0 flex-1 overflow-y-auto">
-              <CustomerProfileBasicTab customer={customer} />
-              <CustomerProfileStub id="02-contacts" title="02 Contacts" />
-              <CustomerProfileStub id="03-billrates" title="03 Bill Rates" />
-              <CustomerProfileStub id="04-insurance" title="04 Insurance Info" />
-              <CustomerProfileStub id="05-sales" title="05 Sales" />
-              <CustomerProfileStub id="06-collections" title="06 Collections" />
-              <CustomerProfileStub id="07-wcc" title="07 Customer WCCs" />
-              <CustomerProfileStub id="08-inscert" title="08 Insurance Cert Req" />
-              <CustomerProfileStub id="09-options" title="09 Options" />
-              <CustomerProfileStub id="10-mult" title="10 Rate Multipliers" />
-              <CustomerProfileStub id="11-jobs" title="11 Jobs" />
-              <CustomerProfileStub id="12-saleshist" title="12 Sales History" />
-              <CustomerProfileStub id="13-segments" title="13 Segments" />
+              {activeTab === "01-basic" ? <CustomerProfileBasicTab customer={customer} /> : null}
+              {activeTab === "03-billrates" ? <CustomerBillRatesTab customer={customer} /> : null}
+              {activeTab !== "01-basic" && activeTab !== "03-billrates" ? (
+                <CustomerProfileStub id={activeTab} title={CUSTOMER_PROFILE_TABS.find((tab) => tab.id === activeTab)?.label ?? activeTab} />
+              ) : null}
             </div>
           </div>
         </div>
