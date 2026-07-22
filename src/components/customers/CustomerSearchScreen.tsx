@@ -1,13 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState, useTransition } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { HelpCircle, Table2 } from "lucide-react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { CustomerSearchViewsPanel } from "@/components/customers/CustomerSearchViewsPanel";
 import { CustomerSearchPagination } from "@/components/customers/CustomerSearchPagination";
-import { CustomerSearchLoadingOverlay } from "@/components/customers/CustomerSearchLoadingOverlay";
 import { CustomerPlaceholderControls } from "@/components/customers/CustomerPlaceholderControls";
 import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { Icon } from "@/components/ui/Icon";
@@ -43,6 +41,7 @@ interface CustomerSearchScreenProps {
 
 function cellValue(row: CustomerSearchRow, key: CustomerSearchColumnKey): string {
   if (key === "select") return "";
+  if (key === "name") return row.customerName;
   const value = row[key as keyof CustomerSearchRow];
   return value === null || value === undefined ? "" : String(value);
 }
@@ -70,8 +69,10 @@ function CustomerSearchTable({
   total,
   hasMore,
   query,
-  currentSortKey,
-  currentSortDirection,
+  initialSortKey,
+  initialSortDirection,
+  columnFilters,
+  onColumnFiltersChange,
   onHoverColumn,
 }: {
   customers: CustomerSearchRow[];
@@ -80,20 +81,50 @@ function CustomerSearchTable({
   total: number;
   hasMore: boolean;
   query: Record<string, string>;
-  currentSortKey: string;
-  currentSortDirection: "asc" | "desc";
+  initialSortKey: string;
+  initialSortDirection: "asc" | "desc";
+  columnFilters: Partial<Record<CustomerSearchColumnKey, string[]>>;
+  onColumnFiltersChange: (filters: Partial<Record<CustomerSearchColumnKey, string[]>>) => void;
   onHoverColumn: (label: string) => void;
 }) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [isSorting, startSorting] = useTransition();
+  const [sortKey, setSortKey] = useState<CustomerSearchColumnKey | "">(
+    CUSTOMER_SEARCH_COLUMNS.some((column) => column.key === initialSortKey) ? initialSortKey as CustomerSearchColumnKey : "",
+  );
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">(initialSortDirection);
+
+  const columnOptions = useMemo(() => Object.fromEntries(
+    CUSTOMER_SEARCH_COLUMNS.filter((column) => column.key !== "select").map((column) => [
+      column.key,
+      [...new Set(customers.map((row) => cellValue(row, column.key)))].sort((a, b) =>
+        a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }),
+      ),
+    ]),
+  ) as Partial<Record<CustomerSearchColumnKey, string[]>>, [customers]);
+
+  const displayedCustomers = useMemo(() => {
+    const filtered = customers.filter((row) => Object.entries(columnFilters).every(([key, selected]) =>
+      selected?.includes(cellValue(row, key as CustomerSearchColumnKey)),
+    ));
+    if (!sortKey || sortKey === "select") return filtered;
+    return [...filtered].sort((a, b) => {
+      const comparison = cellValue(a, sortKey).localeCompare(cellValue(b, sortKey), undefined, { numeric: true, sensitivity: "base" });
+      return sortDirection === "asc" ? comparison : -comparison;
+    });
+  }, [columnFilters, customers, sortDirection, sortKey]);
 
   function applySort(key: CustomerSearchColumnKey, direction: "asc" | "desc") {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("sortKey", key);
-    params.set("sortDirection", direction);
-    params.delete("page");
-    startSorting(() => router.push(`/customers?${params.toString()}`, { scroll: false }));
+    setSortKey(key);
+    setSortDirection(direction);
+  }
+
+  function toggleColumnValue(key: CustomerSearchColumnKey, value: string, checked: boolean) {
+    const options = columnOptions[key] ?? [];
+    const selected = columnFilters[key] ?? options;
+    const nextSelected = checked ? [...new Set([...selected, value])] : selected.filter((item) => item !== value);
+    const next = { ...columnFilters };
+    if (nextSelected.length === options.length) delete next[key];
+    else next[key] = nextSelected;
+    onColumnFiltersChange(next);
   }
 
   return (
@@ -121,7 +152,7 @@ function CustomerSearchTable({
                         <input
                           type="radio"
                           name={`sort-${col.key}`}
-                          checked={currentSortKey === col.key && currentSortDirection === "asc"}
+                          checked={sortKey === col.key && sortDirection === "asc"}
                           onChange={(event) => {
                             applySort(col.key, "asc");
                             const menu = event.currentTarget.closest("details");
@@ -134,7 +165,7 @@ function CustomerSearchTable({
                         <input
                           type="radio"
                           name={`sort-${col.key}`}
-                          checked={currentSortKey === col.key && currentSortDirection === "desc"}
+                          checked={sortKey === col.key && sortDirection === "desc"}
                           onChange={(event) => {
                             applySort(col.key, "desc");
                             const menu = event.currentTarget.closest("details");
@@ -143,6 +174,31 @@ function CustomerSearchTable({
                         />
                         Sort Z - A
                       </label>
+                      {col.key !== "select" ? (
+                        <>
+                          <div className="ac-customer-column-filter-divider" />
+                          <div className="ac-customer-column-filter-actions">
+                            <button type="button" onClick={() => {
+                              const next = { ...columnFilters };
+                              delete next[col.key];
+                              onColumnFiltersChange(next);
+                            }}>Select All</button>
+                            <button type="button" onClick={() => onColumnFiltersChange({ ...columnFilters, [col.key]: [] })}>Clear</button>
+                          </div>
+                          <div className="ac-customer-column-filter-values">
+                            {(columnOptions[col.key] ?? []).map((value) => (
+                              <label key={value || "__blank__"}>
+                                <input
+                                  type="checkbox"
+                                  checked={(columnFilters[col.key] ?? columnOptions[col.key] ?? []).includes(value)}
+                                  onChange={(event) => toggleColumnValue(col.key, value, event.target.checked)}
+                                />
+                                <span>{value || "(Blanks)"}</span>
+                              </label>
+                            ))}
+                          </div>
+                        </>
+                      ) : null}
                     </div>
                   </details>
                 </th>
@@ -150,17 +206,17 @@ function CustomerSearchTable({
             </tr>
           </thead>
           <tbody>
-            {customers.length === 0 ? (
+            {displayedCustomers.length === 0 ? (
               <tr>
                 <td
                   colSpan={CUSTOMER_SEARCH_COLUMNS.length}
                   className="!whitespace-normal py-6 text-center italic text-[#7a7a7a]"
                 >
-                  No customers found. Try adjusting your search or clearing the filters.
+                  No customers match the selected column filters.
                 </td>
               </tr>
             ) : (
-              customers.map((row) => (
+              displayedCustomers.map((row) => (
                 <tr key={row.customerId}>
                   {CUSTOMER_SEARCH_COLUMNS.map((col) => {
                     if (col.key === "select") {
@@ -217,13 +273,12 @@ function CustomerSearchTable({
         <CustomerSearchPagination
           page={page}
           pageSize={pageSize}
-          total={total}
-          rowCount={customers.length}
+          total={Object.keys(columnFilters).length ? displayedCustomers.length : total}
+          rowCount={displayedCustomers.length}
           hasMore={hasMore}
           query={query}
         />
       </div>
-      {isSorting && <CustomerSearchLoadingOverlay />}
     </div>
   );
 }
@@ -336,7 +391,7 @@ function CustomerSearchSidebar() {
   );
 }
 
-function CustomerSearchActionBar({ hoveredColumn }: { hoveredColumn: string }) {
+function CustomerSearchActionBar({ hoveredColumn, onClearFilters }: { hoveredColumn: string; onClearFilters: () => void }) {
   return (
     <div className="ac-customer-search-action-bar shrink-0">
       <div className="ac-customer-search-action-group">
@@ -372,9 +427,7 @@ function CustomerSearchActionBar({ hoveredColumn }: { hoveredColumn: string }) {
       <AccessButton xs disabled className="ac-customer-search-btn-transfer">
         Transfer to Deleted
       </AccessButton>
-      <Link href="/customers" className="ac-customer-search-clear-link">
-        <AccessButton xs>Clear Filters</AccessButton>
-      </Link>
+      <AccessButton xs onClick={onClearFilters}>Clear Filters</AccessButton>
     </div>
   );
 }
@@ -418,6 +471,7 @@ export function CustomerSearchScreen({
   hasMore,
 }: CustomerSearchScreenProps) {
   const [hoveredColumn, setHoveredColumn] = useState("");
+  const [columnFilters, setColumnFilters] = useState<Partial<Record<CustomerSearchColumnKey, string[]>>>({});
   const paginationQuery = Object.fromEntries(
     Object.entries({
       search: currentSearch,
@@ -462,7 +516,7 @@ export function CustomerSearchScreen({
 
               <CustomerSearchUtilityRail />
             </div>
-            <CustomerSearchActionBar hoveredColumn={hoveredColumn} />
+            <CustomerSearchActionBar hoveredColumn={hoveredColumn} onClearFilters={() => setColumnFilters({})} />
           </div>
 
           <div className="ac-panel ac-panel-elevated ac-customer-search-results-panel min-h-0 flex-1">
@@ -484,8 +538,10 @@ export function CustomerSearchScreen({
                   total={total}
                   hasMore={hasMore}
                   query={paginationQuery}
-                  currentSortKey={currentSortKey}
-                  currentSortDirection={currentSortDirection}
+                  initialSortKey={currentSortKey}
+                  initialSortDirection={currentSortDirection}
+                  columnFilters={columnFilters}
+                  onColumnFiltersChange={setColumnFilters}
                   onHoverColumn={setHoveredColumn}
                 />
               </Suspense>

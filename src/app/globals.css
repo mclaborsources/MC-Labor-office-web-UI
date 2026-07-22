@@ -4914,7 +4914,8 @@ body {
 .ac-customer-column-menu-popover {
   position: fixed;
   z-index: 90;
-  min-width: 9rem;
+  min-width: 13rem;
+  max-width: 18rem;
   margin-top: 0.2rem;
   border: 1px solid #8b8b8b;
   background: #fff;
@@ -4922,6 +4923,44 @@ body {
   color: #161616;
   box-shadow: 0 3px 8px rgb(0 0 0 / 25%);
   text-align: left;
+}
+
+.ac-customer-column-filter-divider {
+  height: 1px;
+  margin: 0.25rem 0;
+  background: #b8b8b8;
+}
+
+.ac-customer-column-filter-actions {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.15rem 0.35rem 0.3rem;
+}
+
+.ac-customer-column-filter-actions button {
+  flex: 1;
+  min-height: 24px;
+  border: 1px solid #8b8b8b;
+  background: linear-gradient(#fff, #e2e2e2);
+  color: #111;
+  font-size: 11px;
+}
+
+.ac-customer-column-filter-values {
+  max-height: 14rem;
+  overflow-y: auto;
+  border: 1px solid #c7c7c7;
+  background: #fff;
+}
+
+.ac-customer-column-filter-values label {
+  min-width: 0;
+  padding: 0.25rem 0.4rem;
+}
+
+.ac-customer-column-filter-values label span {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ac-customer-column-menu-popover label {
