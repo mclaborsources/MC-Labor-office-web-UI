@@ -465,6 +465,8 @@ export function CustomerSearchScreen({
   statuses,
   cities,
   states,
+  customerUserFlagOptions,
+  lastActionUsers,
   currentSearch,
   currentSalesmanId,
   currentCustomerTypeId,
