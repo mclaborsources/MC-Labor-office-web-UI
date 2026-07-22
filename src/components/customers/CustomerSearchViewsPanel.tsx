@@ -488,8 +488,11 @@ function InternetSearchTab() {
   return (
     <div className="ac-customer-search-internet-tab ac-search-views-tab-pane">
       <div className="ac-customer-search-internet-top">
-        <select disabled className="ac-select ac-customer-search-internet-county" defaultValue="" aria-label="County">
+        <select className="ac-select ac-customer-search-internet-county" defaultValue="" aria-label="County">
           <option value="">&lt;County&gt;</option>
+          {CUSTOMER_VIEWS_COUNTY_OPTIONS.filter((county) => county !== "All").map((county) => (
+            <option key={county} value={county}>{county}</option>
+          ))}
         </select>
       </div>
       <div className="ac-customer-search-internet-actions">
