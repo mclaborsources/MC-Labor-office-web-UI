@@ -28,9 +28,16 @@ interface TrackingScreenProps {
   userDisplayName?: string;
 }
 
-const TOOLBAR_ACTIONS = [
-  "Health Ins",
-  "Bonus Exp",
+const TOOLBAR_ALERT_ACTIONS = [
+  "Job App Problems",
+  "Missing WC",
+  "Expired WC",
+  "Contracts",
+  "Missing GL",
+  "Expired GL",
+];
+
+const TOOLBAR_ADMIN_ACTIONS = [
   "Office Staff Notes",
   "New Job App",
 ];
@@ -410,16 +417,19 @@ export function TrackingScreen({
         <select disabled className="ac-select" defaultValue="">
           <option value="">&lt;Reports&gt;</option>
         </select>
-        <AccessToolbarDivider />
+        <AccessButton disabled>Health Ins</AccessButton>
+        <AccessButton disabled className="ac-tracking-toolbar-alert">Bonus Exp</AccessButton>
         <select disabled className="ac-select" defaultValue="">
           <option value="">&lt;Job Application&gt;</option>
         </select>
-        {TOOLBAR_ACTIONS.map((label) => (
-          <AccessButton key={label} disabled title="Read-only preview">
+        {TOOLBAR_ALERT_ACTIONS.map((label) => (
+          <AccessButton key={label} disabled title="Read-only preview" className="ac-tracking-toolbar-alert">
             {label}
           </AccessButton>
         ))}
-        <AccessToolbarDivider />
+        {TOOLBAR_ADMIN_ACTIONS.map((label) => (
+          <AccessButton key={label} disabled title="Read-only preview">{label}</AccessButton>
+        ))}
         <AccessButton variant="go" disabled title="Read-only preview" className="shrink-0">
           WCC Payroll / Sales Report by Customer
         </AccessButton>
