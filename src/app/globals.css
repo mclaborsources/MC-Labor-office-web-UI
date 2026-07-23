@@ -6855,6 +6855,77 @@ body {
   border-radius: 0;
 }
 
+/* Access uses light, compact form typography rather than dashboard-weight text. */
+.ac-customer-profile,
+.ac-customer-profile button,
+.ac-customer-profile input,
+.ac-customer-profile select,
+.ac-customer-profile textarea {
+  font-family: Arial, "Segoe UI", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.ac-customer-profile {
+  font-size: 13px;
+}
+
+.ac-customer-profile .ac-flabel,
+.ac-customer-profile-field .ac-flabel,
+.ac-customer-profile-inline-field .ac-flabel,
+.ac-customer-profile-subtypes-label,
+.ac-customer-profile-check,
+.ac-customer-profile-radio,
+.ac-customer-profile-toolbar-btn.ac-btn,
+.ac-customer-profile .ac-btn-xs,
+.ac-customer-profile-shell .ac-tab,
+.ac-customer-profile-links-title,
+.ac-customer-profile-wcc-title {
+  font-weight: 400;
+}
+
+.ac-customer-profile .ac-flabel,
+.ac-customer-profile-field .ac-flabel,
+.ac-customer-profile-inline-field .ac-flabel {
+  color: #000;
+  font-size: 13px;
+  text-transform: none;
+}
+
+.ac-customer-profile .ac-input,
+.ac-customer-profile .ac-select,
+.ac-customer-profile textarea {
+  color: #000;
+  font-size: 13px;
+}
+
+.ac-customer-profile .ac-btn {
+  color: #000;
+  font-size: 13px;
+  line-height: 1.15;
+}
+
+.ac-customer-profile-shell .ac-tab-active {
+  font-weight: 400;
+}
+
+.ac-customer-profile-links-head,
+.ac-customer-insurance-carrier,
+.ac-customer-sales-folder-title {
+  font-weight: 700;
+}
+
+.ac-customer-profile .ac-customer-profile-spare-btn.ac-btn,
+.ac-customer-profile .ac-customer-profile-research-btn.ac-btn,
+.ac-customer-profile .ac-customer-sales-transfer.ac-btn {
+  color: #fff;
+}
+
+.ac-customer-profile .ac-customer-profile-jobs-btn.ac-btn,
+.ac-customer-profile .ac-customer-profile-save-btn.ac-btn {
+  color: #b00000;
+}
+
 .ac-customer-profile-save-btn.ac-btn {
   margin-left: auto;
   color: #b00000;
