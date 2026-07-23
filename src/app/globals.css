@@ -6888,10 +6888,10 @@ body {
 
 .ac-customer-profile-footer-fields {
   position: relative;
-  grid-template-columns: 280px 196px 430px;
+  grid-template-columns: 280px 240px 430px;
   grid-template-rows: 28px 28px;
   gap: 3px 28px;
-  width: min(962px, 100%);
+  width: min(1006px, 100%);
   max-width: 100%;
   margin-top: 18px;
   margin-left: -9px;
