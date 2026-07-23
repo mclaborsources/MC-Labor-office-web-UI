@@ -113,6 +113,7 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
               Credit History
             </button>
           </div>
+          <ProfileField label="" value="" className="ac-customer-profile-credit-history-field" />
           <ProfileField label="Customer Since" value={customer.entryTimestamp} />
           <ProfileField label="Contract Date" value="" />
         </div>

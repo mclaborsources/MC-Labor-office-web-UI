@@ -6415,7 +6415,7 @@ body {
 }
 
 .ac-customer-profile-row-1 {
-  grid-template-columns: minmax(520px, 0.95fr) minmax(610px, 1.08fr) minmax(430px, 1fr);
+  grid-template-columns: minmax(500px, 0.9fr) minmax(720px, 1.2fr) minmax(430px, 1fr);
   min-height: 70px;
   gap: 12px;
   align-items: start;
@@ -6443,6 +6443,9 @@ body {
 .ac-customer-profile-row-1-center {
   align-items: flex-start;
   padding-top: 0;
+  position: relative;
+  top: -14px;
+  left: -24px;
 }
 
 .ac-customer-profile-mini-tabs {
@@ -6452,12 +6455,20 @@ body {
 }
 
 .ac-customer-profile-mini-tab {
-  min-width: 88px;
+  min-width: 0;
   padding: 4px 9px;
   border-radius: 0;
   background: #d7d7d7;
   color: #000;
   font-size: 12px;
+}
+
+.ac-customer-profile-mini-tab:first-child {
+  width: 77px;
+}
+
+.ac-customer-profile-mini-tab:last-child {
+  width: 100px;
 }
 
 .ac-customer-profile-mini-tab--active {
@@ -6474,8 +6485,20 @@ body {
   width: 85px;
 }
 
+.ac-customer-profile-row-1-center .ac-customer-profile-credit-history-field {
+  display: block;
+  width: 137px;
+  min-width: 137px;
+}
+
+.ac-customer-profile-row-1-center .ac-customer-profile-credit-history-field .ac-input {
+  width: 137px;
+}
+
 .ac-customer-profile-row-1-right {
   align-items: flex-start;
+  position: relative;
+  top: -14px;
   padding-top: 15px;
 }
 
@@ -6525,8 +6548,8 @@ body {
 
 .ac-customer-profile-row-2 {
   position: absolute;
-  top: 43px;
-  left: 562px;
+  top: 29px;
+  left: 500px;
   z-index: 2;
   justify-content: flex-start;
   flex-wrap: nowrap;
@@ -6540,6 +6563,16 @@ body {
   max-width: none;
   flex: none;
   border-radius: 0;
+}
+
+.ac-customer-profile-row-2 .ac-customer-profile-toolbar-btn:nth-child(4) {
+  width: 124px;
+  min-width: 124px;
+}
+
+.ac-customer-profile-row-2 .ac-customer-profile-toolbar-btn:nth-child(5) {
+  width: 126px;
+  min-width: 126px;
 }
 
 .ac-customer-profile-spare-btn.ac-btn {
