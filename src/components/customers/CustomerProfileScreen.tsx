@@ -33,10 +33,20 @@ function ProfileField({
   mono?: boolean;
   className?: string;
 }) {
+  const normalizedLabel = label.toLowerCase();
+  const inputType =
+    normalizedLabel.includes("email") ? "email"
+      : normalizedLabel.includes("phone") || normalizedLabel.includes("fax") || normalizedLabel.includes("cell") ? "tel"
+        : normalizedLabel.includes("web") || normalizedLabel.includes("linkedin") ? "url"
+          : normalizedLabel === "zip" ? "text"
+            : normalizedLabel.includes("amount") || normalizedLabel.includes("revenue") || normalizedLabel.includes("employee size") || normalizedLabel.includes("jobs saved") ? "number"
+              : normalizedLabel.includes("contract date") || normalizedLabel.includes("issue date") || normalizedLabel.includes("expire date") ? "date"
+                : "text";
+
   return (
     <label className={`ac-customer-profile-field ${wide ? "ac-customer-profile-field--wide" : ""} ${className}`}>
       <span className="ac-flabel">{label}</span>
-      <input readOnly className={`ac-input ${mono ? "font-mono" : ""}`} value={value ?? ""} aria-label={label} />
+      <input type={inputType} className={`ac-input ${mono ? "font-mono" : ""}`} defaultValue={value ?? ""} aria-label={label} />
     </label>
   );
 }
@@ -57,7 +67,7 @@ function ProfileSelect({
   return (
     <label className={`ac-customer-profile-field ${wide ? "ac-customer-profile-field--wide" : ""} ${className} ${!label ? "ac-customer-profile-field--no-label" : ""}`}>
       {label ? <span className="ac-flabel">{label}</span> : null}
-      <select disabled className="ac-select" value={value ?? ""} aria-label={label || "Select"}>
+      <select className="ac-select" defaultValue={value ?? ""} aria-label={label || "Select"}>
         {options.map((opt) => (
           <option key={opt.value || opt.label} value={opt.value}>
             {opt.label}
@@ -75,30 +85,30 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
         <div className="ac-customer-profile-row-1-left">
           <label className="ac-customer-profile-inline-field">
             <span className="ac-flabel">Status</span>
-            <select disabled className="ac-select" defaultValue="">
+            <select className="ac-select" defaultValue="">
               <option value="">[Any]</option>
               {customer.status ? <option value={customer.status}>{customer.status}</option> : null}
             </select>
           </label>
           <label className="ac-customer-profile-inline-field ac-customer-profile-quick-search">
             <span className="ac-flabel">Customers Quick Search</span>
-            <input readOnly className="ac-input" value={customer.customerName ?? ""} />
+            <input className="ac-input" defaultValue={customer.customerName ?? ""} />
           </label>
           <div className="ac-customer-profile-search-match">
             <label className="ac-customer-profile-radio">
-              <input type="radio" name="cust-search-match" defaultChecked disabled />
+              <input type="radio" name="cust-search-match" defaultChecked />
               <span>Like</span>
             </label>
             <label className="ac-customer-profile-radio">
-              <input type="radio" name="cust-search-match" disabled />
+              <input type="radio" name="cust-search-match" />
               <span>=</span>
             </label>
           </div>
-          <AccessButton xs disabled icon={Search}>
+          <AccessButton xs icon={Search}>
             Search
           </AccessButton>
           <Link href={`/jobs?customerId=${customer.customerId}`}>
-            <AccessButton xs disabled className="ac-customer-profile-jobs-btn">
+            <AccessButton xs className="ac-customer-profile-jobs-btn">
               Jobs
             </AccessButton>
           </Link>
@@ -106,10 +116,10 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
 
         <div className="ac-customer-profile-row-1-center">
           <div className="ac-customer-profile-mini-tabs">
-            <button type="button" className="ac-customer-profile-mini-tab ac-customer-profile-mini-tab--active" disabled>
+            <button type="button" className="ac-customer-profile-mini-tab ac-customer-profile-mini-tab--active">
               Customer
             </button>
-            <button type="button" className="ac-customer-profile-mini-tab" disabled>
+            <button type="button" className="ac-customer-profile-mini-tab">
               Credit History
             </button>
           </div>
@@ -123,31 +133,31 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
             <span className="ac-flabel">Library Card #</span>
             <div className="ac-customer-profile-library-box" aria-hidden />
           </div>
-          <AccessButton xs disabled className="ac-customer-profile-research-btn">
+          <AccessButton xs className="ac-customer-profile-research-btn">
             RE-SEARCH
           </AccessButton>
-          <select disabled size={3} className="ac-select ac-customer-profile-step-list" defaultValue="1">
+          <select size={3} className="ac-select ac-customer-profile-step-list" defaultValue="1">
             <option value="1">Step 1: Ma Board</option>
             <option value="2">Step 2: Corporate Lookup</option>
             <option value="3">Step 3: Google</option>
           </select>
           <div className="ac-customer-profile-step-nav">
-            <AccessButton xs disabled className="ac-customer-profile-step-arrow">
+            <AccessButton xs className="ac-customer-profile-step-arrow">
               ►
             </AccessButton>
-            <button type="button" className="ac-customer-profile-util-icon" disabled aria-label="Document" />
-            <button type="button" className="ac-customer-profile-util-icon ac-customer-profile-util-icon--gear" disabled aria-label="Settings" />
+            <button type="button" className="ac-customer-profile-util-icon" aria-label="Document" />
+            <button type="button" className="ac-customer-profile-util-icon ac-customer-profile-util-icon--gear" aria-label="Settings" />
           </div>
           <span className="ac-customer-profile-delete-link">Delete | 037</span>
         </div>
       </div>
 
       <div className="ac-customer-profile-row ac-customer-profile-row-2">
-        <AccessButton xs disabled className="ac-customer-profile-spare-btn">
+        <AccessButton xs className="ac-customer-profile-spare-btn">
           Spare 2
         </AccessButton>
         {CUSTOMER_PROFILE_TOOLBAR_BUTTONS.map((label) => (
-          <AccessButton key={label} xs disabled className="ac-customer-profile-toolbar-btn">
+          <AccessButton key={label} xs className="ac-customer-profile-toolbar-btn">
             {label}
           </AccessButton>
         ))}
@@ -155,11 +165,11 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
 
       <div className="ac-customer-profile-row ac-customer-profile-row-3">
         <ProfileField label="Customer" value={customer.customerName} className="ac-customer-profile-customer-name" />
-        <button type="button" className="ac-customer-profile-icon-btn ac-customer-profile-icon-btn--doc" disabled aria-label="Copy" />
-        <button type="button" className="ac-customer-profile-icon-btn" disabled aria-label="Home">
+        <button type="button" className="ac-customer-profile-icon-btn ac-customer-profile-icon-btn--doc" aria-label="Copy" />
+        <button type="button" className="ac-customer-profile-icon-btn" aria-label="Home">
           <Icon icon={Home} size="xs" />
         </button>
-        <button type="button" className="ac-customer-profile-icon-btn ac-customer-profile-icon-btn--g" disabled aria-label="Google">
+        <button type="button" className="ac-customer-profile-icon-btn ac-customer-profile-icon-btn--g" aria-label="Google">
           G
         </button>
         <ProfileField label="Status" value={customer.status} />
@@ -211,7 +221,7 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
             }
           />
         ))}
-        <AccessButton xs disabled className="ac-customer-profile-save-btn">
+        <AccessButton xs className="ac-customer-profile-save-btn">
           Save | 037
         </AccessButton>
       </div>
@@ -243,7 +253,7 @@ function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
           <ProfileField label="City/State" value={cityState} />
           <ProfileField label="Zip" value={customer.zip} />
           <label className="ac-customer-profile-check">
-            <input type="checkbox" disabled />
+            <input type="checkbox" />
             <span>Different Mailing Address</span>
           </label>
           <ProfileField label="Street" value={customer.mailStreet} wide />
@@ -270,7 +280,7 @@ function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
 
         <div className="ac-customer-profile-communication">
           <label className="ac-customer-profile-check">
-            <input type="checkbox" disabled />
+            <input type="checkbox" />
             <span>No Communication</span>
           </label>
           <div className="ac-customer-profile-meta-pair">
@@ -278,7 +288,7 @@ function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
             <ProfileField label="Date" value="" />
           </div>
           <label className="ac-customer-profile-check">
-            <input type="checkbox" disabled />
+            <input type="checkbox" />
             <span>Return to Sender</span>
           </label>
           <div className="ac-customer-profile-meta-pair">
@@ -290,11 +300,11 @@ function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
         <div className="ac-customer-profile-notes">
           <label className="ac-customer-profile-note">
             <span className="ac-flabel">Customer Note Shown in Tracking</span>
-            <textarea readOnly className="ac-input ac-customer-profile-textarea" value={customer.customerNote ?? ""} />
+            <textarea className="ac-input ac-customer-profile-textarea" defaultValue={customer.customerNote ?? ""} />
           </label>
           <label className="ac-customer-profile-note ac-customer-profile-note--short">
             <span className="ac-flabel">Invoice Note Shown in Tracking</span>
-            <textarea readOnly className="ac-input ac-customer-profile-textarea" value={customer.invoiceNote ?? ""} />
+            <textarea className="ac-input ac-customer-profile-textarea" defaultValue={customer.invoiceNote ?? ""} />
           </label>
         </div>
       </div>
@@ -320,7 +330,7 @@ function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
               <div key={entity} className="ac-customer-profile-links-col">
                 <div className="ac-customer-profile-links-head">{entity}</div>
                 {CUSTOMER_PROFILE_LINK_ACTIONS.map((action) => (
-                  <AccessButton key={action} xs disabled className="ac-customer-profile-link-btn">
+                  <AccessButton key={action} xs className="ac-customer-profile-link-btn">
                     {action}
                   </AccessButton>
                 ))}
@@ -331,11 +341,11 @@ function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
       </div>
 
       <div className="ac-customer-profile-folder-row">
-        <AccessButton xs disabled>
+        <AccessButton xs>
           Open Company Folder
         </AccessButton>
         <ProfileField label="Folder" value="" wide className="ac-customer-profile-folder-field" />
-        <AccessButton xs disabled>
+        <AccessButton xs>
           Browse
         </AccessButton>
       </div>
@@ -504,9 +514,9 @@ function CustomerInsuranceInfoTab() {
         {CUSTOMER_INSURANCE_CARRIERS.map((carrier) => (
           <input
             key={`${carrier}-wc`}
-            readOnly
+            type="date"
             className="ac-input ac-customer-insurance-date"
-            value=""
+            defaultValue=""
             aria-label={`${carrier} WC expiration date`}
           />
         ))}
@@ -515,9 +525,9 @@ function CustomerInsuranceInfoTab() {
         {CUSTOMER_INSURANCE_CARRIERS.map((carrier) => (
           <input
             key={`${carrier}-gl`}
-            readOnly
+            type="date"
             className="ac-input ac-customer-insurance-date"
-            value=""
+            defaultValue=""
             aria-label={`${carrier} GL expiration date`}
           />
         ))}
@@ -525,7 +535,7 @@ function CustomerInsuranceInfoTab() {
 
       <label className="ac-customer-insurance-note">
         <span>Note</span>
-        <textarea readOnly className="ac-input" value="" aria-label="Insurance note" />
+        <textarea className="ac-input" defaultValue="" aria-label="Insurance note" />
       </label>
     </section>
   );
@@ -584,11 +594,10 @@ function CustomerSalesFolderPanel({ future = false }: { future?: boolean }) {
       </div>
       <label className="ac-customer-sales-folder-field">
         <span>Folder</span>
-        <textarea readOnly value="" aria-label={`${future ? "Future sales" : "Companies"} folder`} />
+        <textarea defaultValue="" aria-label={`${future ? "Future sales" : "Companies"} folder`} />
       </label>
       <AccessButton
         xs
-        disabled
         className={`ac-customer-sales-transfer ${future ? "ac-customer-sales-transfer--future" : ""}`}
       >
         Transfer Folders
@@ -597,10 +606,10 @@ function CustomerSalesFolderPanel({ future = false }: { future?: boolean }) {
         <br />
         {future ? "Future Sales to COMPANIES" : "Companies to FUTURE SALES"}
       </AccessButton>
-      <AccessButton xs disabled className="ac-customer-sales-folder-action">
+      <AccessButton xs className="ac-customer-sales-folder-action">
         Create Company Folder in 00 Companies{future ? " - Future Sales" : ""}
       </AccessButton>
-      <AccessButton xs disabled className="ac-customer-sales-folder-action ac-customer-sales-folder-open">
+      <AccessButton xs className="ac-customer-sales-folder-action ac-customer-sales-folder-open">
         Open Company Folder
       </AccessButton>
     </section>
@@ -615,18 +624,18 @@ function CustomerSalesTab() {
           <SalesSelect label="Contract With" options={CUSTOMER_SALES_COMPANIES} />
           <div className="ac-customer-sales-history-row">
             <SalesSelect label="Contract Salesman" options={CUSTOMER_SALES_PEOPLE} />
-            <AccessButton xs disabled>History</AccessButton>
+            <AccessButton xs>History</AccessButton>
           </div>
           <label className="ac-customer-sales-date-field">
             <span>Date on Contract</span>
-            <input readOnly className="ac-input" value="" aria-label="Date on Contract" />
+            <input type="date" className="ac-input" defaultValue="" aria-label="Date on Contract" />
           </label>
         </div>
 
         <div className="ac-customer-sales-contract-right">
           <div className="ac-customer-sales-history-row">
             <SalesSelect label="Salesman (Admin)" options={CUSTOMER_SALES_PEOPLE} />
-            <AccessButton xs disabled>History</AccessButton>
+            <AccessButton xs>History</AccessButton>
           </div>
           <SalesSelect
             label="Extra Verbiage on Contract"
@@ -648,8 +657,8 @@ function CustomerSalesTab() {
         ].map(([label, hint]) => (
           <div key={label} className="ac-customer-sales-rate-row">
             <span>{label}</span>
-            <input readOnly className="ac-input" value="" aria-label={`${label} from`} />
-            <input readOnly className="ac-input" value="" aria-label={`${label} to`} />
+            <input type="number" min="0" step="0.01" className="ac-input" defaultValue="" aria-label={`${label} from`} />
+            <input type="number" min="0" step="0.01" className="ac-input" defaultValue="" aria-label={`${label} to`} />
             <strong>{hint}</strong>
           </div>
         ))}
@@ -667,20 +676,20 @@ function CustomerSalesTab() {
           defaultValue="Industrial Power Group, Inc."
         />
         <div className="ac-customer-sales-contract-actions">
-          <AccessButton xs disabled>Copy IPG Sales Contract</AccessButton>
-          <AccessButton xs disabled>Populate IPG Sales Contract</AccessButton>
+          <AccessButton xs>Copy IPG Sales Contract</AccessButton>
+          <AccessButton xs>Populate IPG Sales Contract</AccessButton>
         </div>
         <label className="ac-customer-sales-small-field">
           <span>User</span>
-          <input readOnly className="ac-input" value="" aria-label="Contract user" />
+          <input className="ac-input" defaultValue="" aria-label="Contract user" />
         </label>
         <label className="ac-customer-sales-small-field">
           <span>Date</span>
-          <input readOnly className="ac-input" value="" aria-label="Contract update date" />
+          <input type="date" className="ac-input" defaultValue="" aria-label="Contract update date" />
         </label>
         <label className="ac-customer-sales-updated">
           <span>Updated Contract</span>
-          <input type="checkbox" disabled />
+          <input type="checkbox" />
         </label>
       </div>
     </section>
@@ -793,7 +802,7 @@ function CustomerCollectionsTab() {
         </fieldset>
       </div>
 
-      <AccessButton xs disabled className="ac-customer-collections-folder-btn">
+      <AccessButton xs className="ac-customer-collections-folder-btn">
         Create Folders for Bad Debt and Small Claims
       </AccessButton>
     </section>
@@ -1074,7 +1083,7 @@ function CustomerOptionsTab() {
             <OptionCheck label="Show Customer in Tracking" />
             <div className="ac-customer-options-history-line">
               <OptionCheck label="Cannot Make Assignments" />
-              <AccessButton xs disabled>History</AccessButton>
+              <AccessButton xs>History</AccessButton>
               <span className="ac-customer-options-arrow">◄</span>
             </div>
           </div>
@@ -1087,7 +1096,7 @@ function CustomerOptionsTab() {
         </div>
 
         <div className="ac-customer-options-right">
-          <AccessButton xs disabled className="ac-customer-options-associations">
+          <AccessButton xs className="ac-customer-options-associations">
             Edit &quot;Contract With&quot; and &quot;Payroll Company On Site&quot; Associations
           </AccessButton>
 
@@ -1123,11 +1132,11 @@ function CustomerOptionsTab() {
               <OptionCheck label="Customer is Set Up" />
               <label><span>Hunter</span><select defaultValue=""><option value="">Select…</option>{CUSTOMER_SALES_PEOPLE.map((person) => <option key={person}>{person}</option>)}</select></label>
               <label><span>Credit History</span><select defaultValue=""><option value="">Select…</option><option>Excellent</option><option>Good</option><option>Fair</option><option>Hold</option></select></label>
-              <AccessButton xs disabled>History</AccessButton>
+              <AccessButton xs>History</AccessButton>
               <label><span>Term Limit</span><select defaultValue=""><option value="">Select…</option><option>15</option><option>30</option><option>45</option><option>60</option><option>90</option></select><em>(Days)</em></label>
-              <AccessButton xs disabled>History</AccessButton>
+              <AccessButton xs>History</AccessButton>
               <label><span>Legal Status</span><select defaultValue="Non Legal"><option>Non Legal</option><option>Attorney Review</option><option>Collections</option><option>Judgment</option><option>Resolved</option></select></label>
-              <AccessButton xs disabled>History</AccessButton>
+              <AccessButton xs>History</AccessButton>
             </div>
           </div>
         </div>
@@ -1204,9 +1213,9 @@ function CustomerJobsTab({ customer }: { customer: CustomerDetail }) {
             ))}
           </fieldset>
           <div className="ac-customer-jobs-actions">
-            <AccessButton xs disabled>New Job</AccessButton>
-            <div><AccessButton xs disabled>Copy Job</AccessButton><em>Select one job first</em></div>
-            <div><AccessButton xs disabled>Change Status</AccessButton><em>Select one or more jobs first</em></div>
+            <AccessButton xs>New Job</AccessButton>
+            <div><AccessButton xs>Copy Job</AccessButton><em>Select one job first</em></div>
+            <div><AccessButton xs>Change Status</AccessButton><em>Select one or more jobs first</em></div>
           </div>
         </div>
         <div className="ac-customer-jobs-select-row">
@@ -1272,22 +1281,22 @@ function CustomerSalesHistoryTab({ customer }: { customer: CustomerDetail }) {
             ["Street", customer.street],
             ["City, St.", cityState],
             ["Zip", customer.zip],
-          ].map(([label, value]) => <label key={label}><span>{label}</span><input readOnly value={value} /><input type="checkbox" aria-label={`Verify ${label}`} /></label>)}
+          ].map(([label, value]) => <label key={label}><span>{label}</span><input defaultValue={value} /><input type="checkbox" aria-label={`Verify ${label}`} /></label>)}
         </div>
         <div className="ac-customer-sales-verify-group ac-customer-sales-mailing">
           <OptionCheck label="Different Mailing Address" />
-          <label><span>Street</span><input readOnly value={customer.mailStreet} /><input type="checkbox" aria-label="Verify mailing street" /></label>
-          <label><span>City, St.</span><input readOnly value={[customer.mailCity, customer.mailState].filter(Boolean).join(", ")} /><input type="checkbox" aria-label="Verify mailing city state" /></label>
-          <label><span>Zip</span><input readOnly value={customer.mailZip} /><input type="checkbox" aria-label="Verify mailing zip" /></label>
+          <label><span>Street</span><input defaultValue={customer.mailStreet} /><input type="checkbox" aria-label="Verify mailing street" /></label>
+          <label><span>City, St.</span><input defaultValue={[customer.mailCity, customer.mailState].filter(Boolean).join(", ")} /><input type="checkbox" aria-label="Verify mailing city state" /></label>
+          <label><span>Zip</span><input inputMode="numeric" defaultValue={customer.mailZip} /><input type="checkbox" aria-label="Verify mailing zip" /></label>
         </div>
         <div className="ac-customer-sales-verify-group">
-          <label><span>Phone</span><input readOnly value={customer.phone} /><input type="checkbox" aria-label="Verify phone" /></label>
-          <label><span>Fax</span><input readOnly value={customer.fax} /><input type="checkbox" aria-label="Verify fax" /></label>
+          <label><span>Phone</span><input type="tel" defaultValue={customer.phone} /><input type="checkbox" aria-label="Verify phone" /></label>
+          <label><span>Fax</span><input type="tel" defaultValue={customer.fax} /><input type="checkbox" aria-label="Verify fax" /></label>
           <label><span>Cust. Type</span><select defaultValue={customer.customerType}><option>{customer.customerType}</option><option>General Contractor</option><option>Electrical</option><option>Mechanical</option></select><input type="checkbox" aria-label="Verify customer type" /></label>
         </div>
         <div className="ac-customer-sales-verify-group ac-customer-sales-web">
-          <label><span>Corp Web Site</span><input readOnly value={customer.corpWebsite} /><input type="checkbox" aria-label="Verify corporate website" /></label>
-          <label><span>Cust. Web Site</span><input readOnly value={customer.website} /><input type="checkbox" aria-label="Verify customer website" /></label>
+          <label><span>Corp Web Site</span><input type="url" defaultValue={customer.corpWebsite} /><input type="checkbox" aria-label="Verify corporate website" /></label>
+          <label><span>Cust. Web Site</span><input type="url" defaultValue={customer.website} /><input type="checkbox" aria-label="Verify customer website" /></label>
         </div>
       </div>
 
@@ -1316,16 +1325,16 @@ function CustomerSalesHistoryTab({ customer }: { customer: CustomerDetail }) {
           <label><span>Fast Action</span><select><option value="">Select…</option>{SALES_HISTORY_ACTIONS.map((x) => <option key={x}>{x}</option>)}</select></label>
           <OptionCheck label="Sales Package Sent" />
           <label><span>Future Call:</span><input /></label>
-          <AccessButton xs disabled>Clear</AccessButton><AccessButton xs disabled>History</AccessButton>
+          <AccessButton xs>Clear</AccessButton><AccessButton xs>History</AccessButton>
         </aside>
       </div>
 
       <div className="ac-customer-sales-research">
         <div className="ac-customer-sales-vertical">SEARCH</div>
         <div className="ac-customer-sales-search-terms"><strong>Search Terms</strong><div>{customer.customerName}<br />{customer.customerName}, {customer.street}, {cityState}<br />{customer.contacts[0]?.firstName} {customer.contacts[0]?.lastName}, {customer.street}, {cityState}</div></div>
-        <div className="ac-customer-sales-search-buttons">{["All", "Customer", "Contact", "City, State", "USA", "Card #", "True P", "Google", "LinkedIn", "Blue B", "Facebook", "BBB", "Corp Lk"].map((x) => <AccessButton key={x} xs disabled>{x}</AccessButton>)}</div>
+        <div className="ac-customer-sales-search-buttons">{["All", "Customer", "Contact", "City, State", "USA", "Card #", "True P", "Google", "LinkedIn", "Blue B", "Facebook", "BBB", "Corp Lk"].map((x) => <AccessButton key={x} xs>{x}</AccessButton>)}</div>
         <label className="ac-customer-sales-research-notes"><span>Customer Research Notes</span><textarea /></label>
-        <AccessButton xs disabled>Record</AccessButton><AccessButton xs disabled>Customer Research History</AccessButton>
+        <AccessButton xs>Record</AccessButton><AccessButton xs>Customer Research History</AccessButton>
       </div>
     </section>
   );
@@ -1358,11 +1367,11 @@ function CustomerContactsTab({ customer }: { customer: CustomerDetail }) {
       <div className="ac-customer-contacts-guidance">
         <strong>For all Info emails, please select &quot;Info&quot; for the contact&apos;s Title value.</strong>
         <p>To use one of these buttons, highlight one contact row first by clicking the gray bar at the left side of the row.</p>
-        <div><AccessButton xs disabled>▧　Copy Contact Email Address</AccessButton><AccessButton xs disabled>▣　Send Email to Contact</AccessButton></div>
+        <div><AccessButton xs>▧　Copy Contact Email Address</AccessButton><AccessButton xs>▣　Send Email to Contact</AccessButton></div>
       </div>
 
       <div className="ac-customer-permits">
-        <div className="ac-customer-permits-heading"><h2>Permits</h2><AccessButton xs disabled>▧　Copy Street</AccessButton><span>Double-click on City, State to select the state and city.</span></div>
+        <div className="ac-customer-permits-heading"><h2>Permits</h2><AccessButton xs>▧　Copy Street</AccessButton><span>Double-click on City, State to select the state and city.</span></div>
         <div className="ac-customer-permits-table-wrap">
           <table className="ac-customer-permits-table"><thead><tr><th /><th>Permit Date</th><th>Street</th><th>City, State</th><th>Fee</th><th>Value</th><th>Timestamp</th><th>Permit Search Link</th><th>Link</th><th aria-hidden /><th aria-hidden /></tr></thead>
           <tbody><tr className="is-selected"><td>*</td><td><input type="date" aria-label="Permit date" /></td><td><input defaultValue={customer.street} aria-label="Permit street" /></td><td><input defaultValue={[customer.city, customer.state].filter(Boolean).join(", ")} aria-label="Permit city and state" /></td><td><input aria-label="Permit fee" /></td><td><input aria-label="Permit value" /></td><td /><td /><td /><td /><td /></tr>
