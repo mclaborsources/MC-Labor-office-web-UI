@@ -10231,6 +10231,411 @@ body {
 }
 
 /* Job Search — shares Employee Search shell layout */
+/* Employee Search 3 — final legacy Access sizing and layout. */
+.ac-employee-search-page,
+.ac-employee-search-page .ac-customer-search,
+.ac-employee-search-page .ac-customer-search-body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  color: #000;
+  background: #e9e9e9;
+}
+
+.ac-employee-search-page .ac-customer-search-titlebar {
+  height: 42px;
+  min-height: 42px;
+  padding: 4px 12px;
+  gap: 8px;
+  background: #e9e9e9;
+}
+
+.ac-employee-search-page .ac-customer-search-title {
+  flex: 0 0 221px;
+  width: 221px;
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.ac-employee-search-page .ac-customer-search-titlebar .ac-btn,
+.ac-employee-search-page .ac-employee-search-cancel-btn.ac-btn {
+  width: auto;
+  height: 27px;
+  min-height: 27px;
+  margin-left: 115px;
+  padding: 0 11px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ac-employee-search-page .ac-employee-search-cancel-btn.ac-btn {
+  margin-right: auto;
+}
+
+.ac-employee-search-page .ac-customer-search-shell {
+  min-height: 315px;
+  border-color: #8f8f8f;
+  background: #e9e9e9;
+}
+
+.ac-employee-search-page .ac-customer-search-shell-inner {
+  height: 314px;
+  min-height: 314px;
+  align-items: stretch;
+  background: #e9e9e9;
+}
+
+.ac-employee-search-page .ac-customer-search-sidebar {
+  width: 448px;
+  min-width: 448px;
+  height: 314px;
+  padding: 7px 8px;
+  gap: 8px;
+  overflow: hidden;
+  background: #e9e9e9;
+  border-right-color: #9a9a9a;
+}
+
+.ac-employee-search-page .ac-customer-search-screen-size {
+  grid-template-columns: 67px 52px minmax(0, 1fr);
+  height: 65px;
+  min-height: 65px;
+  padding: 5px 7px;
+  gap: 2px;
+  background: #e3e3e3;
+  border-color: #969696;
+}
+
+.ac-employee-search-page .ac-customer-search-screen-size-label {
+  padding-right: 2px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ac-employee-search-page .ac-customer-search-screen-normal.ac-btn {
+  width: 52px;
+  min-width: 52px;
+  padding: 0 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ac-employee-search-page .ac-customer-search-screen-num.ac-btn,
+.ac-employee-search-page .ac-customer-search-screen-save.ac-btn {
+  height: 27px;
+  min-height: 27px;
+  padding: 0 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ac-employee-search-page .ac-customer-search-side-search-wrap {
+  min-height: 228px;
+  background: #e3e3e3;
+  border-color: #969696;
+}
+
+.ac-employee-search-page .ac-customer-search-side-label {
+  flex-basis: 19px;
+  padding: 7px 2px;
+  font-size: 9px;
+  font-weight: 400;
+  color: #3d4c5c;
+  background: #d9d9d9;
+}
+
+.ac-employee-search-page .ac-customer-search-side-main {
+  padding: 6px 7px 5px 5px;
+  gap: 6px;
+  background: #e3e3e3;
+}
+
+.ac-employee-search-page .ac-customer-search-side-grid-area {
+  gap: 5px;
+}
+
+.ac-employee-search-page .ac-customer-search-side-grid {
+  grid-template-columns: 74px minmax(0, 1fr) minmax(0, 1fr);
+  gap: 3px;
+}
+
+.ac-employee-search-page .ac-customer-search-side-corner,
+.ac-employee-search-page .ac-customer-search-side-head,
+.ac-employee-search-page .ac-customer-search-side-spacer {
+  min-height: 26px;
+}
+
+.ac-employee-search-page .ac-customer-search-side-head {
+  padding: 2px 4px;
+  font-size: 10px;
+  font-weight: 600;
+  background: #d2d2d2;
+  border-color: #878787;
+}
+
+.ac-employee-search-page .ac-customer-search-side-field-label {
+  padding-right: 2px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.ac-employee-search-page .ac-customer-search-side-input {
+  height: 27px;
+  min-height: 27px;
+  padding: 1px 5px;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.ac-employee-search-page .ac-customer-search-side-search-col {
+  width: 82px;
+  gap: 4px;
+}
+
+.ac-employee-search-page .ac-customer-search-side-search-btn.ac-btn {
+  height: 27px;
+  min-height: 27px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ac-employee-search-page .ac-customer-search-use-button {
+  min-height: 55px;
+  padding: 3px 7px;
+  gap: 2px;
+  font-size: 9px;
+  background: #f0f3f7;
+  border-color: #8e9cac;
+}
+
+.ac-employee-search-page .ac-customer-search-use-button-label {
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.ac-employee-search-page .ac-customer-search-use-radio {
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ac-employee-search-page .ac-customer-search-use-radio input {
+  width: 15px;
+  height: 15px;
+}
+
+.ac-employee-search-page .ac-employee-search-side-footer {
+  min-height: 28px;
+  padding-top: 2px;
+}
+
+.ac-employee-search-page .ac-customer-search-action-label {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ac-employee-search-page .ac-employee-search-side-footer .ac-btn {
+  height: 27px;
+  min-height: 27px;
+  padding-inline: 11px;
+  font-size: 11px;
+}
+
+.ac-employee-search-page .ac-employee-search-controls {
+  height: 314px;
+  min-height: 314px;
+  background: #e9e9e9;
+}
+
+.ac-employee-search-page .ac-employee-search-view-tabs {
+  height: 31px;
+  min-height: 31px;
+  padding: 0 7px;
+  overflow-y: hidden;
+  background: #e9e9e9;
+  border-bottom-color: #999;
+}
+
+.ac-employee-search-page .ac-employee-search-view-tabs .ac-tab,
+.ac-employee-search-page .ac-employee-search-view-tabs .ac-tab:hover,
+.ac-employee-search-page .ac-employee-search-view-tabs .ac-tab-active {
+  height: 31px;
+  min-height: 31px;
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 400;
+  background: #f4f4f4;
+  border-color: #c6c6c6;
+  border-bottom-color: #999;
+}
+
+.ac-employee-search-page .ac-employee-search-view-tabs .ac-tab-active {
+  font-weight: 700;
+  background: #fff;
+  border-color: #888;
+  border-bottom-color: #fff;
+}
+
+.ac-employee-search-page .ac-employee-search-control-panel {
+  height: 283px;
+  min-height: 283px;
+  padding: 6px 7px 7px;
+  background: #fff;
+}
+
+.ac-employee-search-page .ac-employee-search-views-tab {
+  height: 215px;
+  min-height: 215px;
+  padding: 7px;
+  gap: 5px;
+  background: #dedede;
+  border-color: #8d9baa;
+}
+
+.ac-employee-search-page .ac-employee-search-views-body,
+.ac-employee-search-page .ac-employee-search-views-1.ac-search-views-tab-pane {
+  gap: 5px;
+  padding: 0;
+  background: #dedede;
+}
+
+.ac-employee-search-page .ac-employee-search-filter-row {
+  height: 32px;
+  min-height: 32px;
+  padding: 3px 6px;
+  gap: 4px;
+  overflow: visible;
+  background: #dedede;
+  border: 0;
+}
+
+.ac-employee-search-page .ac-employee-search-row-select,
+.ac-employee-search-page .ac-employee-search-filter-input,
+.ac-employee-search-page .ac-employee-search-date-btn.ac-btn {
+  height: 28px;
+  min-height: 28px;
+  padding-inline: 7px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ac-employee-search-page .ac-employee-search-entry-dt-link {
+  height: 28px;
+  line-height: 28px;
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.ac-employee-search-page .ac-employee-search-action-row {
+  height: 27px;
+  min-height: 27px;
+  gap: 4px;
+}
+
+.ac-employee-search-page .ac-employee-search-action-row .ac-btn {
+  height: 27px;
+  min-height: 27px;
+  padding-inline: 8px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.ac-employee-search-page .ac-employee-search-action-wide.ac-btn {
+  min-width: 137px;
+}
+
+.ac-employee-search-page .ac-employee-search-lic-search-btn.ac-btn {
+  min-width: 165px;
+  font-size: 9px;
+}
+
+.ac-employee-search-page .ac-employee-search-preset-grid {
+  gap: 2px;
+}
+
+.ac-employee-search-page .ac-employee-search-preset-grid .ac-btn,
+.ac-employee-search-page .ac-employee-search-preset-grid .ac-customer-search-preset-empty {
+  height: 25px;
+  min-height: 25px;
+  max-height: 25px;
+  padding: 1px 4px;
+  font-size: 8px;
+  font-weight: 400;
+  background: linear-gradient(180deg, #f7f7f7 0%, #dedede 100%);
+  border-color: #949494;
+}
+
+.ac-employee-search-page .ac-employee-search-call-filter-row {
+  min-height: 33px;
+  padding: 2px 0;
+  gap: 5px;
+  font-size: 10px;
+  background: #dedede;
+}
+
+.ac-employee-search-page .ac-employee-search-call-filter-group {
+  min-height: 29px;
+  padding: 1px 6px 3px;
+  gap: 5px;
+  background: #dedede;
+  border: 0;
+}
+
+.ac-employee-search-page .ac-employee-search-call-filter-group legend {
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.ac-employee-search-page .ac-employee-search-call-filter-row .ac-customer-search-radio {
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ac-employee-search-page .ac-employee-search-call-filter-row input[type="radio"] {
+  width: 15px;
+  height: 15px;
+}
+
+.ac-employee-search-page .ac-employee-search-call-filter-row .ac-btn {
+  height: 27px;
+  min-height: 27px;
+  padding-inline: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ac-employee-search-page .ac-customer-search-utility-rail {
+  flex-basis: 46px;
+  width: 46px;
+  min-width: 46px;
+  height: 314px;
+  padding: 7px 4px;
+  gap: 6px;
+  background: #e9e9e9;
+  border-left-color: #999;
+}
+
+.ac-employee-search-page .ac-customer-search-rail-icon {
+  width: 29px;
+  height: 29px;
+  color: #1f2937;
+  background: #fff;
+  border-radius: 3px;
+}
+
+.ac-employee-search-page .ac-customer-search-size-mb {
+  font-size: 8px;
+  font-weight: 600;
+  color: #000;
+}
+
+.ac-employee-search-page .ac-customer-search-size-mb strong {
+  font-size: 11px;
+  color: #d00;
+}
+
 .ac-job-search-views-tab {
   background: #e0e0e0;
   border-color: #9ca3af;
