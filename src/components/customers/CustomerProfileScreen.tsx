@@ -40,8 +40,7 @@ function ProfileField({
         : normalizedLabel.includes("web") || normalizedLabel.includes("linkedin") ? "url"
           : normalizedLabel === "zip" ? "text"
             : normalizedLabel.includes("amount") || normalizedLabel.includes("revenue") || normalizedLabel.includes("employee size") || normalizedLabel.includes("jobs saved") ? "number"
-              : normalizedLabel.includes("contract date") || normalizedLabel.includes("issue date") || normalizedLabel.includes("expire date") ? "date"
-                : "text";
+              : "text";
 
   return (
     <label className={`ac-customer-profile-field ${wide ? "ac-customer-profile-field--wide" : ""} ${className}`}>

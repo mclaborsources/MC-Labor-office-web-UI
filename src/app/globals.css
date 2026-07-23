@@ -7068,6 +7068,85 @@ body {
   color: #b00000;
 }
 
+@media (max-width: 1650px) {
+  .ac-customer-profile-control-panel {
+    min-height: 0;
+    padding: 6px 14px;
+  }
+
+  .ac-customer-profile-row-1 {
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 0;
+    gap: 7px;
+  }
+
+  .ac-customer-profile-row-1-left,
+  .ac-customer-profile-row-1-center,
+  .ac-customer-profile-row-1-right {
+    position: static;
+    top: auto;
+    left: auto;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    justify-content: flex-start;
+  }
+
+  .ac-customer-profile-row-1-left {
+    flex-wrap: wrap;
+  }
+
+  .ac-customer-profile-row-1-center {
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .ac-customer-profile-row-1-right {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .ac-customer-profile-row-2 {
+    position: static;
+    top: auto;
+    left: auto;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 2px 0;
+  }
+
+  .ac-customer-profile-row-2 .ac-btn {
+    flex: 0 1 auto;
+  }
+
+  .ac-customer-profile-row-3,
+  .ac-customer-profile-row-4 {
+    flex-wrap: wrap;
+    min-height: 0;
+  }
+
+  .ac-customer-profile-row-3 .ac-customer-profile-field,
+  .ac-customer-profile-row-4 .ac-customer-profile-field {
+    flex: 0 1 auto;
+  }
+
+  .ac-customer-profile-row-4 .ac-customer-profile-field--wide {
+    flex: 1 1 420px;
+  }
+
+  .ac-customer-profile-step-list {
+    flex: 0 1 277px;
+    min-width: 210px;
+  }
+
+  .ac-customer-profile-delete-link {
+    align-self: center;
+  }
+}
+
 .ac-customer-profile-save-btn.ac-btn {
   margin-left: auto;
   color: #b00000;
