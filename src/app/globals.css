@@ -6416,7 +6416,7 @@ body {
 
 .ac-customer-profile-row-1 {
   grid-template-columns: 595px 640px minmax(510px, 1fr);
-  min-height: 66px;
+  min-height: 78px;
   gap: 12px;
   align-items: start;
 }
@@ -6442,7 +6442,7 @@ body {
 
 .ac-customer-profile-row-1-center {
   align-items: flex-start;
-  padding-top: 16px;
+  padding-top: 0;
 }
 
 .ac-customer-profile-mini-tabs {
@@ -6525,7 +6525,7 @@ body {
 
 .ac-customer-profile-row-2 {
   position: absolute;
-  top: 38px;
+  top: 43px;
   left: 545px;
   z-index: 2;
   justify-content: flex-start;
