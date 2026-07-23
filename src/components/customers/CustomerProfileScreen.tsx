@@ -524,6 +524,162 @@ function CustomerInsuranceInfoTab() {
   );
 }
 
+const CUSTOMER_SALES_COMPANIES = [
+  "Industrial Power Group, Inc.",
+  "Mechanical Contractors Association",
+  "New England Labor Services",
+  "Skilled Trades Partners",
+] as const;
+
+const CUSTOMER_SALES_PEOPLE = [
+  "Maria Santos",
+  "David Chen",
+  "James Wilson",
+  "Alicia Brown",
+] as const;
+
+const CUSTOMER_CONTRACT_VERBIAGE = [
+  "Standard Contract Language",
+  "Prevailing Wage Addendum",
+  "Project-Specific Terms",
+  "Union Labor Terms",
+] as const;
+
+function SalesSelect({
+  label,
+  options,
+  defaultValue = "",
+  className = "",
+}: {
+  label: string;
+  options: readonly string[];
+  defaultValue?: string;
+  className?: string;
+}) {
+  return (
+    <label className={`ac-customer-sales-field ${className}`}>
+      <span>{label}</span>
+      <select className="ac-select" defaultValue={defaultValue} aria-label={label}>
+        <option value="">Select…</option>
+        {options.map((option) => (
+          <option key={option} value={option}>{option}</option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function CustomerSalesFolderPanel({ future = false }: { future?: boolean }) {
+  return (
+    <section className="ac-customer-sales-folder-panel">
+      <div className="ac-customer-sales-folder-title">
+        00 Companies{future ? " - Future Sales" : ""}
+      </div>
+      <label className="ac-customer-sales-folder-field">
+        <span>Folder</span>
+        <textarea readOnly value="" aria-label={`${future ? "Future sales" : "Companies"} folder`} />
+      </label>
+      <AccessButton
+        xs
+        disabled
+        className={`ac-customer-sales-transfer ${future ? "ac-customer-sales-transfer--future" : ""}`}
+      >
+        Transfer Folders
+        <br />
+        {future ? "<<<<<<<<" : ">>>>>>>>"}
+        <br />
+        {future ? "Future Sales to COMPANIES" : "Companies to FUTURE SALES"}
+      </AccessButton>
+      <AccessButton xs disabled className="ac-customer-sales-folder-action">
+        Create Company Folder in 00 Companies{future ? " - Future Sales" : ""}
+      </AccessButton>
+      <AccessButton xs disabled className="ac-customer-sales-folder-action ac-customer-sales-folder-open">
+        Open Company Folder
+      </AccessButton>
+    </section>
+  );
+}
+
+function CustomerSalesTab() {
+  return (
+    <section id="05-sales" className="ac-customer-sales">
+      <div className="ac-customer-sales-contract-grid">
+        <div className="ac-customer-sales-contract-left">
+          <SalesSelect label="Contract With" options={CUSTOMER_SALES_COMPANIES} />
+          <div className="ac-customer-sales-history-row">
+            <SalesSelect label="Contract Salesman" options={CUSTOMER_SALES_PEOPLE} />
+            <AccessButton xs disabled>History</AccessButton>
+          </div>
+          <label className="ac-customer-sales-date-field">
+            <span>Date on Contract</span>
+            <input readOnly className="ac-input" value="" aria-label="Date on Contract" />
+          </label>
+        </div>
+
+        <div className="ac-customer-sales-contract-right">
+          <div className="ac-customer-sales-history-row">
+            <SalesSelect label="Salesman (Admin)" options={CUSTOMER_SALES_PEOPLE} />
+            <AccessButton xs disabled>History</AccessButton>
+          </div>
+          <SalesSelect
+            label="Extra Verbiage on Contract"
+            options={CUSTOMER_CONTRACT_VERBIAGE}
+            className="ac-customer-sales-verbiage"
+          />
+        </div>
+      </div>
+
+      <div className="ac-customer-sales-rates">
+        <div aria-hidden />
+        <div className="ac-customer-sales-rate-heading">From</div>
+        <div className="ac-customer-sales-rate-heading">To</div>
+        <div aria-hidden />
+        {[
+          ["Labor Rate A", "<<< $38.80  to  $47.00   goes Here"],
+          ["Labor Rate B", "<<< $28.80  to  $34.00   goes Here"],
+          ["Labor Rate C", "<<< $24.00  to  $26.00   goes Here"],
+        ].map(([label, hint]) => (
+          <div key={label} className="ac-customer-sales-rate-row">
+            <span>{label}</span>
+            <input readOnly className="ac-input" value="" aria-label={`${label} from`} />
+            <input readOnly className="ac-input" value="" aria-label={`${label} to`} />
+            <strong>{hint}</strong>
+          </div>
+        ))}
+      </div>
+
+      <div className="ac-customer-sales-folders">
+        <CustomerSalesFolderPanel />
+        <CustomerSalesFolderPanel future />
+      </div>
+
+      <div className="ac-customer-sales-footer">
+        <SalesSelect
+          label="Allow Contract With"
+          options={CUSTOMER_SALES_COMPANIES}
+          defaultValue="Industrial Power Group, Inc."
+        />
+        <div className="ac-customer-sales-contract-actions">
+          <AccessButton xs disabled>Copy IPG Sales Contract</AccessButton>
+          <AccessButton xs disabled>Populate IPG Sales Contract</AccessButton>
+        </div>
+        <label className="ac-customer-sales-small-field">
+          <span>User</span>
+          <input readOnly className="ac-input" value="" aria-label="Contract user" />
+        </label>
+        <label className="ac-customer-sales-small-field">
+          <span>Date</span>
+          <input readOnly className="ac-input" value="" aria-label="Contract update date" />
+        </label>
+        <label className="ac-customer-sales-updated">
+          <span>Updated Contract</span>
+          <input type="checkbox" disabled />
+        </label>
+      </div>
+    </section>
+  );
+}
+
 export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) {
   const [activeTab, setActiveTab] = useState("01-basic");
 
@@ -548,7 +704,8 @@ export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) 
               {activeTab === "01-basic" ? <CustomerProfileBasicTab customer={customer} /> : null}
               {activeTab === "03-billrates" ? <CustomerBillRatesTab customer={customer} /> : null}
               {activeTab === "04-insurance" ? <CustomerInsuranceInfoTab /> : null}
-              {activeTab !== "01-basic" && activeTab !== "03-billrates" && activeTab !== "04-insurance" ? (
+              {activeTab === "05-sales" ? <CustomerSalesTab /> : null}
+              {activeTab !== "01-basic" && activeTab !== "03-billrates" && activeTab !== "04-insurance" && activeTab !== "05-sales" ? (
                 <CustomerProfileStub id={activeTab} title={CUSTOMER_PROFILE_TABS.find((tab) => tab.id === activeTab)?.label ?? activeTab} />
               ) : null}
             </div>

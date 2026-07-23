@@ -6828,6 +6828,214 @@ body {
   box-shadow: inset 0 1px 2px rgb(0 0 0 / 10%);
 }
 
+/* Customer profile — Sales */
+.ac-customer-sales {
+  min-height: 680px;
+  padding: 1px 7px 20px;
+  color: #000;
+  font-size: 13px;
+}
+
+.ac-customer-sales-contract-grid {
+  display: grid;
+  grid-template-columns: 390px minmax(700px, 1fr);
+  gap: 26px;
+}
+
+.ac-customer-sales-contract-left,
+.ac-customer-sales-contract-right {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ac-customer-sales-field,
+.ac-customer-sales-date-field,
+.ac-customer-sales-small-field {
+  display: grid;
+  grid-template-columns: 123px 194px;
+  align-items: center;
+  gap: 0;
+}
+
+.ac-customer-sales-field .ac-select,
+.ac-customer-sales-date-field .ac-input {
+  width: 194px;
+  height: 27px;
+  min-height: 27px;
+  border-radius: 0;
+  background: #fff;
+}
+
+.ac-customer-sales-history-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ac-customer-sales-history-row .ac-btn {
+  min-width: 77px;
+}
+
+.ac-customer-sales-contract-right .ac-customer-sales-field {
+  grid-template-columns: 123px 194px;
+}
+
+.ac-customer-sales-verbiage {
+  grid-template-columns: 171px minmax(400px, 1fr);
+  margin-top: 27px;
+}
+
+.ac-customer-sales-verbiage .ac-select {
+  width: 100%;
+}
+
+.ac-customer-sales-rates {
+  width: 570px;
+  margin-top: 18px;
+}
+
+.ac-customer-sales-rates {
+  display: grid;
+  grid-template-columns: 123px 89px 89px 1fr;
+  gap: 3px 15px;
+  align-items: center;
+}
+
+.ac-customer-sales-rate-heading {
+  text-align: center;
+  padding-bottom: 7px;
+}
+
+.ac-customer-sales-rate-row {
+  display: contents;
+}
+
+.ac-customer-sales-rate-row .ac-input {
+  width: 89px;
+  height: 27px;
+  min-height: 27px;
+  border-radius: 0;
+  background: #fff;
+}
+
+.ac-customer-sales-rate-row strong {
+  font-size: 14px;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
+.ac-customer-sales-folders {
+  display: flex;
+  gap: 31px;
+  margin-top: 29px;
+}
+
+.ac-customer-sales-folder-panel {
+  width: 517px;
+  height: 286px;
+  border: 1px solid #222;
+  background: #d7d7d7;
+}
+
+.ac-customer-sales-folder-title {
+  height: 21px;
+  display: grid;
+  place-items: center;
+  background: #000;
+  color: #fff;
+  font-weight: 700;
+}
+
+.ac-customer-sales-folder-field {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 0;
+  align-items: start;
+  padding: 10px 8px 0;
+}
+
+.ac-customer-sales-folder-field textarea {
+  width: 100%;
+  height: 59px;
+  resize: none;
+  border: 1px solid #999;
+  background: #d7d7d7;
+}
+
+.ac-customer-sales-folder-panel .ac-btn {
+  display: block;
+  width: 353px;
+  margin-inline: auto;
+  border-radius: 0;
+}
+
+.ac-customer-sales-transfer.ac-btn {
+  min-height: 66px;
+  margin-top: 22px;
+  color: #fff;
+  background: #f51b23;
+  border-color: #fff;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.ac-customer-sales-transfer--future.ac-btn {
+  background: #3439a8;
+}
+
+.ac-customer-sales-folder-action.ac-btn {
+  margin-top: 14px;
+}
+
+.ac-customer-sales-folder-open.ac-btn {
+  margin-top: 30px;
+}
+
+.ac-customer-sales-footer {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  margin: 10px 0 0 29px;
+}
+
+.ac-customer-sales-footer > .ac-customer-sales-field {
+  grid-template-columns: 130px 194px;
+  align-self: flex-start;
+}
+
+.ac-customer-sales-contract-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-left: -210px;
+  padding-top: 31px;
+}
+
+.ac-customer-sales-contract-actions .ac-btn {
+  width: 194px;
+  border-radius: 0;
+}
+
+.ac-customer-sales-small-field {
+  grid-template-columns: 39px 97px;
+  margin-bottom: 1px;
+}
+
+.ac-customer-sales-small-field .ac-input {
+  width: 97px;
+  height: 27px;
+  min-height: 27px;
+  border-radius: 0;
+}
+
+.ac-customer-sales-updated {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 7px 48px;
+}
+
 /* Customer Bill Rates — editable Access-style datasheet */
 .ac-customer-bill-rates {
   position: relative;
