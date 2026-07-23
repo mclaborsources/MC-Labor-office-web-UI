@@ -7147,6 +7147,157 @@ body {
   }
 }
 
+/* Stable customer-profile layout: avoid offset-based collisions. */
+.ac-customer-profile-control-panel {
+  min-height: 0;
+}
+
+.ac-customer-profile-row-1 {
+  grid-template-columns: minmax(520px, 1fr) minmax(680px, 1.25fr) minmax(500px, 1fr);
+  min-height: 58px;
+  align-items: start;
+}
+
+.ac-customer-profile-row-1-center,
+.ac-customer-profile-row-1-right {
+  position: static;
+  top: auto;
+  left: auto;
+  margin: 0;
+  padding-top: 0;
+}
+
+.ac-customer-profile-row-1-right {
+  justify-content: flex-start;
+}
+
+.ac-customer-profile-row-2 {
+  position: static;
+  top: auto;
+  left: auto;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 2px 0;
+}
+
+.ac-customer-profile-row-3,
+.ac-customer-profile-row-4 {
+  position: static;
+  margin-top: 2px;
+}
+
+.ac-customer-profile-body {
+  padding-top: 16px;
+}
+
+.ac-customer-profile-footer-fields {
+  grid-template-columns: 280px 280px 560px;
+  grid-template-rows: 28px 28px;
+  gap: 5px 20px;
+  width: min(1160px, 100%);
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(1),
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(4) {
+  grid-template-columns: 92px minmax(0, 1fr);
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(2),
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(5) {
+  grid-template-columns: 122px minmax(0, 1fr);
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(3) {
+  grid-template-columns: 86px minmax(0, 1fr);
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(6) {
+  grid-column: 3;
+  grid-row: 2;
+  grid-template-columns: 85px 80px;
+  width: 165px;
+  margin: 0;
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(7) {
+  grid-column: 3;
+  grid-row: 2;
+  grid-template-columns: 65px minmax(0, 1fr);
+  width: 350px;
+  margin: 0 0 0 190px;
+}
+
+@media (max-width: 1650px) {
+  .ac-customer-profile-row-1 {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .ac-customer-profile-row-1-left,
+  .ac-customer-profile-row-1-center,
+  .ac-customer-profile-row-1-right {
+    width: 100%;
+    min-height: 38px;
+  }
+
+  .ac-customer-profile-row-2 {
+    justify-content: flex-start;
+  }
+
+  .ac-customer-profile-basic-grid {
+    grid-template-columns: minmax(300px, 1fr) minmax(340px, 1.25fr);
+  }
+
+  .ac-customer-profile-col--meta {
+    grid-column: 1;
+  }
+
+  .ac-customer-profile-communication {
+    grid-column: 2;
+    grid-row: auto;
+  }
+
+  .ac-customer-profile-notes {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .ac-customer-profile-bottom {
+    grid-template-columns: 1fr;
+    gap: 42px;
+  }
+
+  .ac-customer-profile-links {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 1200px) {
+  .ac-customer-profile-basic-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ac-customer-profile-col--meta,
+  .ac-customer-profile-communication,
+  .ac-customer-profile-notes {
+    grid-column: 1;
+  }
+
+  .ac-customer-profile-footer-fields {
+    display: flex;
+    flex-direction: column;
+    width: min(560px, 100%);
+  }
+
+  .ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(n) {
+    display: grid;
+    grid-template-columns: 130px minmax(0, 1fr);
+    width: 100%;
+    margin: 0;
+  }
+}
+
 .ac-customer-profile-save-btn.ac-btn {
   margin-left: auto;
   color: #b00000;
