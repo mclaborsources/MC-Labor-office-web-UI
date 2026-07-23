@@ -6824,7 +6824,8 @@ body {
   grid-template-rows: 28px 28px;
   align-items: end;
   gap: 8px;
-  margin-top: 22px;
+  margin-top: 39px;
+  margin-left: -18px;
 }
 
 .ac-customer-profile-folder-row .ac-btn {
@@ -6866,6 +6867,7 @@ body {
   gap: 3px 28px;
   width: 962px;
   margin-top: 18px;
+  margin-left: -18px;
 }
 
 .ac-customer-profile-footer-fields .ac-customer-profile-field {
