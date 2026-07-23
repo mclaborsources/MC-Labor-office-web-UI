@@ -265,6 +265,9 @@ function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
         <div className="ac-customer-profile-col ac-customer-profile-col--meta">
           <ProfileField label="Entry User" value={customer.entryUserName} />
           <ProfileField label="Entry Date" value={customer.entryTimestamp} />
+        </div>
+
+        <div className="ac-customer-profile-communication">
           <label className="ac-customer-profile-check">
             <input type="checkbox" disabled />
             <span>No Communication</span>
@@ -310,6 +313,7 @@ function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
         </div>
 
         <div className="ac-customer-profile-links">
+          <div className="ac-customer-profile-links-title">Hyperlinks</div>
           <div className="ac-customer-profile-links-grid">
             {CUSTOMER_PROFILE_LINK_ENTITIES.map((entity) => (
               <div key={entity} className="ac-customer-profile-links-col">

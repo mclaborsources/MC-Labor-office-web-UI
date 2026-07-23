@@ -6408,15 +6408,15 @@ body {
 /* Customer profile header — compact Access form alignment. */
 .ac-customer-profile-control-panel {
   position: relative;
-  min-height: 142px;
-  padding: 5px 17px 7px;
+  min-height: 147px;
+  padding: 5px 27px 6px;
   gap: 4px;
   border-bottom: 1px solid #aaa;
 }
 
 .ac-customer-profile-row-1 {
-  grid-template-columns: 595px 640px minmax(510px, 1fr);
-  min-height: 78px;
+  grid-template-columns: 600px 710px minmax(510px, 1fr);
+  min-height: 70px;
   gap: 12px;
   align-items: start;
 }
@@ -6526,7 +6526,7 @@ body {
 .ac-customer-profile-row-2 {
   position: absolute;
   top: 43px;
-  left: 545px;
+  left: 562px;
   z-index: 2;
   justify-content: flex-start;
   flex-wrap: nowrap;
@@ -6535,8 +6535,8 @@ body {
 }
 
 .ac-customer-profile-toolbar-btn.ac-btn {
-  width: 158px;
-  min-width: 158px;
+  width: 157px;
+  min-width: 157px;
   max-width: none;
   flex: none;
   border-radius: 0;
@@ -6595,6 +6595,263 @@ body {
   min-width: 130px;
   min-height: 27px;
   padding: 3px 12px;
+  border-radius: 0;
+}
+
+.ac-customer-profile-row-3 {
+  min-height: 34px;
+}
+
+.ac-customer-profile-row-4 {
+  min-height: 30px;
+}
+
+.ac-customer-profile-content,
+.ac-customer-profile-body {
+  background: #d3d3d3;
+}
+
+.ac-customer-profile-body {
+  padding: 10px 28px 14px;
+}
+
+.ac-customer-profile-basic {
+  gap: 12px;
+  margin-bottom: 0;
+}
+
+.ac-customer-profile-basic-grid {
+  grid-template-columns: 350px 520px 630px 240px;
+  gap: 7px 35px;
+  align-items: start;
+}
+
+.ac-customer-profile-basic-grid .ac-customer-profile-col {
+  gap: 3px;
+}
+
+.ac-customer-profile-basic-grid .ac-customer-profile-field {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  align-items: center;
+  gap: 0;
+  min-height: 28px;
+}
+
+.ac-customer-profile-basic-grid .ac-customer-profile-field .ac-input {
+  width: 100%;
+  height: 27px;
+  min-height: 27px;
+  padding: 2px 6px;
+  border: 1px solid #aaa;
+  background: #f7f7f7;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.ac-customer-profile-basic-grid .ac-customer-profile-field .ac-flabel,
+.ac-customer-profile-basic-grid .ac-customer-profile-check,
+.ac-customer-profile-basic-grid .ac-customer-profile-wcc-title {
+  color: #000;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.ac-customer-profile-basic-grid .ac-customer-profile-col:first-child .ac-customer-profile-field:first-child {
+  grid-template-columns: 134px 194px;
+}
+
+.ac-customer-profile-basic-grid .ac-customer-profile-col:nth-child(2) .ac-customer-profile-field {
+  grid-template-columns: 91px minmax(0, 1fr);
+}
+
+.ac-customer-profile-col--meta .ac-customer-profile-field {
+  grid-template-columns: 91px 194px;
+  width: 285px;
+}
+
+.ac-customer-profile-basic-grid .ac-customer-profile-check {
+  min-height: 28px;
+  margin: 0;
+}
+
+.ac-customer-profile-communication {
+  grid-column: 4;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ac-customer-profile-communication .ac-customer-profile-check {
+  justify-content: space-between;
+}
+
+.ac-customer-profile-communication .ac-customer-profile-meta-pair {
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.ac-customer-profile-communication .ac-customer-profile-field {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: auto;
+}
+
+.ac-customer-profile-communication .ac-customer-profile-field .ac-input {
+  height: 27px;
+}
+
+.ac-customer-profile-notes {
+  grid-column: 3;
+  grid-row: 1;
+  gap: 7px;
+}
+
+.ac-customer-profile-note {
+  gap: 6px;
+}
+
+.ac-customer-profile-textarea {
+  width: 620px;
+  height: 70px;
+  min-height: 70px;
+  border: 1px solid #888;
+  background: #fff;
+}
+
+.ac-customer-profile-note--short {
+  margin-top: 3px;
+}
+
+.ac-customer-profile-note--short .ac-customer-profile-textarea {
+  width: 246px;
+  height: 27px;
+  min-height: 27px;
+}
+
+.ac-customer-profile-bottom {
+  grid-template-columns: 600px minmax(900px, 1fr);
+  gap: 108px;
+  margin-top: 7px;
+}
+
+.ac-customer-profile-wcc-title {
+  margin-bottom: 4px;
+  color: #000;
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.ac-customer-profile-wcc-table .ac-grid {
+  height: 149px;
+  max-height: 149px;
+  border: 1px solid #aaa;
+  background: #fff;
+}
+
+.ac-customer-profile-wcc-table .ac-grid th {
+  height: 20px;
+  padding: 2px 6px;
+  color: #000;
+  background: #edf1f4;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.ac-customer-profile-wcc-table .ac-grid td {
+  height: 20px;
+  padding: 2px 6px;
+  font-size: 11px;
+}
+
+.ac-customer-profile-links {
+  position: relative;
+  padding-top: 24px;
+  border-top: 1px solid #aaa;
+}
+
+.ac-customer-profile-links-title {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  min-width: 105px;
+  padding: 6px 16px;
+  transform: translateX(-50%);
+  border: 1px solid #aaa;
+  background: #f1f1f1;
+  text-align: center;
+  font-weight: 700;
+}
+
+.ac-customer-profile-links-grid {
+  gap: 22px;
+}
+
+.ac-customer-profile-links-head {
+  height: 27px;
+  padding: 5px 2px;
+  background: #aaa;
+  font-size: 12px;
+}
+
+.ac-customer-profile-link-btn.ac-btn {
+  position: relative;
+  min-height: 27px;
+  height: 27px;
+  margin-left: 35px;
+  width: calc(100% - 35px);
+  border-radius: 0;
+  font-weight: 400;
+}
+
+.ac-customer-profile-link-btn.ac-btn::before {
+  content: "";
+  position: absolute;
+  right: calc(100% + 7px);
+  width: 28px;
+  height: 25px;
+  border: 1px solid #aaa;
+  background: #efefef;
+}
+
+.ac-customer-profile-folder-row {
+  display: grid;
+  grid-template-columns: 201px minmax(500px, 970px) 74px;
+  align-items: end;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.ac-customer-profile-folder-row .ac-btn {
+  border-radius: 0;
+}
+
+.ac-customer-profile-folder-field {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  align-items: center;
+}
+
+.ac-customer-profile-footer-fields {
+  grid-template-columns: 280px 208px 430px;
+  gap: 3px 28px;
+  width: 970px;
+  margin-top: 18px;
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field {
+  display: grid;
+  grid-template-columns: 91px 1fr;
+  align-items: center;
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field .ac-input {
+  height: 27px;
+  min-height: 27px;
   border-radius: 0;
 }
 
