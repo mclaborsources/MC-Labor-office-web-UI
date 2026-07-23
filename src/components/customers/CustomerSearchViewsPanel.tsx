@@ -571,10 +571,26 @@ function UserSettingsTab({ customerUserFlagOptions, lastActionUsers }: UserSetti
   );
 }
 
+const CUSTOMER_UTILITY_GO_TO_OPTIONS = [
+  "Customer Information",
+  "Contacts",
+  "Last Action",
+  "Future Calls",
+  "Sales History",
+] as const;
+
+const CUSTOMER_UTILITY_ACTION_OPTIONS = [
+  "Call Customer",
+  "Send Email",
+  "Send Sales Package",
+  "Schedule Follow-up",
+  "Clear Future Call",
+] as const;
+
 function UtilitiesTab() {
   return (
     <div className="ac-customer-search-utilities-tab ac-search-views-tab-pane">
-      <div className="ac-customer-search-utilities-section">
+      <div className="ac-customer-search-utilities-section ac-customer-search-utilities-section--mail">
         <AccessButton xs disabled>
           Letter
         </AccessButton>
@@ -585,8 +601,11 @@ function UtilitiesTab() {
       <div className="ac-customer-search-utilities-section">
         <label className="ac-customer-search-utilities-field">
           <span className="ac-flabel">Go To:</span>
-          <select disabled className="ac-select" defaultValue="">
-            <option value="" />
+          <select className="ac-select" defaultValue="" aria-label="Go To">
+            <option value="">Select…</option>
+            {CUSTOMER_UTILITY_GO_TO_OPTIONS.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
           </select>
         </label>
         <AccessButton xs disabled>
@@ -596,8 +615,11 @@ function UtilitiesTab() {
       <div className="ac-customer-search-utilities-section">
         <label className="ac-customer-search-utilities-field">
           <span className="ac-flabel">Action | 005:</span>
-          <select disabled className="ac-select" defaultValue="">
-            <option value="" />
+          <select className="ac-select" defaultValue="" aria-label="Action 005">
+            <option value="">Select…</option>
+            {CUSTOMER_UTILITY_ACTION_OPTIONS.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
           </select>
         </label>
         <AccessButton xs disabled>

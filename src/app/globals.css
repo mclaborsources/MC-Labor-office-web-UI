@@ -4505,6 +4505,82 @@ body {
   white-space: normal;
 }
 
+/* Match the roomy Access utilities layout used by the source application. */
+.ac-customer-search-page .ac-customer-search-utilities-tab {
+  min-height: 254px;
+  padding: 24px 18px;
+  background: #ebebeb;
+  border-color: #888;
+  border-radius: 0;
+}
+
+.ac-customer-search-page .ac-customer-search-utilities-section {
+  min-height: 124px;
+  padding: 0 23px;
+  gap: 11px;
+  justify-content: flex-start;
+  border-right-color: #aaa;
+}
+
+.ac-customer-search-page .ac-customer-search-utilities-section:first-child {
+  width: 165px;
+  padding-left: 1px;
+  padding-right: 23px;
+}
+
+.ac-customer-search-page .ac-customer-search-utilities-section:nth-child(2) {
+  width: 224px;
+}
+
+.ac-customer-search-page .ac-customer-search-utilities-section:nth-child(3) {
+  width: 280px;
+}
+
+.ac-customer-search-page .ac-customer-search-utilities-section:nth-child(4) {
+  width: 188px;
+}
+
+.ac-customer-search-page .ac-customer-search-utilities-section--mail {
+  flex-direction: row;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.ac-customer-search-page .ac-customer-search-utilities-field {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+
+.ac-customer-search-page .ac-customer-search-utilities-field .ac-flabel {
+  white-space: nowrap;
+}
+
+.ac-customer-search-page .ac-customer-search-utilities-field .ac-select {
+  width: 100%;
+  max-width: none;
+  height: 26px;
+  background: #fff;
+}
+
+.ac-customer-search-page .ac-customer-search-utilities-section:nth-child(2) > .ac-btn,
+.ac-customer-search-page .ac-customer-search-utilities-section:nth-child(3) > .ac-btn {
+  margin-top: 1px;
+}
+
+.ac-customer-search-page .ac-customer-search-utilities-btn-row {
+  gap: 12px;
+}
+
+.ac-customer-search-page .ac-customer-search-multifilter-btn.ac-btn {
+  min-width: 106px;
+  min-height: 65px;
+}
+
 /* Admin Utilities tab */
 .ac-customer-search-admin-tab {
   flex: 1;
