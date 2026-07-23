@@ -7218,6 +7218,44 @@ body {
   border-radius: 0;
 }
 
+.ac-customer-wcc .ac-customer-collections-workspace {
+  margin-left: 43px;
+}
+
+.ac-customer-wcc .ac-customer-collections-delete {
+  top: 99px;
+  left: -49px;
+}
+
+.ac-customer-wcc-grid th:nth-child(2) {
+  width: 456px;
+}
+
+.ac-customer-wcc-grid th:nth-child(3) {
+  width: 96px;
+}
+
+.ac-customer-wcc-grid th:nth-child(4) {
+  width: 152px;
+}
+
+.ac-customer-wcc-grid th:nth-child(5) {
+  width: 68px;
+}
+
+.ac-customer-wcc-grid th:nth-child(6) {
+  width: 37px;
+}
+
+.ac-customer-wcc-grid td:nth-child(2) select {
+  width: 100%;
+  height: 43px;
+  padding: 2px 6px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+}
+
 /* Customer Bill Rates — editable Access-style datasheet */
 .ac-customer-bill-rates {
   position: relative;

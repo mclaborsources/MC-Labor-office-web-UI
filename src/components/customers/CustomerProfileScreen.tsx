@@ -793,6 +793,125 @@ function CustomerCollectionsTab() {
   );
 }
 
+const CUSTOMER_WC_CODE_OPTIONS = [
+  "5022 — Masonry",
+  "5183 — Plumbing",
+  "5190 — Electrical Wiring",
+  "5403 — Carpentry",
+  "5537 — HVAC",
+  "5645 — General Construction",
+] as const;
+
+interface CustomerWccRow {
+  id: string;
+  wcCode: string;
+  user: string;
+  timestamp: string;
+  active: boolean;
+}
+
+function CustomerWccTab() {
+  const [filter, setFilter] = useState<CollectionFilter>("active");
+  const [search, setSearch] = useState("");
+  const [selectedId, setSelectedId] = useState("wcc-new");
+  const [rows, setRows] = useState<CustomerWccRow[]>([
+    { id: "wcc-new", wcCode: "", user: "", timestamp: "", active: true },
+  ]);
+
+  const visibleRows = rows.filter((row) => {
+    const matchesFilter = filter === "all" || row.active === (filter === "active");
+    const term = search.trim().toLowerCase();
+    const matchesSearch = !term || [row.wcCode, row.user, row.timestamp].some((value) => value.toLowerCase().includes(term));
+    return matchesFilter && matchesSearch;
+  });
+
+  function updateWcc(id: string, field: keyof CustomerWccRow, value: string | boolean) {
+    setRows((current) => current.map((row) => (row.id === id ? { ...row, [field]: value } : row)));
+  }
+
+  function deleteSelectedWcc() {
+    setRows((current) => current.filter((row) => row.id !== selectedId));
+    setSelectedId("");
+  }
+
+  return (
+    <section id="07-wcc" className="ac-customer-collections ac-customer-wcc">
+      <div className="ac-customer-collections-title">Customer WC Codes</div>
+      <div className="ac-customer-collections-workspace">
+        <button
+          type="button"
+          className="ac-customer-collections-delete"
+          onClick={deleteSelectedWcc}
+          disabled={!selectedId}
+          aria-label="Delete selected customer WC code"
+        >
+          ×
+        </button>
+
+        <div className="ac-customer-collections-grid-wrap">
+          <table className="ac-customer-collections-grid ac-customer-wcc-grid">
+            <thead>
+              <tr>
+                <th aria-label="Record selector" />
+                <th>WC Code</th>
+                <th>User</th>
+                <th>Timestamp</th>
+                <th>Active</th>
+                <th aria-hidden />
+              </tr>
+            </thead>
+            <tbody>
+              {visibleRows.map((row) => (
+                <tr key={row.id} className={selectedId === row.id ? "is-selected" : ""}>
+                  <td>
+                    <button type="button" onClick={() => setSelectedId(row.id)} aria-label="Select customer WC code">
+                      {selectedId === row.id ? "*" : ""}
+                    </button>
+                  </td>
+                  <td>
+                    <select value={row.wcCode} onFocus={() => setSelectedId(row.id)} onChange={(event) => updateWcc(row.id, "wcCode", event.target.value)} aria-label="WC Code">
+                      <option value="">Select…</option>
+                      {CUSTOMER_WC_CODE_OPTIONS.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                  </td>
+                  <td><input value={row.user} onFocus={() => setSelectedId(row.id)} onChange={(event) => updateWcc(row.id, "user", event.target.value)} /></td>
+                  <td><input value={row.timestamp} onFocus={() => setSelectedId(row.id)} onChange={(event) => updateWcc(row.id, "timestamp", event.target.value)} /></td>
+                  <td><input type="checkbox" checked={row.active} onFocus={() => setSelectedId(row.id)} onChange={(event) => updateWcc(row.id, "active", event.target.checked)} /></td>
+                  <td />
+                </tr>
+              ))}
+              {Array.from({ length: Math.max(0, 7 - visibleRows.length) }, (_, index) => (
+                <tr key={`wcc-blank-${index}`} aria-hidden>
+                  <td /><td /><td /><td /><td /><td />
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="ac-customer-collections-recordbar">
+            <span>Record:</span><span>|◄</span><span>◄</span>
+            <strong>{visibleRows.length ? `1 of ${visibleRows.length}` : "0 of 0"}</strong>
+            <span>►</span><span>►|</span>
+            <span className="ac-customer-collections-filter-status">{filter === "all" && !search ? "No Filter" : "Filtered"}</span>
+            <input value={search} onChange={(event) => setSearch(event.target.value)} aria-label="Search customer WC codes" placeholder="Search" />
+          </div>
+        </div>
+
+        <fieldset className="ac-customer-collections-filter">
+          <legend>Filter</legend>
+          {(["active", "inactive", "all"] as const).map((value) => (
+            <label key={value}>
+              <input type="radio" name="wcc-filter" checked={filter === value} onChange={() => setFilter(value)} />
+              <span>{value[0].toUpperCase() + value.slice(1)}</span>
+            </label>
+          ))}
+        </fieldset>
+      </div>
+    </section>
+  );
+}
+
 export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) {
   const [activeTab, setActiveTab] = useState("01-basic");
 
@@ -819,7 +938,8 @@ export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) 
               {activeTab === "04-insurance" ? <CustomerInsuranceInfoTab /> : null}
               {activeTab === "05-sales" ? <CustomerSalesTab /> : null}
               {activeTab === "06-collections" ? <CustomerCollectionsTab /> : null}
-              {activeTab !== "01-basic" && activeTab !== "03-billrates" && activeTab !== "04-insurance" && activeTab !== "05-sales" && activeTab !== "06-collections" ? (
+              {activeTab === "07-wcc" ? <CustomerWccTab /> : null}
+              {activeTab !== "01-basic" && activeTab !== "03-billrates" && activeTab !== "04-insurance" && activeTab !== "05-sales" && activeTab !== "06-collections" && activeTab !== "07-wcc" ? (
                 <CustomerProfileStub id={activeTab} title={CUSTOMER_PROFILE_TABS.find((tab) => tab.id === activeTab)?.label ?? activeTab} />
               ) : null}
             </div>
