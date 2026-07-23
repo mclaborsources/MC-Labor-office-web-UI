@@ -22,15 +22,15 @@ export function WeekControls({ week }: WeekControlsProps) {
         <span className="font-semibold text-slate-900">{week.assignYear}</span>
       </div>
       <div className="flex flex-wrap gap-2">
-        <Button variant="toolbar" disabled className="flex-1 sm:flex-none">
+        <Button variant="toolbar" className="flex-1 sm:flex-none">
           <Icon icon={ChevronLeft} size="sm" />
           Last Week
         </Button>
-        <Button variant="primary" disabled className="flex-1 sm:flex-none opacity-60">
+        <Button variant="primary" className="flex-1 sm:flex-none">
           <Icon icon={CalendarDays} size="sm" />
           This Week
         </Button>
-        <Button variant="toolbar" disabled className="flex-1 sm:flex-none">
+        <Button variant="toolbar" className="flex-1 sm:flex-none">
           Next Week
           <Icon icon={ChevronRight} size="sm" />
         </Button>

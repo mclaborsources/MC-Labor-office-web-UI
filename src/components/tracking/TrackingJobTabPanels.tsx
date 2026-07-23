@@ -16,14 +16,20 @@ function SubformRecordBar({ showSearch = true }: { showSearch?: boolean }) {
     <div className="ac-recordbar ac-tracking-subform-recordbar">
       <span className="font-mono text-[9px]">Record:</span>
       <span className="font-mono text-[9px]">|◄ ◄</span>
-      <input readOnly className="ac-input ac-tracking-subform-record-input" value="1" aria-label="Record" />
+      <input
+        type="number"
+        min="1"
+        className="ac-input ac-tracking-subform-record-input"
+        defaultValue="1"
+        aria-label="Record"
+      />
       <span className="font-mono text-[9px]">► ►|</span>
       <span className="font-mono text-[9px]">*</span>
       <span className="ac-tracking-subform-filter font-mono text-[9px]">No Filter</span>
       {showSearch && (
         <>
           <span className="ac-tracking-subform-search-label font-mono text-[9px]">Search</span>
-          <input readOnly className="ac-input ac-tracking-subform-search-input" aria-label="Search" />
+          <input type="search" className="ac-input ac-tracking-subform-search-input" aria-label="Search" />
         </>
       )}
     </div>
@@ -81,9 +87,8 @@ function ContactPickerGrid({
                 {showSelect && (
                   <td className="ac-tracking-subform-select-cell">
                     <input
-                      readOnly
+                      type="checkbox"
                       className="ac-input ac-tracking-subform-select-input"
-                      value=""
                       aria-label={
                         [c.firstName, c.lastName].filter(Boolean).join(" ")
                           ? `Select ${[c.firstName, c.lastName].filter(Boolean).join(" ")}`
@@ -106,7 +111,7 @@ function NotesTextarea({ label, className = "" }: { label?: string; className?: 
   return (
     <div className={`ac-tracking-notes-block ${className}`}>
       {label && <div className="ac-flabel">{label}</div>}
-      <textarea readOnly className="ac-tracking-notes-area" aria-label={label ?? "Notes"} />
+      <textarea className="ac-tracking-notes-area" aria-label={label ?? "Notes"} />
     </div>
   );
 }
@@ -205,37 +210,37 @@ export function EmployeesTabPanel() {
     <div className="ac-tracking-job-tab ac-tracking-job-tab--employees">
       <div className="ac-tracking-job-tab-col ac-tracking-job-tab-col--actions ac-tracking-job-tab-col--employees">
         <div className="ac-tracking-btn-grid ac-tracking-btn-grid--2">
-          <AccessButton xs disabled>
+          <AccessButton xs>
             All &quot;Y&quot;
           </AccessButton>
-          <AccessButton xs disabled>
+          <AccessButton xs>
             Clear &quot;Y&quot;
           </AccessButton>
         </div>
-        <AccessButton disabled className="ac-tracking-job-tab-btn-wide">
+        <AccessButton className="ac-tracking-job-tab-btn-wide">
           Select
         </AccessButton>
-        <AccessButton disabled className="ac-tracking-job-tab-btn-wide ac-tracking-job-tab-btn-bottom">
+        <AccessButton className="ac-tracking-job-tab-btn-wide ac-tracking-job-tab-btn-bottom">
           Text Verify on Job
         </AccessButton>
       </div>
 
       <div className="ac-tracking-job-tab-col ac-tracking-job-tab-col--actions ac-tracking-job-tab-col--employees">
-        <AccessButton disabled className="ac-tracking-job-tab-btn-wide">
+        <AccessButton className="ac-tracking-job-tab-btn-wide">
           View Directions
         </AccessButton>
-        <AccessButton disabled className="ac-tracking-job-tab-btn-wide">
+        <AccessButton className="ac-tracking-job-tab-btn-wide">
           Print Directions
         </AccessButton>
-        <AccessButton disabled className="ac-tracking-job-tab-btn-wide">
+        <AccessButton className="ac-tracking-job-tab-btn-wide">
           Send Directions
         </AccessButton>
       </div>
 
       <div className="ac-tracking-message-pane ac-tracking-message-pane--employees">
         <div className="ac-flabel ac-tracking-message-label">Message</div>
-        <textarea readOnly className="ac-tracking-notes-area ac-tracking-notes-area--fill" aria-label="Message" />
-        <AccessButton disabled className="ac-tracking-job-tab-btn-center">
+        <textarea className="ac-tracking-notes-area ac-tracking-notes-area--fill" aria-label="Message" />
+        <AccessButton className="ac-tracking-job-tab-btn-center">
           Send as Text
         </AccessButton>
       </div>
@@ -243,11 +248,10 @@ export function EmployeesTabPanel() {
       <div className="ac-tracking-message-pane ac-tracking-message-pane--employees">
         <div className="ac-flabel ac-tracking-message-label">Select Hours/Timesheet Text:</div>
         <textarea
-          readOnly
           className="ac-tracking-notes-area ac-tracking-notes-area--fill"
           aria-label="Hours timesheet text"
         />
-        <AccessButton disabled className="ac-tracking-job-tab-btn-center">
+        <AccessButton className="ac-tracking-job-tab-btn-center">
           Send Hours/Timesheet Text
         </AccessButton>
       </div>
@@ -266,27 +270,27 @@ export function SalesmenTabPanel({
     <div className="ac-tracking-job-tab ac-tracking-job-tab--salesmen">
       <div className="ac-tracking-salesmen-left-pane">
         <div className="ac-tracking-btn-grid ac-tracking-btn-grid--2">
-          <AccessButton xs disabled>
+          <AccessButton xs>
             All &quot;Y&quot;
           </AccessButton>
-          <AccessButton xs disabled>
+          <AccessButton xs>
             Email Directions
           </AccessButton>
-          <AccessButton xs disabled>
+          <AccessButton xs>
             Clear &quot;Y&quot;
           </AccessButton>
-          <AccessButton xs disabled>
+          <AccessButton xs>
             Text Directions
           </AccessButton>
         </div>
-        <AccessButton disabled className="ac-tracking-job-tab-btn-center ac-tracking-salesmen-send-btn">
+        <AccessButton className="ac-tracking-job-tab-btn-center ac-tracking-salesmen-send-btn">
           Send as Text
         </AccessButton>
       </div>
 
       <div className="ac-tracking-salesmen-center">
         <div className="ac-tracking-salesmen-message">
-          <textarea readOnly className="ac-tracking-notes-area ac-tracking-notes-area--fill" aria-label="Message" />
+          <textarea className="ac-tracking-notes-area ac-tracking-notes-area--fill" aria-label="Message" />
         </div>
 
         <div className="ac-tracking-subform-grid ac-tracking-subform-grid--fill ac-tracking-subform-grid--salesmen">
@@ -304,9 +308,8 @@ export function SalesmenTabPanel({
                     <td>{s.name || "—"}</td>
                     <td className="ac-tracking-subform-select-cell">
                       <input
-                        readOnly
+                        type="checkbox"
                         className="ac-input ac-tracking-subform-select-input"
-                        value=""
                         aria-label={s.name ? `Select ${s.name}` : "Select salesman"}
                       />
                     </td>
@@ -321,16 +324,16 @@ export function SalesmenTabPanel({
 
       <div className="ac-tracking-salesmen-right-pane">
         <div className="ac-tracking-btn-grid ac-tracking-btn-grid--2 ac-tracking-salesmen-side-grid">
-          <AccessButton disabled className="ac-tracking-job-tab-btn-wide">
+          <AccessButton className="ac-tracking-job-tab-btn-wide">
             Select All
           </AccessButton>
-          <AccessButton disabled className="ac-tracking-job-tab-btn-wide">
+          <AccessButton className="ac-tracking-job-tab-btn-wide">
             View Future Calls
           </AccessButton>
-          <AccessButton disabled className="ac-tracking-job-tab-btn-wide">
+          <AccessButton className="ac-tracking-job-tab-btn-wide">
             Clear All
           </AccessButton>
-          <AccessButton disabled className="ac-tracking-job-tab-btn-wide">
+          <AccessButton className="ac-tracking-job-tab-btn-wide">
             Email Future Calls
           </AccessButton>
         </div>
@@ -375,13 +378,17 @@ export function SAdminTabPanel() {
     <div className="ac-tracking-job-tab ac-tracking-job-tab--s-admin">
       <div className="ac-tracking-s-admin-view-row">
         <span className="ac-flabel ac-tracking-s-admin-view-label">View:</span>
-        <select disabled className="ac-select ac-tracking-s-admin-view-select" defaultValue="01">
+        <select className="ac-select ac-tracking-s-admin-view-select" defaultValue="01">
           <option value="01">01 Tracking</option>
+          <option value="02">02 Schedule</option>
+          <option value="03">03 Payroll</option>
+          <option value="04">04 Sales</option>
+          <option value="05">05 Administration</option>
         </select>
-        <AccessButton xs disabled>
+        <AccessButton xs>
           Save View
         </AccessButton>
-        <AccessButton xs disabled>
+        <AccessButton xs>
           Delete View
         </AccessButton>
       </div>
@@ -392,7 +399,6 @@ export function SAdminTabPanel() {
               btn ? (
                 <AccessButton
                   key={btn.label}
-                  disabled
                   className={btn.warn ? "ac-tracking-s-admin-btn-warn" : undefined}
                 >
                   {btn.label}
@@ -423,18 +429,18 @@ function ScheduleActionGroup({
     <div className="ac-tracking-schedule-group">
       <div className="ac-tracking-schedule-group-title">{title}</div>
       {buttons.map((label) => (
-        <AccessButton key={label} disabled className="ac-tracking-job-tab-btn-wide">
+        <AccessButton key={label} className="ac-tracking-job-tab-btn-wide">
           {label}
         </AccessButton>
       ))}
       {checks.map((label) => (
         <label key={label} className="ac-tracking-schedule-check-row">
           <span>{label}</span>
-          <input type="checkbox" disabled aria-label={label} />
+          <input type="checkbox" aria-label={label} />
         </label>
       ))}
       {reportLabel && (
-        <AccessButton disabled className="ac-tracking-report-btn ac-tracking-schedule-report-btn">
+        <AccessButton className="ac-tracking-report-btn ac-tracking-schedule-report-btn">
           {reportLabel}
         </AccessButton>
       )}
@@ -469,21 +475,21 @@ export function ScheduleTimesheetTabPanel({ contacts }: { contacts: TrackingJobC
       <div className="ac-tracking-schedule-right-pane">
         <div className="ac-tracking-radio-row">
           <label className="ac-tracking-radio-label">
-            <input type="radio" name="sched-audience" defaultChecked disabled />
+            <input type="radio" name="sched-audience" defaultChecked />
             Customers/Employees
           </label>
           <label className="ac-tracking-radio-label">
-            <input type="radio" name="sched-audience" disabled />
+            <input type="radio" name="sched-audience" />
             Salesmen
           </label>
         </div>
         <div className="ac-tracking-schedule-notes-header">
           <span className="ac-flabel ac-tracking-schedule-notes-label">Additional Notes:</span>
-          <AccessButton xs disabled>
+          <AccessButton xs>
             Select Employees
           </AccessButton>
         </div>
-        <textarea readOnly className="ac-tracking-notes-area ac-tracking-notes-area--fill" aria-label="Additional notes" />
+        <textarea className="ac-tracking-notes-area ac-tracking-notes-area--fill" aria-label="Additional notes" />
       </div>
     </div>
   );
@@ -493,16 +499,16 @@ export function VerifyHoursTabPanel({ contacts }: { contacts: TrackingJobContact
   return (
     <div className="ac-tracking-job-tab ac-tracking-job-tab--verify">
       <div className="ac-tracking-job-tab-col ac-tracking-job-tab-col--narrow">
-        <AccessButton disabled className="ac-tracking-job-tab-btn-wide">
+        <AccessButton className="ac-tracking-job-tab-btn-wide">
           View V Hours
         </AccessButton>
-        <AccessButton disabled className="ac-tracking-job-tab-btn-wide">
+        <AccessButton className="ac-tracking-job-tab-btn-wide">
           Select
         </AccessButton>
-        <AccessButton disabled className="ac-tracking-job-tab-btn-wide">
+        <AccessButton className="ac-tracking-job-tab-btn-wide">
           Email V Hours
         </AccessButton>
-        <AccessButton disabled className="ac-tracking-report-btn ac-tracking-job-tab-btn-wide">
+        <AccessButton className="ac-tracking-report-btn ac-tracking-job-tab-btn-wide">
           Verify Report
         </AccessButton>
       </div>
@@ -518,22 +524,22 @@ export function InvoiceTabPanel({ contacts }: { contacts: TrackingJobContact[] }
   return (
     <div className="ac-tracking-job-tab ac-tracking-job-tab--invoice">
       <div className="ac-tracking-job-tab-col ac-tracking-job-tab-col--narrow">
-        <AccessButton disabled className="ac-tracking-job-tab-btn-wide">
+        <AccessButton className="ac-tracking-job-tab-btn-wide">
           View Invoice
         </AccessButton>
-        <AccessButton disabled className="ac-tracking-job-tab-btn-wide">
+        <AccessButton className="ac-tracking-job-tab-btn-wide">
           Email Invoice
         </AccessButton>
-        <AccessButton disabled className="ac-tracking-report-btn ac-tracking-job-tab-btn-wide">
+        <AccessButton className="ac-tracking-report-btn ac-tracking-job-tab-btn-wide">
           Invoice Report
         </AccessButton>
         <label className="ac-tracking-check-row">
           <span>Total By Job</span>
-          <input type="checkbox" disabled />
+          <input type="checkbox" />
         </label>
         <label className="ac-tracking-check-row">
           <span>Send Timesheets</span>
-          <input type="checkbox" disabled />
+          <input type="checkbox" />
         </label>
       </div>
 
@@ -551,8 +557,8 @@ export function SeamusTabPanel() {
   return (
     <div className="ac-tracking-job-tab ac-tracking-job-tab--seamus">
       <AccessButtonRow>
-        <AccessButton disabled>Copy Forward</AccessButton>
-        <AccessButton disabled>Payroll Adjustments</AccessButton>
+        <AccessButton>Copy Forward</AccessButton>
+        <AccessButton>Payroll Adjustments</AccessButton>
       </AccessButtonRow>
     </div>
   );
@@ -564,9 +570,11 @@ export function EstInvoiceTabPanel({ value = "" }: { value?: string }) {
       <div className="ac-tracking-est-invoice-field">
         <span className="ac-flabel ac-tracking-est-invoice-label">Estimated Invoice:</span>
         <input
-          readOnly
+          type="number"
+          min="0"
+          step="0.01"
           className="ac-input ac-tracking-est-invoice-input"
-          value={value}
+          defaultValue={value}
           aria-label="Estimated Invoice"
         />
       </div>
@@ -610,17 +618,17 @@ export function ReferralAgenciesTabPanel({
   return (
     <div className="ac-tracking-job-tab ac-tracking-job-tab--referral">
       <div className="ac-tracking-referral-left-pane">
-        <AccessButton disabled className="ac-tracking-report-btn ac-tracking-job-tab-btn-wide">
+        <AccessButton className="ac-tracking-report-btn ac-tracking-job-tab-btn-wide">
           Invoice Report
         </AccessButton>
-        <AccessButton disabled className="ac-tracking-job-tab-btn-wide">
+        <AccessButton className="ac-tracking-job-tab-btn-wide">
           Text Directions
         </AccessButton>
       </div>
 
       <div className="ac-tracking-referral-message-pane">
-        <textarea readOnly className="ac-tracking-notes-area ac-tracking-notes-area--fill" aria-label="Message" />
-        <AccessButton disabled className="ac-tracking-referral-send-btn">
+        <textarea className="ac-tracking-notes-area ac-tracking-notes-area--fill" aria-label="Message" />
+        <AccessButton className="ac-tracking-referral-send-btn">
           Send as Text
         </AccessButton>
       </div>
@@ -629,10 +637,10 @@ export function ReferralAgenciesTabPanel({
 
       <div className="ac-tracking-referral-right-pane">
         <div className="ac-tracking-btn-grid ac-tracking-referral-side-grid">
-          <AccessButton disabled className="ac-tracking-job-tab-btn-wide">
+          <AccessButton className="ac-tracking-job-tab-btn-wide">
             Select All
           </AccessButton>
-          <AccessButton disabled className="ac-tracking-job-tab-btn-wide">
+          <AccessButton className="ac-tracking-job-tab-btn-wide">
             Clear All
           </AccessButton>
         </div>

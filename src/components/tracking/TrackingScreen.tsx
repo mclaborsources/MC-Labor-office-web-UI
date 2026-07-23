@@ -271,17 +271,22 @@ function JobInfoDocRow({
     <div className="ac-tracking-job-doc-row">
       <span className="ac-tracking-job-doc-label">{label}</span>
       {showValue ? (
-        <input readOnly className="ac-input ac-tracking-job-doc-value" value={value || ""} aria-label={label} />
+        <input
+          type="text"
+          className="ac-input ac-tracking-job-doc-value"
+          defaultValue={value || ""}
+          aria-label={label}
+        />
       ) : (
         <span className="ac-tracking-job-doc-value-spacer" aria-hidden />
       )}
       <input
-        readOnly
+        type="text"
         className="ac-input ac-tracking-job-doc-flag"
-        value={flag || ""}
+        defaultValue={flag || ""}
         aria-label={`${label} flag`}
       />
-      <AccessButton disabled className="ac-tracking-job-doc-open">
+      <AccessButton className="ac-tracking-job-doc-open">
         {openLabel}
       </AccessButton>
     </div>
@@ -318,7 +323,7 @@ function JobInfoTabPanel({
           <JobInfoDocRow label="WC x Date" value={jobInfo?.wcDate ?? ""} openLabel="Open WC" />
           <JobInfoDocRow label="GL x Date" value={jobInfo?.glDate ?? ""} openLabel="Open GL" />
           <div className="ac-tracking-job-doc-hyperlinks">
-            <AccessButton disabled className="ac-tracking-hyperlinks-btn">
+            <AccessButton className="ac-tracking-hyperlinks-btn">
               Hyperlinks
             </AccessButton>
           </div>
@@ -358,7 +363,13 @@ function JobInfoTabPanel({
           <span className="ac-tracking-grade-record-nav" aria-hidden>
             ◀
           </span>
-          <input readOnly className="ac-input ac-tracking-grade-record-input" value="1" aria-label="Record number" />
+          <input
+            type="number"
+            min="1"
+            className="ac-input ac-tracking-grade-record-input"
+            defaultValue="1"
+            aria-label="Record number"
+          />
           <span className="ac-tracking-grade-record-nav" aria-hidden>
             ▶
           </span>
@@ -408,29 +419,46 @@ export function TrackingScreen({
   return (
     <div className="ac-tracking ac-tracking--modern flex min-h-0 flex-1 flex-col">
       <AccessToolbar className="ac-tracking-toolbar-band mc-scroll-smooth">
-        <select disabled className="ac-select" defaultValue="">
+        <select className="ac-select" defaultValue="">
           <option value="">&lt;Search&gt;</option>
+          <option value="employees">Employee Search</option>
+          <option value="customers">Customer Search</option>
+          <option value="jobs">Job Search</option>
+          <option value="assignments">Assignment Search</option>
         </select>
-        <select disabled className="ac-select" defaultValue="">
+        <select className="ac-select" defaultValue="">
           <option value="">&lt;Admin&gt;</option>
+          <option value="office-staff">Office Staff</option>
+          <option value="user-settings">User Settings</option>
+          <option value="tracking-setup">Tracking Setup</option>
+          <option value="system-utilities">System Utilities</option>
         </select>
-        <select disabled className="ac-select" defaultValue="">
+        <select className="ac-select" defaultValue="">
           <option value="">&lt;Reports&gt;</option>
+          <option value="weekly-schedule">Weekly Schedule</option>
+          <option value="timesheets">Timesheets</option>
+          <option value="payroll">Payroll</option>
+          <option value="customer-sales">Sales by Customer</option>
+          <option value="wcc">WCC Report</option>
         </select>
-        <AccessButton disabled>Health Ins</AccessButton>
-        <AccessButton disabled className="ac-tracking-toolbar-alert">Bonus Exp</AccessButton>
-        <select disabled className="ac-select" defaultValue="">
+        <AccessButton>Health Ins</AccessButton>
+        <AccessButton className="ac-tracking-toolbar-alert">Bonus Exp</AccessButton>
+        <select className="ac-select" defaultValue="">
           <option value="">&lt;Job Application&gt;</option>
+          <option value="new">New Application</option>
+          <option value="review">Review Queue</option>
+          <option value="problems">Application Problems</option>
+          <option value="missing-documents">Missing Documents</option>
         </select>
         {TOOLBAR_ALERT_ACTIONS.map((label) => (
-          <AccessButton key={label} disabled title="Read-only preview" className="ac-tracking-toolbar-alert">
+          <AccessButton key={label} className="ac-tracking-toolbar-alert">
             {label}
           </AccessButton>
         ))}
         {TOOLBAR_ADMIN_ACTIONS.map((label) => (
-          <AccessButton key={label} disabled title="Read-only preview">{label}</AccessButton>
+          <AccessButton key={label}>{label}</AccessButton>
         ))}
-        <AccessButton variant="go" disabled title="Read-only preview" className="shrink-0">
+        <AccessButton variant="go" className="shrink-0">
           WCC Payroll / Sales Report by Customer
         </AccessButton>
       </AccessToolbar>
@@ -447,7 +475,7 @@ export function TrackingScreen({
                 <div className="ac-flabel">Week</div>
                 <div className="ac-readonly ac-tracking-field-box font-mono text-center">{week.assignWeek}</div>
               </div>
-              <AccessButton xs disabled className="ac-tracking-top-empl" title="Coming later">
+              <AccessButton xs className="ac-tracking-top-empl">
                 Empl Quick Search
               </AccessButton>
             </div>
@@ -467,8 +495,8 @@ export function TrackingScreen({
                     </option>
                   ))}
                 </select>
-                <AccessButton xs disabled>+</AccessButton>
-                <AccessButton xs disabled>Reset</AccessButton>
+                <AccessButton xs>+</AccessButton>
+                <AccessButton xs>Reset</AccessButton>
               </div>
             </div>
 
@@ -478,7 +506,6 @@ export function TrackingScreen({
                 <select
                   className="ac-select min-w-0 flex-1"
                   value={selectedProjectId}
-                  disabled={!selectedCustomerId}
                   onChange={(e) => navigateFilter(selectedCustomerId, e.target.value)}
                 >
                   <option value="">Select job…</option>
@@ -488,7 +515,7 @@ export function TrackingScreen({
                     </option>
                   ))}
                 </select>
-                <AccessButton xs disabled>+</AccessButton>
+                <AccessButton xs>+</AccessButton>
                 <span className="ac-btn ac-btn-primary ac-btn-xs shrink-0 cursor-default">OnSite</span>
               </div>
             </div>
@@ -496,20 +523,20 @@ export function TrackingScreen({
             <div>
               <div className="ac-flabel">Assignment</div>
               <AccessButtonRow>
-                <AccessButton disabled title="WRITES_ENABLED=false">New</AccessButton>
-                <AccessButton disabled>End</AccessButton>
-                <AccessButton disabled>Transfer</AccessButton>
+                <AccessButton>New</AccessButton>
+                <AccessButton>End</AccessButton>
+                <AccessButton>Transfer</AccessButton>
               </AccessButtonRow>
               <AccessButtonRow>
-                <AccessButton xs disabled className="ac-tracking-assign-cell" title="Coming later">
+                <AccessButton xs className="ac-tracking-assign-cell">
                   Cell # Search
                 </AccessButton>
               </AccessButtonRow>
             </div>
 
             <AccessButtonRow>
-              <AccessButton disabled>T Sheets HL</AccessButton>
-              <AccessButton disabled>View Invoice</AccessButton>
+              <AccessButton>T Sheets HL</AccessButton>
+              <AccessButton>View Invoice</AccessButton>
             </AccessButtonRow>
           </aside>
 
@@ -538,8 +565,13 @@ export function TrackingScreen({
 
             <div>
               <div className="ac-flabel">Reports</div>
-              <select disabled className="ac-select w-full" defaultValue="">
+              <select className="ac-select w-full" defaultValue="">
                 <option value="">&lt;Reports 2&gt;</option>
+                <option value="assignment-summary">Assignment Summary</option>
+                <option value="employee-hours">Employee Hours</option>
+                <option value="job-hours">Job Hours</option>
+                <option value="invoice-summary">Invoice Summary</option>
+                <option value="weekly-payroll">Weekly Payroll</option>
               </select>
             </div>
 
@@ -579,7 +611,7 @@ export function TrackingScreen({
               </table>
             </div>
 
-            <AccessButton disabled className="self-start">
+            <AccessButton className="self-start">
               Clear HL
             </AccessButton>
           </aside>
@@ -595,32 +627,32 @@ export function TrackingScreen({
             className="ac-tracking-action-tabs"
           />
           <AccessButtonRow className="ac-tracking-action-controls flex-1 justify-end">
-            <AccessButton disabled>Hrs AutoText</AccessButton>
-            <AccessButton disabled>Payroll Change</AccessButton>
+            <AccessButton>Hrs AutoText</AccessButton>
+            <AccessButton>Payroll Change</AccessButton>
             <AccessToolbarDivider />
             <span className="ac-tracking-refresh-label">Refresh</span>
-            <AccessButton disabled>All</AccessButton>
-            <AccessButton disabled>Job</AccessButton>
-            <AccessButton disabled>Emp</AccessButton>
-            <AccessButton disabled>Delete</AccessButton>
+            <AccessButton>All</AccessButton>
+            <AccessButton>Job</AccessButton>
+            <AccessButton>Emp</AccessButton>
+            <AccessButton>Delete</AccessButton>
             <AccessToolbarDivider />
             <div className="ac-tracking-record-nav">
-              <AccessButton disabled xs aria-label="First record">
+              <AccessButton xs aria-label="First record">
                 |◄
               </AccessButton>
-              <AccessButton disabled xs aria-label="Previous record">
+              <AccessButton xs aria-label="Previous record">
                 ◄
               </AccessButton>
               <input
-                readOnly
+                type="text"
                 className="ac-input ac-tracking-record-input"
-                value={jobInfo?.customerName || (selectedCustomerId ? "Filtered customer" : "")}
+                defaultValue={jobInfo?.customerName || (selectedCustomerId ? "Filtered customer" : "")}
                 title="Current customer filter"
               />
-              <AccessButton disabled xs aria-label="Next record">
+              <AccessButton xs aria-label="Next record">
                 ►
               </AccessButton>
-              <AccessButton disabled xs aria-label="Last record">
+              <AccessButton xs aria-label="Last record">
                 ►|
               </AccessButton>
             </div>
@@ -632,8 +664,8 @@ export function TrackingScreen({
                 <span key={c} className="ac-swatch" style={{ background: c }} title="Status color" />
               ))}
             </span>
-            <AccessButton disabled>History Update</AccessButton>
-            <AccessButton disabled>Browse</AccessButton>
+            <AccessButton>History Update</AccessButton>
+            <AccessButton>Browse</AccessButton>
             <span className="ac-swatches ac-tracking-palette-swatches">
               {PALETTE_SWATCHES.map((c) => (
                 <span key={c} className="ac-swatch" style={{ background: c }} title="Palette" />
@@ -692,7 +724,7 @@ export function TrackingScreen({
             </span>
             <span className="ml-auto flex items-center gap-1.5">
               <span className="text-slate-500">Search</span>
-              <input disabled className="ac-input w-[130px]" placeholder="Filter rows…" />
+              <input type="search" className="ac-input w-[130px]" placeholder="Filter rows…" />
             </span>
           </div>
           <p className="ac-tracking-status">
