@@ -6820,7 +6820,8 @@ body {
 
 .ac-customer-profile-folder-row {
   display: grid;
-  grid-template-columns: 201px minmax(500px, 970px) 74px;
+  grid-template-columns: 83px 970px 74px;
+  grid-template-rows: 28px 28px;
   align-items: end;
   gap: 8px;
   margin-top: 22px;
@@ -6830,16 +6831,40 @@ body {
   border-radius: 0;
 }
 
+.ac-customer-profile-folder-row > .ac-btn:first-child {
+  grid-column: 1 / 3;
+  grid-row: 1;
+  width: 201px;
+  justify-self: start;
+}
+
 .ac-customer-profile-folder-field {
+  grid-column: 1 / 3;
+  grid-row: 2;
   display: grid;
-  grid-template-columns: 90px 1fr;
+  grid-template-columns: 83px 970px;
   align-items: center;
+  width: 1053px;
+}
+
+.ac-customer-profile-folder-field .ac-input {
+  width: 970px;
+  height: 27px;
+  min-height: 27px;
+  border-radius: 0;
+}
+
+.ac-customer-profile-folder-row > .ac-btn:last-child {
+  grid-column: 3;
+  grid-row: 2;
 }
 
 .ac-customer-profile-footer-fields {
-  grid-template-columns: 280px 208px 430px;
+  position: relative;
+  grid-template-columns: 280px 196px 430px;
+  grid-template-rows: 28px 28px;
   gap: 3px 28px;
-  width: 970px;
+  width: 962px;
   margin-top: 18px;
 }
 
@@ -6853,6 +6878,61 @@ body {
   height: 27px;
   min-height: 27px;
   border-radius: 0;
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(1) {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(2) {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(3) {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(4) {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(5) {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(6) {
+  grid-column: 3;
+  grid-row: 2;
+  width: 154px;
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(7) {
+  grid-column: 3;
+  grid-row: 2;
+  width: 252px;
+  margin-left: 178px;
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(2),
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(5) {
+  grid-template-columns: 119px 81px;
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(3) {
+  grid-template-columns: 83px 347px;
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(6) {
+  grid-template-columns: 83px 71px;
+}
+
+.ac-customer-profile-footer-fields .ac-customer-profile-field:nth-child(7) {
+  grid-template-columns: 58px 194px;
 }
 
 /* Access uses light, compact form typography rather than dashboard-weight text. */
