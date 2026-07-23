@@ -5223,6 +5223,89 @@ body {
   font-weight: 700;
 }
 
+/* Match the five-column Ray utility screen from the source application. */
+.ac-customer-search-page .ac-customer-search-ray-tab {
+  min-height: 254px;
+  padding: 12px 18px;
+  flex-wrap: nowrap;
+  background: #ebebeb;
+  border-color: #888;
+  border-radius: 0;
+}
+
+.ac-customer-search-page .ac-customer-search-ray-section {
+  min-height: 124px;
+  padding: 0 15px;
+  gap: 10px;
+  border-right-color: #aaa;
+}
+
+.ac-customer-search-page .ac-customer-search-ray-section:first-child {
+  width: 239px;
+  padding-left: 1px;
+}
+
+.ac-customer-search-page .ac-customer-search-ray-section:nth-child(2) {
+  width: 255px;
+}
+
+.ac-customer-search-page .ac-customer-search-ray-section:nth-child(3) {
+  width: 235px;
+}
+
+.ac-customer-search-page .ac-customer-search-ray-section:nth-child(4) {
+  width: 293px;
+}
+
+.ac-customer-search-page .ac-customer-search-ray-section:nth-child(5) {
+  flex: 1 1 auto;
+  min-width: 250px;
+}
+
+.ac-customer-search-page .ac-customer-search-ray-field {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+}
+
+.ac-customer-search-page .ac-customer-search-ray-field .ac-flabel {
+  white-space: nowrap;
+}
+
+.ac-customer-search-page .ac-customer-search-ray-field .ac-select {
+  width: 100%;
+  height: 27px;
+  background: #fff;
+}
+
+.ac-customer-search-page .ac-customer-search-ray-large-btn.ac-btn {
+  width: 100%;
+  min-height: 65px;
+}
+
+.ac-customer-search-page .ac-customer-search-ray-section:nth-child(3) > .ac-btn {
+  width: 100%;
+  max-width: none;
+  min-height: 65px;
+  white-space: normal;
+}
+
+.ac-customer-search-page .ac-customer-search-ray-btn-row {
+  width: 100%;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.ac-customer-search-page .ac-customer-search-ray-delete-row {
+  gap: 7px;
+}
+
+.ac-customer-search-page .ac-customer-search-ray-section:nth-child(5) > .ac-btn {
+  max-width: none;
+}
+
 .ac-customer-search-action-label,
 .ac-customer-search-action-hint,
 .ac-customer-search-mouse-over,

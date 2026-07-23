@@ -699,6 +699,25 @@ function AdminUtilitiesTab() {
   );
 }
 
+const CUSTOMER_RAY_CONTACT_TITLE_OPTIONS = [
+  "Owner",
+  "President",
+  "Project Manager",
+  "Estimator",
+  "Office Manager",
+  "Accounts Payable",
+] as const;
+
+const CUSTOMER_RAY_TYPE_OPTIONS = [
+  "General Contractor",
+  "Electrical",
+  "Plumbing",
+  "Mechanical",
+  "Masonry",
+  "Roofing",
+  "Site Contractor",
+] as const;
+
 function RayTab() {
   return (
     <div className="ac-customer-search-ray-tab ac-search-views-tab-pane">
@@ -706,8 +725,11 @@ function RayTab() {
         <div className="ac-customer-search-ray-label">Select contacts with titles to change</div>
         <label className="ac-customer-search-ray-field">
           <span className="ac-flabel">Change To:</span>
-          <select disabled className="ac-select" defaultValue="">
-            <option value="" />
+          <select className="ac-select" defaultValue="" aria-label="Change contact title to">
+            <option value="">Select…</option>
+            {CUSTOMER_RAY_CONTACT_TITLE_OPTIONS.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
           </select>
         </label>
         <AccessButton xs disabled>
@@ -739,8 +761,11 @@ function RayTab() {
         <div className="ac-customer-search-ray-label">Select customers with Cust Type to change</div>
         <label className="ac-customer-search-ray-field">
           <span className="ac-flabel">Change To:</span>
-          <select disabled className="ac-select" defaultValue="">
-            <option value="" />
+          <select className="ac-select" defaultValue="" aria-label="Change customer type to">
+            <option value="">Select…</option>
+            {CUSTOMER_RAY_TYPE_OPTIONS.map((option) => (
+              <option key={option} value={option}>{option}</option>
+            ))}
           </select>
         </label>
         <AccessButton xs disabled>
