@@ -680,6 +680,119 @@ function CustomerSalesTab() {
   );
 }
 
+type CollectionFilter = "active" | "inactive" | "all";
+
+interface CollectionNoteRow {
+  id: string;
+  note: string;
+  userName: string;
+  timestamp: string;
+  active: boolean;
+}
+
+function CustomerCollectionsTab() {
+  const [filter, setFilter] = useState<CollectionFilter>("active");
+  const [search, setSearch] = useState("");
+  const [selectedId, setSelectedId] = useState("collection-new");
+  const [rows, setRows] = useState<CollectionNoteRow[]>([
+    { id: "collection-new", note: "", userName: "", timestamp: "", active: true },
+  ]);
+
+  const visibleRows = rows.filter((row) => {
+    const matchesFilter = filter === "all" || row.active === (filter === "active");
+    const term = search.trim().toLowerCase();
+    const matchesSearch = !term || [row.note, row.userName, row.timestamp].some((value) => value.toLowerCase().includes(term));
+    return matchesFilter && matchesSearch;
+  });
+
+  function updateCollection(id: string, field: keyof CollectionNoteRow, value: string | boolean) {
+    setRows((current) => current.map((row) => (row.id === id ? { ...row, [field]: value } : row)));
+  }
+
+  function deleteSelectedCollection() {
+    setRows((current) => current.filter((row) => row.id !== selectedId));
+    setSelectedId("");
+  }
+
+  return (
+    <section id="06-collections" className="ac-customer-collections">
+      <div className="ac-customer-collections-title">Collections Notes</div>
+      <div className="ac-customer-collections-workspace">
+        <button
+          type="button"
+          className="ac-customer-collections-delete"
+          onClick={deleteSelectedCollection}
+          disabled={!selectedId}
+          aria-label="Delete selected collection note"
+        >
+          ×
+        </button>
+
+        <div className="ac-customer-collections-grid-wrap">
+          <table className="ac-customer-collections-grid">
+            <thead>
+              <tr>
+                <th aria-label="Record selector" />
+                <th>Collection Note</th>
+                <th>User Name</th>
+                <th>Timestamp</th>
+                <th>Active</th>
+                <th aria-hidden />
+              </tr>
+            </thead>
+            <tbody>
+              {visibleRows.map((row) => (
+                <tr key={row.id} className={selectedId === row.id ? "is-selected" : ""}>
+                  <td>
+                    <button type="button" onClick={() => setSelectedId(row.id)} aria-label="Select collection note">
+                      {selectedId === row.id ? "*" : ""}
+                    </button>
+                  </td>
+                  <td><input value={row.note} onFocus={() => setSelectedId(row.id)} onChange={(event) => updateCollection(row.id, "note", event.target.value)} /></td>
+                  <td><input value={row.userName} onFocus={() => setSelectedId(row.id)} onChange={(event) => updateCollection(row.id, "userName", event.target.value)} /></td>
+                  <td><input value={row.timestamp} onFocus={() => setSelectedId(row.id)} onChange={(event) => updateCollection(row.id, "timestamp", event.target.value)} /></td>
+                  <td><input type="checkbox" checked={row.active} onFocus={() => setSelectedId(row.id)} onChange={(event) => updateCollection(row.id, "active", event.target.checked)} /></td>
+                  <td />
+                </tr>
+              ))}
+              {Array.from({ length: Math.max(0, 7 - visibleRows.length) }, (_, index) => (
+                <tr key={`blank-${index}`} aria-hidden>
+                  <td />
+                  <td /><td /><td /><td /><td />
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="ac-customer-collections-recordbar">
+            <span>Record:</span>
+            <span>|◄</span>
+            <span>◄</span>
+            <strong>{visibleRows.length ? `1 of ${visibleRows.length}` : "0 of 0"}</strong>
+            <span>►</span>
+            <span>►|</span>
+            <span className="ac-customer-collections-filter-status">{filter === "all" && !search ? "No Filter" : "Filtered"}</span>
+            <input value={search} onChange={(event) => setSearch(event.target.value)} aria-label="Search collection notes" placeholder="Search" />
+          </div>
+        </div>
+
+        <fieldset className="ac-customer-collections-filter">
+          <legend>Filter</legend>
+          {(["active", "inactive", "all"] as const).map((value) => (
+            <label key={value}>
+              <input type="radio" name="collection-filter" checked={filter === value} onChange={() => setFilter(value)} />
+              <span>{value[0].toUpperCase() + value.slice(1)}</span>
+            </label>
+          ))}
+        </fieldset>
+      </div>
+
+      <AccessButton xs disabled className="ac-customer-collections-folder-btn">
+        Create Folders for Bad Debt and Small Claims
+      </AccessButton>
+    </section>
+  );
+}
+
 export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) {
   const [activeTab, setActiveTab] = useState("01-basic");
 
@@ -705,7 +818,8 @@ export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) 
               {activeTab === "03-billrates" ? <CustomerBillRatesTab customer={customer} /> : null}
               {activeTab === "04-insurance" ? <CustomerInsuranceInfoTab /> : null}
               {activeTab === "05-sales" ? <CustomerSalesTab /> : null}
-              {activeTab !== "01-basic" && activeTab !== "03-billrates" && activeTab !== "04-insurance" && activeTab !== "05-sales" ? (
+              {activeTab === "06-collections" ? <CustomerCollectionsTab /> : null}
+              {activeTab !== "01-basic" && activeTab !== "03-billrates" && activeTab !== "04-insurance" && activeTab !== "05-sales" && activeTab !== "06-collections" ? (
                 <CustomerProfileStub id={activeTab} title={CUSTOMER_PROFILE_TABS.find((tab) => tab.id === activeTab)?.label ?? activeTab} />
               ) : null}
             </div>
