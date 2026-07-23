@@ -6531,13 +6531,94 @@ body {
 
 .ac-customer-profile-step-list {
   width: 277px;
-  min-height: 55px;
-  height: 55px;
+  min-height: 28px;
+  height: 28px;
+  padding: 1px 2px;
   border-radius: 0;
 }
 
 .ac-customer-profile-step-nav {
   flex-direction: row;
+  align-items: center;
+}
+
+/* Use one control height and baseline throughout the profile header. */
+.ac-customer-profile-control-panel .ac-input,
+.ac-customer-profile-control-panel .ac-select,
+.ac-customer-profile-control-panel .ac-btn,
+.ac-customer-profile-control-panel button,
+.ac-customer-profile-control-panel input,
+.ac-customer-profile-control-panel select {
+  box-sizing: border-box;
+  min-height: 28px;
+  height: 28px;
+  max-height: 28px;
+}
+
+.ac-customer-profile-row-1-left,
+.ac-customer-profile-row-1-center,
+.ac-customer-profile-row-1-right {
+  min-height: 55px;
+  align-items: flex-end;
+}
+
+.ac-customer-profile-mini-tabs {
+  height: 28px;
+}
+
+.ac-customer-profile-mini-tab {
+  height: 28px;
+  min-height: 28px;
+  max-height: 28px;
+  padding-block: 2px;
+}
+
+.ac-customer-profile-library-wrap {
+  width: 86px;
+  height: 28px;
+  min-height: 28px;
+  padding: 2px 5px;
+  align-items: center;
+}
+
+.ac-customer-profile-library-box {
+  width: 17px;
+  height: 17px;
+  min-height: 17px;
+  max-height: 17px;
+}
+
+.ac-customer-profile-research-btn.ac-btn {
+  width: 55px;
+  min-width: 55px;
+  height: 28px;
+  min-height: 28px;
+  max-height: 28px;
+  white-space: nowrap;
+}
+
+.ac-customer-profile-step-list {
+  height: 28px;
+  min-height: 28px;
+  max-height: 28px;
+}
+
+.ac-customer-profile-step-arrow.ac-btn,
+.ac-customer-profile-util-icon {
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  min-height: 28px;
+  max-height: 28px;
+}
+
+.ac-customer-profile-row-2 {
+  align-items: center;
+}
+
+.ac-customer-profile-row-3,
+.ac-customer-profile-row-4 {
+  align-items: center;
 }
 
 .ac-customer-profile-delete-link {
