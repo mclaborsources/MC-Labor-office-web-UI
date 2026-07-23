@@ -7256,6 +7256,374 @@ body {
   font: inherit;
 }
 
+/* Customer profile — Insurance Certificate Requests */
+.ac-customer-inscert {
+  min-height: 500px;
+  color: #000;
+  font-size: 13px;
+}
+
+.ac-customer-inscert-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 543px;
+  margin-bottom: 3px;
+}
+
+.ac-customer-inscert-heading .ac-btn {
+  min-width: 169px;
+  border-radius: 0;
+}
+
+.ac-customer-inscert-grid-wrap {
+  width: 543px;
+  border: 1px solid #b7bec6;
+  background: #fff;
+}
+
+.ac-customer-inscert-grid {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 13px;
+}
+
+.ac-customer-inscert-grid th {
+  height: 20px;
+  padding: 1px 5px;
+  border-right: 1px solid #c6ced5;
+  border-bottom: 1px solid #b7bec6;
+  background: #edf1f4;
+  font-weight: 400;
+  text-align: center;
+}
+
+.ac-customer-inscert-grid th:first-child {
+  width: 18px;
+}
+
+.ac-customer-inscert-grid th:nth-child(2) {
+  width: 141px;
+}
+
+.ac-customer-inscert-grid th:nth-child(3) {
+  width: 143px;
+}
+
+.ac-customer-inscert-grid th:nth-child(4) {
+  width: 159px;
+}
+
+.ac-customer-inscert-grid th:nth-child(5) {
+  width: 82px;
+}
+
+.ac-customer-inscert-grid td {
+  height: 30px;
+  padding: 0;
+  border-right: 1px solid #edf0f2;
+  border-bottom: 1px solid #edf0f2;
+  background: #fff;
+}
+
+.ac-customer-inscert-grid td:first-child {
+  background: #f0f2f4;
+}
+
+.ac-customer-inscert-grid td input,
+.ac-customer-inscert-grid td select {
+  width: 100%;
+  height: 29px;
+  padding: 2px 5px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+}
+
+.ac-customer-inscert-recordbar {
+  display: flex;
+  align-items: center;
+  height: 18px;
+  border-top: 1px solid #b7bec6;
+  background: #edf1f4;
+  font-size: 10px;
+}
+
+.ac-customer-inscert-recordbar > * {
+  padding-inline: 4px;
+  white-space: nowrap;
+}
+
+.ac-customer-inscert-record-number {
+  min-width: 49px;
+  height: 17px;
+  border: 1px solid #aaa;
+  background: #fff;
+}
+
+.ac-customer-inscert-filter-status {
+  color: #aaa;
+}
+
+.ac-customer-inscert-recordbar input {
+  width: 74px;
+  height: 17px;
+  padding: 0 5px;
+  border: 1px solid #aaa;
+  font-size: 10px;
+}
+
+/* Customer profile — Options */
+.ac-customer-options {
+  min-width: 1200px;
+  min-height: 660px;
+  padding: 0 7px 20px;
+  color: #000;
+  font-size: 13px;
+}
+
+.ac-customer-options h3 {
+  margin: 0 0 13px;
+  font-size: 16px;
+  text-decoration: underline;
+}
+
+.ac-customer-options-texts {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 76px;
+}
+
+.ac-customer-options-section {
+  border-top: 1px solid #aaa;
+  padding-top: 7px;
+}
+
+.ac-customer-options-text-list {
+  line-height: 1.4;
+}
+
+.ac-customer-options-text-list input {
+  float: right;
+  margin-right: -40px;
+}
+
+.ac-customer-options-help {
+  color: #003bb2;
+  line-height: 1.45;
+}
+
+.ac-customer-options-help p {
+  margin: 3px 0 16px;
+}
+
+.ac-customer-options-main {
+  display: grid;
+  grid-template-columns: 260px minmax(800px, 1fr);
+  gap: 76px;
+  margin-top: 5px;
+}
+
+.ac-customer-options-left {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ac-customer-options-left .ac-customer-options-section {
+  padding-bottom: 1px;
+}
+
+.ac-customer-options-select-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.ac-customer-options select {
+  height: 27px;
+  border: 1px solid #999;
+  background: #fff;
+  font: inherit;
+}
+
+.ac-customer-options-select-row select {
+  width: 194px;
+}
+
+.ac-customer-options-check {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 27px;
+}
+
+.ac-customer-options-check input {
+  margin: 0;
+}
+
+.ac-customer-options-history-line {
+  display: flex;
+  align-items: center;
+}
+
+.ac-customer-options-history-line .ac-customer-options-check {
+  flex: 1;
+}
+
+.ac-customer-options-history-line .ac-btn {
+  min-width: 77px;
+  margin-left: 7px;
+  border-radius: 0;
+}
+
+.ac-customer-options-arrow {
+  color: #064db5;
+  font-size: 22px;
+  margin-left: 7px;
+}
+
+.ac-customer-options-segment-help {
+  margin-top: 7px;
+  white-space: nowrap;
+}
+
+.ac-customer-options-segment-help span {
+  color: #003bb2;
+  margin-left: 5px;
+}
+
+.ac-customer-options-right {
+  position: relative;
+}
+
+.ac-customer-options-associations.ac-btn {
+  min-width: 417px;
+  margin: 1px 0 14px 15px;
+  border-radius: 0;
+}
+
+.ac-customer-options-reports {
+  width: 676px;
+}
+
+.ac-customer-options-report-row {
+  display: grid;
+  grid-template-columns: 207px 1fr;
+  align-items: center;
+}
+
+.ac-customer-options-report-row .ac-customer-options-check {
+  width: 207px;
+}
+
+.ac-customer-options-report-row > span,
+.ac-customer-options-note em {
+  color: #003bb2;
+  font-style: normal;
+}
+
+.ac-customer-options-note {
+  display: grid;
+  grid-template-columns: 194px 481px auto;
+  align-items: center;
+  margin-top: 1px;
+}
+
+.ac-customer-options-note textarea {
+  width: 481px;
+  height: 50px;
+  resize: none;
+  border: 1px solid #888;
+  background: #fff;
+}
+
+.ac-customer-options-note em {
+  margin-left: 29px;
+  white-space: nowrap;
+}
+
+.ac-customer-options-other {
+  width: 760px;
+  margin-top: 15px;
+}
+
+.ac-customer-options-other-grid {
+  display: grid;
+  grid-template-columns: 195px 150px 292px 77px;
+  gap: 3px 15px;
+  align-items: center;
+}
+
+.ac-customer-options-other-grid > label:not(.ac-customer-options-check) {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.ac-customer-options-other-grid > label > span {
+  min-width: 87px;
+}
+
+.ac-customer-options-other-grid select {
+  min-width: 98px;
+}
+
+.ac-customer-options-other-grid label:nth-of-type(3) select {
+  width: 194px;
+}
+
+.ac-customer-options-other-grid em {
+  color: #003bb2;
+  font-style: normal;
+}
+
+.ac-customer-options-other-grid .ac-btn {
+  min-width: 77px;
+  border-radius: 0;
+}
+
+/* Customer profile — Rate Multipliers */
+.ac-customer-rate-multipliers {
+  min-height: 400px;
+  padding: 1px 7px;
+  color: #000;
+  font-size: 13px;
+}
+
+.ac-customer-rate-multipliers label {
+  display: grid;
+  grid-template-columns: 294px 97px;
+  align-items: center;
+  margin-bottom: 1px;
+}
+
+.ac-customer-rate-multipliers label:first-child {
+  grid-template-columns: 186px 97px;
+  margin-bottom: 14px;
+}
+
+.ac-customer-rate-multipliers input {
+  width: 97px;
+  height: 27px;
+  min-height: 27px;
+  padding: 2px 5px;
+  border: 1px solid #aaa;
+  border-radius: 0;
+  background: #fff;
+  font: inherit;
+  appearance: textfield;
+}
+
+.ac-customer-rate-multipliers input::-webkit-inner-spin-button,
+.ac-customer-rate-multipliers input::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
 /* Customer Bill Rates — editable Access-style datasheet */
 .ac-customer-bill-rates {
   position: relative;

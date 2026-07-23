@@ -912,6 +912,246 @@ function CustomerWccTab() {
   );
 }
 
+const INSURANCE_CERT_REQUEST_STATES = [
+  "Pending",
+  "Requested",
+  "Received",
+  "Expired",
+  "Cancelled",
+] as const;
+
+interface InsuranceCertRequestRow {
+  id: string;
+  requestDate: string;
+  state: string;
+  requestedBy: string;
+}
+
+function CustomerInsuranceCertRequestsTab() {
+  const [search, setSearch] = useState("");
+  const [rows, setRows] = useState<InsuranceCertRequestRow[]>([]);
+
+  const visibleRows = rows.filter((row) => {
+    const term = search.trim().toLowerCase();
+    return !term || [row.requestDate, row.state, row.requestedBy].some((value) => value.toLowerCase().includes(term));
+  });
+
+  function addInsuranceCertRequest() {
+    setRows((current) => [
+      ...current,
+      {
+        id: `insurance-cert-${Date.now()}`,
+        requestDate: new Date().toISOString().slice(0, 10),
+        state: "Pending",
+        requestedBy: "",
+      },
+    ]);
+  }
+
+  function updateInsuranceCertRequest(id: string, field: keyof InsuranceCertRequestRow, value: string) {
+    setRows((current) => current.map((row) => (row.id === id ? { ...row, [field]: value } : row)));
+  }
+
+  return (
+    <section id="08-inscert" className="ac-customer-inscert">
+      <div className="ac-customer-inscert-heading">
+        <span>Insurance Certificate Requests for this Customer:</span>
+        <AccessButton xs onClick={addInsuranceCertRequest}>New Insurance Cert Req</AccessButton>
+      </div>
+
+      <div className="ac-customer-inscert-grid-wrap">
+        <table className="ac-customer-inscert-grid">
+          <thead>
+            <tr>
+              <th aria-label="Record selector" />
+              <th>Cert Request Date</th>
+              <th>Cert Request State</th>
+              <th>Requested By</th>
+              <th aria-hidden />
+            </tr>
+          </thead>
+          <tbody>
+            {visibleRows.map((row) => (
+              <tr key={row.id}>
+                <td aria-hidden />
+                <td>
+                  <input type="date" value={row.requestDate} onChange={(event) => updateInsuranceCertRequest(row.id, "requestDate", event.target.value)} aria-label="Certificate request date" />
+                </td>
+                <td>
+                  <select value={row.state} onChange={(event) => updateInsuranceCertRequest(row.id, "state", event.target.value)} aria-label="Certificate request state">
+                    {INSURANCE_CERT_REQUEST_STATES.map((state) => (
+                      <option key={state} value={state}>{state}</option>
+                    ))}
+                  </select>
+                </td>
+                <td>
+                  <input value={row.requestedBy} onChange={(event) => updateInsuranceCertRequest(row.id, "requestedBy", event.target.value)} aria-label="Requested by" />
+                </td>
+                <td />
+              </tr>
+            ))}
+            {Array.from({ length: Math.max(0, 10 - visibleRows.length) }, (_, index) => (
+              <tr key={`inscert-blank-${index}`} aria-hidden>
+                <td /><td /><td /><td /><td />
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="ac-customer-inscert-recordbar">
+          <span>Record:</span>
+          <span>|◄</span>
+          <span>◄</span>
+          <span className="ac-customer-inscert-record-number">{visibleRows.length ? `1 of ${visibleRows.length}` : ""}</span>
+          <span>►</span>
+          <span>►|</span>
+          <span className="ac-customer-inscert-filter-status">{search ? "Filtered" : "No Filter"}</span>
+          <input value={search} onChange={(event) => setSearch(event.target.value)} aria-label="Search insurance certificate requests" placeholder="Search" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function OptionCheck({ label, defaultChecked = false }: { label: string; defaultChecked?: boolean }) {
+  return (
+    <label className="ac-customer-options-check">
+      <span>{label}</span>
+      <input type="checkbox" defaultChecked={defaultChecked} />
+    </label>
+  );
+}
+
+function CustomerOptionsTab() {
+  return (
+    <section id="09-options" className="ac-customer-options">
+      <div className="ac-customer-options-texts">
+        <div className="ac-customer-options-section ac-customer-options-text-list">
+          <h3>Texts</h3>
+          <div>• Hours/timesheet texts from dropdown lists</div>
+          <div>• Hours/timesheet autotext <input type="checkbox" defaultChecked aria-label="Hours timesheet autotext" /></div>
+          <div>• Timesheet hyperlink color autotext</div>
+        </div>
+        <div className="ac-customer-options-help">
+          <p>If this is NOT checkmarked, then none of the employees working on a job for this customer will receive<br />hours/timesheet-related texts for that job.</p>
+          <p>These are the texts normally sent when:<br />
+            1) The Send Hours/Timesheet Text button is used on the Tracking screen (on the Employees tab).<br />
+            2) The Hrs AutoText button is used on the Tracking screen.<br />
+            3) One of the hyperlink color buttons is used on the Tracking screen (next to the Browse button).<br />
+            4) The Send as Text button is used on the T Sheets Linked screen after an Hours/Timesheet selection is made.
+          </p>
+        </div>
+      </div>
+
+      <div className="ac-customer-options-main">
+        <div className="ac-customer-options-left">
+          <div className="ac-customer-options-section">
+            <h3>Payroll Company</h3>
+            <label className="ac-customer-options-select-row">
+              <span>Allow Contract With</span>
+              <select defaultValue="Industrial Power Group, Inc.">
+                {CUSTOMER_SALES_COMPANIES.map((company) => <option key={company}>{company}</option>)}
+              </select>
+            </label>
+          </div>
+          <div className="ac-customer-options-section">
+            <h3>Verify</h3>
+            <OptionCheck label="Send Timesheets with Verify" />
+          </div>
+          <div className="ac-customer-options-section">
+            <h3>Invoices</h3>
+            <OptionCheck label="Send Timesheets with Invoice" />
+            <OptionCheck label="Total Invoices by Job" />
+          </div>
+          <div className="ac-customer-options-section">
+            <h3>Tracking</h3>
+            <OptionCheck label="Show Customer in Tracking" />
+            <div className="ac-customer-options-history-line">
+              <OptionCheck label="Cannot Make Assignments" />
+              <AccessButton xs disabled>History</AccessButton>
+              <span className="ac-customer-options-arrow">◄</span>
+            </div>
+          </div>
+          <div className="ac-customer-options-section">
+            <h3>Segments</h3>
+            <OptionCheck label="Allow Segments" />
+            <OptionCheck label="Allow Multiple Jobs per Segment" />
+            <div className="ac-customer-options-segment-help">Prevent Flagship from Making Assignments: <span>Use the Cannot Make Assignments option in the Tracking section.</span></div>
+          </div>
+        </div>
+
+        <div className="ac-customer-options-right">
+          <AccessButton xs disabled className="ac-customer-options-associations">
+            Edit &quot;Contract With&quot; and &quot;Payroll Company On Site&quot; Associations
+          </AccessButton>
+
+          <div className="ac-customer-options-section ac-customer-options-reports">
+            <h3>Reports and Screens</h3>
+            <div className="ac-customer-options-report-row">
+              <OptionCheck label="Exclude from Margin Report" />
+              <span>Weekly Customer Margin Report</span>
+            </div>
+            <div className="ac-customer-options-report-row">
+              <OptionCheck label="Exclude from Directions" />
+              <span>Directions screen</span>
+            </div>
+            <div className="ac-customer-options-report-row">
+              <OptionCheck label="AR Report Show Due Date" />
+              <span>Show Due Date on the AR Report emails</span>
+            </div>
+            <label className="ac-customer-options-note">
+              <span>AR Report Note 1</span>
+              <textarea defaultValue="" />
+            </label>
+            <label className="ac-customer-options-note">
+              <span>AR Report Note 2</span>
+              <textarea defaultValue="" />
+              <em>Note 2 on the AR Report emails (below overdue Invoices)</em>
+            </label>
+          </div>
+
+          <div className="ac-customer-options-section ac-customer-options-other">
+            <h3>Other</h3>
+            <div className="ac-customer-options-other-grid">
+              <label><span>Status</span><select defaultValue="Salesman"><option>Salesman</option><option>Customer</option><option>Inactive</option><option>Prospect</option></select></label>
+              <OptionCheck label="Customer is Set Up" />
+              <label><span>Hunter</span><select defaultValue=""><option value="">Select…</option>{CUSTOMER_SALES_PEOPLE.map((person) => <option key={person}>{person}</option>)}</select></label>
+              <label><span>Credit History</span><select defaultValue=""><option value="">Select…</option><option>Excellent</option><option>Good</option><option>Fair</option><option>Hold</option></select></label>
+              <AccessButton xs disabled>History</AccessButton>
+              <label><span>Term Limit</span><select defaultValue=""><option value="">Select…</option><option>15</option><option>30</option><option>45</option><option>60</option><option>90</option></select><em>(Days)</em></label>
+              <AccessButton xs disabled>History</AccessButton>
+              <label><span>Legal Status</span><select defaultValue="Non Legal"><option>Non Legal</option><option>Attorney Review</option><option>Collections</option><option>Judgment</option><option>Resolved</option></select></label>
+              <AccessButton xs disabled>History</AccessButton>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CustomerRateMultipliersTab() {
+  return (
+    <section id="10-mult" className="ac-customer-rate-multipliers">
+      <label>
+        <span>Bill Rate Overtime Multiplier</span>
+        <input type="number" min="0" step="0.01" defaultValue="1.5" aria-label="Bill Rate Overtime Multiplier" />
+      </label>
+      <label>
+        <span>Pay Rate to Bill Rate Multiplier - Grade X1</span>
+        <input type="number" min="0" step="0.01" defaultValue="" aria-label="Pay Rate to Bill Rate Multiplier Grade X1" />
+      </label>
+      <label>
+        <span>Pay Rate to Bill Rate Multiplier - Grade X2</span>
+        <input type="number" min="0" step="0.01" defaultValue="" aria-label="Pay Rate to Bill Rate Multiplier Grade X2" />
+      </label>
+      <label>
+        <span>Pay Rate to Bill Rate Multiplier - Grade X3</span>
+        <input type="number" min="0" step="0.01" defaultValue="" aria-label="Pay Rate to Bill Rate Multiplier Grade X3" />
+      </label>
+    </section>
+  );
+}
+
 export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) {
   const [activeTab, setActiveTab] = useState("01-basic");
 
@@ -939,7 +1179,10 @@ export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) 
               {activeTab === "05-sales" ? <CustomerSalesTab /> : null}
               {activeTab === "06-collections" ? <CustomerCollectionsTab /> : null}
               {activeTab === "07-wcc" ? <CustomerWccTab /> : null}
-              {activeTab !== "01-basic" && activeTab !== "03-billrates" && activeTab !== "04-insurance" && activeTab !== "05-sales" && activeTab !== "06-collections" && activeTab !== "07-wcc" ? (
+              {activeTab === "08-inscert" ? <CustomerInsuranceCertRequestsTab /> : null}
+              {activeTab === "09-options" ? <CustomerOptionsTab /> : null}
+              {activeTab === "10-mult" ? <CustomerRateMultipliersTab /> : null}
+              {activeTab !== "01-basic" && activeTab !== "03-billrates" && activeTab !== "04-insurance" && activeTab !== "05-sales" && activeTab !== "06-collections" && activeTab !== "07-wcc" && activeTab !== "08-inscert" && activeTab !== "09-options" && activeTab !== "10-mult" ? (
                 <CustomerProfileStub id={activeTab} title={CUSTOMER_PROFILE_TABS.find((tab) => tab.id === activeTab)?.label ?? activeTab} />
               ) : null}
             </div>
