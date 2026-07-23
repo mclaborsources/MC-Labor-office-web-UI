@@ -482,6 +482,48 @@ function CustomerProfileStub({ id, title }: { id: string; title: string }) {
   );
 }
 
+const CUSTOMER_INSURANCE_CARRIERS = ["AMP", "GS", "HDE", "HSG", "IPG", "ISG", "MLS"] as const;
+
+function CustomerInsuranceInfoTab() {
+  return (
+    <section id="04-insurance" className="ac-customer-insurance-info">
+      <div className="ac-customer-insurance-grid">
+        <div aria-hidden />
+        {CUSTOMER_INSURANCE_CARRIERS.map((carrier) => (
+          <div key={carrier} className="ac-customer-insurance-carrier">{carrier}</div>
+        ))}
+
+        <div className="ac-customer-insurance-row-label">WC x Date</div>
+        {CUSTOMER_INSURANCE_CARRIERS.map((carrier) => (
+          <input
+            key={`${carrier}-wc`}
+            readOnly
+            className="ac-input ac-customer-insurance-date"
+            value=""
+            aria-label={`${carrier} WC expiration date`}
+          />
+        ))}
+
+        <div className="ac-customer-insurance-row-label">GL x Date</div>
+        {CUSTOMER_INSURANCE_CARRIERS.map((carrier) => (
+          <input
+            key={`${carrier}-gl`}
+            readOnly
+            className="ac-input ac-customer-insurance-date"
+            value=""
+            aria-label={`${carrier} GL expiration date`}
+          />
+        ))}
+      </div>
+
+      <label className="ac-customer-insurance-note">
+        <span>Note</span>
+        <textarea readOnly className="ac-input" value="" aria-label="Insurance note" />
+      </label>
+    </section>
+  );
+}
+
 export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) {
   const [activeTab, setActiveTab] = useState("01-basic");
 
@@ -505,7 +547,8 @@ export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) 
             <div className="ac-customer-profile-body min-h-0 flex-1 overflow-y-auto">
               {activeTab === "01-basic" ? <CustomerProfileBasicTab customer={customer} /> : null}
               {activeTab === "03-billrates" ? <CustomerBillRatesTab customer={customer} /> : null}
-              {activeTab !== "01-basic" && activeTab !== "03-billrates" ? (
+              {activeTab === "04-insurance" ? <CustomerInsuranceInfoTab /> : null}
+              {activeTab !== "01-basic" && activeTab !== "03-billrates" && activeTab !== "04-insurance" ? (
                 <CustomerProfileStub id={activeTab} title={CUSTOMER_PROFILE_TABS.find((tab) => tab.id === activeTab)?.label ?? activeTab} />
               ) : null}
             </div>
