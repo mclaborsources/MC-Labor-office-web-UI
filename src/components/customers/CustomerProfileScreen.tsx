@@ -1324,6 +1324,49 @@ function CustomerSalesHistoryTab({ customer }: { customer: CustomerDetail }) {
   );
 }
 
+const CUSTOMER_CONTACT_TITLES = ["Info", "Owner", "President", "Project Manager", "Estimator", "Office Manager", "Accounts Payable"] as const;
+
+function CustomerContactsTab({ customer }: { customer: CustomerDetail }) {
+  const [contactSearch, setContactSearch] = useState("");
+  const [permitSearch, setPermitSearch] = useState("");
+  const contacts = customer.contacts.filter((contact) => {
+    const term = contactSearch.trim().toLowerCase();
+    return !term || [contact.firstName, contact.lastName, contact.title, contact.email, contact.cellPhone, contact.officePhone, contact.notes].some((value) => value.toLowerCase().includes(term));
+  });
+
+  return (
+    <section id="02-contacts" className="ac-customer-contacts-tab">
+      <div className="ac-customer-contacts-grid-row">
+        <div className="ac-customer-contacts-side-buttons"><button>↑</button><button>↓</button><button>×</button><button className="ac-customer-copy-icon">▧</button></div>
+        <div className="ac-customer-contacts-table-wrap">
+          <table className="ac-customer-contacts-table"><thead><tr><th /><th>FName</th><th>LName</th><th>Title</th><th>Email</th><th>Cell</th><th>Carrier</th><th>Text Msg Addr</th><th>Office Phone</th><th>LinkedIn Profile</th><th>Notes</th><th>Sort</th><th>User</th><th>Date</th><th aria-hidden /></tr></thead>
+          <tbody>
+            {contacts.map((contact, index) => <tr key={contact.contactId}><td>{index ? "" : "*"}</td><td>{contact.firstName}</td><td>{contact.lastName}</td><td><select defaultValue={contact.title}><option value={contact.title}>{contact.title}</option>{CUSTOMER_CONTACT_TITLES.filter((title) => title !== contact.title).map((title) => <option key={title}>{title}</option>)}</select></td><td>{contact.email}</td><td>{contact.cellPhone}</td><td /><td /><td>{contact.officePhone}</td><td /><td>{contact.notes}</td><td>{index + 1}</td><td>RMV</td><td>2/20/2026 8:48:23 PM</td><td /></tr>)}
+            {Array.from({ length: Math.max(0, 8 - contacts.length) }, (_, i) => <tr key={`contacts-blank-${i}`}><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}
+          </tbody></table>
+          <div className="ac-customer-contacts-recordbar">Record:　|◄　◄　<span>{contacts.length ? `1 of ${contacts.length}` : ""}</span>　►　►|　<em>{contactSearch ? "Filtered" : "No Filter"}</em><input value={contactSearch} onChange={(event) => setContactSearch(event.target.value)} placeholder="Search" aria-label="Search contacts" /></div>
+        </div>
+      </div>
+
+      <div className="ac-customer-contacts-guidance">
+        <strong>For all Info emails, please select &quot;Info&quot; for the contact&apos;s Title value.</strong>
+        <p>To use one of these buttons, highlight one contact row first by clicking the gray bar at the left side of the row.</p>
+        <div><AccessButton xs disabled>▧　Copy Contact Email Address</AccessButton><AccessButton xs disabled>▣　Send Email to Contact</AccessButton></div>
+      </div>
+
+      <div className="ac-customer-permits">
+        <div className="ac-customer-permits-heading"><h2>Permits</h2><AccessButton xs disabled>▧　Copy Street</AccessButton><span>Double-click on City, State to select the state and city.</span></div>
+        <div className="ac-customer-permits-table-wrap">
+          <table className="ac-customer-permits-table"><thead><tr><th /><th>Permit Date</th><th>Street</th><th>City, State</th><th>Fee</th><th>Value</th><th>Timestamp</th><th>Permit Search Link</th><th>Link</th><th aria-hidden /><th aria-hidden /></tr></thead>
+          <tbody><tr className="is-selected"><td>*</td><td><input type="date" aria-label="Permit date" /></td><td><input defaultValue={customer.street} aria-label="Permit street" /></td><td><input defaultValue={[customer.city, customer.state].filter(Boolean).join(", ")} aria-label="Permit city and state" /></td><td><input aria-label="Permit fee" /></td><td><input aria-label="Permit value" /></td><td /><td /><td /><td /><td /></tr>
+          {Array.from({ length: 7 }, (_, i) => <tr key={`permit-blank-${i}`}><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}</tbody></table>
+          <div className="ac-customer-contacts-recordbar">Record:　|◄　◄　<span>1 of 1</span>　►　►|　<em>{permitSearch ? "Filtered" : "No Filter"}</em><input value={permitSearch} onChange={(event) => setPermitSearch(event.target.value)} placeholder="Search" aria-label="Search permits" /></div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) {
   const [activeTab, setActiveTab] = useState("01-basic");
 
@@ -1346,6 +1389,7 @@ export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) 
           <div className="ac-panel ac-panel-elevated ac-customer-profile-content min-h-0 flex-1">
             <div className="ac-customer-profile-body min-h-0 flex-1 overflow-y-auto">
               {activeTab === "01-basic" ? <CustomerProfileBasicTab customer={customer} /> : null}
+              {activeTab === "02-contacts" ? <CustomerContactsTab customer={customer} /> : null}
               {activeTab === "03-billrates" ? <CustomerBillRatesTab customer={customer} /> : null}
               {activeTab === "04-insurance" ? <CustomerInsuranceInfoTab /> : null}
               {activeTab === "05-sales" ? <CustomerSalesTab /> : null}
@@ -1356,7 +1400,7 @@ export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) 
               {activeTab === "10-mult" ? <CustomerRateMultipliersTab /> : null}
               {activeTab === "11-jobs" ? <CustomerJobsTab customer={customer} /> : null}
               {activeTab === "12-saleshist" ? <CustomerSalesHistoryTab customer={customer} /> : null}
-              {activeTab !== "01-basic" && activeTab !== "03-billrates" && activeTab !== "04-insurance" && activeTab !== "05-sales" && activeTab !== "06-collections" && activeTab !== "07-wcc" && activeTab !== "08-inscert" && activeTab !== "09-options" && activeTab !== "10-mult" && activeTab !== "11-jobs" && activeTab !== "12-saleshist" ? (
+              {activeTab !== "01-basic" && activeTab !== "02-contacts" && activeTab !== "03-billrates" && activeTab !== "04-insurance" && activeTab !== "05-sales" && activeTab !== "06-collections" && activeTab !== "07-wcc" && activeTab !== "08-inscert" && activeTab !== "09-options" && activeTab !== "10-mult" && activeTab !== "11-jobs" && activeTab !== "12-saleshist" ? (
                 <CustomerProfileStub id={activeTab} title={CUSTOMER_PROFILE_TABS.find((tab) => tab.id === activeTab)?.label ?? activeTab} />
               ) : null}
             </div>

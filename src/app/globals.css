@@ -7854,6 +7854,34 @@ body {
 .ac-customer-sales-research-notes { display: flex; flex-direction: column; width: 290px; }
 .ac-customer-sales-research-notes span { text-align: center; }.ac-customer-sales-research-notes textarea { height: 54px; resize: none; }
 
+/* Customer profile — Contacts */
+.ac-customer-contacts-tab { min-width: 1740px; min-height: 620px; color: #000; font-size: 12px; }
+.ac-customer-contacts-grid-row { display: flex; gap: 16px; }
+.ac-customer-contacts-side-buttons { width: 34px; display: flex; flex-direction: column; gap: 7px; padding-top: 23px; }
+.ac-customer-contacts-side-buttons button { width: 34px; height: 34px; border: 1px solid #888; background: linear-gradient(#fff,#e5e5e5); font-size: 19px; }
+.ac-customer-contacts-side-buttons button:nth-child(3) { margin-top: 24px; }
+.ac-customer-contacts-table-wrap { width: 1712px; border: 1px solid #aaa; background: #fff; }
+.ac-customer-contacts-table, .ac-customer-permits-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.ac-customer-contacts-table th, .ac-customer-permits-table th { height: 20px; background: #edf1f4; border-right: 1px solid #bdc7cf; font-weight: 400; }
+.ac-customer-contacts-table td, .ac-customer-permits-table td { height: 21px; padding: 1px 5px; border-right: 1px solid #e7ebee; border-bottom: 1px solid #e7ebee; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ac-customer-contacts-table tbody tr:first-child td, .ac-customer-permits-table tr.is-selected td { background: #9fcae9; }
+.ac-customer-contacts-table td select { width: 100%; height: 20px; border: 0; background: transparent; font: inherit; }
+.ac-customer-contacts-recordbar { display: flex; align-items: center; height: 18px; background: #edf1f4; font-size: 10px; }
+.ac-customer-contacts-recordbar em { color: #aaa; font-style: normal; }
+.ac-customer-contacts-recordbar input { width: 74px; height: 17px; margin-left: 4px; border: 1px solid #aaa; font-size: 10px; }
+.ac-customer-contacts-guidance { margin: 15px 0 28px 50px; }
+.ac-customer-contacts-guidance strong { color: #f00; }.ac-customer-contacts-guidance p { margin: 20px 0 7px; }
+.ac-customer-contacts-guidance .ac-btn { min-width: 217px; margin-right: 10px; border-radius: 0; }
+.ac-customer-permits { margin-left: 50px; }
+.ac-customer-permits-heading { display: flex; align-items: center; gap: 8px; height: 31px; }
+.ac-customer-permits-heading h2 { width: 163px; margin: 0; font-size: 16px; text-decoration: underline; }
+.ac-customer-permits-heading .ac-btn { min-width: 113px; border-radius: 0; }
+.ac-customer-permits-heading span { color: #003bb2; }
+.ac-customer-permits-table-wrap { width: 1712px; border: 1px solid #aaa; background: #fff; }
+.ac-customer-permits-table td { height: 22px; }
+.ac-customer-permits-table th:nth-child(1) { width: 18px; }.ac-customer-permits-table th:nth-child(2) { width: 101px; }.ac-customer-permits-table th:nth-child(3) { width: 211px; }.ac-customer-permits-table th:nth-child(4) { width: 212px; }.ac-customer-permits-table th:nth-child(5) { width: 96px; }.ac-customer-permits-table th:nth-child(6) { width: 115px; }.ac-customer-permits-table th:nth-child(7) { width: 162px; }.ac-customer-permits-table th:nth-child(8) { width: 562px; }.ac-customer-permits-table th:nth-child(9) { width: 53px; }
+.ac-customer-permits-table td input { width: 100%; height: 21px; padding: 1px 4px; border: 0; background: transparent; font: inherit; }
+
 /* Customer Bill Rates — editable Access-style datasheet */
 .ac-customer-bill-rates {
   position: relative;
