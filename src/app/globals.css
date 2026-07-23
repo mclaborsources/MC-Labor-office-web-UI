@@ -6405,6 +6405,199 @@ body {
   display: none;
 }
 
+/* Customer profile header — compact Access form alignment. */
+.ac-customer-profile-control-panel {
+  position: relative;
+  min-height: 142px;
+  padding: 5px 17px 7px;
+  gap: 4px;
+  border-bottom: 1px solid #aaa;
+}
+
+.ac-customer-profile-row-1 {
+  grid-template-columns: 595px 640px minmax(510px, 1fr);
+  min-height: 66px;
+  gap: 12px;
+  align-items: start;
+}
+
+.ac-customer-profile-row-1-left,
+.ac-customer-profile-row-1-center,
+.ac-customer-profile-row-1-right {
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  gap: 7px;
+}
+
+.ac-customer-profile-row-1-left .ac-customer-profile-inline-field:first-child {
+  width: 96px;
+  min-width: 96px;
+}
+
+.ac-customer-profile-quick-search {
+  width: 194px;
+  min-width: 194px;
+  flex: none;
+}
+
+.ac-customer-profile-row-1-center {
+  align-items: flex-start;
+  padding-top: 16px;
+}
+
+.ac-customer-profile-mini-tabs {
+  height: 34px;
+  border: 1px solid #222;
+  border-radius: 0;
+}
+
+.ac-customer-profile-mini-tab {
+  min-width: 88px;
+  padding: 4px 9px;
+  border-radius: 0;
+  background: #d7d7d7;
+  color: #000;
+  font-size: 12px;
+}
+
+.ac-customer-profile-mini-tab--active {
+  background: #b7c6d2;
+}
+
+.ac-customer-profile-row-1-center .ac-customer-profile-field {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.ac-customer-profile-row-1-center .ac-customer-profile-field .ac-input {
+  width: 85px;
+}
+
+.ac-customer-profile-row-1-right {
+  align-items: flex-start;
+  padding-top: 15px;
+}
+
+.ac-customer-profile-library-wrap {
+  flex-direction: row;
+  width: 77px;
+  height: 55px;
+  padding: 5px;
+  border: 1px solid #aaa;
+  border-radius: 0;
+}
+
+.ac-customer-profile-library-box {
+  width: 18px;
+  height: 18px;
+  border: 0;
+  border-radius: 0;
+  flex-shrink: 0;
+}
+
+.ac-customer-profile-research-btn.ac-btn {
+  width: 49px;
+  min-width: 49px;
+  height: 55px;
+  padding: 2px;
+  white-space: normal;
+  line-height: 1.15;
+  border-radius: 0;
+}
+
+.ac-customer-profile-step-list {
+  width: 277px;
+  min-height: 55px;
+  height: 55px;
+  border-radius: 0;
+}
+
+.ac-customer-profile-step-nav {
+  flex-direction: row;
+}
+
+.ac-customer-profile-delete-link {
+  align-self: flex-end;
+  margin-bottom: 2px;
+  color: #f00;
+}
+
+.ac-customer-profile-row-2 {
+  position: absolute;
+  top: 38px;
+  left: 545px;
+  z-index: 2;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  gap: 10px;
+  padding: 0;
+}
+
+.ac-customer-profile-toolbar-btn.ac-btn {
+  width: 158px;
+  min-width: 158px;
+  max-width: none;
+  flex: none;
+  border-radius: 0;
+}
+
+.ac-customer-profile-spare-btn.ac-btn {
+  width: 137px;
+  min-width: 137px;
+  color: #fff;
+  background: #f21d34;
+  border-color: #f21d34;
+  border-radius: 0;
+}
+
+.ac-customer-profile-row-3,
+.ac-customer-profile-row-4 {
+  flex-wrap: nowrap;
+  gap: 9px;
+  align-items: flex-end;
+}
+
+.ac-customer-profile-row-3 .ac-customer-profile-field,
+.ac-customer-profile-row-4 .ac-customer-profile-field {
+  flex-direction: row;
+  align-items: center;
+  gap: 7px;
+}
+
+.ac-customer-profile-row-3 .ac-input,
+.ac-customer-profile-row-3 .ac-select,
+.ac-customer-profile-row-4 .ac-input,
+.ac-customer-profile-row-4 .ac-select {
+  border-radius: 0;
+}
+
+.ac-customer-profile-row-3 .ac-customer-profile-customer-name {
+  width: 264px;
+  min-width: 264px;
+  flex: none;
+}
+
+.ac-customer-profile-row-4 {
+  padding-top: 1px;
+}
+
+.ac-customer-profile-save-btn.ac-btn {
+  margin-left: auto;
+  border-radius: 0;
+}
+
+.ac-customer-profile-shell .ac-customer-search-view-tabs {
+  padding: 0;
+}
+
+.ac-customer-profile-shell .ac-tab {
+  min-width: 130px;
+  min-height: 27px;
+  padding: 3px 12px;
+  border-radius: 0;
+}
+
 .ac-customer-profile-save-btn.ac-btn {
   margin-left: auto;
   color: #b00000;

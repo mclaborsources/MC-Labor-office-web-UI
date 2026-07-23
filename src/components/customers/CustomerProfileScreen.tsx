@@ -105,7 +105,6 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
         </div>
 
         <div className="ac-customer-profile-row-1-center">
-          <span className="ac-customer-profile-flagship">Flagship</span>
           <div className="ac-customer-profile-mini-tabs">
             <button type="button" className="ac-customer-profile-mini-tab ac-customer-profile-mini-tab--active" disabled>
               Customer
@@ -143,6 +142,9 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
       </div>
 
       <div className="ac-customer-profile-row ac-customer-profile-row-2">
+        <AccessButton xs disabled className="ac-customer-profile-spare-btn">
+          Spare 2
+        </AccessButton>
         {CUSTOMER_PROFILE_TOOLBAR_BUTTONS.map((label) => (
           <AccessButton key={label} xs disabled className="ac-customer-profile-toolbar-btn">
             {label}
