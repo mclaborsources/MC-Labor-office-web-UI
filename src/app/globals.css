@@ -6843,12 +6843,14 @@ body {
 
 .ac-customer-profile-folder-row {
   display: grid;
-  grid-template-columns: 83px 970px 74px;
+  grid-template-columns: 83px minmax(0, 1fr) 74px;
   grid-template-rows: 28px 28px;
   align-items: end;
   gap: 8px;
   margin-top: 39px;
-  margin-left: -18px;
+  margin-left: -9px;
+  width: min(1143px, 100%);
+  max-width: 100%;
 }
 
 .ac-customer-profile-folder-row .ac-btn {
@@ -6866,13 +6868,14 @@ body {
   grid-column: 1 / 3;
   grid-row: 2;
   display: grid;
-  grid-template-columns: 83px 970px;
+  grid-template-columns: 83px minmax(0, 1fr);
   align-items: center;
-  width: 1053px;
+  width: 100%;
+  min-width: 0;
 }
 
 .ac-customer-profile-folder-field .ac-input {
-  width: 970px;
+  width: 100%;
   height: 27px;
   min-height: 27px;
   border-radius: 0;
@@ -6888,9 +6891,10 @@ body {
   grid-template-columns: 280px 196px 430px;
   grid-template-rows: 28px 28px;
   gap: 3px 28px;
-  width: 962px;
+  width: min(962px, 100%);
+  max-width: 100%;
   margin-top: 18px;
-  margin-left: -18px;
+  margin-left: -9px;
 }
 
 .ac-customer-profile-footer-fields .ac-customer-profile-field {
