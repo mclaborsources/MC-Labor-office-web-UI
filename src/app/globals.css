@@ -6415,7 +6415,7 @@ body {
 }
 
 .ac-customer-profile-row-1 {
-  grid-template-columns: 600px 710px minmax(510px, 1fr);
+  grid-template-columns: minmax(520px, 0.95fr) minmax(610px, 1.08fr) minmax(430px, 1fr);
   min-height: 70px;
   gap: 12px;
   align-items: start;
@@ -6611,6 +6611,20 @@ body {
   background: #d3d3d3;
 }
 
+.ac-customer-profile,
+.ac-customer-profile-shell,
+.ac-customer-profile-control-panel,
+.ac-customer-profile-content,
+.ac-customer-profile-body,
+.ac-customer-profile-basic {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ac-customer-profile-body {
+  overflow-x: hidden;
+}
+
 .ac-customer-profile-body {
   padding: 10px 28px 14px;
 }
@@ -6621,9 +6635,15 @@ body {
 }
 
 .ac-customer-profile-basic-grid {
-  grid-template-columns: 350px 520px 630px 240px;
-  gap: 7px 35px;
+  grid-template-columns:
+    minmax(275px, 1.05fr)
+    minmax(340px, 1.3fr)
+    minmax(430px, 1.65fr)
+    minmax(190px, 0.7fr);
+  gap: 7px clamp(16px, 1.8vw, 35px);
   align-items: start;
+  width: 100%;
+  min-width: 0;
 }
 
 .ac-customer-profile-basic-grid .ac-customer-profile-col {
@@ -6714,7 +6734,7 @@ body {
 }
 
 .ac-customer-profile-textarea {
-  width: 620px;
+  width: 100%;
   height: 70px;
   min-height: 70px;
   border: 1px solid #888;
@@ -6732,9 +6752,11 @@ body {
 }
 
 .ac-customer-profile-bottom {
-  grid-template-columns: 600px minmax(900px, 1fr);
-  gap: 108px;
+  grid-template-columns: minmax(470px, 0.72fr) minmax(760px, 1.28fr);
+  gap: clamp(45px, 5.5vw, 108px);
   margin-top: 7px;
+  width: 100%;
+  min-width: 0;
 }
 
 .ac-customer-profile-wcc-title {
@@ -6788,7 +6810,7 @@ body {
 }
 
 .ac-customer-profile-links-grid {
-  gap: 22px;
+  gap: clamp(8px, 1.1vw, 22px);
 }
 
 .ac-customer-profile-links-head {
@@ -6806,6 +6828,7 @@ body {
   width: calc(100% - 35px);
   border-radius: 0;
   font-weight: 400;
+  min-width: 0;
 }
 
 .ac-customer-profile-link-btn.ac-btn::before {
