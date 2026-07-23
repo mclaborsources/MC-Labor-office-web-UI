@@ -6415,7 +6415,7 @@ body {
 }
 
 .ac-customer-profile-row-1 {
-  grid-template-columns: minmax(500px, 0.9fr) minmax(720px, 1.2fr) minmax(430px, 1fr);
+  grid-template-columns: minmax(600px, 1fr) minmax(720px, 1.2fr) minmax(430px, 1fr);
   min-height: 70px;
   gap: 12px;
   align-items: start;
@@ -6444,8 +6444,8 @@ body {
   align-items: flex-start;
   padding-top: 0;
   position: relative;
-  top: -14px;
-  left: -24px;
+  top: -8px;
+  left: 0;
 }
 
 .ac-customer-profile-mini-tabs {
@@ -6498,7 +6498,7 @@ body {
 .ac-customer-profile-row-1-right {
   align-items: flex-start;
   position: relative;
-  top: -14px;
+  top: -8px;
   padding-top: 15px;
 }
 
@@ -6548,8 +6548,8 @@ body {
 
 .ac-customer-profile-row-2 {
   position: absolute;
-  top: 29px;
-  left: 500px;
+  top: 43px;
+  left: 545px;
   z-index: 2;
   justify-content: flex-start;
   flex-wrap: nowrap;
