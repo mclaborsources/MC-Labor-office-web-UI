@@ -1152,6 +1152,178 @@ function CustomerRateMultipliersTab() {
   );
 }
 
+const CUSTOMER_JOB_STATUS_OPTIONS = ["Active", "Inactive", "Closed"] as const;
+
+function CustomerJobsTab({ customer }: { customer: CustomerDetail }) {
+  const [nameSearch, setNameSearch] = useState("");
+  const [streetSearch, setStreetSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"All" | "Active" | "Inactive" | "Closed">("All");
+  const [selectedJobs, setSelectedJobs] = useState<string[]>([]);
+  const [changeStatus, setChangeStatus] = useState("");
+  const [jobGridSearch, setJobGridSearch] = useState("");
+  const [foremanSearch, setForemanSearch] = useState("");
+
+  const jobs = customer.jobs.filter((job) => {
+    const matchesName = job.jobName.toLowerCase().includes(nameSearch.trim().toLowerCase());
+    const matchesStreet = job.address.toLowerCase().includes(streetSearch.trim().toLowerCase());
+    const matchesStatus = statusFilter === "All" || job.status.toLowerCase() === statusFilter.toLowerCase();
+    const term = jobGridSearch.trim().toLowerCase();
+    const matchesGridSearch = !term || [job.jobName, job.address, job.status].some((value) => value.toLowerCase().includes(term));
+    return matchesName && matchesStreet && matchesStatus && matchesGridSearch;
+  });
+
+  const foremen = customer.foremen.filter((foreman) => {
+    const term = foremanSearch.trim().toLowerCase();
+    return !term || [foreman.foremanName, foreman.phone, foreman.email].some((value) => value.toLowerCase().includes(term));
+  });
+
+  function setAllJobs(selected: boolean) {
+    setSelectedJobs(selected ? jobs.map((job) => job.jobId) : []);
+  }
+
+  return (
+    <section id="11-jobs" className="ac-customer-jobs">
+      <div className="ac-customer-jobs-left">
+        <h2>Existing Jobs</h2>
+        <div className="ac-customer-jobs-controls">
+          <div className="ac-customer-jobs-searches">
+            <label><span>Search in Name</span><input value={nameSearch} onChange={(event) => setNameSearch(event.target.value)} /></label>
+            <label><span>Search in Street</span><input value={streetSearch} onChange={(event) => setStreetSearch(event.target.value)} /></label>
+          </div>
+          <fieldset className="ac-customer-jobs-status-filter">
+            <legend>Job Status</legend>
+            {(["All", "Active", "Inactive", "Closed"] as const).map((status) => (
+              <button key={status} type="button" className={statusFilter === status ? "is-active" : ""} onClick={() => setStatusFilter(status)}>{status}</button>
+            ))}
+          </fieldset>
+          <div className="ac-customer-jobs-actions">
+            <AccessButton xs disabled>New Job</AccessButton>
+            <div><AccessButton xs disabled>Copy Job</AccessButton><em>Select one job first</em></div>
+            <div><AccessButton xs disabled>Change Status</AccessButton><em>Select one or more jobs first</em></div>
+          </div>
+        </div>
+        <div className="ac-customer-jobs-select-row">
+          <span>Select:</span>
+          <AccessButton xs onClick={() => setAllJobs(false)}>Clear</AccessButton>
+          <AccessButton xs onClick={() => setAllJobs(true)}>All</AccessButton>
+          <label><span>Change Job Status to:</span><select value={changeStatus} onChange={(event) => setChangeStatus(event.target.value)}><option value="">Select…</option>{CUSTOMER_JOB_STATUS_OPTIONS.map((status) => <option key={status}>{status}</option>)}</select></label>
+        </div>
+        <div className="ac-customer-jobs-grid-wrap">
+          <table className="ac-customer-jobs-grid">
+            <thead><tr><th aria-label="Row selector" /><th>Select</th><th>Job Name</th><th>Street</th><th>City</th><th>State</th><th>Start Date</th><th>Status</th><th aria-hidden /></tr></thead>
+            <tbody>
+              {jobs.map((job) => (
+                <tr key={job.jobId}>
+                  <td /><td><input type="checkbox" checked={selectedJobs.includes(job.jobId)} onChange={(event) => setSelectedJobs((current) => event.target.checked ? [...current, job.jobId] : current.filter((id) => id !== job.jobId))} aria-label={`Select ${job.jobName}`} /></td>
+                  <td>{job.jobName}</td><td>{job.address}</td><td /><td /><td /><td>{job.status}</td><td />
+                </tr>
+              ))}
+              {Array.from({ length: Math.max(0, 16 - jobs.length) }, (_, index) => <tr key={`job-blank-${index}`} aria-hidden><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}
+            </tbody>
+          </table>
+          <div className="ac-customer-jobs-recordbar">Record:　|◄　◄　<span>{jobs.length ? `1 of ${jobs.length}` : ""}</span>　►　►|　<em>{jobGridSearch ? "Filtered" : "No Filter"}</em><input value={jobGridSearch} onChange={(event) => setJobGridSearch(event.target.value)} placeholder="Search" aria-label="Search jobs grid" /></div>
+        </div>
+      </div>
+
+      <div className="ac-customer-jobs-foremen">
+        <h2>Foremen Used by This Customer</h2>
+        <div className="ac-customer-jobs-grid-wrap ac-customer-foremen-grid-wrap">
+          <table className="ac-customer-jobs-grid ac-customer-foremen-grid">
+            <thead><tr><th aria-label="Row selector" /><th>Foreman</th><th>Phone</th><th>Email</th><th aria-hidden /></tr></thead>
+            <tbody>
+              {foremen.map((foreman) => <tr key={foreman.foremanId}><td /><td>{foreman.foremanName}</td><td>{foreman.phone}</td><td>{foreman.email}</td><td /></tr>)}
+              {Array.from({ length: Math.max(0, 18 - foremen.length) }, (_, index) => <tr key={`foreman-blank-${index}`} aria-hidden><td /><td /><td /><td /><td /></tr>)}
+            </tbody>
+          </table>
+          <div className="ac-customer-jobs-recordbar">Record:　|◄　◄　<span>{foremen.length ? `1 of ${foremen.length}` : ""}</span>　►　►|　<em>{foremanSearch ? "Filtered" : "No Filter"}</em><input value={foremanSearch} onChange={(event) => setForemanSearch(event.target.value)} placeholder="Search" aria-label="Search foremen" /></div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const SALES_HISTORY_ACTIONS = ["Profiles", "Sales Call", "Cold Call", "Outlook Email", "Custom Email", "Custom Text", "Custom Letter", "Custom Postcard", "Mailer", "Credit", "LinkedIn"] as const;
+
+function CustomerSalesHistoryTab({ customer }: { customer: CustomerDetail }) {
+  const [actionFilter, setActionFilter] = useState("All");
+  const cityState = [customer.city, customer.state].filter(Boolean).join(", ");
+  const historyRows = [
+    ["Profiles", "EOH", "6/10/2026", "[Profiles]. EOH 6/10/2026"],
+    ["Sales Call", "JR", "6/5/2026", "[Sales Call]. JR 6/5/2026"],
+    ["Profiles", "EOH", "5/27/2026", "[Profiles]. EOH 5/27/2026"],
+    ["Profiles", "EOH", "5/1/2026", "[Profiles]. EOH 5/1/2026"],
+    ["Sales Call", "LR", "4/2/2026", "[Sales Call]. LR 4/2/2026"],
+  ].filter((row) => actionFilter === "All" || row[0] === actionFilter);
+
+  return (
+    <section id="12-saleshist" className="ac-customer-sales-history">
+      <div className="ac-customer-sales-verify">
+        <div className="ac-customer-sales-vertical">VERIFY</div>
+        <div className="ac-customer-sales-verify-group">
+          {[
+            ["Cust.", customer.customerName],
+            ["Street", customer.street],
+            ["City, St.", cityState],
+            ["Zip", customer.zip],
+          ].map(([label, value]) => <label key={label}><span>{label}</span><input readOnly value={value} /><input type="checkbox" aria-label={`Verify ${label}`} /></label>)}
+        </div>
+        <div className="ac-customer-sales-verify-group ac-customer-sales-mailing">
+          <OptionCheck label="Different Mailing Address" />
+          <label><span>Street</span><input readOnly value={customer.mailStreet} /><input type="checkbox" aria-label="Verify mailing street" /></label>
+          <label><span>City, St.</span><input readOnly value={[customer.mailCity, customer.mailState].filter(Boolean).join(", ")} /><input type="checkbox" aria-label="Verify mailing city state" /></label>
+          <label><span>Zip</span><input readOnly value={customer.mailZip} /><input type="checkbox" aria-label="Verify mailing zip" /></label>
+        </div>
+        <div className="ac-customer-sales-verify-group">
+          <label><span>Phone</span><input readOnly value={customer.phone} /><input type="checkbox" aria-label="Verify phone" /></label>
+          <label><span>Fax</span><input readOnly value={customer.fax} /><input type="checkbox" aria-label="Verify fax" /></label>
+          <label><span>Cust. Type</span><select defaultValue={customer.customerType}><option>{customer.customerType}</option><option>General Contractor</option><option>Electrical</option><option>Mechanical</option></select><input type="checkbox" aria-label="Verify customer type" /></label>
+        </div>
+        <div className="ac-customer-sales-verify-group ac-customer-sales-web">
+          <label><span>Corp Web Site</span><input readOnly value={customer.corpWebsite} /><input type="checkbox" aria-label="Verify corporate website" /></label>
+          <label><span>Cust. Web Site</span><input readOnly value={customer.website} /><input type="checkbox" aria-label="Verify customer website" /></label>
+        </div>
+      </div>
+
+      <div className="ac-customer-sales-history-rowblock">
+        <div className="ac-customer-sales-vertical">CONTACTS</div>
+        <div className="ac-customer-sales-side-actions"><button>↑</button><button>↓</button><button>×</button></div>
+        <div className="ac-customer-sales-history-table-wrap">
+          <table><thead><tr><th /><th>FName</th><th>LName</th><th>Title</th><th>Email</th><th>Cell</th><th>Carrier</th><th>Text Msg Addr</th><th>Office Phone</th><th>LinkedIn Profile</th><th>Notes</th><th>Sort</th><th>User</th><th>Date</th><th>Select</th></tr></thead>
+          <tbody>{customer.contacts.map((contact, index) => <tr key={contact.contactId}><td>{index ? "" : "*"}</td><td>{contact.firstName}</td><td>{contact.lastName}</td><td>{contact.title}</td><td>{contact.email}</td><td>{contact.cellPhone}</td><td /><td /><td>{contact.officePhone}</td><td /><td>{contact.notes}</td><td>{index + 1}</td><td>RMV</td><td>2/20/2026</td><td><input type="checkbox" /></td></tr>)}
+          {Array.from({ length: Math.max(0, 4 - customer.contacts.length) }, (_, i) => <tr key={`contact-blank-${i}`}><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}</tbody></table>
+          <div className="ac-customer-sales-history-recordbar">Record:　|◄　◄　1 of {Math.max(1, customer.contacts.length)}　►　►|　 No Filter　<input placeholder="Search" /></div>
+          <strong>For all Info emails, please select &quot;Info&quot; for the contact&apos;s Title value.</strong>
+        </div>
+      </div>
+
+      <div className="ac-customer-sales-history-rowblock">
+        <div className="ac-customer-sales-vertical">HISTORY</div>
+        <div className="ac-customer-sales-side-actions"><button>Add</button><button>×</button></div>
+        <div className="ac-customer-sales-history-center">
+          <div className="ac-customer-sales-history-filters"><span>Filter:</span>{[...SALES_HISTORY_ACTIONS, "All"].map((action) => <button key={action} className={actionFilter === action ? "is-active" : ""} onClick={() => setActionFilter(action)}>{action}</button>)}</div>
+          <div className="ac-customer-sales-history-table-wrap ac-customer-sales-action-table"><table><thead><tr><th /><th>Action Type</th><th>User</th><th>Date</th><th /><th>To</th><th>Notes</th><th>Response HL</th><th>User</th><th>Date</th></tr></thead><tbody>{historyRows.map((row, i) => <tr key={`${row[0]}-${row[2]}`}><td>{i ? "" : "*"}</td><td>[{row[0]}]</td><td>{row[1]}</td><td>{row[2]}</td><td><a>View</a></td><td /><td>{row[3]}</td><td /><td /><td /></tr>)}</tbody></table><div className="ac-customer-sales-history-recordbar">Record:　|◄　◄　1 of {historyRows.length}　►　►|　 No Filter　<input placeholder="Search" /></div></div>
+        </div>
+        <aside className="ac-customer-sales-history-status">
+          <label><span>Sales History Status</span><select><option>101 - 0106</option><option>Active Prospect</option><option>Current Customer</option><option>Dormant</option></select></label>
+          <label><span>Internet Sales Ready</span><select><option>02 - Manpower</option><option>01 - Research</option><option>03 - Ready</option></select></label>
+          <label><span>Fast Action</span><select><option value="">Select…</option>{SALES_HISTORY_ACTIONS.map((x) => <option key={x}>{x}</option>)}</select></label>
+          <OptionCheck label="Sales Package Sent" />
+          <label><span>Future Call:</span><input /></label>
+          <AccessButton xs disabled>Clear</AccessButton><AccessButton xs disabled>History</AccessButton>
+        </aside>
+      </div>
+
+      <div className="ac-customer-sales-research">
+        <div className="ac-customer-sales-vertical">SEARCH</div>
+        <div className="ac-customer-sales-search-terms"><strong>Search Terms</strong><div>{customer.customerName}<br />{customer.customerName}, {customer.street}, {cityState}<br />{customer.contacts[0]?.firstName} {customer.contacts[0]?.lastName}, {customer.street}, {cityState}</div></div>
+        <div className="ac-customer-sales-search-buttons">{["All", "Customer", "Contact", "City, State", "USA", "Card #", "True P", "Google", "LinkedIn", "Blue B", "Facebook", "BBB", "Corp Lk"].map((x) => <AccessButton key={x} xs disabled>{x}</AccessButton>)}</div>
+        <label className="ac-customer-sales-research-notes"><span>Customer Research Notes</span><textarea /></label>
+        <AccessButton xs disabled>Record</AccessButton><AccessButton xs disabled>Customer Research History</AccessButton>
+      </div>
+    </section>
+  );
+}
+
 export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) {
   const [activeTab, setActiveTab] = useState("01-basic");
 
@@ -1182,7 +1354,9 @@ export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) 
               {activeTab === "08-inscert" ? <CustomerInsuranceCertRequestsTab /> : null}
               {activeTab === "09-options" ? <CustomerOptionsTab /> : null}
               {activeTab === "10-mult" ? <CustomerRateMultipliersTab /> : null}
-              {activeTab !== "01-basic" && activeTab !== "03-billrates" && activeTab !== "04-insurance" && activeTab !== "05-sales" && activeTab !== "06-collections" && activeTab !== "07-wcc" && activeTab !== "08-inscert" && activeTab !== "09-options" && activeTab !== "10-mult" ? (
+              {activeTab === "11-jobs" ? <CustomerJobsTab customer={customer} /> : null}
+              {activeTab === "12-saleshist" ? <CustomerSalesHistoryTab customer={customer} /> : null}
+              {activeTab !== "01-basic" && activeTab !== "03-billrates" && activeTab !== "04-insurance" && activeTab !== "05-sales" && activeTab !== "06-collections" && activeTab !== "07-wcc" && activeTab !== "08-inscert" && activeTab !== "09-options" && activeTab !== "10-mult" && activeTab !== "11-jobs" && activeTab !== "12-saleshist" ? (
                 <CustomerProfileStub id={activeTab} title={CUSTOMER_PROFILE_TABS.find((tab) => tab.id === activeTab)?.label ?? activeTab} />
               ) : null}
             </div>

@@ -7624,6 +7624,236 @@ body {
   appearance: none;
 }
 
+/* Customer profile — Jobs */
+.ac-customer-jobs {
+  display: grid;
+  grid-template-columns: 960px 576px;
+  gap: 231px;
+  min-width: 1767px;
+  min-height: 650px;
+  padding: 0 4px;
+  color: #000;
+  font-size: 13px;
+}
+
+.ac-customer-jobs h2 {
+  margin: 0 0 5px;
+  font-size: 19px;
+  font-weight: 400;
+}
+
+.ac-customer-jobs-controls {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.ac-customer-jobs-searches label {
+  display: grid;
+  grid-template-columns: 106px 194px;
+  align-items: center;
+  margin-bottom: 1px;
+}
+
+.ac-customer-jobs-searches input,
+.ac-customer-jobs-select-row select {
+  height: 27px;
+  border: 1px solid #999;
+  background: #fff;
+}
+
+.ac-customer-jobs-status-filter {
+  display: flex;
+  gap: 7px;
+  width: 315px;
+  padding: 10px 7px 7px;
+  border: 1px solid #aaa;
+}
+
+.ac-customer-jobs-status-filter legend {
+  padding-inline: 46px;
+}
+
+.ac-customer-jobs-status-filter button {
+  min-width: 69px;
+  height: 27px;
+  border: 1px solid #999;
+  background: linear-gradient(#fff, #e5e5e5);
+  font: inherit;
+}
+
+.ac-customer-jobs-status-filter button.is-active {
+  outline: 1px dotted #777;
+  outline-offset: -4px;
+}
+
+.ac-customer-jobs-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-left: auto;
+}
+
+.ac-customer-jobs-actions > .ac-btn,
+.ac-customer-jobs-actions > div .ac-btn {
+  width: 101px;
+  border-radius: 0;
+}
+
+.ac-customer-jobs-actions > div {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.ac-customer-jobs-actions em {
+  color: #003bb2;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.ac-customer-jobs-select-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 39px;
+}
+
+.ac-customer-jobs-select-row .ac-btn {
+  min-width: 44px;
+  border-radius: 0;
+}
+
+.ac-customer-jobs-select-row label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.ac-customer-jobs-select-row select {
+  width: 98px;
+}
+
+.ac-customer-jobs-grid-wrap {
+  width: 960px;
+  border: 1px solid #b7bec6;
+  background: #fff;
+}
+
+.ac-customer-jobs-grid {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 13px;
+}
+
+.ac-customer-jobs-grid th {
+  height: 20px;
+  border-right: 1px solid #c6ced5;
+  border-bottom: 1px solid #b7bec6;
+  background: #edf1f4;
+  font-weight: 400;
+}
+
+.ac-customer-jobs-grid td {
+  height: 29px;
+  padding: 2px 5px;
+  border-right: 1px solid #edf0f2;
+  border-bottom: 1px solid #edf0f2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ac-customer-jobs-grid th:nth-child(1) { width: 18px; }
+.ac-customer-jobs-grid th:nth-child(2) { width: 63px; }
+.ac-customer-jobs-grid th:nth-child(3) { width: 278px; }
+.ac-customer-jobs-grid th:nth-child(4) { width: 163px; }
+.ac-customer-jobs-grid th:nth-child(5) { width: 115px; }
+.ac-customer-jobs-grid th:nth-child(6) { width: 61px; }
+.ac-customer-jobs-grid th:nth-child(7) { width: 94px; }
+.ac-customer-jobs-grid th:nth-child(8) { width: 80px; }
+
+.ac-customer-jobs-recordbar {
+  display: flex;
+  align-items: center;
+  height: 18px;
+  background: #edf1f4;
+  font-size: 10px;
+}
+
+.ac-customer-jobs-recordbar em {
+  color: #aaa;
+  font-style: normal;
+}
+
+.ac-customer-jobs-recordbar input {
+  width: 74px;
+  height: 17px;
+  margin-left: 4px;
+  border: 1px solid #aaa;
+  font-size: 10px;
+}
+
+.ac-customer-jobs-foremen h2 {
+  margin-left: 0;
+  text-align: left;
+}
+
+.ac-customer-foremen-grid-wrap {
+  width: 576px;
+  margin-top: 8px;
+}
+
+.ac-customer-foremen-grid th:nth-child(1) { width: 18px; }
+.ac-customer-foremen-grid th:nth-child(2) { width: 141px; }
+.ac-customer-foremen-grid th:nth-child(3) { width: 143px; }
+.ac-customer-foremen-grid th:nth-child(4) { width: 238px; }
+.ac-customer-foremen-grid th:nth-child(5) { width: 36px; }
+
+/* Customer profile — Sales History */
+.ac-customer-sales-history { min-width: 1800px; min-height: 660px; padding: 4px 7px; color: #000; font-size: 12px; }
+.ac-customer-sales-verify { display: grid; grid-template-columns: 24px 452px 454px 420px 440px; height: 126px; border: 1px solid #222; }
+.ac-customer-sales-vertical { display: grid; place-items: center; writing-mode: vertical-rl; text-orientation: upright; border-right: 1px solid #222; font-weight: 700; letter-spacing: 1px; }
+.ac-customer-sales-verify-group { padding: 7px; border-right: 1px solid #222; }
+.ac-customer-sales-verify-group label { display: grid; grid-template-columns: 59px 194px 22px; align-items: center; margin-bottom: 2px; }
+.ac-customer-sales-verify-group input:not([type="checkbox"]), .ac-customer-sales-verify-group select { height: 27px; border: 1px solid #999; background: #fff; }
+.ac-customer-sales-mailing label:first-child { display: flex; justify-content: space-between; }
+.ac-customer-sales-web label { grid-template-columns: 68px 174px 22px; }
+.ac-customer-sales-history-rowblock { display: flex; margin-top: 16px; }
+.ac-customer-sales-history-rowblock > .ac-customer-sales-vertical { width: 24px; border: 1px solid #222; }
+.ac-customer-sales-side-actions { width: 63px; display: flex; flex-direction: column; align-items: center; justify-content: space-around; }
+.ac-customer-sales-side-actions button { width: 34px; height: 34px; border: 1px solid #888; background: linear-gradient(#fff,#e5e5e5); font-size: 18px; }
+.ac-customer-sales-history-table-wrap { width: 1712px; border: 1px solid #aaa; background: #fff; }
+.ac-customer-sales-history-table-wrap table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.ac-customer-sales-history-table-wrap th { height: 20px; background: #edf1f4; border-right: 1px solid #bcc6cf; font-weight: 400; }
+.ac-customer-sales-history-table-wrap td { height: 20px; padding: 1px 5px; border-right: 1px solid #e5e9ec; border-bottom: 1px solid #e5e9ec; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ac-customer-sales-history-table-wrap tbody tr:first-child td { background: #9fcae9; }
+.ac-customer-sales-history-recordbar { height: 18px; background: #edf1f4; font-size: 10px; }
+.ac-customer-sales-history-recordbar input { width: 74px; height: 17px; }
+.ac-customer-sales-history-table-wrap > strong { display: block; color: #003bb2; background: #d7d7d7; padding-top: 5px; }
+.ac-customer-sales-history-center { width: 1360px; }
+.ac-customer-sales-history-filters { display: flex; align-items: center; gap: 3px; margin-bottom: 6px; }
+.ac-customer-sales-history-filters button { height: 27px; border: 1px solid #888; background: linear-gradient(#fff,#e5e5e5); font-size: 11px; }
+.ac-customer-sales-history-filters button.is-active { outline: 1px dotted #555; outline-offset: -4px; }
+.ac-customer-sales-action-table { width: 1360px; }
+.ac-customer-sales-action-table td a { color: #2f8d1c; text-decoration: underline; }
+.ac-customer-sales-history-status { width: 350px; padding: 0 10px; }
+.ac-customer-sales-history-status label { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.ac-customer-sales-history-status label span { min-width: 125px; }
+.ac-customer-sales-history-status select, .ac-customer-sales-history-status input { width: 190px; height: 27px; }
+.ac-customer-sales-history-status .ac-btn { min-width: 58px; border-radius: 0; margin-right: 5px; }
+.ac-customer-sales-research { display: flex; align-items: flex-end; gap: 7px; height: 110px; margin-top: 12px; }
+.ac-customer-sales-research > .ac-customer-sales-vertical { width: 24px; height: 110px; border: 1px solid #222; }
+.ac-customer-sales-search-terms { width: 560px; }
+.ac-customer-sales-search-terms strong { display: block; text-align: center; border-bottom: 2px solid #222; }
+.ac-customer-sales-search-terms div { height: 88px; padding: 5px; border: 1px solid #888; background: #fff; line-height: 1.7; }
+.ac-customer-sales-search-buttons { display: grid; grid-template-columns: repeat(3, 1fr); width: 183px; gap: 2px; }
+.ac-customer-sales-search-buttons .ac-btn { padding: 1px 5px; min-height: 21px; font-size: 10px; }
+.ac-customer-sales-research-notes { display: flex; flex-direction: column; width: 290px; }
+.ac-customer-sales-research-notes span { text-align: center; }.ac-customer-sales-research-notes textarea { height: 54px; resize: none; }
+
 /* Customer Bill Rates — editable Access-style datasheet */
 .ac-customer-bill-rates {
   position: relative;
