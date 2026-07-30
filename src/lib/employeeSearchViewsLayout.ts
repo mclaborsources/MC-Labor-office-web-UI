@@ -8,7 +8,7 @@ export type EmployeeViews3Button = {
 
 export const EMPLOYEE_VIEWS_3_BUTTON_GRID: readonly (readonly (EmployeeViews3Button | null)[])[] = [
   [{ label: "New Apps", style: "new-apps" }, { label: "Remote", style: "yellow" }],
-  [{ label: "Interview #", style: "yellow" }, { label: "Last Action", style: "yellow" }],
+  [null, { label: "Last Action", style: "yellow" }],
   [{ label: "Call History", style: "yellow" }, { label: "Resume #", style: "yellow" }],
   [{ label: "1st Call #", style: "yellow" }, { label: "Interview Date", style: "yellow" }],
   [{ label: "Main Points", style: "orange" }, null],
@@ -34,9 +34,15 @@ export const EMPLOYEE_VIEWS_TIME_FRAME = [
 
 export const EMPLOYEE_VIEWS_TRADE_OPTIONS = [
   "All",
-  "[ Elec - Lic  App ]",
-  "[ Plumb - Lic  App ]",
-  "[ HVAC - Lic  App ]",
+  "[ Elec -",
+  "Lic",
+  "App ]",
+  "[ Plumb -",
+  "Lic ",
+  "App ] ",
+  "[ HVAC -",
+  "Lic  ",
+  "App ]  ",
   "Carpenter",
   "Operator",
   "Laborer",
