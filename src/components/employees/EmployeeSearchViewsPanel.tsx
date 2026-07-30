@@ -592,7 +592,7 @@ function InterviewTab() {
 
 function CallListsTab() {
   return (
-    <div className="ac-employee-search-views-filters ac-search-views-tab-pane">
+    <div className="ac-employee-search-views-filters ac-employee-calllists-tab ac-search-views-tab-pane">
       <FilterRadioGroup legend="Trade:" name="emp-cl-trade" options={EMPLOYEE_CALL_LISTS_TRADE} className="ac-customer-search-filter-group--wide" />
       <FilterRadioGroup legend="State:" name="emp-cl-state" options={EMPLOYEE_VIEWS_STATE_OPTIONS} className="ac-customer-search-filter-group--wide" />
       <FilterRadioGroup legend="County:" name="emp-cl-county" options={EMPLOYEE_VIEWS_COUNTY_OPTIONS} className="ac-customer-search-filter-group--wide" />

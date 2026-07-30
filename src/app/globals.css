@@ -11787,6 +11787,354 @@ body {
   font-size: 12px;
 }
 
+/* Clearly mark the currently open view. */
+.ac-employee-search-page .ac-employee-search-view-tabs .ac-tab-active,
+.ac-employee-search-page .ac-employee-search-view-tabs .ac-tab-active:hover {
+  z-index: 2;
+  background: #666;
+  border-color: #444;
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Ray — four fixed utility sections. */
+.ac-employee-search-page .ac-employee-ray-tab.ac-search-views-tab-pane {
+  height: 249px;
+  min-height: 249px;
+  padding: 7px 14px;
+  gap: 0;
+  background: #f2f2f2;
+}
+
+.ac-employee-search-page .ac-employee-ray-tab .ac-employee-ray-section {
+  flex: 0 0 auto;
+  height: 72px;
+  padding: 0 8px;
+  gap: 5px;
+  border-right: 1px solid #aaa;
+}
+
+.ac-employee-search-page .ac-employee-ray-tab .ac-employee-ray-section:nth-child(1) {
+  width: 286px;
+  padding-left: 0;
+}
+
+.ac-employee-search-page .ac-employee-ray-tab .ac-employee-ray-section:nth-child(2) {
+  width: 296px;
+}
+
+.ac-employee-search-page .ac-employee-ray-tab .ac-employee-ray-section:nth-child(3) {
+  width: 400px;
+}
+
+.ac-employee-search-page .ac-employee-ray-tab .ac-employee-ray-section:nth-child(4) {
+  flex: 1 1 auto;
+  border-right: 0;
+}
+
+.ac-employee-search-page .ac-employee-ray-tab .ac-employee-ray-heading,
+.ac-employee-search-page .ac-employee-ray-tab .ac-employee-ray-warn {
+  font-size: 9px;
+  line-height: 11px;
+}
+
+.ac-employee-search-page .ac-employee-ray-tab .ac-btn,
+.ac-employee-search-page .ac-employee-ray-tab .ac-select {
+  width: 100%;
+  height: 25px;
+  min-height: 25px;
+  border-radius: 0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ac-employee-search-page .ac-employee-ray-tab .ac-select {
+  background: #fff;
+}
+
+.ac-employee-search-page .ac-employee-ray-tab .ac-employee-ray-steps {
+  padding-left: 16px;
+  font-size: 9px;
+  line-height: 11px;
+}
+
+.ac-employee-search-page .ac-employee-ray-tab .ac-employee-ray-phone-btns {
+  flex: 0 0 164px;
+  width: 164px;
+  gap: 5px;
+}
+
+/* Ray 2 — warning band and removal buttons. */
+.ac-employee-search-page .ac-employee-ray2-tab.ac-search-views-tab-pane {
+  height: 249px;
+  min-height: 249px;
+  padding: 8px;
+  background: #e6e6e6;
+}
+
+.ac-employee-search-page .ac-employee-ray2-tab .ac-employee-ray2-warn {
+  height: 18px;
+  margin: 0;
+  padding-left: 0;
+  color: #d00000;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.ac-employee-search-page .ac-employee-ray2-tab .ac-employee-ray2-fieldset {
+  height: 38px;
+  padding: 5px;
+  gap: 6px;
+  border-color: #9aa7b5;
+  background: #f2f2f2;
+}
+
+.ac-employee-search-page .ac-employee-ray2-tab .ac-employee-ray2-fieldset .ac-btn {
+  height: 25px;
+  min-height: 25px;
+  padding: 0 10px;
+  border-radius: 0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Interview — populate bar and one large date group. */
+.ac-employee-search-page .ac-employee-interview-tab.ac-search-views-tab-pane {
+  height: 249px;
+  min-height: 249px;
+  padding: 6px;
+  gap: 10px;
+  background: #e6e6e6;
+  border: 1px solid #8f9cab;
+}
+
+.ac-employee-search-page .ac-employee-interview-tab > .ac-btn {
+  width: 100%;
+  height: 25px;
+  min-height: 25px;
+  border-radius: 0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ac-employee-search-page .ac-employee-interview-tab .ac-customer-search-filter-group {
+  flex: 1 1 auto;
+  width: 100%;
+  margin: 0;
+  padding: 5px;
+  border-color: #aaa;
+  background: #e6e6e6;
+}
+
+.ac-employee-search-page .ac-employee-interview-tab .ac-customer-search-filter-group legend {
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.ac-employee-search-page .ac-employee-interview-tab .ac-customer-search-filter-group-options {
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+.ac-employee-search-page .ac-employee-interview-tab .ac-customer-search-radio {
+  gap: 3px;
+  color: #000;
+  font-size: 9px;
+}
+
+.ac-employee-search-page .ac-employee-interview-tab .ac-customer-search-radio input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+}
+
+/* Call Lists — four progressively shorter radio bands. */
+.ac-employee-search-page .ac-employee-calllists-tab.ac-search-views-tab-pane {
+  height: 249px;
+  min-height: 249px;
+  padding: 6px 12px;
+  gap: 7px;
+  background: #f2f2f2;
+}
+
+.ac-employee-search-page .ac-employee-calllists-tab > .ac-customer-search-filter-group {
+  display: flex;
+  align-items: center;
+  height: 29px;
+  min-height: 29px;
+  margin: 0;
+  padding: 2px 5px;
+  border: 1px solid #aaa;
+  background: #f2f2f2;
+}
+
+.ac-employee-search-page .ac-employee-calllists-tab > .ac-customer-search-filter-group:nth-child(1),
+.ac-employee-search-page .ac-employee-calllists-tab > .ac-customer-search-filter-group:nth-child(2) {
+  width: 100%;
+}
+
+.ac-employee-search-page .ac-employee-calllists-tab > .ac-customer-search-filter-group:nth-child(3) {
+  width: 1181px;
+}
+
+.ac-employee-search-page .ac-employee-calllists-tab > .ac-customer-search-filter-group:nth-child(4) {
+  width: 886px;
+}
+
+.ac-employee-search-page .ac-employee-calllists-tab .ac-customer-search-filter-group legend {
+  float: left;
+  margin-right: 10px;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ac-employee-search-page .ac-employee-calllists-tab .ac-customer-search-filter-group-options {
+  flex-wrap: nowrap;
+  gap: 12px;
+}
+
+.ac-employee-search-page .ac-employee-calllists-tab .ac-customer-search-radio {
+  gap: 4px;
+  color: #000;
+  font-size: 12px;
+}
+
+.ac-employee-search-page .ac-employee-calllists-tab .ac-customer-search-radio input {
+  width: 12px;
+  height: 12px;
+  margin: 0;
+}
+
+/* Call Lists 2 — six selectors, detailed filters, and view tools. */
+.ac-employee-search-page .ac-employee-calllists2-tab.ac-search-views-tab-pane {
+  height: 249px;
+  min-height: 249px;
+  padding: 6px;
+  gap: 5px;
+  background: #f2f2f2;
+}
+
+.ac-employee-search-page .ac-employee-calllists2-filters-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 5px;
+  height: 27px;
+}
+
+.ac-employee-search-page .ac-employee-calllists2-filters-row .ac-select {
+  width: 100%;
+  height: 27px;
+  min-height: 27px;
+  background: #fff;
+  font-size: 12px;
+}
+
+.ac-employee-search-page .ac-employee-calllists2-body {
+  height: 169px;
+  gap: 8px;
+}
+
+.ac-employee-search-page .ac-employee-calllists2-additional {
+  height: 169px;
+  padding: 4px 7px;
+  gap: 1px;
+  border-color: #9aa7b5;
+  background: #e6e6e6;
+}
+
+.ac-employee-search-page .ac-employee-calllists2-additional legend {
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.ac-employee-search-page .ac-employee-calllists2-additional .ac-customer-search-radio,
+.ac-employee-search-page .ac-employee-calllists2-additional .ac-customer-search-check {
+  gap: 4px;
+  color: #000;
+  font-size: 12px;
+  line-height: 17px;
+}
+
+.ac-employee-search-page .ac-employee-calllists2-additional input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+}
+
+.ac-employee-search-page .ac-employee-calllists2-right {
+  flex: 0 0 129px;
+  width: 129px;
+  gap: 5px;
+}
+
+.ac-employee-search-page .ac-employee-calllists2-viewmap {
+  gap: 5px;
+}
+
+.ac-employee-search-page .ac-employee-calllists2-viewmap .ac-select {
+  width: 81px;
+  height: 27px;
+  min-height: 27px;
+  background: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.ac-employee-search-page .ac-employee-calllists2-viewmap .ac-btn {
+  width: 43px;
+  height: 27px;
+  min-height: 27px;
+  border-radius: 0;
+}
+
+.ac-employee-search-page .ac-employee-calllists2-hint {
+  font-size: 8px;
+  color: #687582;
+}
+
+.ac-employee-search-page .ac-employee-calllists2-right > .ac-btn {
+  width: 129px;
+  height: 25px;
+  min-height: 25px;
+  border-radius: 0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ac-employee-search-page .ac-employee-calllists2-footer {
+  height: 30px;
+  gap: 5px;
+  margin: 0;
+}
+
+.ac-employee-search-page .ac-employee-calllists2-footer .ac-employee-calllists2-spare {
+  flex: 0 0 80px;
+  width: 80px;
+  max-width: 80px;
+  height: 29px;
+  min-height: 29px;
+  border: 1px solid #aaa;
+  background: #f2f2f2;
+}
+
+.ac-employee-search-page .ac-employee-calllists2-recruiter {
+  margin-left: auto;
+  color: #000;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.ac-employee-search-page .ac-employee-calllists2-footer .ac-employee-search-btn-warn.ac-btn {
+  width: 92px;
+  height: 27px;
+  min-height: 27px;
+  border-radius: 0;
+  color: #e00000;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .ac-employee-search-page .ac-customer-search-utility-rail {
   width: 49px;
   min-width: 49px;
