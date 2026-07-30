@@ -10716,6 +10716,8 @@ body {
 .ac-employee-search-page .ac-employee-search-cancel-btn.ac-btn {
   margin-left: auto;
   margin-right: 0;
+  position: relative;
+  z-index: 5;
 }
 
 .ac-employee-search-page .ac-customer-search-shell,
@@ -10822,24 +10824,26 @@ body {
 }
 
 .ac-employee-search-page .ac-employee-search-controls {
-  height: 243px;
-  min-height: 243px;
+  position: relative;
+  top: -39px;
+  height: 282px;
+  min-height: 282px;
   background: #f2f2f2;
 }
 
 .ac-employee-search-page .ac-employee-search-view-tabs {
-  height: 30px;
-  min-height: 30px;
-  padding: 0;
+  height: 24px;
+  min-height: 24px;
+  padding: 0 3px;
   background: #f2f2f2;
 }
 
 .ac-employee-search-page .ac-employee-search-view-tabs .ac-tab,
 .ac-employee-search-page .ac-employee-search-view-tabs .ac-tab:hover,
 .ac-employee-search-page .ac-employee-search-view-tabs .ac-tab-active {
-  height: 30px;
-  min-height: 30px;
-  padding: 3px 8px;
+  height: 24px;
+  min-height: 24px;
+  padding: 2px 7px;
   background: #f2f2f2;
   border-color: #ddd;
   font-size: 12px;
@@ -10847,17 +10851,17 @@ body {
 }
 
 .ac-employee-search-page .ac-employee-search-control-panel {
-  height: 213px;
-  min-height: 213px;
+  height: 258px;
+  min-height: 258px;
   padding: 7px 12px 0;
   background: #f2f2f2;
 }
 
 .ac-employee-search-page .ac-employee-search-views-tab {
-  height: 206px;
-  min-height: 206px;
+  height: 251px;
+  min-height: 251px;
   padding: 0;
-  gap: 6px;
+  gap: 7px;
   background: #f2f2f2;
   border: 1px solid #777;
 }
@@ -10872,6 +10876,7 @@ body {
   height: 34px;
   min-height: 34px;
   padding: 4px 8px;
+  gap: 6px;
   background: #f2f2f2;
 }
 
@@ -10884,10 +10889,48 @@ body {
   font-weight: 400;
 }
 
+.ac-employee-search-page .ac-employee-search-filter-row > .ac-employee-search-row-select {
+  flex: 0 0 auto;
+}
+
+.ac-employee-search-page .ac-employee-search-filter-row > .ac-employee-search-row-select:nth-child(1) {
+  width: 100px;
+}
+
+.ac-employee-search-page .ac-employee-search-filter-row > .ac-employee-search-row-select:nth-child(4) {
+  width: 121px;
+}
+
+.ac-employee-search-page .ac-employee-search-filter-row > .ac-employee-search-row-select:nth-child(5) {
+  width: 122px;
+}
+
+.ac-employee-search-page .ac-employee-search-filter-row > .ac-employee-search-cluster-select {
+  width: 250px;
+}
+
+.ac-employee-search-page .ac-employee-search-filter-row > .ac-employee-search-trade-select {
+  width: 160px;
+  background: #a9e3f4;
+  border-color: #87aab5;
+}
+
+.ac-employee-search-page .ac-employee-search-filter-row > .ac-employee-search-filter-input {
+  flex: 0 0 195px;
+  width: 195px;
+  background: #fff;
+}
+
+.ac-employee-search-page .ac-employee-search-filter-row .ac-customer-search-filter-label {
+  margin-left: 34px;
+  font-size: 12px;
+}
+
 .ac-employee-search-page .ac-employee-search-action-row {
-  height: 31px;
-  min-height: 31px;
-  padding: 0 172px;
+  height: 29px;
+  min-height: 29px;
+  padding: 0 66px 0 194px;
+  gap: 0;
 }
 
 .ac-employee-search-page .ac-employee-search-action-row .ac-btn {
@@ -10898,11 +10941,31 @@ body {
 }
 
 .ac-employee-search-page .ac-employee-search-lic-flag-btn.ac-btn {
-  margin-left: 178px;
+  flex: 0 0 238px;
+  width: 238px;
+  margin-left: 177px;
 }
 
 .ac-employee-search-page .ac-employee-search-action-row-right {
-  margin-left: 84px;
+  gap: 19px;
+  margin-left: 76px;
+}
+
+.ac-employee-search-page .ac-employee-search-action-wide.ac-btn {
+  flex: 0 0 150px;
+  width: 150px;
+}
+
+.ac-employee-search-page .ac-employee-search-action-wide.ac-btn + .ac-employee-search-action-wide.ac-btn {
+  margin-left: 19px;
+}
+
+.ac-employee-search-page .ac-employee-search-action-row-right .ac-btn:first-child {
+  width: 93px;
+}
+
+.ac-employee-search-page .ac-employee-search-action-row-right .ac-employee-search-lic-search-btn.ac-btn {
+  width: 225px;
 }
 
 .ac-employee-search-page .ac-employee-search-preset-grid .ac-btn,
@@ -10915,10 +10978,32 @@ body {
   font-weight: 700;
 }
 
+.ac-employee-search-page .ac-employee-search-preset-grid {
+  column-gap: 8px;
+  row-gap: 2px;
+  padding: 0 12px;
+  margin-top: 20px;
+}
+
+.ac-employee-search-page .ac-employee-search-preset-grid .ac-employee-search-btn-multi.ac-btn {
+  background: #75c1df;
+  border-color: #275668;
+  color: #000;
+}
+
+.ac-employee-search-page .ac-employee-search-preset-grid .ac-employee-search-btn-warn.ac-btn {
+  color: #f00000;
+}
+
 .ac-employee-search-page .ac-employee-search-call-filter-row {
   min-height: 38px;
-  padding: 5px;
+  padding: 5px 12px;
+  margin-top: 10px;
   background: #f2f2f2;
+}
+
+.ac-employee-search-page .ac-employee-search-call-filter-row .ac-employee-search-v-btn:nth-of-type(2) {
+  margin-left: auto;
 }
 
 .ac-employee-search-page .ac-customer-search-utility-rail {
