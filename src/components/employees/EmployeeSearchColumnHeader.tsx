@@ -69,6 +69,21 @@ export function EmployeeSearchColumnHeader({
     setSelected(allSelected ? new Set() : new Set(options));
   }
 
+  function toggleMenu() {
+    if (open) {
+      setOpen(false);
+      return;
+    }
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (rect) {
+      setMenuPosition({
+        left: Math.max(0, Math.min(rect.left, window.innerWidth - 236)),
+        top: rect.bottom + 1,
+      });
+    }
+    setOpen(true);
+  }
+
   return (
     <div ref={containerRef} className="ac-column-filter">
       <button
@@ -76,7 +91,7 @@ export function EmployeeSearchColumnHeader({
         className="ac-column-filter-trigger"
         aria-label={`Filter ${label || "column"}`}
         aria-expanded={open}
-        onClick={() => setOpen((current) => !current)}
+        onClick={toggleMenu}
       >
         <span>{label}</span>
         <span className="ac-column-filter-arrow" aria-hidden />
