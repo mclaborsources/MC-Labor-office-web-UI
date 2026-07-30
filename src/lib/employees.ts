@@ -1,4 +1,4 @@
-import { queryReadOnly } from "@/lib/db/sql";
+﻿import { queryReadOnly } from "@/lib/db/sql";
 import type {
   EmployeeSummary,
   EmployeeDetail,
@@ -51,12 +51,24 @@ function toEmployeeSummary(row: EmployeeRow): EmployeeSummary {
     city: safeStr(row.EmCity),
     state: safeStr(row.EmState),
     street: safeStr(row.EmStreet),
+    userFlag5: "",
+    s1: "",
+    profileType: "Main",
+    howReferred: "",
+    qualification: "",
+    averageInterview: "",
+    fda: "",
+    thw: "",
+    licenseExpiration: "",
+    weekEnding: "",
+    payRate: "",
+    payrollCompany: "",
     currentAssignment: "",
   };
 }
 
 // ---------------------------------------------------------------------------
-// SQL queries — column names confirmed from McLabor tblEmployee schema
+// SQL queries â€” column names confirmed from McLabor tblEmployee schema
 // ---------------------------------------------------------------------------
 
 const EMPLOYEE_LIST_SQL = `
@@ -188,11 +200,15 @@ WITH ranked AS (
     EmployeeID,
     ISNULL(CustomerBusName, '') AS CustomerBusName,
     ISNULL(SiteName, '')        AS SiteName,
+    ISNULL(PayRate, 0)          AS PayRate,
+    WeekEndingDate,
+    ISNULL(PayrollCoOnSiteInitials, '') AS PayrollCoOnSiteInitials,
     ROW_NUMBER() OVER (PARTITION BY EmployeeID ORDER BY AssignmentTimestamp DESC) AS rn
   FROM tblTracking WITH (NOLOCK)
   WHERE EmployeeID IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@ids, ','))
 )
-SELECT EmployeeID, CustomerBusName, SiteName FROM ranked WHERE rn = 1
+SELECT EmployeeID, CustomerBusName, SiteName, PayRate, WeekEndingDate, PayrollCoOnSiteInitials
+FROM ranked WHERE rn = 1
 `;
 
 // ---------------------------------------------------------------------------
@@ -221,19 +237,42 @@ async function loadLicenseTypeMap(): Promise<Map<string, string>> {
   return map;
 }
 
-async function loadCurrentAssignments(ids: string[]): Promise<Map<string, string>> {
-  const map = new Map<string, string>();
+interface CurrentAssignmentSummary {
+  assignment: string;
+  weekEnding: string;
+  payRate: string;
+  payrollCompany: string;
+}
+
+async function loadCurrentAssignments(ids: string[]): Promise<Map<string, CurrentAssignmentSummary>> {
+  const map = new Map<string, CurrentAssignmentSummary>();
   const cleanIds = ids.filter((id) => /^\d+$/.test(id));
   if (cleanIds.length === 0) return map;
   try {
-    const rows = await queryReadOnly<{ EmployeeID: unknown; CustomerBusName: string | null; SiteName: string | null }>(
+    const rows = await queryReadOnly<{
+      EmployeeID: unknown;
+      CustomerBusName: string | null;
+      SiteName: string | null;
+      PayRate: number | string | null;
+      WeekEndingDate: string | Date | null;
+      PayrollCoOnSiteInitials: string | null;
+    }>(
       CURRENT_ASSIGNMENT_SQL,
       [{ name: "ids", value: cleanIds.join(",") }],
     );
     for (const r of rows) {
       if (r.EmployeeID == null) continue;
       const parts = [safeStr(r.CustomerBusName), safeStr(r.SiteName)].filter(Boolean);
-      map.set(String(r.EmployeeID), parts.join(" · "));
+      const weekEnding = r.WeekEndingDate
+        ? new Date(r.WeekEndingDate).toLocaleDateString("en-US")
+        : "";
+      const payRate = money(r.PayRate);
+      map.set(String(r.EmployeeID), {
+        assignment: parts.join(" · "),
+        weekEnding,
+        payRate: payRate ? `$${payRate}` : "",
+        payrollCompany: safeStr(r.PayrollCoOnSiteInitials),
+      });
     }
   } catch { /* ignore */ }
   return map;
@@ -268,7 +307,7 @@ function toExtended(row: EmployeeBRow | undefined): EmployeeExtended {
 function toRate(row: EmployeeRateRow): EmployeeRate {
   return {
     rateId: safeStr(row.EmployeeRateID),
-    field: safeStr(row.EmployeeRateField) || "—",
+    field: safeStr(row.EmployeeRateField) || "â€”",
     oldRate: money(row.EmployeeRateOld),
     newRate: money(row.EmployeeRateNew),
     note: safeStr(row.EmployeeRateNote),
@@ -281,7 +320,7 @@ function toContact(row: EmployeeContactRow): EmployeeContact {
   const name = [safeStr(row.EmployeeContactFName), safeStr(row.EmployeeContactLName)].filter(Boolean).join(" ");
   return {
     contactId: safeStr(row.EmployeeContactID),
-    fullName: name || "—",
+    fullName: name || "â€”",
     relationship: safeStr(row.EmployeeContactRelationship),
     phone: safeStr(row.EmployeeContactPhone),
     cell: safeStr(row.EmployeeContactCell),
@@ -340,7 +379,11 @@ export async function getEmployees(
   const data = rows.map(toEmployeeSummary);
   const assignmentMap = await loadCurrentAssignments(data.map((e) => e.employeeId));
   for (const e of data) {
-    e.currentAssignment = assignmentMap.get(e.employeeId) ?? "";
+    const assignment = assignmentMap.get(e.employeeId);
+    e.currentAssignment = assignment?.assignment ?? "";
+    e.weekEnding = assignment?.weekEnding ?? "";
+    e.payRate = assignment?.payRate ?? "";
+    e.payrollCompany = assignment?.payrollCompany ?? "";
   }
 
   return { data, total: data.length, page: 1, pageSize: 200, hasMore: false };
@@ -432,7 +475,7 @@ export async function getEmployeeFilterOptions(): Promise<{
 /**
  * De-duplicate raw string values into FilterOptions. SQL DISTINCT can still
  * produce duplicates once trimmed (e.g. "Salem" vs "Salem "), which breaks
- * React keys — so dedupe case-insensitively here.
+ * React keys â€” so dedupe case-insensitively here.
  */
 function toUniqueOptions(values: string[]): FilterOption[] {
   const seen = new Set<string>();

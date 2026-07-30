@@ -12,6 +12,18 @@ export interface EmployeeSummary {
   street: string;
   city: string;
   state: string;
+  userFlag5: string;
+  s1: string;
+  profileType: string;
+  howReferred: string;
+  qualification: string;
+  averageInterview: string;
+  fda: string;
+  thw: string;
+  licenseExpiration: string;
+  weekEnding: string;
+  payRate: string;
+  payrollCompany: string;
   /** Latest assignment (customer · site) from tblTracking, for the search list */
   currentAssignment: string;
 }

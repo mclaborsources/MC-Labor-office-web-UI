@@ -12232,6 +12232,43 @@ body {
   font-weight: 700;
 }
 
+.ac-employee-search-page .ac-employee-search-row-selector {
+  width: 20px;
+  min-width: 20px;
+  padding: 0 2px !important;
+  background: #e7edf2 !important;
+  color: #111;
+  text-align: center;
+}
+
+.ac-employee-search-page .ac-employee-search-grid th:first-child {
+  width: 20px;
+  min-width: 20px;
+  padding: 0 !important;
+  background: #e7edf2;
+}
+
+.ac-employee-search-page .ac-employee-search-grid th,
+.ac-employee-search-page .ac-employee-search-grid td {
+  min-width: 73px;
+}
+
+.ac-employee-search-page .ac-employee-search-grid th:nth-child(9),
+.ac-employee-search-page .ac-employee-search-grid td:nth-child(9) {
+  min-width: 84px;
+}
+
+.ac-employee-search-page .ac-employee-search-grid th:nth-child(11),
+.ac-employee-search-page .ac-employee-search-grid td:nth-child(11) {
+  min-width: 88px;
+}
+
+.ac-employee-search-page .ac-employee-search-grid th:nth-child(27),
+.ac-employee-search-page .ac-employee-search-grid td:nth-child(27) {
+  min-width: 82px;
+  text-align: right;
+}
+
 .ac-job-search-views-tab {
   background: #e0e0e0;
   border-color: #9ca3af;

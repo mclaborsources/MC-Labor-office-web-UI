@@ -1,5 +1,6 @@
 /** Employee Search grid columns — Access frmEmployeeSearch parity. */
 export const EMPLOYEE_SEARCH_COLUMNS = [
+  { key: "selector", label: "" },
   { key: "if", label: "IF" },
   { key: "ip", label: "IP(" },
   { key: "userFlag5", label: "User Flag 5" },
@@ -26,6 +27,7 @@ export const EMPLOYEE_SEARCH_COLUMNS = [
   { key: "licExp", label: "Lic Exp D" },
   { key: "weekEnd", label: "Week End" },
   { key: "payRate", label: "Pay Rate" },
+  { key: "emp", label: "Emp" },
 ] as const;
 
 export type EmployeeSearchColumnKey = (typeof EMPLOYEE_SEARCH_COLUMNS)[number]["key"];

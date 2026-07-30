@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { Suspense } from "react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { EmployeeSearchViewsPanel, EmployeeSearchUtilityRail } from "@/components/employees/EmployeeSearchViewsPanel";
@@ -30,6 +30,9 @@ interface EmployeeSearchScreenProps {
 function cellValue(row: EmployeeSummary, key: EmployeeSearchColumnKey): string {
   const map: Partial<Record<EmployeeSearchColumnKey, string | undefined>> = {
     status: row.status,
+    userFlag5: row.userFlag5,
+    s1: row.s1,
+    profileType: row.profileType,
     firstName: row.firstName,
     middleInitial: row.middleInitial,
     lastName: row.lastName,
@@ -38,7 +41,16 @@ function cellValue(row: EmployeeSummary, key: EmployeeSearchColumnKey): string {
     state: row.state,
     cellPhone: row.cellPhone,
     grade: row.grade,
+    howRef: row.howReferred,
     trade: row.trade,
+    qualification: row.qualification,
+    avgI: row.averageInterview,
+    fda: row.fda,
+    thw: row.thw,
+    licExp: row.licenseExpiration,
+    weekEnd: row.weekEnding,
+    payRate: row.payRate,
+    emp: row.payrollCompany || row.employeeId,
     online: "Online",
   };
   return map[key] ?? "";
@@ -70,11 +82,18 @@ function EmployeeSearchTable({ employees }: { employees: EmployeeSummary[] }) {
               employees.map((row) => (
                 <tr key={row.employeeId}>
                   {EMPLOYEE_SEARCH_COLUMNS.map((col) => {
+                    if (col.key === "selector") {
+                      return (
+                        <td key={col.key} className="ac-employee-search-row-selector">
+                          {row.employeeId === employees[0]?.employeeId ? "â–¶" : ""}
+                        </td>
+                      );
+                    }
                     if (col.key === "firstName") {
                       return (
                         <td key={col.key}>
                           <Link href={`/employees/${row.employeeId}`} className="font-semibold">
-                            {row.firstName || "—"}
+                            {row.firstName || "â€”"}
                           </Link>
                         </td>
                       );
@@ -82,16 +101,12 @@ function EmployeeSearchTable({ employees }: { employees: EmployeeSummary[] }) {
                     if (col.key === "online") {
                       return (
                         <td key={col.key} className="ac-employee-search-col-online">
-                          {cellValue(row, col.key) || "—"}
+                          {cellValue(row, col.key) || "â€”"}
                         </td>
                       );
                     }
                     if (col.key === "alert") {
-                      return (
-                        <td key={col.key} className="ac-employee-search-col-alert text-center">
-                          {row.status ? "■" : "—"}
-                        </td>
-                      );
+                      return <td key={col.key} className="ac-employee-search-col-alert" />;
                     }
                     const value = cellValue(row, col.key);
                     const columnClass =
@@ -106,7 +121,7 @@ function EmployeeSearchTable({ employees }: { employees: EmployeeSummary[] }) {
                               : undefined;
                     return (
                       <td key={col.key} className={columnClass}>
-                        {value || "—"}
+                        {value}
                       </td>
                     );
                   })}
@@ -118,7 +133,7 @@ function EmployeeSearchTable({ employees }: { employees: EmployeeSummary[] }) {
       </div>
       <div className="ac-recordbar ac-customer-search-recordbar">
         <span className="font-mono">
-          Record: |◄ ◄ {employees.length === 0 ? 0 : 1} of {employees.length} ► ►|
+          Record: |â—„ â—„ {employees.length === 0 ? 0 : 1} of {employees.length} â–º â–º|
         </span>
         <span className="text-[#7a7a7a]">Unfiltered</span>
         <span className="ml-auto text-[#7a7a7a]">Max 300 per page</span>
@@ -354,7 +369,7 @@ export function EmployeeSearchScreen({
                 <Suspense
                   fallback={
                     <div className="ac-panel p-3">
-                      <Spinner label="Loading employees…" />
+                      <Spinner label="Loading employeesâ€¦" />
                     </div>
                   }
                 >
