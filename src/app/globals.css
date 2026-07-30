@@ -12411,6 +12411,33 @@ body {
   color: #777;
 }
 
+/* Keep the complete Employee Search / Use Button group inside its legacy panel. */
+.ac-employee-search-page .ac-customer-search-sidebar {
+  width: 470px;
+  min-width: 470px;
+}
+
+.ac-employee-search-page .ac-customer-search-side-main {
+  min-width: 0;
+}
+
+.ac-employee-search-page .ac-customer-search-side-grid-area {
+  grid-template-columns: minmax(0, 1fr) 72px;
+  width: 100%;
+}
+
+.ac-employee-search-page .ac-customer-search-side-search-col {
+  width: 72px;
+  min-width: 72px;
+}
+
+.ac-employee-search-page .ac-customer-search-use-button {
+  width: 72px;
+  max-width: 72px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
 .ac-job-search-views-tab {
   background: #e0e0e0;
   border-color: #9ca3af;
