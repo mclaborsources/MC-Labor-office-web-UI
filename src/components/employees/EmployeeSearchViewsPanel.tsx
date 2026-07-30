@@ -301,7 +301,7 @@ function Views4Tab() {
 
 function CopySectionTab({ variant }: { variant: "ma" | "nh" }) {
   return (
-    <div className="ac-employee-copy-tab ac-search-views-tab-pane">
+    <div className={`ac-employee-copy-tab ac-employee-copy-tab--${variant} ac-search-views-tab-pane`}>
       <div className="ac-employee-copy-bar" aria-hidden>
         COPY
       </div>
@@ -318,7 +318,7 @@ function CopySectionTab({ variant }: { variant: "ma" | "nh" }) {
             ) : null}
             {"extraButtons" in row && row.extraButtons ? (
               <div className="ac-employee-copy-extra-btns">
-                {row.extraButtons.map((label) => (
+                {(variant === "nh" ? row.extraButtons.slice(0, 1) : row.extraButtons).map((label) => (
                   <AccessButton key={label} xs>
                     {label}
                   </AccessButton>
@@ -365,7 +365,9 @@ function UserSettingsTab() {
       <div className="ac-customer-search-user-settings-grid ac-employee-user-settings-grid">
         {Array.from({ length: 8 }, (_, i) => (
           <div key={i} className="ac-customer-search-user-setting-slot">
-            <span className="ac-customer-search-user-setting-num">User Settings {i + 1}:</span>
+            <span className="ac-customer-search-user-setting-num">
+              {i === 0 ? "User Settings 1:" : `${i + 1}:`}
+            </span>
             <select className="ac-select ac-customer-search-user-setting-select" defaultValue="" aria-label={`Setting ${i + 1}`}>
               <option value="" />
             </select>
@@ -388,6 +390,7 @@ function UtilitiesTab() {
   return (
     <div className="ac-customer-search-utilities-tab ac-employee-utilities-tab ac-search-views-tab-pane">
       <div className="ac-customer-search-utilities-section ac-employee-utilities-section--stack">
+        <AccessButton xs>Clear Future Call</AccessButton>
         <AccessButton xs className="ac-employee-utilities-black-btn">
           Refresh Hyperlinks | 009
         </AccessButton>
@@ -408,7 +411,14 @@ function UtilitiesTab() {
           Export View
         </AccessButton>
       </div>
-      <div className="ac-customer-search-utilities-section ac-employee-utilities-spare" aria-hidden />
+      <div className="ac-customer-search-utilities-section ac-employee-utilities-section--stack">
+        <select className="ac-select" defaultValue="" aria-label="License issue year">
+          <option value="">&lt;Lic Issue Year&gt;</option>
+        </select>
+        <select className="ac-select" defaultValue="" aria-label="Has not been contacted in">
+          <option value="">&lt;Has Not Been Contacted In&gt;</option>
+        </select>
+      </div>
       <div className="ac-customer-search-utilities-section ac-employee-utilities-section--stack">
         <AccessButton xs>
           Salesman Records - Emp | 010
@@ -418,6 +428,9 @@ function UtilitiesTab() {
         </AccessButton>
       </div>
       <div className="ac-customer-search-utilities-section ac-employee-utilities-section--stack">
+        <select className="ac-select" defaultValue="" aria-label="Find duplicates">
+          <option value="">&lt;Find Duplicates&gt;</option>
+        </select>
         <AccessButton xs>
           Compare Profiles (Update All)
         </AccessButton>
@@ -430,9 +443,30 @@ function UtilitiesTab() {
 }
 
 function AdminUtilitiesTab() {
+  const transferProfiles = [
+    ["[Main] Employee Search 3", "ac-employee-admin-transfer-main"],
+    ["[Sub Div 1] Recruit", "ac-employee-admin-transfer-recruit"],
+    ["[Sub Div 2] Research", "ac-employee-admin-transfer-research"],
+    ["[Sub Div 3] Hold", "ac-employee-admin-transfer-hold"],
+    ["Health Care", "ac-employee-admin-transfer-health"],
+    ["Profile 6", "ac-employee-admin-transfer-profile6"],
+    ["Profile 7", "ac-employee-admin-transfer-profile7"],
+    ["Profile 8", "ac-employee-admin-transfer-profile8"],
+    ["Profile 9", "ac-employee-admin-transfer-profile9"],
+    ["Profile 10", "ac-employee-admin-transfer-profile10"],
+  ] as const;
+
   return (
     <div className="ac-employee-admin-tab ac-search-views-tab-pane">
-      <div className="ac-employee-admin-spare" aria-hidden />
+      <div className="ac-employee-admin-transfer-grid">
+        {transferProfiles.map(([label, className]) => (
+          <AccessButton key={label} className={className}>
+            Transfer to
+            <br />
+            {label}
+          </AccessButton>
+        ))}
+      </div>
       <div className="ac-employee-admin-controls">
         <div className="ac-employee-admin-checks">
           {EMPLOYEE_ADMIN_INCLUDE_PROFILES.map((label) => (

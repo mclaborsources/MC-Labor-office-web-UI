@@ -11478,6 +11478,315 @@ body {
   font-size: 10px;
 }
 
+/* NH copy view. */
+.ac-employee-search-page .ac-employee-copy-tab--nh {
+  padding-left: 12px;
+}
+
+.ac-employee-search-page .ac-employee-copy-tab--nh .ac-employee-copy-bar {
+  order: 1;
+}
+
+.ac-employee-search-page .ac-employee-copy-tab--nh .ac-employee-copy-main {
+  order: 2;
+  flex-basis: 296px;
+  width: 296px;
+}
+
+.ac-employee-search-page .ac-employee-copy-tab--nh .ac-employee-nh-trades + .ac-employee-copy-divider {
+  display: block;
+  order: 3;
+  width: 1px;
+  height: 88px;
+  margin: 0 47px;
+  background: #aaa;
+}
+
+.ac-employee-search-page .ac-employee-copy-tab--nh .ac-employee-nh-trades {
+  order: 4;
+  flex: 0 0 212px;
+  width: 212px;
+  padding: 0;
+  gap: 3px;
+}
+
+.ac-employee-search-page .ac-employee-copy-tab--nh .ac-employee-nh-trade-btn.ac-btn {
+  width: 212px;
+  height: 21px;
+  min-height: 21px;
+  padding: 0 5px;
+  border-radius: 0;
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.ac-employee-search-page .ac-employee-copy-tab--nh .ac-employee-copy-contact {
+  order: 5;
+  margin-left: 47px;
+}
+
+.ac-employee-search-page .ac-employee-copy-tab--nh .ac-employee-copy-contact + .ac-employee-copy-divider {
+  order: 6;
+}
+
+.ac-employee-search-page .ac-employee-copy-tab--nh .ac-employee-copy-datapay {
+  order: 7;
+}
+
+/* User Settings — four fields across, two rows. */
+.ac-employee-search-page .ac-employee-user-settings-tab.ac-search-views-tab-pane {
+  height: 249px;
+  min-height: 249px;
+  padding: 26px 12px 10px;
+  background: #f2f2f2;
+}
+
+.ac-employee-search-page .ac-employee-user-settings-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 228px);
+  grid-template-rows: repeat(2, 50px);
+  column-gap: 0;
+  row-gap: 26px;
+  width: auto;
+}
+
+.ac-employee-search-page .ac-employee-user-settings-grid .ac-customer-search-user-setting-slot {
+  display: grid;
+  grid-template-columns: 102px 193px;
+  grid-template-rows: 25px 25px;
+  column-gap: 0;
+  row-gap: 3px;
+  width: 295px;
+}
+
+.ac-employee-search-page .ac-employee-user-settings-grid .ac-customer-search-user-setting-num {
+  align-self: center;
+  padding-right: 5px;
+  color: #000;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.ac-employee-search-page .ac-employee-user-settings-grid .ac-customer-search-user-setting-select {
+  width: 193px;
+  height: 25px;
+  min-height: 25px;
+  background: #fff;
+  font-size: 11px;
+}
+
+.ac-employee-search-page .ac-employee-user-settings-grid .ac-customer-search-user-setting-btns {
+  grid-column: 2;
+  display: flex;
+  gap: 8px;
+  padding-left: 40px;
+}
+
+.ac-employee-search-page .ac-employee-user-settings-grid .ac-customer-search-user-setting-btns .ac-btn {
+  width: 45px;
+  height: 25px;
+  min-height: 25px;
+  padding: 0;
+  border-radius: 0;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+/* Utilities — six separated tool groups. */
+.ac-employee-search-page .ac-employee-utilities-tab.ac-search-views-tab-pane {
+  height: 249px;
+  min-height: 249px;
+  padding: 12px 12px 8px;
+  gap: 0;
+  background: #f2f2f2;
+  border: 0;
+}
+
+.ac-employee-search-page .ac-employee-utilities-tab .ac-customer-search-utilities-section {
+  height: 88px;
+  min-height: 88px;
+  padding: 0 19px;
+  gap: 12px;
+  border-right: 1px solid #aaa;
+}
+
+.ac-employee-search-page .ac-employee-utilities-tab .ac-customer-search-utilities-section:nth-child(1) {
+  width: 366px;
+  padding-left: 10px;
+}
+
+.ac-employee-search-page .ac-employee-utilities-tab .ac-customer-search-utilities-section:nth-child(2) {
+  width: 176px;
+}
+
+.ac-employee-search-page .ac-employee-utilities-tab .ac-customer-search-utilities-section:nth-child(3) {
+  width: 296px;
+}
+
+.ac-employee-search-page .ac-employee-utilities-tab .ac-customer-search-utilities-section:nth-child(4) {
+  width: 248px;
+}
+
+.ac-employee-search-page .ac-employee-utilities-tab .ac-customer-search-utilities-section:nth-child(5) {
+  width: 338px;
+  border-right: 0;
+}
+
+.ac-employee-search-page .ac-employee-utilities-tab .ac-customer-search-utilities-section .ac-btn,
+.ac-employee-search-page .ac-employee-utilities-tab .ac-customer-search-utilities-section .ac-select {
+  height: 27px;
+  min-height: 27px;
+  border-radius: 0;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.ac-employee-search-page .ac-employee-utilities-tab .ac-customer-search-utilities-section .ac-select {
+  width: 100%;
+  background: #fff;
+}
+
+.ac-employee-search-page .ac-employee-utilities-tab .ac-customer-search-utilities-section:nth-child(1) .ac-btn:first-child {
+  margin-left: 42px;
+}
+
+.ac-employee-search-page .ac-employee-utilities-tab .ac-employee-utilities-black-btn.ac-btn {
+  margin-top: -39px;
+  margin-left: 178px;
+  background: #000;
+  color: #fff;
+  font-weight: 700;
+}
+
+.ac-employee-search-page .ac-employee-utilities-tab .ac-customer-search-utilities-section:nth-child(1) .ac-btn:last-child {
+  margin-left: 94px;
+}
+
+.ac-employee-search-page .ac-employee-utilities-tab .ac-customer-search-utilities-btn-row {
+  gap: 16px;
+}
+
+.ac-employee-search-page .ac-employee-utilities-tab .ac-customer-search-utilities-section:nth-child(5) .ac-btn {
+  align-self: flex-end;
+  width: 237px;
+}
+
+/* Admin Utilities — colored transfer matrix and right-side inclusion controls. */
+.ac-employee-search-page .ac-employee-admin-tab.ac-search-views-tab-pane {
+  height: 249px;
+  min-height: 249px;
+  padding: 16px 14px;
+  gap: 31px;
+  background: #f2f2f2;
+}
+
+.ac-employee-search-page .ac-employee-admin-transfer-grid {
+  flex: 0 0 725px;
+  display: grid;
+  grid-template-columns: repeat(5, 133px);
+  grid-template-rows: repeat(2, 61px);
+  gap: 11px 15px;
+  padding-right: 31px;
+  border-right: 1px solid #aaa;
+}
+
+.ac-employee-search-page .ac-employee-admin-transfer-grid .ac-btn {
+  width: 133px;
+  height: 61px;
+  min-height: 61px;
+  padding: 5px;
+  border: 1px solid #222;
+  border-radius: 0;
+  color: #000;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  white-space: normal;
+}
+
+.ac-employee-admin-transfer-main { background: #d9d9d9 !important; }
+.ac-employee-admin-transfer-recruit { background: #fff500 !important; }
+.ac-employee-admin-transfer-research { background: #67b7e8 !important; }
+.ac-employee-admin-transfer-hold { background: #ffabab !important; }
+.ac-employee-admin-transfer-health { background: #ffba14 !important; }
+.ac-employee-admin-transfer-profile6 { background: #aa73d2 !important; }
+.ac-employee-admin-transfer-profile7 { background: #6cdf91 !important; }
+.ac-employee-admin-transfer-profile8 { background: #dfbe8e !important; }
+.ac-employee-admin-transfer-profile9 { background: #d96475 !important; }
+.ac-employee-admin-transfer-profile10 { background: #888 !important; }
+
+.ac-employee-search-page .ac-employee-admin-controls {
+  position: relative;
+  flex: 1 1 auto;
+  height: 205px;
+  padding: 0;
+  gap: 0;
+}
+
+.ac-employee-search-page .ac-employee-admin-checks {
+  width: 267px;
+  min-width: 267px;
+  gap: 2px;
+  padding-right: 31px;
+  border-right: 1px solid #aaa;
+}
+
+.ac-employee-search-page .ac-employee-admin-checks .ac-customer-search-check {
+  gap: 5px;
+  color: #000;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ac-employee-search-page .ac-employee-admin-checks input {
+  width: 12px;
+  height: 12px;
+  margin: 0;
+}
+
+.ac-employee-search-page .ac-employee-admin-record-group {
+  position: absolute;
+  top: 0;
+  left: 293px;
+  width: 145px;
+  height: 46px;
+  padding: 5px 13px;
+  flex-direction: row;
+  gap: 14px;
+  border-color: #aaa;
+  background: #f2f2f2;
+}
+
+.ac-employee-search-page .ac-employee-admin-record-group legend {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.ac-employee-search-page .ac-employee-admin-controls > .ac-btn:not(.ac-employee-admin-multifilter-btn) {
+  position: absolute;
+  top: 0;
+  left: 531px;
+  width: 57px;
+  height: 59px;
+  min-height: 59px;
+  border-radius: 0;
+  white-space: normal;
+}
+
+.ac-employee-search-page .ac-employee-admin-multifilter-btn.ac-btn {
+  position: absolute;
+  top: 68px;
+  left: 315px;
+  width: 241px;
+  max-width: none;
+  height: 26px;
+  min-height: 26px;
+  border-radius: 0;
+  font-size: 12px;
+}
+
 .ac-employee-search-page .ac-customer-search-utility-rail {
   width: 49px;
   min-width: 49px;
