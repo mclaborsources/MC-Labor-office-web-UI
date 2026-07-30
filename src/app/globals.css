@@ -12294,10 +12294,7 @@ body {
 }
 
 .ac-column-filter-menu {
-  position: absolute;
-  z-index: 90;
-  top: calc(100% + 1px);
-  left: -1px;
+  z-index: 10000;
   width: 228px;
   padding: 4px 5px 10px;
   border: 1px solid #7d858b;

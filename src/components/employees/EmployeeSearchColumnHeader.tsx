@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 interface EmployeeSearchColumnHeaderProps {
   label: string;
@@ -15,6 +16,8 @@ export function EmployeeSearchColumnHeader({
 }: EmployeeSearchColumnHeaderProps) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [menuPosition, setMenuPosition] = useState({ left: 0, top: 0 });
   const options = useMemo(() => {
     const actual = [...new Set(values.filter(Boolean))].slice(0, 12);
     return ["(Blanks)", ...(actual.length > 0 ? actual : SAMPLE_VALUES)];
@@ -24,10 +27,31 @@ export function EmployeeSearchColumnHeader({
   useEffect(() => {
     if (!open) return;
     const close = (event: MouseEvent) => {
-      if (!containerRef.current?.contains(event.target as Node)) setOpen(false);
+      const target = event.target as Node;
+      if (
+        !containerRef.current?.contains(target) &&
+        !menuRef.current?.contains(target)
+      ) {
+        setOpen(false);
+      }
     };
+    const reposition = () => {
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      setMenuPosition({
+        left: Math.min(rect.left, window.innerWidth - 236),
+        top: rect.bottom + 1,
+      });
+    };
+    reposition();
     document.addEventListener("mousedown", close);
-    return () => document.removeEventListener("mousedown", close);
+    window.addEventListener("resize", reposition);
+    window.addEventListener("scroll", reposition, true);
+    return () => {
+      document.removeEventListener("mousedown", close);
+      window.removeEventListener("resize", reposition);
+      window.removeEventListener("scroll", reposition, true);
+    };
   }, [open]);
 
   const allSelected = options.every((option) => selected.has(option));
@@ -58,8 +82,13 @@ export function EmployeeSearchColumnHeader({
         <span className="ac-column-filter-arrow" aria-hidden />
       </button>
 
-      {open ? (
-        <div className="ac-column-filter-menu">
+      {open
+        ? createPortal(
+        <div
+          ref={menuRef}
+          className="ac-column-filter-menu"
+          style={{ position: "fixed", left: menuPosition.left, top: menuPosition.top }}
+        >
           <button type="button" className="ac-column-filter-command">
             <span className="ac-column-filter-sort-icon">A↓<small>Z</small></span>
             <span>Sort A to Z</span>
@@ -98,8 +127,10 @@ export function EmployeeSearchColumnHeader({
             <button type="button" onClick={() => setOpen(false)}>Cancel</button>
           </div>
           <span className="ac-column-filter-resize" aria-hidden>⋰</span>
-        </div>
-      ) : null}
+        </div>,
+        document.body,
+          )
+        : null}
     </div>
   );
 }
