@@ -258,7 +258,14 @@ function EmployeeGridToolbar() {
       </AccessButton>
       <span className="ac-flabel">View:</span>
       <select className="ac-select ac-customer-search-view-select-wide" defaultValue="01" aria-label="View">
-        <option value="01">View 01</option>
+        {Array.from({ length: 10 }, (_, i) => {
+          const value = String(i + 1).padStart(2, "0");
+          return (
+            <option key={value} value={value}>
+              View {value}
+            </option>
+          );
+        })}
       </select>
       <AccessButton xs>
         Save

@@ -47,6 +47,48 @@ interface EmployeeSearchViewsPanelProps {
   currentState: string;
 }
 
+const LEGACY_DROPDOWN_OPTIONS = {
+  dates: ["Today", "Yesterday", "This Week", "Last Week", "This Month", "Last Month", "Year-to-Date"],
+  tracking: ["All", "In Tracking", "Not In Tracking", "Currently Assigned", "Not Assigned"],
+  dateRange: ["All Dates", "Today", "Last 7 Days", "Last 30 Days", "Last 90 Days", "This Year"],
+  clusters: ["All Clusters", "Maine", "New Hampshire", "Massachusetts", "Rhode Island", "Connecticut"],
+  filters: ["Unfiltered", "Available Manpower", "New Applicants", "Get-Hired", "Interview", "Call List"],
+  userSettings: [
+    "Default",
+    "Available Manpower",
+    "Qualifications",
+    "Sub Trades",
+    "Age, License, Level",
+    "Email / Text",
+    "Last Action",
+    "Call History",
+  ],
+  settingFields: ["Profile Type", "EE Status", "Trade", "State", "County", "Grade", "Recruiter", "Last Action"],
+  settingValues: ["All", "Yes", "No", "Main", "Sub", "Active", "Inactive", "Not Blank"],
+  licenseYears: ["All Years", "2026", "2025", "2024", "2023", "2022", "2021", "2020 and Earlier"],
+  contactRanges: ["7 Days", "14 Days", "30 Days", "60 Days", "90 Days", "6 Months", "1 Year"],
+  duplicateModes: ["Name + Phone", "Name + Email", "Name + City / State", "Phone Number", "Email Address"],
+  licenseBoards: ["Maine Electrician", "Maine Plumber", "NH Electrician", "NH Plumber", "Massachusetts"],
+  viewMaps: ["View 01", "View 02", "View 03", "View 04", "View 05", "Default Map"],
+} as const;
+
+const CALL_LIST_DROPDOWN_OPTIONS: Record<string, readonly string[]> = {
+  "<Cluster>": LEGACY_DROPDOWN_OPTIONS.clusters,
+  "<Trade>": ["All Trades", "Electrician", "Plumber", "HVAC", "Carpenter", "Operator", "Laborer"],
+  "<Qualification>": ["All Qualifications", "Licensed", "Apprentice", "Journeyman", "Master", "Unlicensed"],
+  "<Last Action>": ["Any Last Action", "Today", "Last 7 Days", "Last 30 Days", "Over 30 Days", "No Last Action"],
+  "<Last Call>": ["Any Last Call", "Today", "Last 7 Days", "Last 30 Days", "Over 30 Days", "Never Called"],
+  "No SUBs": ["No SUBs", "Include SUBs", "SUB 1", "SUB 2", "SUB 3"],
+};
+
+function LegacyOptions({ options }: { options: readonly string[] }) {
+  return options.map((label) => (
+    <option key={label} value={label}>
+      {label}
+    </option>
+  ));
+}
+
 function FilterRadioGroup({
   legend,
   name,
@@ -109,6 +151,7 @@ function Views1Tab({ trades, currentTradeId }: Pick<EmployeeSearchViewsPanelProp
       <div className="ac-employee-search-filter-row">
         <select className="ac-select ac-employee-search-row-select" defaultValue="" aria-label="Dates">
           <option value="">&lt;Dates&gt;</option>
+          <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.dates} />
         </select>
         <AccessButton xs className="ac-employee-search-date-btn">
           Wk End Dt
@@ -118,9 +161,11 @@ function Views1Tab({ trades, currentTradeId }: Pick<EmployeeSearchViewsPanelProp
         </button>
         <select className="ac-select ac-employee-search-row-select" defaultValue="" aria-label="In Tracking">
           <option value="">&lt;In Tracking?&gt;</option>
+          <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.tracking} />
         </select>
         <select className="ac-select ac-employee-search-row-select" defaultValue="" aria-label="Date Range">
           <option value="">&lt;Date Range&gt;</option>
+          <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.dateRange} />
         </select>
         <select
           className="ac-select ac-employee-search-row-select ac-employee-search-cluster-select"
@@ -128,6 +173,7 @@ function Views1Tab({ trades, currentTradeId }: Pick<EmployeeSearchViewsPanelProp
           aria-label="Cluster"
         >
           <option value="">&lt;Cluster&gt;</option>
+          <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.clusters} />
         </select>
         <select
           className="ac-select ac-employee-search-row-select ac-employee-search-trade-select"
@@ -140,10 +186,14 @@ function Views1Tab({ trades, currentTradeId }: Pick<EmployeeSearchViewsPanelProp
               {t.label}
             </option>
           ))}
+          {trades.length === 0 ? (
+            <LegacyOptions options={["Electrician", "Plumber", "HVAC", "Carpenter", "Operator", "Laborer"]} />
+          ) : null}
         </select>
         <span className="ac-customer-search-filter-label">Filter:</span>
         <select className="ac-select ac-employee-search-filter-input" defaultValue="" aria-label="Filter">
-          <option value="" />
+          <option value="">Unfiltered</option>
+          <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.filters} />
         </select>
       </div>
 
@@ -248,12 +298,14 @@ function Views4Tab() {
               <span className="ac-flabel">Select</span>
               <select className="ac-select" defaultValue="">
                 <option value="" />
+                <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.settingFields} />
               </select>
             </label>
             <label className="ac-customer-search-inline-select-wrap">
               <span className="ac-flabel">Value</span>
               <select className="ac-select" defaultValue="">
                 <option value="" />
+                <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.settingValues} />
               </select>
             </label>
           </div>
@@ -370,6 +422,7 @@ function UserSettingsTab() {
             </span>
             <select className="ac-select ac-customer-search-user-setting-select" defaultValue="" aria-label={`Setting ${i + 1}`}>
               <option value="" />
+              <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.userSettings} />
             </select>
             <div className="ac-customer-search-user-setting-btns">
               <AccessButton xs>
@@ -414,9 +467,11 @@ function UtilitiesTab() {
       <div className="ac-customer-search-utilities-section ac-employee-utilities-section--stack">
         <select className="ac-select" defaultValue="" aria-label="License issue year">
           <option value="">&lt;Lic Issue Year&gt;</option>
+          <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.licenseYears} />
         </select>
         <select className="ac-select" defaultValue="" aria-label="Has not been contacted in">
           <option value="">&lt;Has Not Been Contacted In&gt;</option>
+          <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.contactRanges} />
         </select>
       </div>
       <div className="ac-customer-search-utilities-section ac-employee-utilities-section--stack">
@@ -430,6 +485,7 @@ function UtilitiesTab() {
       <div className="ac-customer-search-utilities-section ac-employee-utilities-section--stack">
         <select className="ac-select" defaultValue="" aria-label="Find duplicates">
           <option value="">&lt;Find Duplicates&gt;</option>
+          <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.duplicateModes} />
         </select>
         <AccessButton xs>
           Compare Profiles (Update All)
@@ -513,6 +569,7 @@ function RayTab() {
       <div className="ac-employee-ray-section">
         <select className="ac-select" defaultValue="" aria-label="License Board">
           <option value="">&lt;License Board&gt;</option>
+          <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.licenseBoards} />
         </select>
         <AccessButton xs>
           Build Licenses | 008
@@ -608,6 +665,7 @@ function CallLists2Tab() {
         {["<Cluster>", "<Trade>", "<Qualification>", "<Last Action>", "<Last Call>", "No SUBs"].map((label) => (
           <select key={label} className="ac-select ac-employee-search-row-select" defaultValue="" aria-label={label}>
             <option value="">{label}</option>
+            <LegacyOptions options={CALL_LIST_DROPDOWN_OPTIONS[label] ?? []} />
           </select>
         ))}
       </div>
@@ -649,6 +707,7 @@ function CallLists2Tab() {
           <div className="ac-employee-calllists2-viewmap">
             <select className="ac-select" defaultValue="" aria-label="View Map">
               <option value="">&lt;View Map&gt;</option>
+              <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.viewMaps} />
             </select>
             <AccessButton xs>
               Edit
