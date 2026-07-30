@@ -58,7 +58,7 @@ export default async function EmployeesPage({ searchParams }: PageProps) {
   }
 
   return (
-    <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth>
+    <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth legacyAccessFrame>
       <EmployeeSearchScreen
         employees={employees}
         loadError={loadError}

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { User } from "lucide-react";
 import { TopNav } from "@/components/layout/TopNav";
+import { AccessWindowTabs } from "@/components/access/AccessWindowTabs";
 import { Logo } from "@/components/ui/Logo";
 import { Icon } from "@/components/ui/Icon";
 
@@ -11,9 +12,26 @@ interface AppShellProps {
   fillViewport?: boolean;
   /** Remove max-width cap (tracking / dense grids). */
   fullWidth?: boolean;
+  /** Use the compact Microsoft Access-style object tabs without the portal chrome. */
+  legacyAccessFrame?: boolean;
 }
 
-export function AppShell({ children, userDisplayName, fillViewport, fullWidth }: AppShellProps) {
+export function AppShell({ children, userDisplayName, fillViewport, fullWidth, legacyAccessFrame }: AppShellProps) {
+  if (legacyAccessFrame) {
+    return (
+      <div className="ac-screen ac-desktop ac-legacy-access-frame flex h-dvh max-h-dvh flex-col overflow-hidden text-[#1b1b1b]">
+        <AccessWindowTabs
+          tabs={[
+            { label: "Menu", href: "/dashboard" },
+            { label: "Tracking", href: "/tracking" },
+            { label: "Employee Search 3", active: true },
+          ]}
+        />
+        <main className="flex min-h-0 w-full max-w-none flex-1 flex-col overflow-hidden">{children}</main>
+      </div>
+    );
+  }
+
   return (
     <div
       className={`ac-screen ac-desktop text-[#1b1b1b] ${
