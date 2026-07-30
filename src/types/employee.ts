@@ -24,6 +24,7 @@ export interface EmployeeSummary {
   weekEnding: string;
   payRate: string;
   payrollCompany: string;
+  accessFields: Record<string, string>;
   /** Latest assignment (customer · site) from tblTracking, for the search list */
   currentAssignment: string;
 }

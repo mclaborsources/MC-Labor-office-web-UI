@@ -1,34 +1,7 @@
 /** Employee Search grid columns — Access frmEmployeeSearch parity. */
-export const EMPLOYEE_SEARCH_COLUMNS = [
-  { key: "selector", label: "" },
-  { key: "if", label: "IF" },
-  { key: "ip", label: "IP(" },
-  { key: "userFlag5", label: "User Flag 5" },
-  { key: "online", label: "O(" },
-  { key: "s1", label: "S1" },
-  { key: "status", label: "EE Status" },
-  { key: "profileType", label: "Profile Type" },
-  { key: "firstName", label: "First Name" },
-  { key: "middleInitial", label: "N" },
-  { key: "lastName", label: "Last Name" },
-  { key: "street", label: "Street" },
-  { key: "city", label: "City" },
-  { key: "state", label: "State" },
-  { key: "alert", label: "!" },
-  { key: "cellPhone", label: "Cell # 1" },
-  { key: "cell", label: "Cell" },
-  { key: "grade", label: "Grad" },
-  { key: "howRef", label: "How Ref" },
-  { key: "trade", label: "Trade" },
-  { key: "qualification", label: "Qualificatio" },
-  { key: "avgI", label: "Avg I" },
-  { key: "fda", label: "FDA" },
-  { key: "thw", label: "THW" },
-  { key: "licExp", label: "Lic Exp D" },
-  { key: "weekEnd", label: "Week End" },
-  { key: "payRate", label: "Pay Rate" },
-  { key: "emp", label: "Emp" },
-] as const;
+import { EMPLOYEE_SEARCH_ACCESS_COLUMNS } from "@/lib/employeeSearchAccessColumns";
+
+export const EMPLOYEE_SEARCH_COLUMNS = EMPLOYEE_SEARCH_ACCESS_COLUMNS;
 
 export type EmployeeSearchColumnKey = (typeof EMPLOYEE_SEARCH_COLUMNS)[number]["key"];
 

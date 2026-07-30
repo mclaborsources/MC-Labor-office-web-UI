@@ -63,6 +63,7 @@ function toEmployeeSummary(row: EmployeeRow): EmployeeSummary {
     weekEnding: "",
     payRate: "",
     payrollCompany: "",
+    accessFields: {},
     currentAssignment: "",
   };
 }
@@ -278,6 +279,34 @@ async function loadCurrentAssignments(ids: string[]): Promise<Map<string, Curren
   return map;
 }
 
+async function loadEmployeeSearchHoldingFields(
+  ids: string[],
+): Promise<Map<string, Record<string, string>>> {
+  const map = new Map<string, Record<string, string>>();
+  const cleanIds = ids.filter((id) => /^\d+$/.test(id));
+  if (cleanIds.length === 0) return map;
+  try {
+    const rows = await queryReadOnly<Record<string, unknown>>(
+      `SELECT *
+       FROM tblEmployeeSearch3Holding WITH (NOLOCK)
+       WHERE EmployeeID IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@ids, ','))`,
+      [{ name: "ids", value: cleanIds.join(",") }],
+    );
+    for (const row of rows) {
+      if (row.EmployeeID == null) continue;
+      const values: Record<string, string> = {};
+      for (const [key, value] of Object.entries(row)) {
+        values[key] =
+          value instanceof Date ? value.toLocaleDateString("en-US") : safeStr(value);
+      }
+      map.set(String(row.EmployeeID), values);
+    }
+  } catch {
+    // Some older database snapshots do not have the Access holding table.
+  }
+  return map;
+}
+
 // ---------------------------------------------------------------------------
 // Mapping helpers
 // ---------------------------------------------------------------------------
@@ -377,13 +406,18 @@ export async function getEmployees(
   ]);
 
   const data = rows.map(toEmployeeSummary);
-  const assignmentMap = await loadCurrentAssignments(data.map((e) => e.employeeId));
+  const employeeIds = data.map((e) => e.employeeId);
+  const [assignmentMap, holdingMap] = await Promise.all([
+    loadCurrentAssignments(employeeIds),
+    loadEmployeeSearchHoldingFields(employeeIds),
+  ]);
   for (const e of data) {
     const assignment = assignmentMap.get(e.employeeId);
     e.currentAssignment = assignment?.assignment ?? "";
     e.weekEnding = assignment?.weekEnding ?? "";
     e.payRate = assignment?.payRate ?? "";
     e.payrollCompany = assignment?.payrollCompany ?? "";
+    e.accessFields = holdingMap.get(e.employeeId) ?? {};
   }
 
   return { data, total: data.length, page: 1, pageSize: 200, hasMore: false };

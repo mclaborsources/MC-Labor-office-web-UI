@@ -12250,23 +12250,13 @@ body {
 
 .ac-employee-search-page .ac-employee-search-grid th,
 .ac-employee-search-page .ac-employee-search-grid td {
-  min-width: 73px;
+  min-width: 0;
 }
 
-.ac-employee-search-page .ac-employee-search-grid th:nth-child(9),
-.ac-employee-search-page .ac-employee-search-grid td:nth-child(9) {
-  min-width: 84px;
-}
-
-.ac-employee-search-page .ac-employee-search-grid th:nth-child(11),
-.ac-employee-search-page .ac-employee-search-grid td:nth-child(11) {
-  min-width: 88px;
-}
-
-.ac-employee-search-page .ac-employee-search-grid th:nth-child(27),
-.ac-employee-search-page .ac-employee-search-grid td:nth-child(27) {
-  min-width: 82px;
-  text-align: right;
+.ac-employee-search-page .ac-employee-search-grid table {
+  width: max-content;
+  min-width: 100%;
+  table-layout: fixed;
 }
 
 .ac-job-search-views-tab {

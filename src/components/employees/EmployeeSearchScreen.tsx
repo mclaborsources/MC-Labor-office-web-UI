@@ -28,30 +28,33 @@ interface EmployeeSearchScreenProps {
 }
 
 function cellValue(row: EmployeeSummary, key: EmployeeSearchColumnKey): string {
+  const accessValue = row.accessFields[key];
+  if (accessValue !== undefined && accessValue !== "") return accessValue;
+
   const map: Partial<Record<EmployeeSearchColumnKey, string | undefined>> = {
-    status: row.status,
-    userFlag5: row.userFlag5,
-    s1: row.s1,
-    profileType: row.profileType,
-    firstName: row.firstName,
-    middleInitial: row.middleInitial,
-    lastName: row.lastName,
-    street: row.street,
-    city: row.city,
-    state: row.state,
-    cellPhone: row.cellPhone,
-    grade: row.grade,
-    howRef: row.howReferred,
-    trade: row.trade,
-    qualification: row.qualification,
-    avgI: row.averageInterview,
-    fda: row.fda,
-    thw: row.thw,
-    licExp: row.licenseExpiration,
-    weekEnd: row.weekEnding,
-    payRate: row.payRate,
-    emp: row.payrollCompany || row.employeeId,
-    online: "Online",
+    EmployeeID: row.employeeId,
+    EmEmployeeStatus: row.status,
+    EmployeeUserFlag5: row.userFlag5,
+    S1: row.s1,
+    EmployeeProfileType: row.profileType,
+    EmFirstName: row.firstName,
+    EmMiddle: row.middleInitial,
+    EmLastName: row.lastName,
+    EmStreet: row.street,
+    EmCity: row.city,
+    EmState: row.state,
+    EmMobilePhone: row.cellPhone,
+    EmGrade: row.grade,
+    EmHowReferred: row.howReferred,
+    EmTrade: row.trade,
+    EmQualification: row.qualification,
+    AvgHrsWorked: row.averageInterview,
+    FirstDateOnJob: row.fda,
+    TotalHoursWorked: row.thw,
+    LicenseExpDateFlag: row.licenseExpiration,
+    WeekEndingDate: row.weekEnding,
+    PayRate: row.payRate,
+    PayrollCoOnSiteInitials: row.payrollCompany,
   };
   return map[key] ?? "";
 }
@@ -61,6 +64,14 @@ function EmployeeSearchTable({ employees }: { employees: EmployeeSummary[] }) {
     <div className="ac-customer-search-grid-wrap ac-employee-search-grid-wrap">
       <div className="ac-grid ac-grid-tracking ac-customer-search-grid ac-employee-search-grid mc-scroll-smooth">
         <table>
+          <colgroup>
+            {EMPLOYEE_SEARCH_COLUMNS.map((col) => (
+              <col
+                key={col.key}
+                style={{ width: `${col.width}px`, minWidth: `${col.width}px` }}
+              />
+            ))}
+          </colgroup>
           <thead>
             <tr>
               {EMPLOYEE_SEARCH_COLUMNS.map((col) => (
@@ -82,14 +93,14 @@ function EmployeeSearchTable({ employees }: { employees: EmployeeSummary[] }) {
               employees.map((row) => (
                 <tr key={row.employeeId}>
                   {EMPLOYEE_SEARCH_COLUMNS.map((col) => {
-                    if (col.key === "selector") {
+                    if (col.key === "ActionSelect") {
                       return (
                         <td key={col.key} className="ac-employee-search-row-selector">
                           {row.employeeId === employees[0]?.employeeId ? "â–¶" : ""}
                         </td>
                       );
                     }
-                    if (col.key === "firstName") {
+                    if (col.key === "EmFirstName") {
                       return (
                         <td key={col.key}>
                           <Link href={`/employees/${row.employeeId}`} className="font-semibold">
@@ -98,25 +109,22 @@ function EmployeeSearchTable({ employees }: { employees: EmployeeSummary[] }) {
                         </td>
                       );
                     }
-                    if (col.key === "online") {
+                    if (col.key === "OnlineJobAppFolder") {
                       return (
                         <td key={col.key} className="ac-employee-search-col-online">
                           {cellValue(row, col.key) || "â€”"}
                         </td>
                       );
                     }
-                    if (col.key === "alert") {
-                      return <td key={col.key} className="ac-employee-search-col-alert" />;
-                    }
                     const value = cellValue(row, col.key);
                     const columnClass =
-                      col.key === "cell"
+                      col.key === "EmMobilePhoneVerifyText"
                         ? "ac-employee-search-col-cell"
-                        : col.key === "qualification"
+                        : col.key === "EmQualification"
                           ? "ac-employee-search-col-qualification"
-                          : col.key === "licExp"
+                          : col.key === "LicenseExpDateFlag"
                             ? "ac-employee-search-col-license"
-                            : col.key === "weekEnd"
+                            : col.key === "WeekEndingDate"
                               ? "ac-employee-search-col-week-end"
                               : undefined;
                     return (
