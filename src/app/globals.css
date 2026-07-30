@@ -12259,6 +12259,161 @@ body {
   table-layout: fixed;
 }
 
+.ac-column-filter {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.ac-employee-search-grid th:has(.ac-column-filter-menu) {
+  z-index: 100;
+}
+
+.ac-column-filter-trigger {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3px;
+  border: 0;
+  padding: 0 3px 0 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.ac-column-filter-arrow {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid #5f666b;
+}
+
+.ac-column-filter-menu {
+  position: absolute;
+  z-index: 90;
+  top: calc(100% + 1px);
+  left: -1px;
+  width: 228px;
+  padding: 4px 5px 10px;
+  border: 1px solid #7d858b;
+  border-radius: 0 0 4px 4px;
+  background: #f7f7f7;
+  box-shadow: 2px 3px 4px rgb(0 0 0 / 22%);
+  color: #111;
+  font: 12px "Segoe UI", Arial, sans-serif;
+  text-align: left;
+}
+
+.ac-column-filter-command,
+.ac-column-filter-text-filters {
+  display: flex;
+  width: 100%;
+  height: 28px;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  padding: 2px 5px;
+  background: transparent;
+  color: #111;
+  font: inherit;
+  text-align: left;
+}
+
+.ac-column-filter-command:hover,
+.ac-column-filter-text-filters:hover {
+  background: #dcebf7;
+}
+
+.ac-column-filter-sort-icon {
+  width: 18px;
+  color: #1769a6;
+  font-size: 13px;
+  line-height: 10px;
+}
+
+.ac-column-filter-sort-icon small {
+  color: #111;
+  font-size: 9px;
+}
+
+.ac-column-filter-separator {
+  height: 1px;
+  margin: 2px 0;
+  background: #d1d1d1;
+}
+
+.ac-column-filter-clear:disabled {
+  color: #999;
+}
+
+.ac-column-filter-funnel {
+  width: 18px;
+  color: #777;
+  font-size: 20px;
+}
+
+.ac-column-filter-text-filters {
+  justify-content: space-between;
+  padding-left: 24px;
+  text-decoration: underline;
+}
+
+.ac-column-filter-options {
+  max-height: 168px;
+  margin: 1px 0 7px 19px;
+  overflow-y: auto;
+  border: 1px solid #d4d4d4;
+  padding: 3px 4px;
+  background: #fff;
+}
+
+.ac-column-filter-options label {
+  display: flex;
+  min-height: 19px;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.ac-column-filter-options input {
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  accent-color: #0878d1;
+}
+
+.ac-column-filter-actions {
+  display: flex;
+  gap: 10px;
+  padding-left: 19px;
+}
+
+.ac-column-filter-actions button {
+  width: 94px;
+  height: 24px;
+  border: 1px solid #b7b7b7;
+  border-radius: 4px;
+  background: linear-gradient(#fff, #f3f3f3);
+  color: #111;
+  font: inherit;
+}
+
+.ac-column-filter-actions button:first-child {
+  border-color: #0878d1;
+}
+
+.ac-column-filter-resize {
+  position: absolute;
+  right: 2px;
+  bottom: 0;
+  color: #777;
+}
+
 .ac-job-search-views-tab {
   background: #e0e0e0;
   border-color: #9ca3af;

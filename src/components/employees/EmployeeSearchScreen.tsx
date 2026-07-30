@@ -2,6 +2,7 @@
 import { Suspense } from "react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { EmployeeSearchViewsPanel, EmployeeSearchUtilityRail } from "@/components/employees/EmployeeSearchViewsPanel";
+import { EmployeeSearchColumnHeader } from "@/components/employees/EmployeeSearchColumnHeader";
 import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { Spinner } from "@/components/ui/Spinner";
 import {
@@ -77,7 +78,12 @@ function EmployeeSearchTable({ employees }: { employees: EmployeeSummary[] }) {
           <thead>
             <tr>
               {columns.map((col) => (
-                <th key={col.key}>{col.label}</th>
+                <th key={col.key}>
+                  <EmployeeSearchColumnHeader
+                    label={col.label}
+                    values={employees.map((row) => cellValue(row, col.key))}
+                  />
+                </th>
               ))}
             </tr>
           </thead>
