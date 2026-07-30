@@ -11006,6 +11006,69 @@ body {
   margin-left: auto;
 }
 
+/* Views 2 uses the sparse three-row Access button matrix from the reference. */
+.ac-employee-search-page .ac-employee-search-views-2.ac-search-views-tab-pane {
+  height: 249px;
+  min-height: 249px;
+  padding: 12px;
+  gap: 0;
+  background: #f2f2f2;
+}
+
+.ac-employee-search-page .ac-employee-search-views-2 .ac-employee-views2-preset-grid {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  column-gap: 8px;
+  row-gap: 27px;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+}
+
+.ac-employee-search-page .ac-employee-search-views-2 .ac-employee-views2-preset-grid .ac-btn,
+.ac-employee-search-page .ac-employee-search-views-2 .ac-employee-views2-preset-grid .ac-customer-search-preset-empty {
+  width: 100%;
+  height: 25px;
+  min-height: 25px;
+  max-height: 25px;
+  margin: 0;
+  padding: 1px 4px;
+  border: 1px solid #b4b4b4;
+  border-top-color: #f8f8f8;
+  border-left-color: #f8f8f8;
+  border-radius: 0;
+  background: #f2f2f2;
+  box-shadow: 1px 1px 0 #777;
+  color: #000;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 21px;
+}
+
+.ac-employee-search-page .ac-employee-search-views-2 .ac-employee-views2-preset-grid .ac-customer-search-preset-empty {
+  display: block;
+}
+
+.ac-employee-search-page .ac-employee-search-views-2 .ac-employee-views2-btn-focus.ac-btn {
+  outline: 1px dotted #111;
+  outline-offset: -4px;
+  text-decoration: underline;
+}
+
+.ac-employee-search-page .ac-employee-search-views-2 .ac-employee-search-btn-underline.ac-btn {
+  color: #000;
+  text-decoration: underline;
+}
+
+.ac-employee-search-page .ac-employee-search-views-2 .ac-employee-search-btn-warn-underline.ac-btn {
+  color: #f00000;
+  text-decoration: underline;
+}
+
+.ac-employee-search-page .ac-employee-search-views-2 .ac-employee-views2-preset-grid > .ac-btn:nth-child(21),
+.ac-employee-search-page .ac-employee-search-views-2 .ac-employee-views2-preset-grid > .ac-btn:nth-child(22) {
+  font-size: 10px;
+}
+
 .ac-employee-search-page .ac-customer-search-utility-rail {
   width: 49px;
   min-width: 49px;
