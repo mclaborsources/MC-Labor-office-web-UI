@@ -5,6 +5,44 @@ export const EMPLOYEE_SEARCH_COLUMNS = EMPLOYEE_SEARCH_ACCESS_COLUMNS;
 
 export type EmployeeSearchColumnKey = (typeof EMPLOYEE_SEARCH_COLUMNS)[number]["key"];
 
+const DEFAULT_VIEW_COLUMN_DEFINITION = [
+  ["ActionSelect", ""],
+  ["EmployeeUserFlag5", "User Flag 5"],
+  ["OnlineJobAppFolder", "O("],
+  ["S1", "S1"],
+  ["EmEmployeeStatus", "EE Status"],
+  ["EmployeeProfileType", "Profile Type"],
+  ["EmFirstName", "First Name"],
+  ["EmMiddle", "M"],
+  ["EmLastName", "Last Name"],
+  ["EmStreet", "Street"],
+  ["EmCity", "City"],
+  ["EmState", "State"],
+  ["EmployeeNoCommunicationText", "!"],
+  ["EmMobilePhone", "Cell # 1"],
+  ["EmMobilePhoneVerifyText", "Cell"],
+  ["EmGrade", "Grad"],
+  ["EmHowReferred", "How Ref"],
+  ["EmTrade", "Trade"],
+  ["EmQualification", "Qualification"],
+  ["AvgHrsWorked", "Avg I"],
+  ["FirstDateOnJob", "FDA"],
+  ["TotalHoursWorked", "THW"],
+  ["LicenseExpDateFlag", "Lic Exp D"],
+  ["WeekEndingDate", "Week End"],
+  ["PayRate", "Pay Rate"],
+  ["EmployeeID", "Emp"],
+] as const satisfies readonly (readonly [EmployeeSearchColumnKey, string])[];
+
+/** Saved Access layout selected by Views 1 > Default (View 01). */
+export const EMPLOYEE_SEARCH_DEFAULT_COLUMNS = DEFAULT_VIEW_COLUMN_DEFINITION.map(
+  ([key, label]) => {
+    const source = EMPLOYEE_SEARCH_ACCESS_COLUMNS.find((column) => column.key === key);
+    if (!source) throw new Error(`Missing Access Employee Search column: ${key}`);
+    return { ...source, label };
+  },
+);
+
 export const EMPLOYEE_SEARCH_VIEW_TABS = [
   "Views 1",
   "Views 2",

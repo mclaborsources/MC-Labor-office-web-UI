@@ -5,7 +5,7 @@ import { EmployeeSearchViewsPanel, EmployeeSearchUtilityRail } from "@/component
 import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { Spinner } from "@/components/ui/Spinner";
 import {
-  EMPLOYEE_SEARCH_COLUMNS,
+  EMPLOYEE_SEARCH_DEFAULT_COLUMNS,
   type EmployeeSearchColumnKey,
 } from "@/lib/employeeSearchColumns";
 import type { EmployeeSummary } from "@/types/employee";
@@ -35,6 +35,7 @@ function cellValue(row: EmployeeSummary, key: EmployeeSearchColumnKey): string {
     EmployeeID: row.employeeId,
     EmEmployeeStatus: row.status,
     EmployeeUserFlag5: row.userFlag5,
+    OnlineJobAppFolder: "Online",
     S1: row.s1,
     EmployeeProfileType: row.profileType,
     EmFirstName: row.firstName,
@@ -60,12 +61,13 @@ function cellValue(row: EmployeeSummary, key: EmployeeSearchColumnKey): string {
 }
 
 function EmployeeSearchTable({ employees }: { employees: EmployeeSummary[] }) {
+  const columns = EMPLOYEE_SEARCH_DEFAULT_COLUMNS;
   return (
     <div className="ac-customer-search-grid-wrap ac-employee-search-grid-wrap">
       <div className="ac-grid ac-grid-tracking ac-customer-search-grid ac-employee-search-grid mc-scroll-smooth">
         <table>
           <colgroup>
-            {EMPLOYEE_SEARCH_COLUMNS.map((col) => (
+            {columns.map((col) => (
               <col
                 key={col.key}
                 style={{ width: `${col.width}px`, minWidth: `${col.width}px` }}
@@ -74,7 +76,7 @@ function EmployeeSearchTable({ employees }: { employees: EmployeeSummary[] }) {
           </colgroup>
           <thead>
             <tr>
-              {EMPLOYEE_SEARCH_COLUMNS.map((col) => (
+              {columns.map((col) => (
                 <th key={col.key}>{col.label}</th>
               ))}
             </tr>
@@ -83,7 +85,7 @@ function EmployeeSearchTable({ employees }: { employees: EmployeeSummary[] }) {
             {employees.length === 0 ? (
               <tr>
                 <td
-                  colSpan={EMPLOYEE_SEARCH_COLUMNS.length}
+                  colSpan={columns.length}
                   className="!whitespace-normal py-6 text-center italic text-[#7a7a7a]"
                 >
                   No employees found. Try adjusting your search or clearing the filters.
@@ -92,7 +94,7 @@ function EmployeeSearchTable({ employees }: { employees: EmployeeSummary[] }) {
             ) : (
               employees.map((row) => (
                 <tr key={row.employeeId}>
-                  {EMPLOYEE_SEARCH_COLUMNS.map((col) => {
+                  {columns.map((col) => {
                     if (col.key === "ActionSelect") {
                       return (
                         <td key={col.key} className="ac-employee-search-row-selector">
@@ -118,7 +120,9 @@ function EmployeeSearchTable({ employees }: { employees: EmployeeSummary[] }) {
                     }
                     const value = cellValue(row, col.key);
                     const columnClass =
-                      col.key === "EmMobilePhoneVerifyText"
+                      col.key === "EmployeeNoCommunicationText"
+                        ? "ac-employee-search-col-alert"
+                        : col.key === "EmMobilePhoneVerifyText"
                         ? "ac-employee-search-col-cell"
                         : col.key === "EmQualification"
                           ? "ac-employee-search-col-qualification"
