@@ -10431,7 +10431,7 @@ body {
 }
 
 .ac-permits-titlebar h1 {
-  width: 520px;
+  width: 540px;
   margin: 0;
   font-size: 24px;
   font-weight: 400;
@@ -10452,7 +10452,7 @@ body {
   display: flex;
   min-height: 83px;
   padding: 0 8px 5px;
-  gap: 72px;
+  gap: 182px;
 }
 
 .ac-permits-search-panel {
@@ -10475,21 +10475,26 @@ body {
 .ac-permits-search-panel > span + .ac-btn + .ac-btn { grid-column: 2; grid-row: 3; width: 48px; margin-left: 54px; }
 
 .ac-permits-main-tools { flex: 1; min-width: 0; padding-top: 4px; }
-.ac-permits-view-buttons { display: grid; width: 720px; grid-template-columns: repeat(5, 1fr); gap: 7px; padding: 4px 7px; border: 1px solid #aaa; }
+.ac-permits-view-buttons { display: grid; width: 725px; grid-template-columns: repeat(5, 1fr); gap: 7px; padding: 4px 7px; border: 1px solid #aaa; }
 .ac-permits-view-buttons .ac-btn { height: 26px; }
 .ac-permits-actions { display: flex; align-items: center; gap: 55px; padding-top: 10px; }
 .ac-permits-actions .ac-input { width: 385px; height: 27px; background: #ffffa5; }
 .ac-permits-actions .ac-btn { min-width: 113px; height: 29px; }
 .ac-permits-actions .ac-permits-delete { background: #ed151c; border-color: #111; }
-.ac-permits-actions .ac-btn:last-child { margin-left: auto; margin-right: 295px; }
+.ac-permits-actions .ac-btn:last-child { margin-left: auto; margin-right: 310px; }
 
 .ac-permits-grid { min-height: 0; flex: 1; border: 1px solid #8f9aa4; overflow: auto; background: #fff; }
 .ac-permits-grid table { width: max-content; min-width: 100%; table-layout: fixed; border-collapse: collapse; }
 .ac-permits-grid th { height: 23px; padding: 0; background: #dce9f2; color: #111; font-weight: 400; }
 .ac-permits-grid td { height: 21px; padding: 1px 4px; border-color: #ddd; overflow: hidden; text-overflow: ellipsis; }
+.ac-permits-grid tbody tr { height: 21px; }
+.ac-permits-grid .ac-permits-blank-row td { height: 21px; }
 .ac-permits-grid tbody tr:nth-child(odd) td { background: #f2f2f2; }
 .ac-permits-grid tbody tr:first-child td { background: #a9d2ed; }
-.ac-permits-selector { width: 20px; min-width: 20px; text-align: center; background: #e4ebf0 !important; }
+.ac-permits-selector-col,
+.ac-permits-selector { width: 7px !important; min-width: 7px !important; max-width: 7px !important; padding: 0 !important; text-align: center; background: #e4ebf0 !important; }
+.ac-permits-action-col,
+.ac-permits-action { width: 22px !important; min-width: 22px !important; max-width: 22px !important; padding: 0 !important; background: #eef2f4 !important; }
 .ac-permits-grid td.ac-permits-siteVisit { background: #9df3a2 !important; }
 .ac-permits-grid td.ac-permits-futureVisit { background: #ffff91 !important; }
 .ac-permits-grid td.ac-permits-jobStatus { background: #aed9f4 !important; }

@@ -43,6 +43,7 @@ const ROWS: PermitRow[] = STREETS.map(([street, city, state], index) => ({
 export function CustomerPermitsScreen() {
   const [search, setSearch] = useState("");
   const rows = useMemo(() => ROWS.filter((row) => Object.values(row).some((value) => value.toLowerCase().includes(search.toLowerCase()))), [search]);
+  const fillerRows = Array.from({ length: Math.max(0, 42 - rows.length) });
   return (
     <section className="ac-permits-page">
       <header className="ac-permits-titlebar">
@@ -70,9 +71,17 @@ export function CustomerPermitsScreen() {
       </div>
 
       <div className="ac-permits-grid ac-grid">
-        <table><colgroup>{COLUMNS.map(([key,,width]) => <col key={key} style={{ width }} />)}</colgroup>
-          <thead><tr><th className="ac-permits-selector" />{COLUMNS.map(([key,label]) => <th key={key}><EmployeeSearchColumnHeader label={label} values={rows.map((row) => row[key])} /></th>)}</tr></thead>
-          <tbody>{rows.map((row, index) => <tr key={`${row.permitStreet}-${index}`}><td className="ac-permits-selector">{index === 0 ? "▶" : ""}</td>{COLUMNS.map(([key]) => <td key={key} className={`ac-permits-${key}`}>{row[key]}</td>)}</tr>)}</tbody>
+        <table><colgroup><col className="ac-permits-selector-col" /><col className="ac-permits-action-col" />{COLUMNS.map(([key,,width]) => <col key={key} style={{ width }} />)}</colgroup>
+          <thead><tr><th className="ac-permits-selector" /><th className="ac-permits-action"><EmployeeSearchColumnHeader label="" values={[]} /></th>{COLUMNS.map(([key,label]) => <th key={key}><EmployeeSearchColumnHeader label={label} values={rows.map((row) => row[key])} /></th>)}</tr></thead>
+          <tbody>
+            {rows.map((row, index) => <tr key={`${row.permitStreet}-${index}`}><td className="ac-permits-selector" /><td className="ac-permits-action">{index === 0 ? "▶" : ""}</td>{COLUMNS.map(([key]) => <td key={key} className={`ac-permits-${key}`}>{row[key]}</td>)}</tr>)}
+            {fillerRows.map((_, rowIndex) => (
+              <tr key={`blank-${rowIndex}`} className="ac-permits-blank-row" aria-hidden="true">
+                <td className="ac-permits-selector" /><td className="ac-permits-action" />
+                {COLUMNS.map(([key]) => <td key={key} className={`ac-permits-${key}`} />)}
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
       <footer className="ac-permits-recordbar"><span>Record:</span><button>◀</button><span>1 of 33474</span><button>▶</button><span>Unfiltered</span><span>Search</span><span className="ml-auto">Max 300 per page</span></footer>

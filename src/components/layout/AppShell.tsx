@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { User } from "lucide-react";
 import { TopNav } from "@/components/layout/TopNav";
-import { AccessWindowTabs } from "@/components/access/AccessWindowTabs";
+import { AccessWindowTabs, type WindowTab } from "@/components/access/AccessWindowTabs";
 import { Logo } from "@/components/ui/Logo";
 import { Icon } from "@/components/ui/Icon";
 
@@ -14,14 +14,15 @@ interface AppShellProps {
   fullWidth?: boolean;
   /** Use the compact Microsoft Access-style object tabs without the portal chrome. */
   legacyAccessFrame?: boolean;
+  legacyAccessTabs?: WindowTab[];
 }
 
-export function AppShell({ children, userDisplayName, fillViewport, fullWidth, legacyAccessFrame }: AppShellProps) {
+export function AppShell({ children, userDisplayName, fillViewport, fullWidth, legacyAccessFrame, legacyAccessTabs }: AppShellProps) {
   if (legacyAccessFrame) {
     return (
       <div className="ac-screen ac-desktop ac-legacy-access-frame flex h-dvh max-h-dvh flex-col overflow-hidden text-[#1b1b1b]">
         <AccessWindowTabs
-          tabs={[
+          tabs={legacyAccessTabs ?? [
             { label: "Menu", href: "/dashboard" },
             { label: "Tracking", href: "/tracking" },
             { label: "Employee Search 3", active: true },
