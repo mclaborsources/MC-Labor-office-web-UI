@@ -11,6 +11,7 @@ const NAV_ITEMS: { href: string; label: string; match: (p: string) => boolean }[
   { href: "/tracking", label: "Tracking", match: (p) => p.startsWith("/tracking") },
   { href: "/customer-menu", label: "Customer Menu", match: (p) => p.startsWith("/customer-menu") },
   { href: "/customers", label: "Customers", match: (p) => p.startsWith("/customers") },
+  { href: "/customer-permits", label: "Customer Permits", match: (p) => p.startsWith("/customer-permits") },
   { href: "/employees", label: "Employees", match: (p) => p.startsWith("/employees") },
   { href: "/jobs", label: "Jobs", match: (p) => p.startsWith("/jobs") },
   { href: "/reports", label: "Reports", match: (p) => p.startsWith("/reports") },
