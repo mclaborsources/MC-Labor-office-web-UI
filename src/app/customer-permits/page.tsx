@@ -9,13 +9,6 @@ export default async function CustomerPermitsPage() {
       userDisplayName={session.user?.displayName}
       fillViewport
       fullWidth
-      legacyAccessFrame
-      legacyAccessTabs={[
-        { label: "Menu", href: "/dashboard" },
-        { label: "Tracking", href: "/tracking" },
-        { label: "Employee Search 3", href: "/employees" },
-        { label: "Customer Permits", active: true },
-      ]}
     >
       <CustomerPermitsScreen />
     </AppShell>
