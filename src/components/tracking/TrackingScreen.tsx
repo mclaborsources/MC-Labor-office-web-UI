@@ -42,6 +42,47 @@ const TOOLBAR_ADMIN_ACTIONS = [
   "New Job App",
 ];
 
+const LEGACY_SEARCH_OPTIONS = [
+  { label: "All Contacts Search", href: "/customers" },
+  { label: "Customer Search", href: "/customers" },
+  { label: "[Main] Employee Search 3", href: "/employees" },
+  { label: "[Main] Employee Search 3 NEW", href: "/employees" },
+  { label: "Permits Search", href: "/customer-permits" },
+  { label: "Employees in Tracking", href: "/employees" },
+  { label: "Invoice Search", href: "/jobs" },
+  { label: "Current Jobs", href: "/jobs" },
+  { label: "Phone Number Search", href: "/employees" },
+] as const;
+
+const LEGACY_ADMIN_OPTIONS = [
+  { label: "UI Report", href: "/reports" },
+  { label: "Accident Report Search", href: "/reports" },
+  { label: "Vacation Hours Report", href: "/reports" },
+  { label: "Employee Hours By Week Report", href: "/reports" },
+  { label: "Employee Hours By Month Report", href: "/reports" },
+  { label: "Full-Time Employees by Month", href: "/reports" },
+  { label: "Employee Health Ins By Month Report", href: "/reports" },
+  { label: "Employee Advance Report", href: "/reports" },
+  { label: "Insurance Certificate Request Search", href: "/customers" },
+  { label: "Payroll Exclusions", href: "/reports" },
+  { label: "Weekly Customer Margin Report", href: "/reports" },
+  { label: "Employee Research", href: "/employees" },
+  { label: "Yearly Revenue", href: "/reports" },
+  { label: "Newsletter Search", href: "/customers" },
+  { label: "Email Addresses", href: "/employees" },
+  { label: "Employee Licenses", href: "/employees" },
+  { label: "Health Ins", href: "/employees" },
+  { label: "ID Drivers License", href: "/employees" },
+  { label: "Interview Questions", href: "/employees" },
+  { label: "OSHA", href: "/employees" },
+  { label: "Resume or Work History", href: "/employees" },
+  { label: "Smart Phone", href: "/employees" },
+  { label: "Face Meeting", href: "/employees" },
+  { label: "Tracking Search", href: "/tracking" },
+  { label: "Compare Tracking Weeks", href: "/tracking" },
+  { label: "Deleted Employees", href: "/employees" },
+] as const;
+
 const STATUS_SWATCHES = ["#22a06b", "#ffffff", "#f4c20d", "#4a90e2"];
 const PALETTE_SWATCHES = [
   "#9ca3af",
@@ -405,6 +446,10 @@ export function TrackingScreen({
     router.push(`/tracking?${q.toString()}`);
   }
 
+  function navigateSearch(href: string) {
+    if (href) router.push(href);
+  }
+
   const selectedJobLabel =
     jobs.find((j) => j.projectId === selectedProjectId)?.label ?? "";
   const userInitials = userDisplayName
@@ -419,19 +464,31 @@ export function TrackingScreen({
   return (
     <div className="ac-tracking ac-tracking--modern flex min-h-0 flex-1 flex-col">
       <AccessToolbar className="ac-tracking-toolbar-band mc-scroll-smooth">
-        <select className="ac-select" defaultValue="">
+        <select
+          className="ac-select"
+          defaultValue=""
+          aria-label="Search menu"
+          onChange={(event) => navigateSearch(event.target.value)}
+        >
           <option value="">&lt;Search&gt;</option>
-          <option value="employees">Employee Search</option>
-          <option value="customers">Customer Search</option>
-          <option value="jobs">Job Search</option>
-          <option value="assignments">Assignment Search</option>
+          {LEGACY_SEARCH_OPTIONS.map((option) => (
+            <option key={option.label} value={option.href}>
+              {option.label}
+            </option>
+          ))}
         </select>
-        <select className="ac-select" defaultValue="">
+        <select
+          className="ac-select"
+          defaultValue=""
+          aria-label="Admin menu"
+          onChange={(event) => navigateSearch(event.target.value)}
+        >
           <option value="">&lt;Admin&gt;</option>
-          <option value="office-staff">Office Staff</option>
-          <option value="user-settings">User Settings</option>
-          <option value="tracking-setup">Tracking Setup</option>
-          <option value="system-utilities">System Utilities</option>
+          {LEGACY_ADMIN_OPTIONS.map((option) => (
+            <option key={option.label} value={option.href}>
+              {option.label}
+            </option>
+          ))}
         </select>
         <select className="ac-select" defaultValue="">
           <option value="">&lt;Reports&gt;</option>
