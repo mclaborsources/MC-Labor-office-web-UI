@@ -12585,6 +12585,7 @@ body {
 .ac-office-notes-table { width: 1120px; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
 .ac-office-notes-table th { height: 22px; background: #d7e2f0; border: 1px solid #c5cbd3; font-weight: 400; }
 .ac-office-notes-table td { height: 40px; padding: 4px; border: 1px solid #ddd; background: #fff; }
+.ac-office-notes-table td:first-child { white-space: pre-line; }
 .ac-office-notes-table tbody tr:nth-child(even) td { background: #f1f1f1; }
 .ac-office-notes-table th:nth-child(1) { width: 430px; }
 .ac-office-notes-table th:nth-child(2), .ac-office-notes-table th:nth-child(3) { width: 88px; }
