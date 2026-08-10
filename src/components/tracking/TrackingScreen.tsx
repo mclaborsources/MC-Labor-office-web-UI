@@ -523,7 +523,12 @@ export function TrackingScreen({
           </AccessButton>
         ))}
         {TOOLBAR_ADMIN_ACTIONS.map((label) => (
-          <AccessButton key={label}>{label}</AccessButton>
+          <AccessButton
+            key={label}
+            onClick={() => label === "Office Staff Notes" && router.push("/office-staff-notes")}
+          >
+            {label}
+          </AccessButton>
         ))}
         <AccessButton variant="go" className="shrink-0">
           WCC Payroll / Sales Report by Customer

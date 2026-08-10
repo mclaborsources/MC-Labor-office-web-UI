@@ -12560,3 +12560,35 @@ body {
   margin-top: auto;
   padding-top: 0.15rem;
 }
+/* Office Staff Notes — Access frmOfficeStaffNotes architecture. */
+.ac-office-notes-page { flex: 1; min-width: 1180px; overflow: auto; padding: 10px 14px 0; background: #e9e9e9; color: #000; font-family: Arial, sans-serif; }
+.ac-office-notes-calculators { display: grid; gap: 17px; }
+.ac-margin-calc { border: 3px solid #111; padding: 5px 6px 7px; background: #e9e9e9; }
+.ac-margin-calc-title { height: 36px; display: flex; align-items: flex-start; gap: 14px; }
+.ac-margin-calc-title h2 { min-width: 252px; margin: 0; font-size: 26px; line-height: 30px; font-weight: 400; }
+.ac-margin-calc-title .ac-btn { min-width: 86px; }
+.ac-margin-calc-title .ac-margin-adjust { min-width: 30px; margin-left: 84px; color: red; font-size: 18px; }
+.ac-margin-calc-title .ac-margin-adjust + .ac-margin-adjust { margin-left: 0; color: #000; }
+.ac-margin-calc-grid { display: grid; grid-template-columns: 54px 76px minmax(210px, 1fr) 76px repeat(12, 76px) 76px 68px 68px 68px 82px 82px; gap: 3px; }
+.ac-margin-calc-grid label { display: grid; grid-template-rows: 42px 25px; min-width: 0; }
+.ac-margin-calc-grid label > span { display: grid; place-items: center; padding: 2px; border: 1px solid #111; background: #bdbdbd; font-size: 12px; text-align: center; }
+.ac-margin-calc-grid input, .ac-margin-calc-grid select { width: 100%; min-width: 0; border: 1px solid #aaa; background: #fff; }
+.ac-margin-calc-grid .ac-margin-red { background: #ed1c24; color: #fff; font-weight: 700; }
+.ac-margin-calc-grid .ac-margin-yellow { background: #fff600; }
+.ac-office-note-help { margin: 4px 0 0 5px; color: #111c9b; font-size: 13px; font-style: italic; }
+.ac-office-notes-header { display: flex; align-items: center; gap: 94px; height: 60px; padding: 9px 10px; }
+.ac-office-notes-header h1 { margin: 0; font-size: 25px; font-weight: 400; }
+.ac-office-notes-header fieldset { display: flex; align-items: center; gap: 14px; border: 0; margin: 0; padding: 7px 10px; background: #fff; }
+.ac-office-notes-header legend { float: left; margin-right: 8px; }
+.ac-office-notes-error { padding: 10px; border: 1px solid #b91c1c; background: #fee2e2; color: #991b1b; }
+.ac-office-notes-table-wrap { min-height: 390px; background: #fff; overflow: auto; border-top: 5px solid #aeb6c1; }
+.ac-office-notes-table { width: 1120px; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
+.ac-office-notes-table th { height: 22px; background: #d7e2f0; border: 1px solid #c5cbd3; font-weight: 400; }
+.ac-office-notes-table td { height: 40px; padding: 4px; border: 1px solid #ddd; background: #fff; }
+.ac-office-notes-table tbody tr:nth-child(even) td { background: #f1f1f1; }
+.ac-office-notes-table th:nth-child(1) { width: 430px; }
+.ac-office-notes-table th:nth-child(2), .ac-office-notes-table th:nth-child(3) { width: 88px; }
+.ac-office-notes-table th:nth-child(4) { width: 150px; }
+.ac-office-notes-table th:nth-child(5) { width: 98px; }
+.ac-office-notes-table th:nth-child(6), .ac-office-notes-table th:nth-child(7) { width: 130px; }
+.ac-office-notes-empty { text-align: center; color: #64748b; }
