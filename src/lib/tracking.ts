@@ -243,9 +243,10 @@ export async function getTrackingPreview(
          ORDER BY Placeholder ASC, EmLastName ASC, EmFirstName ASC`,
         params,
       );
-      if (rows.length > 0) {
-        return { rows: rows.map(mapRow), source: "tblTracking" };
-      }
+      // A requested work week is strict: an empty week must remain empty rather
+      // than showing recent assignments from a different week.
+      if (hasWeek) return { rows: rows.map(mapRow), source: "tblTracking" };
+      if (rows.length > 0) return { rows: rows.map(mapRow), source: "tblTracking" };
     }
 
     const recent = await queryReadOnly<TrackingRow>(
@@ -253,7 +254,7 @@ export async function getTrackingPreview(
        FROM tblTracking WITH (NOLOCK)
        ORDER BY AssignmentTimestamp DESC`,
     );
-    return { rows: recent.map(mapRow), source: "tblTracking", fallback: hasWeek };
+    return { rows: recent.map(mapRow), source: "tblTracking" };
   } catch {
     return { rows: [], source: null };
   }
