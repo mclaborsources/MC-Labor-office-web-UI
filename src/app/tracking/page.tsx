@@ -18,13 +18,23 @@ export default async function TrackingPage({ searchParams }: PageProps) {
   const params = await searchParams;
 
   const weekOffset = params.weekOffset ? Number(params.weekOffset) : undefined;
+  const selectedDateParts = params.date?.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  const selectedDate = selectedDateParts
+    ? new Date(
+        Number(selectedDateParts[1]),
+        Number(selectedDateParts[2]) - 1,
+        Number(selectedDateParts[3]),
+      )
+    : undefined;
   const week = await resolveTrackingWeek({
+    referenceDate: selectedDate,
     weekOffset:
       weekOffset !== undefined && Number.isFinite(weekOffset) ? weekOffset : undefined,
     explicitWeek:
       params.week && !params.weekOffset ? Number(params.week) : undefined,
     explicitYear:
       params.year && !params.weekOffset ? Number(params.year) : undefined,
+    allowFallback: !selectedDate && !params.week,
   });
 
   const customerId = params.customerId?.trim() ?? "";

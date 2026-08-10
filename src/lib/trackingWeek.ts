@@ -81,6 +81,8 @@ export interface ResolveTrackingWeekOptions {
   weekOffset?: number;
   explicitWeek?: number;
   explicitYear?: number;
+  /** When false, keep an explicitly requested work week even when it has no rows. */
+  allowFallback?: boolean;
 }
 
 /**
@@ -139,19 +141,21 @@ export async function resolveTrackingWeek(
     };
   }
 
-  const latest = await getLatestTrackingWeek();
-  if (latest) {
-    if (await weekHasTrackingRows(latest.assignWeek, latest.assignYear)) {
-      const latestDates = datesForAssignWeek(latest.assignWeek, latest.assignYear);
-      return {
-        ...base,
-        ...latestDates,
-        assignWeek: latest.assignWeek,
-        assignYear: latest.assignYear,
-        fallback: true,
-        requestedWeek,
-        requestedYear,
-      };
+  if (options.allowFallback !== false) {
+    const latest = await getLatestTrackingWeek();
+    if (latest) {
+      if (await weekHasTrackingRows(latest.assignWeek, latest.assignYear)) {
+        const latestDates = datesForAssignWeek(latest.assignWeek, latest.assignYear);
+        return {
+          ...base,
+          ...latestDates,
+          assignWeek: latest.assignWeek,
+          assignYear: latest.assignYear,
+          fallback: true,
+          requestedWeek,
+          requestedYear,
+        };
+      }
     }
   }
 

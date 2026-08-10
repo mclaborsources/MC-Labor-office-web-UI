@@ -179,6 +179,12 @@ const GRID_COLUMNS: GridCol[] = [
 
 const COL_COUNT = GRID_COLUMNS.length;
 
+function dateInputValue(usDate: string): string {
+  const [month, day, year] = usDate.split("/");
+  if (!month || !day || !year) return "";
+  return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+}
+
 function dayCell(hours: string, flag: string) {
   const bg = flag && DAY_FLAG_BG[flag] ? DAY_FLAG_BG[flag] : undefined;
   return (
@@ -440,7 +446,7 @@ export function TrackingScreen({
   const rows = preview?.rows ?? [];
 
   function navigateFilter(customerId: string, projectId: string) {
-    const q = new URLSearchParams({ week: String(week.assignWeek), year: String(week.assignYear) });
+    const q = new URLSearchParams({ date: dateInputValue(week.displayDate) });
     if (customerId) q.set("customerId", customerId);
     if (projectId) q.set("projectId", projectId);
     router.push(`/tracking?${q.toString()}`);
@@ -448,6 +454,10 @@ export function TrackingScreen({
 
   function navigateSearch(href: string) {
     if (href) router.push(href);
+  }
+
+  function navigateWorkWeek(date: string) {
+    if (date) router.push(`/tracking?date=${encodeURIComponent(date)}`);
   }
 
   const selectedJobLabel =
@@ -526,7 +536,13 @@ export function TrackingScreen({
             <div className="ac-tracking-top-row">
               <div className="ac-tracking-top-field ac-tracking-top-field--date">
                 <div className="ac-flabel">Date</div>
-                <div className="ac-readonly ac-tracking-field-box font-mono">{week.displayDate}</div>
+                <input
+                  type="date"
+                  className="ac-input ac-tracking-field-box font-mono"
+                  value={dateInputValue(week.displayDate)}
+                  aria-label="Tracking work week date"
+                  onChange={(event) => navigateWorkWeek(event.target.value)}
+                />
               </div>
               <div className="ac-tracking-top-field ac-tracking-top-field--week">
                 <div className="ac-flabel">Week</div>
