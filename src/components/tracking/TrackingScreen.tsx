@@ -15,6 +15,7 @@ import { AccessButton } from "@/components/access/AccessButton";
 import { AccessToolbar, AccessButtonRow, AccessToolbarDivider } from "@/components/access/AccessToolbar";
 import { AccessTabStrip } from "@/components/access/AccessTabStrip";
 import { TrackingJobTabBody } from "@/components/tracking/TrackingJobTabPanels";
+import { NewJobApplicationModal } from "@/components/tracking/NewJobApplicationModal";
 import { DAY_FLAG_BG, HL_CV_COLORS } from "@/lib/trackingConstants";
 
 interface TrackingScreenProps {
@@ -442,6 +443,7 @@ export function TrackingScreen({
   const router = useRouter();
   const [jobInfoTab, setJobInfoTab] = useState("job-info");
   const [trackingTab, setTrackingTab] = useState("tracking");
+  const [newJobApplicationOpen, setNewJobApplicationOpen] = useState(false);
 
   const rows = preview?.rows ?? [];
 
@@ -525,7 +527,10 @@ export function TrackingScreen({
         {TOOLBAR_ADMIN_ACTIONS.map((label) => (
           <AccessButton
             key={label}
-            onClick={() => label === "Office Staff Notes" && router.push("/office-staff-notes")}
+            onClick={() => {
+              if (label === "Office Staff Notes") router.push("/office-staff-notes");
+              if (label === "New Job App") setNewJobApplicationOpen(true);
+            }}
           >
             {label}
           </AccessButton>
@@ -575,8 +580,8 @@ export function TrackingScreen({
                 </select>
                 <AccessButton xs>+</AccessButton>
                 <AccessButton xs>Reset</AccessButton>
-              </div>
-            </div>
+      </div>
+    </div>
 
             <div>
               <div className="ac-flabel">Assigned Job</div>
@@ -817,6 +822,10 @@ export function TrackingScreen({
           {TRACKING_TABS.find((t) => t.id === trackingTab)?.label} — read-only shell (SQL wiring pending).
         </div>
       )}
+      <NewJobApplicationModal
+        open={newJobApplicationOpen}
+        onClose={() => setNewJobApplicationOpen(false)}
+      />
     </div>
   );
 }

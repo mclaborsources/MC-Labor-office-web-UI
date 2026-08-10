@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AccessButton } from "@/components/access/AccessButton";
 import type { OfficeStaffNoteRow } from "@/types/officeStaffNotes";
 
@@ -42,6 +43,7 @@ function MarginCalculator({ number }: { number: number }) {
 }
 
 export function OfficeStaffNotesScreen({ notes, loadError }: { notes: OfficeStaffNoteRow[]; loadError?: string }) {
+  const router = useRouter();
   const [filter, setFilter] = useState<NoteFilter>("incomplete");
   const visibleNotes = useMemo(() => notes.filter((note) =>
     filter === "all" || (filter === "complete" ? note.completed : !note.completed),
@@ -49,6 +51,13 @@ export function OfficeStaffNotesScreen({ notes, loadError }: { notes: OfficeStaf
 
   return (
     <main className="ac-office-notes-page">
+      <AccessButton
+        className="ac-office-notes-close"
+        aria-label="Close Office Staff Notes"
+        onClick={() => router.push("/tracking")}
+      >
+        Close
+      </AccessButton>
       <div className="ac-office-notes-calculators">
         {[1, 2, 3].map((number) => <MarginCalculator key={number} number={number} />)}
       </div>
