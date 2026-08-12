@@ -12919,3 +12919,108 @@ body {
     gap: 8px;
   }
 }
+
+/* Collision-proof report layouts: controls wrap and never occupy one another's space. */
+.ac-contract-report,
+.ac-job-app-problems {
+  grid-template-rows: auto auto minmax(0, 1fr) 26px;
+}
+
+.ac-contract-header,
+.ac-job-app-problems-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px 20px;
+  min-height: 48px;
+}
+
+.ac-contract-header h1,
+.ac-job-app-problems-header h1 {
+  flex: 0 0 auto;
+}
+
+.ac-contract-viewbar,
+.ac-job-app-problems-viewbar {
+  display: flex;
+  flex: 1 1 620px;
+  flex-wrap: wrap;
+  height: auto;
+  min-height: 36px;
+  overflow: visible;
+  white-space: normal;
+}
+
+.ac-contract-closebar,
+.ac-job-app-problems-close {
+  position: static;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.ac-contract-tools {
+  align-items: start;
+}
+
+.ac-contract-search {
+  box-sizing: border-box;
+  grid-template-columns: minmax(0, 180px) 61px 62px;
+  width: 100%;
+  min-width: 0;
+}
+
+.ac-contract-search > label,
+.ac-contract-search > label input {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.ac-contract-search > label input {
+  width: 100%;
+}
+
+.ac-contract-search > .ac-btn,
+.ac-contract-search fieldset {
+  position: static;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.ac-contract-companies .ac-btn,
+.ac-contract-viewbar .ac-btn,
+.ac-job-app-problems-viewbar .ac-btn {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 1500px) {
+  .ac-contract-header h1,
+  .ac-job-app-problems-header h1 {
+    flex-basis: 100%;
+  }
+
+  .ac-contract-closebar,
+  .ac-job-app-problems-close {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .ac-contract-viewbar,
+  .ac-job-app-problems-viewbar {
+    flex-basis: 100%;
+  }
+
+  .ac-contract-closebar,
+  .ac-job-app-problems-close {
+    width: 100%;
+  }
+
+  .ac-contract-tools {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ac-contract-search {
+    grid-template-columns: minmax(0, 1fr) 61px 62px;
+  }
+}
