@@ -12742,3 +12742,180 @@ body {
 .ac-contract-grid td.contract-link { color: #64a500; }
 .ac-contract-grid td.contract-date { color: red; }
 .ac-contract-empty { height: 50px !important; color: #64748b; text-align: center; }
+
+/* Keep the legacy report controls usable inside the portal shell at narrower widths. */
+.ac-job-app-problems,
+.ac-contract-report {
+  min-width: 0;
+  width: 100%;
+}
+
+.ac-job-app-problems-header {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr) max-content;
+  gap: 16px;
+}
+
+.ac-job-app-problems-viewbar {
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+
+.ac-job-app-problems-close {
+  position: static;
+}
+
+.ac-job-app-problems-filters {
+  padding-left: clamp(12px, 26vw, 515px);
+}
+
+.ac-job-app-problems-filters > .ac-btn {
+  margin-right: 12px;
+}
+
+.ac-contract-header {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr) max-content;
+  gap: 20px;
+}
+
+.ac-contract-viewbar {
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+
+.ac-contract-closebar {
+  position: static;
+}
+
+.ac-contract-tools {
+  grid-template-columns: minmax(330px, 410px) minmax(620px, 1fr) 130px;
+  gap: 14px;
+  overflow-x: auto;
+}
+
+.ac-contract-main-tools {
+  min-width: 620px;
+}
+
+@media (max-width: 1100px) {
+  .ac-job-app-problems {
+    grid-template-rows: auto auto minmax(0, 1fr) 26px;
+  }
+
+  .ac-job-app-problems-header,
+  .ac-contract-header {
+    grid-template-columns: 1fr auto;
+    align-items: start;
+  }
+
+  .ac-job-app-problems-header h1,
+  .ac-contract-header h1 {
+    grid-column: 1;
+  }
+
+  .ac-job-app-problems-viewbar,
+  .ac-contract-viewbar {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+  }
+
+  .ac-job-app-problems-close,
+  .ac-contract-closebar {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .ac-job-app-problems-filters {
+    flex-wrap: wrap;
+    padding: 10px 12px;
+  }
+
+  .ac-job-app-week-buttons {
+    margin: 0 0 0 10px;
+  }
+
+  .ac-job-app-select-label {
+    margin-left: auto;
+    padding-top: 8px;
+  }
+
+  .ac-job-app-problems-filters > .ac-btn {
+    margin: 0 0 0 8px;
+  }
+
+  .ac-contract-report {
+    grid-template-rows: auto auto minmax(0, 1fr) 26px;
+  }
+
+  .ac-contract-tools {
+    grid-template-columns: 1fr;
+    overflow: visible;
+    padding-bottom: 10px;
+  }
+
+  .ac-contract-search {
+    width: 410px;
+    max-width: 100%;
+  }
+
+  .ac-contract-main-tools {
+    min-width: 0;
+  }
+
+  .ac-contract-companies {
+    overflow-x: auto;
+    grid-template-columns: repeat(8, minmax(72px, 1fr));
+  }
+
+  .ac-contract-subtools {
+    flex-wrap: wrap;
+    height: auto;
+    padding-top: 5px;
+  }
+
+  .ac-contract-clear {
+    justify-self: start;
+  }
+}
+
+@media (max-width: 620px) {
+  .ac-job-app-problems-header h1,
+  .ac-contract-header h1 {
+    font-size: 22px;
+  }
+
+  .ac-job-app-problems-close .ac-job-app-help,
+  .ac-contract-closebar .ac-job-app-help,
+  .ac-contract-closebar .ac-contract-open {
+    display: none;
+  }
+
+  .ac-job-app-problems-filters > input {
+    flex: 1 1 160px;
+  }
+
+  .ac-job-app-week-buttons {
+    order: 4;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .ac-job-app-select-label {
+    margin-left: 0;
+  }
+
+  .ac-contract-search {
+    grid-template-columns: minmax(180px, 1fr) 61px 62px;
+  }
+
+  .ac-contract-subtools fieldset {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
