@@ -13024,3 +13024,42 @@ body {
     grid-template-columns: minmax(0, 1fr) 61px 62px;
   }
 }
+
+/* Contract search spacing: keep the name field and both radio options unobstructed. */
+.ac-contract-search {
+  grid-template-rows: 22px 52px 35px;
+  row-gap: 0;
+}
+
+.ac-contract-search > label {
+  padding-top: 6px;
+  align-items: start;
+}
+
+.ac-contract-search > label input {
+  margin-top: 0;
+}
+
+.ac-contract-search fieldset {
+  align-self: start;
+  min-height: 70px;
+  padding: 1px 8px 4px;
+  overflow: visible;
+  background: #ededed;
+}
+
+.ac-contract-search fieldset legend {
+  line-height: 14px;
+}
+
+.ac-contract-search fieldset label {
+  display: flex;
+  min-height: 18px;
+  align-items: center;
+  line-height: 18px;
+}
+
+.ac-contract-search fieldset input {
+  flex: 0 0 auto;
+  margin: 0 3px 0 0;
+}
