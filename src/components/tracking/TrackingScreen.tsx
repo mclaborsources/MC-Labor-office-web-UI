@@ -502,7 +502,11 @@ export function TrackingScreen({
             </option>
           ))}
         </select>
-        <select className="ac-select" defaultValue="">
+        <select
+          className="ac-select"
+          defaultValue=""
+          aria-label="Reports menu"
+        >
           <option value="">&lt;Reports&gt;</option>
           <option value="weekly-schedule">Weekly Schedule</option>
           <option value="timesheets">Timesheets</option>
@@ -512,15 +516,30 @@ export function TrackingScreen({
         </select>
         <AccessButton>Health Ins</AccessButton>
         <AccessButton className="ac-tracking-toolbar-alert">Bonus Exp</AccessButton>
-        <select className="ac-select" defaultValue="">
+        <select
+          className="ac-select"
+          defaultValue=""
+          aria-label="Job application menu"
+          onChange={(event) => {
+            if (event.target.value === "/job-app-problems") router.push(event.target.value);
+            if (event.target.value === "new") setNewJobApplicationOpen(true);
+          }}
+        >
           <option value="">&lt;Job Application&gt;</option>
           <option value="new">New Application</option>
           <option value="review">Review Queue</option>
-          <option value="problems">Application Problems</option>
+          <option value="/job-app-problems">Application Problems</option>
           <option value="missing-documents">Missing Documents</option>
         </select>
         {TOOLBAR_ALERT_ACTIONS.map((label) => (
-          <AccessButton key={label} className="ac-tracking-toolbar-alert">
+          <AccessButton
+            key={label}
+            className="ac-tracking-toolbar-alert"
+            onClick={() => {
+              if (label === "Job App Problems") router.push("/job-app-problems");
+              if (label === "Contracts") router.push("/contract-report");
+            }}
+          >
             {label}
           </AccessButton>
         ))}
@@ -535,7 +554,11 @@ export function TrackingScreen({
             {label}
           </AccessButton>
         ))}
-        <AccessButton variant="go" className="shrink-0">
+        <AccessButton
+          variant="go"
+          className="shrink-0"
+          onClick={() => window.open("/wcc-payroll", "_blank", "noopener,noreferrer")}
+        >
           WCC Payroll / Sales Report by Customer
         </AccessButton>
       </AccessToolbar>

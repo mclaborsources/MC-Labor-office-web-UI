@@ -1,5 +1,58 @@
 @import "tailwindcss";
 
+/* WCC Payroll / Sales Report — purposefully mirrors the dense Access report. */
+.wcc-report { --wcc-border: #aeb8c5; min-width: 1120px; height: 100dvh; overflow: hidden; background: #ececec; color: #050505; font: 13px Arial, sans-serif; }
+.wcc-report button, .wcc-report select, .wcc-report input { height: 27px; border: 1px solid #a9adb2; border-radius: 0; background: linear-gradient(#fff, #e9e9e9); padding: 2px 9px; color: #050505; }
+.wcc-report button:active { background: #d8e8f5; }
+.wcc-report__header { height: 48px; display: flex; align-items: center; gap: 8px; padding: 5px 10px; }
+.wcc-report__header h1 { margin: 0 auto 0 0; font-size: 26px; font-weight: 400; white-space: nowrap; }
+.wcc-report__view-controls { display: flex; align-items: center; gap: 6px; }
+.wcc-report__view-controls select { width: 105px; }
+.wcc-report__customers { display: flex; align-items: center; gap: 13px; height: 34px; padding: 5px 10px; border: 1px solid #b7b7b7; white-space: nowrap; }
+.wcc-report__customers legend { display: inline; float: left; padding-right: 10px; }
+.wcc-report__customers label { display: flex; align-items: center; gap: 4px; }
+.wcc-report__customers input { width: 13px; height: 13px; padding: 0; }
+.wcc-report__cancel { margin-left: auto; }
+.wcc-report__help { border: 2px solid #e0aa00 !important; color: #0069ae !important; font-weight: 800; font-size: 17px; padding: 0 7px !important; }
+.wcc-report__filters { height: 207px; display: grid; grid-template-columns: 700px 1fr; border-bottom: 1px solid #adb7c4; }
+.wcc-report__left-filters { position: relative; padding: 2px 10px; display: grid; grid-template-columns: 382px 250px; grid-auto-rows: 29px; gap: 0 8px; }
+.wcc-report__left-filters > label { display: grid; grid-template-columns: 124px 1fr; align-items: center; }
+.wcc-report__left-filters > button { width: 150px; }
+.wcc-report__address { display: flex; align-items: center; gap: 3px; }
+.wcc-report__address button { padding-inline: 6px; }
+.wcc-report__dates { grid-column: 1 / -1; display: grid; grid-template-columns: 137px 96px 194px 194px; gap: 5px; margin-top: 2px; }
+.wcc-report__dates > div { display: flex; flex-direction: column; gap: 2px; }
+.wcc-report__dates strong { height: 23px; font-weight: 400; white-space: nowrap; }
+.wcc-report__dates em { position: absolute; top: 93px; left: 154px; color: #122ba1; }
+.wcc-report__dates label { display: flex; align-items: center; gap: 6px; }
+.wcc-report__dates input { width: 90px; }
+.wcc-report__dates output { display: block; height: 27px; border: 1px solid #aeb8c5; background: #f6f6f6; padding: 4px; white-space: nowrap; }
+.wcc-report__date-nav { flex-direction: row !important; align-items: center; padding-top: 23px; }
+.wcc-report__date-nav button { width: 29px; padding: 0; }
+.wcc-report__exclusions { position: absolute; bottom: 5px; left: 10px; display: flex !important; grid-template-columns: auto !important; gap: 8px; }
+.wcc-report__exclusions input { width: 14px; height: 14px; }
+.wcc-report__right-filters { position: relative; padding: 5px 10px 0 0; border-left: 1px solid #c4cbd3; }
+.wcc-report__views { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.wcc-report__penalty { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 20px; }
+.wcc-report__penalty input { width: 70px; }
+.wcc-report__additional { width: 340px; margin-left: auto; outline: 3px solid #d9272e; outline-offset: 1px; }
+.wcc-report__notes { display: grid; grid-template-columns: 74px 1fr 1fr; align-items: center; gap: 8px; margin-top: 7px; color: #1426af; text-align: center; }
+.wcc-report__clear { position: absolute; right: 0; bottom: 31px; }
+.wcc-report__warning { margin: 26px 0 0; color: red; text-align: center; }
+.wcc-report__grid { height: calc(100dvh - 280px); overflow: auto; margin: 0 10px; border: 1px solid #aeb8c5; background: white; }
+.wcc-report__grid table { width: 100%; min-width: 1220px; border-collapse: collapse; table-layout: fixed; }
+.wcc-report__grid th { height: 21px; background: #dfe5eb; border: 1px solid #b8c0c9; font-weight: 400; text-align: center; }
+.wcc-report__grid th span { float: right; }
+.wcc-report__grid th:nth-child(2) { width: 255px; }.wcc-report__grid th:nth-child(3) { width: 105px; }.wcc-report__grid th:nth-child(4) { width: 385px; }.wcc-report__grid th:nth-child(n+5) { width: 114px; }
+.wcc-report__grid .wcc-report__selector { width: 19px; }
+.wcc-report__grid td { height: 20px; border: 1px solid #edf0f2; padding: 0 4px; }
+.wcc-report__total td:nth-child(n+2):nth-child(-n+8) { background: #9ccbef; }
+.wcc-report__total td:nth-child(2) { background: #050505 !important; color: white; font-weight: 700; text-align: right; }
+.wcc-report__recordbar { height: 25px; margin: 0 10px; display: flex; align-items: center; gap: 3px; border: 1px solid #aeb8c5; background: #eef1f3; font-size: 11px; }
+.wcc-report__recordbar button { width: 23px; height: 20px; padding: 0; border: 0; }.wcc-report__recordbar b { width: 58px; border: 1px solid #aaa; background: white; text-align: center; }.wcc-report__filter-status { margin-left: 5px; color: #999; }.wcc-report__recordbar label { display: flex; margin-left: 2px; }.wcc-report__recordbar input { width: 90px; height: 20px; background: white; }
+
+@media (max-width: 1200px) { .wcc-report { overflow: auto; }.wcc-report__grid { min-height: 500px; }.wcc-report__right-filters { min-width: 850px; } }
+
 :root {
   --background: #f1f5f9;
   --foreground: #0f172a;
@@ -12615,3 +12668,77 @@ body {
 .ac-new-employee-modal > footer > div { display: flex; gap: 10px; }
 .ac-new-employee-modal > footer p { margin: 7px 0; color: #9a3412; }
 .ac-new-employee-modal > footer small { display: block; margin-top: 8px; }
+
+/* Job App Problems — legacy Access search screen. */
+.ac-job-app-problems { display: grid; grid-template-rows: 145px 95px minmax(0, 1fr) 26px; height: 100%; min-width: 1180px; overflow: hidden; background: #ededed; color: #000; font: 13px Arial, sans-serif; }
+.ac-job-app-problems-header { position: relative; display: flex; align-items: flex-start; gap: 130px; padding: 5px 12px; }
+.ac-job-app-problems-header h1 { margin: 0; font-size: 26px; line-height: 34px; font-weight: 400; }
+.ac-job-app-problems-viewbar { display: flex; align-items: center; gap: 6px; height: 34px; }
+.ac-job-app-problems-viewbar select { width: 135px; height: 28px; border: 1px solid #999; background: #fff; }
+.ac-job-app-problems-viewbar select:nth-of-type(2) { width: 100px; }
+.ac-job-app-problems-viewbar .ac-btn, .ac-job-app-problems-close .ac-btn, .ac-job-app-week-buttons .ac-btn, .ac-job-app-problems-filters > .ac-btn { height: 30px; min-height: 30px; border-radius: 0; border-color: #999; background: linear-gradient(#fff, #e4e4e4); color: #000; }
+.ac-job-app-problems-close { position: absolute; top: 5px; right: 7px; display: flex; gap: 7px; }
+.ac-job-app-help { width: 31px; height: 31px; border: 3px solid #f0cf00; background: #0875ce; color: #fff; font-size: 19px; font-weight: 700; line-height: 20px; }
+.ac-job-app-problems-filters { display: flex; align-items: flex-start; padding-left: 515px; gap: 7px; }
+.ac-job-app-problems-filters > label { padding-top: 8px; }
+.ac-job-app-problems-filters > input { width: 193px; height: 27px; border: 1px solid #aaa; background: #a9e8fb; }
+.ac-job-app-week-buttons { display: flex; gap: 7px; margin: -5px 0 0 20px; padding: 5px 7px; border: 1px solid #aaa; }
+.ac-job-app-week-buttons .ac-btn[aria-pressed="true"] { box-shadow: inset 0 0 0 1px #2674a5; background: #dbeaf5; }
+.ac-job-app-select-label { margin-left: auto; padding-top: 57px; }
+.ac-job-app-problems-filters > .ac-btn { margin: 50px 85px 0 55px; min-width: 50px; }
+.ac-job-app-grid-wrap { min-height: 0; overflow: auto; border-top: 1px solid #aaa; background: #fff; }
+.ac-job-app-grid { width: max-content; min-width: 100%; border-collapse: collapse; table-layout: fixed; }
+.ac-job-app-grid th, .ac-job-app-grid td { height: 23px; border-right: 1px solid #e5e5e5; border-bottom: 1px solid #eee; padding: 2px 5px; overflow: hidden; white-space: nowrap; }
+.ac-job-app-grid th { position: sticky; top: 0; z-index: 2; height: 22px; border-color: #bbc3ca; background: #dbe5ed; font-weight: 400; text-align: center; }
+.ac-job-app-grid th span { display: inline-block; max-width: calc(100% - 12px); overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }
+.ac-job-app-grid th i { float: right; margin-top: 6px; border: 4px solid transparent; border-top-color: #555; }
+.ac-job-app-selector-col { width: 19px; }
+.ac-job-app-grid th:first-child, .ac-job-app-grid td:first-child { width: 19px; padding: 0; background: #e8edf1; }
+.ac-job-app-grid tbody tr:nth-child(even) td:not(:first-child) { background: #fafafa; }
+.ac-job-app-recordbar { display: flex; align-items: center; gap: 3px; border-top: 1px solid #aaa; background: #eceff1; font-size: 11px; }
+.ac-job-app-recordbar button { width: 23px; height: 19px; border: 0; background: transparent; font-size: 9px; }
+.ac-job-app-recordbar input { width: 55px; height: 19px; border: 1px solid #aaa; background: #fff; }
+.ac-job-app-filtered { height: 20px; margin-left: 4px; padding: 2px 8px; border: 1px solid #aaa; background: #f2dddd; color: #b80000; }
+.ac-job-app-search-status { height: 20px; min-width: 78px; padding: 2px 8px; border: 1px solid #aaa; background: #fff; }
+.ac-job-app-scrollbar { flex: 1; height: 18px; margin-left: 26px; border: 1px solid #aaa; background: #f3f3f3; }
+.ac-job-app-scrollbar span { display: block; width: 30%; height: 12px; margin: 2px 25%; border-radius: 8px; background: #7d7d7d; }
+
+/* Contract Report — legacy Access contract/customer grid. */
+.ac-contract-report { display: grid; grid-template-rows: 48px 100px minmax(0, 1fr) 26px; height: 100%; min-width: 1280px; overflow: hidden; background: #ededed; color: #000; font: 13px Arial, sans-serif; }
+.ac-contract-header { position: relative; display: flex; align-items: flex-start; gap: 360px; padding: 5px 10px; }
+.ac-contract-header h1 { margin: 0; white-space: nowrap; font-size: 26px; line-height: 36px; font-weight: 400; }
+.ac-contract-viewbar { display: flex; align-items: center; gap: 7px; height: 36px; }
+.ac-contract-viewbar select { width: 120px; height: 28px; border: 1px solid #999; background: #fff; }
+.ac-contract-viewbar select:nth-of-type(2) { width: 100px; }
+.ac-contract-header .ac-btn, .ac-contract-tools .ac-btn { height: 29px; min-height: 29px; border-radius: 0; border-color: #999; background: linear-gradient(#fff, #e5e5e5); color: #000; }
+.ac-contract-closebar { position: absolute; top: 5px; right: 7px; display: flex; gap: 10px; }
+.ac-contract-closebar .ac-contract-open { color: red; }
+.ac-contract-tools { display: grid; grid-template-columns: 410px 970px 130px; gap: 20px; padding: 0 10px; }
+.ac-contract-search { position: relative; display: grid; grid-template-columns: 180px 61px 62px; grid-template-rows: 20px 38px 35px; column-gap: 10px; }
+.ac-contract-search > strong { grid-column: 1; border: 1px solid #777; text-align: center; font-size: 10px; }
+.ac-contract-search > label { grid-column: 1; display: grid; grid-template-columns: 54px 1fr; align-items: start; }
+.ac-contract-search > label input { height: 27px; border: 1px solid #aaa; background: #fff; }
+.ac-contract-search > .ac-btn:nth-of-type(1) { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+.ac-contract-search fieldset { grid-column: 3; grid-row: 1 / span 2; display: grid; margin: 0; padding: 2px 8px; border: 1px solid #aaa; }
+.ac-contract-search fieldset label { white-space: nowrap; }
+.ac-contract-search > span { align-self: center; }
+.ac-contract-main-tools { display: grid; grid-template-rows: 38px 48px; }
+.ac-contract-companies { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; padding: 4px 7px; border: 1px solid #aaa; }
+.ac-contract-companies .ac-btn.is-active { color: red; font-weight: 700; background: #fff; }
+.ac-contract-subtools { display: flex; align-items: center; gap: 24px; color: #073a93; font-size: 13px; }
+.ac-contract-subtools > span { width: 258px; padding: 5px 58px; white-space: nowrap; background: #ffffa8; color: #073a93; }
+.ac-contract-subtools fieldset { display: flex; gap: 35px; margin: 0; border: 1px solid #aaa; color: #000; }
+.ac-contract-clear { align-self: start; margin-top: 4px; }
+.ac-contract-grid-wrap { min-height: 0; overflow: auto; border-top: 1px solid #aaa; background: #fff; }
+.ac-contract-grid { width: max-content; min-width: 100%; border-collapse: collapse; table-layout: fixed; }
+.ac-contract-grid col.selector { width: 19px; }.ac-contract-grid col.select { width: 72px; }.ac-contract-grid col.name { width: 285px; }.ac-contract-grid col.link { width: 280px; }.ac-contract-grid col.date { width: 115px; }.ac-contract-grid col.sales { width: 115px; }
+.ac-contract-grid th, .ac-contract-grid td { height: 20px; padding: 1px 4px; overflow: hidden; border-right: 1px solid #d8d4cc; border-bottom: 1px solid #ddd8cf; white-space: nowrap; text-overflow: clip; }
+.ac-contract-grid th { position: sticky; top: 0; z-index: 2; height: 21px; background: #dbe5ed; font-weight: 400; text-align: center; }
+.ac-contract-grid th i { float: right; margin-top: 6px; border: 4px solid transparent; border-top-color: #555; }
+.ac-contract-grid tbody tr:nth-child(even) td { background: #f2f2f2; }
+.ac-contract-grid tbody tr.is-current td { background: #9fd0ef; }
+.ac-contract-grid td:first-child { background: #e4e8eb !important; text-align: center; font-size: 8px; }
+.ac-contract-grid td:nth-child(2) { text-align: center; }
+.ac-contract-grid td.contract-link { color: #64a500; }
+.ac-contract-grid td.contract-date { color: red; }
+.ac-contract-empty { height: 50px !important; color: #64748b; text-align: center; }
