@@ -1,21 +1,15 @@
 import { AppShell } from "@/components/layout/AppShell";
 import { JobAppProblemsScreen } from "@/components/job-app-problems/JobAppProblemsScreen";
+import { getSessionOrDefault } from "@/lib/auth/session";
 
-export default function JobAppProblemsPage() {
+export default async function JobAppProblemsPage() {
+  const session = await getSessionOrDefault();
+
   return (
     <AppShell
+      userDisplayName={session.user?.displayName}
       fillViewport
       fullWidth
-      legacyAccessFrame
-      legacyAccessTabs={[
-        { label: "Menu", href: "/dashboard" },
-        { label: "Tracking", href: "/tracking" },
-        { label: "Employee Search 3", href: "/employees" },
-        { label: "Customer Permits Search", href: "/customer-permits" },
-        { label: "Invoice Search", href: "/jobs" },
-        { label: "Employees", href: "/employees" },
-        { label: "Job App Problems", active: true },
-      ]}
     >
       <JobAppProblemsScreen />
     </AppShell>
