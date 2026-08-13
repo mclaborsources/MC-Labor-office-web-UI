@@ -12670,6 +12670,56 @@ body {
 .ac-new-employee-modal > footer small { display: block; margin-top: 8px; }
 
 /* Job App Problems — legacy Access search screen. */
+.ac-current-jobs { display: grid; grid-template-rows: auto 80px minmax(0, 1fr) 24px; height: 100%; min-width: 0; overflow: hidden; background: #ededed; color: #000; font: 13px Arial, sans-serif; }
+.ac-current-jobs-header { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px 85px; min-height: 48px; padding: 7px 0 3px; }
+.ac-current-jobs-header h1 { flex: 0 0 auto; margin: 0; font-size: 26px; line-height: 34px; font-weight: 400; }
+.ac-current-jobs-viewbar { display: flex; flex: 1 1 850px; flex-wrap: wrap; align-items: center; gap: 7px; }
+.ac-current-jobs-viewbar select { width: 105px; height: 29px; border: 1px solid #999; background: #fff; }.ac-current-jobs-viewbar select:last-of-type { width: 98px; }
+.ac-current-jobs-header .ac-btn, .ac-current-jobs-tools .ac-btn { height: 30px; min-height: 30px; border-radius: 0; border-color: #999; background: linear-gradient(#fff, #e4e4e4); color: #000; }
+.ac-current-jobs-viewbar .ac-current-jobs-post { color: red; }
+.ac-current-jobs-closebar { display: flex; gap: 9px; margin-left: auto; }
+.ac-current-jobs-tools { display: flex; align-items: flex-start; gap: 46px; padding: 0; }
+.ac-current-jobs-search { display: grid; grid-template-columns: 70px 146px; grid-template-rows: 20px 28px 28px; width: 216px; }
+.ac-current-jobs-search strong { grid-column: 1 / 3; border: 1px solid #777; text-align: center; font-size: 10px; line-height: 18px; }
+.ac-current-jobs-search label { align-self: center; font-size: 13px; }.ac-current-jobs-search input { height: 27px; border: 1px solid #aaa; background: #fff; }
+.ac-current-jobs-tools > .ac-btn { margin-top: 32px; }.ac-current-jobs-tools em { flex: 1; padding-top: 41px; color: #003f8f; text-align: center; font-size: 12px; }
+.ac-current-jobs-grid-wrap { min-height: 0; overflow: auto; border: 1px solid #aab1b7; background: #fff; }
+.ac-current-jobs-grid { width: max-content; min-width: 100%; border-collapse: collapse; table-layout: fixed; }
+.ac-current-jobs-grid th, .ac-current-jobs-grid td { height: 26px; padding: 2px 5px; overflow: hidden; border-right: 2px solid #fff; border-bottom: 1px solid #ddd; white-space: nowrap; text-overflow: clip; }
+.ac-current-jobs-grid th { position: sticky; top: 0; z-index: 2; height: 22px; border-right: 1px solid #b7c0c8; background: #dbe5ed; font-weight: 400; text-align: center; }.ac-current-jobs-grid th i { float: right; margin-top: 7px; border: 4px solid transparent; border-top-color: #555; }
+.ac-current-jobs-grid th:nth-child(1) { width: 42px; }.ac-current-jobs-grid th:nth-child(2) { width: 310px; }.ac-current-jobs-grid th:nth-child(3) { width: 110px; }.ac-current-jobs-grid th:nth-child(4) { width: 115px; }.ac-current-jobs-grid th:nth-child(5) { width: 180px; }.ac-current-jobs-grid th:nth-child(6) { width: 110px; }.ac-current-jobs-grid th:nth-child(7) { width: 60px; }.ac-current-jobs-grid th:nth-child(8) { width: 250px; }.ac-current-jobs-grid th:nth-child(9) { width: 250px; }.ac-current-jobs-grid th:nth-child(10) { width: 110px; }.ac-current-jobs-grid th:nth-child(11) { width: 90px; }.ac-current-jobs-grid th:nth-child(n+12) { width: 92px; }
+.ac-current-jobs-grid tbody tr:nth-child(odd) td:nth-child(-n+9) { background: #f2f2f2; }.ac-current-jobs-grid tbody tr.is-current td:nth-child(-n+9) { background: #a7d0ed; }.ac-current-jobs-grid td:nth-child(n+10) { background: #bbb; }.ac-current-jobs-grid td.age { color: red; text-align: right; }
+.ac-current-jobs-recordbar { display: flex; align-items: center; gap: 2px; border-top: 1px solid #aaa; background: #eceff1; font-size: 11px; }.ac-current-jobs-recordbar button { width: 22px; height: 19px; border: 0; background: transparent; font-size: 9px; }.ac-current-jobs-recordbar input { width: 50px; height: 19px; border: 1px solid #aaa; background: #fff; }.ac-current-jobs-recordbar .filter, .ac-current-jobs-recordbar .status { height: 20px; padding: 2px 7px; border: 1px solid #aaa; background: #fff; }.ac-current-jobs-recordbar > div { flex: 1; height: 18px; border: 1px solid #aaa; background: #f5f5f5; }
+@media (max-width: 1100px) { .ac-current-jobs { grid-template-rows: auto auto minmax(0, 1fr) 24px; }.ac-current-jobs-header h1 { flex-basis: 100%; }.ac-current-jobs-closebar { margin-left: 0; }.ac-current-jobs-tools { flex-wrap: wrap; gap: 15px; }.ac-current-jobs-tools em { min-width: 300px; } }
+
+.ac-phone-search { display: grid; grid-template-rows: auto 64px minmax(0, 1fr) 24px; height: 100%; min-width: 0; overflow: hidden; background: #ededed; color: #000; font: 13px Arial, sans-serif; }
+.ac-phone-search-header { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px 120px; min-height: 42px; padding: 4px; }
+.ac-phone-search-header h1 { flex: 0 0 auto; margin: 0; font-size: 26px; line-height: 34px; font-weight: 400; }
+.ac-phone-search-viewbar { display: flex; flex: 1 1 620px; flex-wrap: wrap; align-items: center; gap: 7px; min-height: 34px; }
+.ac-phone-search-viewbar select { width: 105px; height: 27px; border: 1px solid #999; background: #fff; }
+.ac-phone-search-viewbar .ac-btn, .ac-phone-search-closebar .ac-btn, .ac-phone-search-tools .ac-btn { height: 29px; min-height: 29px; border-radius: 0; border-color: #999; background: linear-gradient(#fff, #e5e5e5); color: #000; }
+.ac-phone-search-closebar { display: flex; flex: 0 0 auto; gap: 8px; margin-left: auto; }
+.ac-phone-search-tools { display: flex; align-items: flex-start; gap: 8px; padding: 0 4px; }
+.ac-phone-search-form { display: grid; grid-template-columns: 128px 180px 65px; grid-template-rows: 19px 34px; width: 373px; }
+.ac-phone-search-form strong { grid-column: 1 / 3; border: 1px solid #777; text-align: center; font-size: 10px; line-height: 17px; }
+.ac-phone-search-form label { align-self: center; font-size: 16px; }
+.ac-phone-search-form input { height: 33px; border: 1px solid #aaa; background: #fff; }
+.ac-phone-search-form .ac-btn { grid-column: 3; grid-row: 2; align-self: start; margin-left: 8px; }
+.ac-phone-search-view-buttons { display: grid; grid-template-columns: repeat(4, 136px); gap: 7px; padding: 4px 7px; border: 1px solid #aaa; }
+.ac-phone-search-view-buttons .ac-btn[aria-pressed="true"] { box-shadow: inset 0 0 0 1px #607d94; background: #e2edf5; }
+.ac-phone-search-clear { margin: 4px 0 0 6px; }
+.ac-phone-search-grid-wrap { min-height: 0; overflow: auto; border: 1px solid #a9afb5; background: #fff; }
+.ac-phone-search-grid { width: 100%; min-width: 900px; border-collapse: collapse; table-layout: fixed; }
+.ac-phone-search-grid col.selector { width: 19px; }.ac-phone-search-grid col.name { width: 238px; }.ac-phone-search-grid col.title { width: 165px; }.ac-phone-search-grid col.type { width: 214px; }.ac-phone-search-grid col.refers { width: 385px; }
+.ac-phone-search-grid th, .ac-phone-search-grid td { height: 20px; padding: 1px 5px; overflow: hidden; border-right: 1px solid #e1e1e1; border-bottom: 1px solid #eee; white-space: nowrap; }
+.ac-phone-search-grid th { position: sticky; top: 0; z-index: 2; height: 21px; border-color: #b9c0c6; background: #dbe5ed; font-weight: 400; text-align: center; }
+.ac-phone-search-grid th i { float: right; margin-top: 6px; border: 4px solid transparent; border-top-color: #555; }
+.ac-phone-search-grid th:first-child, .ac-phone-search-grid td:first-child { padding: 0; background: #e8edf1; color: #aac4d5; text-align: center; }
+.ac-phone-search-recordbar { display: flex; align-items: center; gap: 2px; border-top: 1px solid #aaa; background: #eceff1; font-size: 11px; }
+.ac-phone-search-recordbar button { width: 23px; height: 19px; border: 0; background: transparent; font-size: 9px; }.ac-phone-search-recordbar input { width: 50px; height: 19px; border: 1px solid #aaa; background: #fff; }
+.ac-phone-search-filter, .ac-phone-search-status { height: 20px; padding: 2px 7px; border: 1px solid #aaa; background: #fff; }.ac-phone-search-filter { color: #aaa; }.ac-phone-search-status { min-width: 70px; }.ac-phone-search-recordbar > div { flex: 1; height: 18px; border: 1px solid #aaa; background: #f5f5f5; }
+@media (max-width: 1050px) { .ac-phone-search-tools { flex-wrap: wrap; }.ac-phone-search { grid-template-rows: auto auto minmax(0, 1fr) 24px; }.ac-phone-search-view-buttons { grid-template-columns: repeat(4, minmax(90px, 136px)); }.ac-phone-search-header h1 { flex-basis: 100%; }.ac-phone-search-closebar { margin-left: 0; } }
+
 .ac-job-app-problems { display: grid; grid-template-rows: 145px 95px minmax(0, 1fr) 26px; height: 100%; min-width: 1180px; overflow: hidden; background: #ededed; color: #000; font: 13px Arial, sans-serif; }
 .ac-job-app-problems-header { position: relative; display: flex; align-items: flex-start; gap: 130px; padding: 5px 12px; }
 .ac-job-app-problems-header h1 { margin: 0; font-size: 26px; line-height: 34px; font-weight: 400; }

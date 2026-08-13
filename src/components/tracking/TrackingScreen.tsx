@@ -51,8 +51,8 @@ const LEGACY_SEARCH_OPTIONS = [
   { label: "Permits Search", href: "/customer-permits" },
   { label: "Employees in Tracking", href: "/employees" },
   { label: "Invoice Search", href: "/jobs" },
-  { label: "Current Jobs", href: "/jobs" },
-  { label: "Phone Number Search", href: "/employees" },
+  { label: "Current Jobs", href: "/current-jobs" },
+  { label: "Phone Number Search", href: "/phone-number-search" },
 ] as const;
 
 const LEGACY_ADMIN_OPTIONS = [
