@@ -49,16 +49,16 @@ const LEGACY_SEARCH_OPTIONS = [
   { label: "[Main] Employee Search 3", href: "/employees" },
   { label: "[Main] Employee Search 3 NEW", href: "/employees" },
   { label: "Permits Search", href: "/customer-permits" },
-  { label: "Employees in Tracking", href: "/employees" },
-  { label: "Invoice Search", href: "/jobs" },
+  { label: "Employees in Tracking", href: "/employees-in-tracking" },
+  { label: "Invoice Search", href: "/invoice-search" },
   { label: "Current Jobs", href: "/current-jobs" },
   { label: "Phone Number Search", href: "/phone-number-search" },
 ] as const;
 
 const LEGACY_ADMIN_OPTIONS = [
-  { label: "UI Report", href: "/reports" },
-  { label: "Accident Report Search", href: "/reports" },
-  { label: "Vacation Hours Report", href: "/reports" },
+  { label: "UI Report", href: "/ui-report" },
+  { label: "Accident Report Search", href: "/accident-report-search" },
+  { label: "Vacation Hours Report", href: "/vacation-hours-report" },
   { label: "Employee Hours By Week Report", href: "/reports" },
   { label: "Employee Hours By Month Report", href: "/reports" },
   { label: "Full-Time Employees by Month", href: "/reports" },
