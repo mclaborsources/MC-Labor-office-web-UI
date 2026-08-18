@@ -1,0 +1,1 @@
+import{AppShell}from"@/components/layout/AppShell";import{YearlyRevenueScreen}from"@/components/yearly-revenue/YearlyRevenueScreen";import{getSessionOrDefault}from"@/lib/auth/session";export default async function Page(){const session=await getSessionOrDefault();return <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth><YearlyRevenueScreen/></AppShell>}

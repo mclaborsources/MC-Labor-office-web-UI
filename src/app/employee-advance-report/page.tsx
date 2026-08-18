@@ -1,0 +1,2 @@
+import {AppShell} from "@/components/layout/AppShell";import {EmployeeAdvanceReportScreen} from "@/components/employee-advance-report/EmployeeAdvanceReportScreen";import {getSessionOrDefault} from "@/lib/auth/session";
+export default async function Page(){const session=await getSessionOrDefault();return <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth><EmployeeAdvanceReportScreen/></AppShell>}
