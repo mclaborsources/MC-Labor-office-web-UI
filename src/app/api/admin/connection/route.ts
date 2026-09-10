@@ -3,9 +3,10 @@ import sql from "mssql";
 import { requireSession } from "@/lib/auth/session";
 import { databaseSchema, saveDatabaseSettings } from "@/lib/config/database";
 import { buildConfig, closePool } from "@/lib/db/sql";
+import { hasSameOrigin } from "@/lib/auth/origin";
 
 export async function POST(request: Request) {
-  if (request.headers.get("origin") !== new URL(request.url).origin) {
+  if (!hasSameOrigin(request)) {
     return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
   }
   try {
