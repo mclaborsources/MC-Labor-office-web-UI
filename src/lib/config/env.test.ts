@@ -29,6 +29,6 @@ test("first run needs an account; saved local credentials work without an env fi
     process.chdir(cwd);
     for (const key of Object.keys(process.env)) if (!(key in original)) delete process.env[key];
     Object.assign(process.env, original);
-    await rm(temporary, { recursive: true, force: true });
+    await rm(temporary, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   }
 });

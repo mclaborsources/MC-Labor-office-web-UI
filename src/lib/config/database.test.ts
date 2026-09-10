@@ -38,6 +38,6 @@ test("database setup validates settings, preserves saved values on invalid input
     process.chdir(originalDirectory);
     for (const name of Object.keys(process.env)) if (!(name in originalEnv)) delete process.env[name];
     Object.assign(process.env, originalEnv);
-    await rm(temporary, { recursive: true, force: true });
+    await rm(temporary, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   }
 });

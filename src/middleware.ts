@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { SESSION_COOKIE_NAME } from "@/lib/auth/cookie";
+import { isLocalMode } from "@/lib/auth/mode";
 
 const PROTECTED_PREFIXES = [
   "/tracking",
@@ -18,6 +19,7 @@ function isProtected(pathname: string): boolean {
 }
 
 export function middleware(request: NextRequest) {
+  if (isLocalMode()) return NextResponse.next();
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/api/")) {

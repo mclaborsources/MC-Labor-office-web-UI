@@ -6,6 +6,7 @@ import { defaultSession } from "@/types/auth";
 import { getDatabaseSettings } from "@/lib/config/database";
 import { redirect } from "next/navigation";
 import { needsAccountSetup } from "@/lib/config/env";
+import { isLocalMode } from "@/lib/auth/mode";
 
 export async function getSession() {
   if (needsAccountSetup()) redirect("/welcome");
@@ -14,6 +15,10 @@ export async function getSession() {
     cookieStore,
     getSessionOptions(),
   );
+  if (isLocalMode()) {
+    session.user = { userId: "local-office", username: "local", displayName: "Local Office", active: true, roles: ["admin"] };
+    session.isLoggedIn = true;
+  }
   return session;
 }
 

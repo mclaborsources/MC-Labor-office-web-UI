@@ -73,14 +73,17 @@ options → Send to → Desktop (create shortcut)**. The launcher finds the proj
 folder itself, so the shortcut's working directory does not need configuring.
 
 No environment-file editing is required when using the Windows launcher. On a
-fresh installation, a popup form creates your administrator login, followed by
-the SQL Server connection form. Enter the server address, database, SQL username
+fresh installation, the launcher skips app login and opens the SQL Server
+connection popup. Enter the server address, database, SQL username
 and password, then test and save. Future launches use the saved settings.
-The administrator password hash and generated session secret are stored in the
-Git-ignored `.local-config/account.json`; database credentials remain encrypted
-in `.local-config/database.enc`. Keep this folder private and preserve it across
-updates. Existing valid `.env.local` login settings still work. Initial account
-creation is available only through a localhost URL and is disabled once configured.
+The launcher enables `MC_LABOR_LOCAL_MODE=1` and binds to `127.0.0.1`, giving the
+local user access to the app and connection settings without an app account.
+SQL credentials are still required. A session secret is generated automatically
+in the Git-ignored `.local-config/session-secret` when no existing secret is
+configured; existing account and environment secrets are preserved so saved
+database connections remain readable. Keep `.local-config` private and preserve
+it across updates. Login code remains available for later use: remove the local
+mode setting from the launcher to restore account setup and sign-in.
 After pulling dependency changes, run `npm ci` before launching again.
 
 Default dev credentials (if using the sample hash for password `dev123`):

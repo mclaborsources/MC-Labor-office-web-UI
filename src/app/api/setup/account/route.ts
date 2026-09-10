@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { randomBytes } from "node:crypto";
 import { hash } from "bcryptjs";
@@ -16,10 +16,12 @@ export async function POST(request: Request) {
   const parsed = z.object({ username: z.string().trim().min(1).max(100), password: z.string().min(8).max(72) }).safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Enter a username and a password of 8–72 characters." }, { status: 400 });
   const passwordHash = await hash(parsed.data.password, 12);
+  const secretFile = path.join(path.dirname(localAccountFile), "session-secret");
+  const existingSecret = process.env.SESSION_SECRET || (existsSync(secretFile) ? readFileSync(secretFile, "utf8") : "");
   try {
     mkdirSync(path.dirname(localAccountFile), { recursive: true, mode: 0o700 });
     writeFileSync(localAccountFile, JSON.stringify({
-      SESSION_SECRET: process.env.SESSION_SECRET && process.env.SESSION_SECRET.length >= 32 ? process.env.SESSION_SECRET : randomBytes(48).toString("hex"),
+      SESSION_SECRET: existingSecret.length >= 32 ? existingSecret : randomBytes(48).toString("hex"),
       DEV_LOGIN_USERNAME: parsed.data.username,
       DEV_LOGIN_PASSWORD_HASH: passwordHash,
       DEV_LOGIN_DISPLAY_NAME: parsed.data.username,

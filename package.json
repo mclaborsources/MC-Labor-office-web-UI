@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --import tsx --test src/lib/week.test.ts src/lib/config/database.test.ts src/lib/config/env.test.ts"
+    "test": "node --import tsx --test src/lib/week.test.ts src/lib/config/database.test.ts src/lib/config/env.test.ts src/lib/config/local-mode.test.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",

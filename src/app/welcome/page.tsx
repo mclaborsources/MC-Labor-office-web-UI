@@ -1,9 +1,11 @@
 import { redirect } from "next/navigation";
 import { needsAccountSetup } from "@/lib/config/env";
 import { AccountSetupForm } from "@/components/admin/AccountSetupForm";
+import { isLocalMode } from "@/lib/auth/mode";
 
 export const dynamic = "force-dynamic";
 export default function WelcomePage() {
+  if (isLocalMode()) redirect("/");
   if (!needsAccountSetup()) redirect("/login");
   return <main className="flex min-h-screen items-center justify-center bg-slate-900/60 p-4">
     <section role="dialog" aria-modal="true" aria-labelledby="setup-title" className="w-full max-w-lg rounded-xl bg-white p-7 shadow-xl">
