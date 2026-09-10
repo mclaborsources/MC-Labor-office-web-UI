@@ -21,6 +21,31 @@ cp .env.example .env.local
 
 Edit `.env.local` with your SQL connection and session secret.
 
+Alternatively, leave `SQL_SERVER`, `SQL_DATABASE`, and `SQL_USER` empty to use
+the first-run connection form after signing in as an administrator. Session
+and app login settings in `.env.local` are still required. Enter the SQL Server
+computer's office IP/name, database, and SQL credentials, then test and save.
+Use either the optional instance field or port field, not both.
+
+Existing `.env.local` SQL settings continue to work. Administrators can open
+**Admin → Change SQL Server connection** to override them. Each save verifies
+connectivity before replacing the settings; it does not modify database tables.
+Changes apply to everyone using this backend. Separate installations on office
+PCs each keep their own connection settings.
+
+Saved settings override the environment and are encrypted in
+`.local-config/database.enc` using a key derived from `SESSION_SECRET`.
+Keep that secret stable and restrict access to both the app folder and its
+environment file with Windows permissions. Changing the secret requires
+re-entering the SQL connection. Passwords are never returned to the browser;
+the setup form prefills `McLabor` and `mclabor` and uses the server-side
+`SQL_SETUP_PASSWORD` when the password field is left empty. Configure this
+variable in each installation's `.env.local`; users can enter a replacement
+password in the form. The app's SQL account
+must have access to the existing MC Labor schema; the connection test only
+checks connectivity, not schema compatibility. For a self-signed office SQL
+certificate, the administrator may need to enable **Trust server certificate**.
+
 Generate a dev password hash:
 
 ```bash

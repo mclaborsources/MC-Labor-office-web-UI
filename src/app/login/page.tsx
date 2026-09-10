@@ -40,7 +40,8 @@ export default function LoginPage() {
         return;
       }
 
-      router.push("/tracking");
+      const data = await res.json();
+      router.push(data.needsSetup ? "/setup" : "/tracking");
       router.refresh();
     } catch {
       setError("Unable to reach server.");

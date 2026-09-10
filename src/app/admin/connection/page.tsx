@@ -45,6 +45,7 @@ export default async function AdminConnectionPage() {
   return (
     <AppShell userDisplayName={session.user?.displayName}>
       <PageHeader title="Admin — Connection & Access" icon={Server} subtitle="Read-only status" />
+      {session.user?.roles.includes("admin") && <a href="/setup" className="mb-3 inline-block rounded border border-slate-400 bg-white px-3 py-2 text-sm">Change SQL Server connection</a>}
 
       <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
         <AccessPanel title="SQL Server Connection" icon={Database}>

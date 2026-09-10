@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --import tsx --test src/lib/week.test.ts"
+    "test": "node --import tsx --test src/lib/week.test.ts src/lib/config/database.test.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",

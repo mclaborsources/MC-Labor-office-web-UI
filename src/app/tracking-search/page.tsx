@@ -1,0 +1,1 @@
+import{AppShell}from"@/components/layout/AppShell";import{TrackingSearchScreen}from"@/components/tracking-search/TrackingSearchScreen";import{getSessionOrDefault}from"@/lib/auth/session";export default async function Page(){const s=await getSessionOrDefault();return <AppShell userDisplayName={s.user?.displayName} fillViewport fullWidth><TrackingSearchScreen/></AppShell>}

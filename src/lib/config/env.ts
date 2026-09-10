@@ -24,10 +24,10 @@ function parsePasswordHash(raw: unknown): string | undefined {
 }
 
 const envSchema = z.object({
-  SQL_SERVER: z.string().min(1),
-  SQL_DATABASE: z.string().min(1),
-  SQL_USER: z.string().min(1),
-  SQL_PASSWORD: z.string(),
+  SQL_SERVER: z.string().default(""),
+  SQL_DATABASE: z.string().default(""),
+  SQL_USER: z.string().default(""),
+  SQL_PASSWORD: z.string().default(""),
   SQL_ENCRYPT: z
     .string()
     .optional()

@@ -1,21 +1,25 @@
 import sql from "mssql";
-import { getEnv } from "@/lib/config/env";
+import { getDatabaseSettings, type DatabaseSettings } from "@/lib/config/database";
 import type { QueryParam } from "@/types/db";
 
 let pool: sql.ConnectionPool | null = null;
 let poolPromise: Promise<sql.ConnectionPool> | null = null;
 
-function buildConfig(): sql.config {
-  const env = getEnv();
+export function buildConfig(settings?: DatabaseSettings): sql.config {
+  const env = settings ?? getDatabaseSettings();
+  if (!env) throw new Error("SQL Server setup is required.");
   return {
-    server: env.SQL_SERVER,
-    database: env.SQL_DATABASE,
-    user: env.SQL_USER,
-    password: env.SQL_PASSWORD,
+    server: env.server,
+    database: env.database,
+    user: env.user,
+    password: env.password,
+    port: env.port,
+    connectionTimeout: 10000,
     requestTimeout: 60000, // 60 s — tblProject JOIN queries can be slow without indexes
     options: {
-      encrypt: env.SQL_ENCRYPT,
-      trustServerCertificate: env.SQL_TRUST_CERT,
+      encrypt: env.encrypt,
+      trustServerCertificate: env.trustServerCertificate,
+      ...(env.instance ? { instanceName: env.instance } : {}),
     },
     pool: {
       max: 10,
@@ -29,10 +33,10 @@ export async function getPool(): Promise<sql.ConnectionPool> {
   if (pool?.connected) return pool;
 
   if (!poolPromise) {
-    poolPromise = sql.connect(buildConfig()).then((connectedPool) => {
+    poolPromise = new sql.ConnectionPool(buildConfig()).connect().then((connectedPool) => {
       pool = connectedPool;
       return connectedPool;
-    });
+    }).catch((error) => { poolPromise = null; throw error; });
   }
 
   return poolPromise;
@@ -88,9 +92,9 @@ export async function testConnection(): Promise<{
 }
 
 export async function closePool(): Promise<void> {
-  if (pool) {
-    await pool.close();
-    pool = null;
-    poolPromise = null;
-  }
+  const previous = poolPromise;
+  pool = null;
+  poolPromise = null;
+  const connected = await previous?.catch(() => null);
+  await connected?.close();
 }

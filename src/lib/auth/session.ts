@@ -3,6 +3,8 @@ import { cookies } from "next/headers";
 import { getSessionOptions } from "@/lib/auth/constants";
 import type { SessionData } from "@/types/auth";
 import { defaultSession } from "@/types/auth";
+import { getDatabaseSettings } from "@/lib/config/database";
+import { redirect } from "next/navigation";
 
 export async function getSession(): Promise<SessionData> {
   const cookieStore = await cookies();
@@ -13,10 +15,15 @@ export async function getSession(): Promise<SessionData> {
   return session;
 }
 
-export async function getSessionOrDefault(): Promise<SessionData> {
+export async function getSessionOrDefault(checkDatabase = true): Promise<SessionData> {
   const session = await getSession();
   if (!session.isLoggedIn) {
     return { ...defaultSession };
+  }
+  if (checkDatabase) {
+    let configured = false;
+    try { configured = Boolean(getDatabaseSettings()); } catch { /* Recover in setup. */ }
+    if (!configured) redirect("/setup");
   }
   return session;
 }

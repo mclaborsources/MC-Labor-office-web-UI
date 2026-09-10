@@ -5,6 +5,7 @@ import { getEnv } from "@/lib/config/env";
 import { getSessionOptions } from "@/lib/auth/constants";
 import { verifyPassword } from "@/lib/auth/password";
 import type { SessionData } from "@/types/auth";
+import { getDatabaseSettings } from "@/lib/config/database";
 
 export async function POST(request: Request) {
   try {
@@ -46,7 +47,9 @@ export async function POST(request: Request) {
     session.isLoggedIn = true;
     await session.save();
 
-    return NextResponse.json({ ok: true });
+    let needsSetup = true;
+    try { needsSetup = !getDatabaseSettings(); } catch { /* Allow configuration recovery. */ }
+    return NextResponse.json({ ok: true, needsSetup });
   } catch (error) {
     if (process.env.NODE_ENV === "development") {
       console.error("[api/auth/login]", error);
