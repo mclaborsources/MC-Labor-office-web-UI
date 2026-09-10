@@ -62,6 +62,20 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+On Windows, double-click **Start-MC-Labor.cmd** in the project folder. It installs
+dependencies if missing, starts the local development server, and opens the browser
+when the server responds. Keep its terminal window open while using the app.
+The launcher uses port 3000 and binds to this computer only.
+
+To create a desktop shortcut, right-click `Start-MC-Labor.cmd`, choose **Show more
+options → Send to → Desktop (create shortcut)**. The launcher finds the project
+folder itself, so the shortcut's working directory does not need configuring.
+
+If `.env.local` is missing, the launcher copies `.env.example` and opens it for
+setup. Save your session and login settings, then launch again. Keep personal
+settings in `.env.local`; `.env.example` is the shared template. After pulling
+dependency changes, run `npm ci` before launching again.
+
 Default dev credentials (if using the sample hash for password `dev123`):
 
 - Username: `dev`
