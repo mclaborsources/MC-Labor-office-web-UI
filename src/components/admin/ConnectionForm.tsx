@@ -30,7 +30,7 @@ export function ConnectionForm({ initial }: { initial: DatabaseSettings | null }
       <label className="block text-sm font-medium">Port (optional)
         <input className="mt-1 w-full rounded border border-slate-300 p-2" type="number" min={1} max={65535} value={settings.port ?? ""} placeholder="1433" onChange={(event) => update({ port: event.target.value ? Number(event.target.value) : undefined })} />
       </label>
-      <p className="text-xs text-slate-600">The office password is supplied automatically. Leave the password field empty to use it, or enter a replacement. Use either a port or an instance name.</p>
+      <p className="text-xs text-slate-600">Enter the SQL password. You can leave it empty only if an office password was previously configured for this installation. Use either a port or an instance name.</p>
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={settings.encrypt} onChange={(event) => update({ encrypt: event.target.checked })} />Encrypt connection</label>
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={settings.trustServerCertificate} onChange={(event) => update({ trustServerCertificate: event.target.checked })} />Trust server certificate (skip certificate verification)</label>
       <div className="flex gap-3">

@@ -71,10 +71,16 @@ To create a desktop shortcut, right-click `Start-MC-Labor.cmd`, choose **Show mo
 options → Send to → Desktop (create shortcut)**. The launcher finds the project
 folder itself, so the shortcut's working directory does not need configuring.
 
-If `.env.local` is missing, the launcher copies `.env.example` and opens it for
-setup. Save your session and login settings, then launch again. Keep personal
-settings in `.env.local`; `.env.example` is the shared template. After pulling
-dependency changes, run `npm ci` before launching again.
+No environment-file editing is required when using the Windows launcher. On a
+fresh installation, a popup form creates your administrator login, followed by
+the SQL Server connection form. Enter the server address, database, SQL username
+and password, then test and save. Future launches use the saved settings.
+The administrator password hash and generated session secret are stored in the
+Git-ignored `.local-config/account.json`; database credentials remain encrypted
+in `.local-config/database.enc`. Keep this folder private and preserve it across
+updates. Existing valid `.env.local` login settings still work. Initial account
+creation is available only through a localhost URL and is disabled once configured.
+After pulling dependency changes, run `npm ci` before launching again.
 
 Default dev credentials (if using the sample hash for password `dev123`):
 

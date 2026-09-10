@@ -5,8 +5,10 @@ import type { SessionData } from "@/types/auth";
 import { defaultSession } from "@/types/auth";
 import { getDatabaseSettings } from "@/lib/config/database";
 import { redirect } from "next/navigation";
+import { needsAccountSetup } from "@/lib/config/env";
 
-export async function getSession(): Promise<SessionData> {
+export async function getSession() {
+  if (needsAccountSetup()) redirect("/welcome");
   const cookieStore = await cookies();
   const session = await getIronSession<SessionData>(
     cookieStore,

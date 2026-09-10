@@ -1,7 +1,19 @@
 @echo off
 setlocal
-cd /d "%~dp0"
 title MC Labor - Local Web Server
+set "MC_LABOR_ROOT=%~dp0"
+if exist "%MC_LABOR_ROOT%package.json" goto project_found
+set "MC_LABOR_ROOT=%~dp0MC-Labor-office-web-UI\"
+if exist "%MC_LABOR_ROOT%package.json" goto project_found
+echo Cannot find the MC-Labor-office-web-UI project folder.
+echo Run Start-MC-Labor.cmd inside the project folder.
+echo To launch from the Desktop, create a shortcut to that file.
+pause
+exit /b 1
+
+:project_found
+cd /d "%MC_LABOR_ROOT%"
+if errorlevel 1 goto failed
 
 where node >nul 2>&1
 if errorlevel 1 (
@@ -16,15 +28,6 @@ if errorlevel 1 (
   exit /b 1
 )
 
-if not exist ".env.local" (
-  copy /-Y ".env.example" ".env.local" >nul
-  echo Configure session and login settings in .env.local, then run this again.
-  echo Database settings can be entered in the administrator connection form.
-  start "" notepad.exe ".env.local"
-  pause
-  exit /b 1
-)
-
 if not exist "node_modules\next\package.json" (
   echo Installing application dependencies...
   call npm ci
@@ -33,7 +36,7 @@ if not exist "node_modules\next\package.json" (
 
 echo Keep this window open while using MC Labor. Press Ctrl+C to stop.
 echo Opening http://localhost:3000 when the server is ready...
-start "" /b node "%~dp0scripts\open-local-browser.cjs"
+start "" /b node "%MC_LABOR_ROOT%scripts\open-local-browser.cjs"
 call npm run dev -- --hostname 127.0.0.1 --port 3000
 if errorlevel 1 goto failed
 exit /b 0

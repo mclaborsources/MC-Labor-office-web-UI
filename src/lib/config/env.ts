@@ -1,4 +1,8 @@
 import { z } from "zod";
+import { existsSync, readFileSync } from "node:fs";
+import path from "node:path";
+
+export const localAccountFile = path.join(process.cwd(), ".local-config", "account.json");
 
 function parsePasswordHash(raw: unknown): string | undefined {
   if (typeof raw !== "string") return undefined;
@@ -59,7 +63,8 @@ let cachedEnv: Env | null = null;
 export function getEnv(): Env {
   if (cachedEnv) return cachedEnv;
 
-  const parsed = envSchema.safeParse(process.env);
+  const local = existsSync(localAccountFile) ? JSON.parse(readFileSync(localAccountFile, "utf8")) : {};
+  const parsed = envSchema.safeParse({ ...process.env, ...local });
   if (!parsed.success) {
     const missing = parsed.error.issues
       .map((i) => `${i.path.join(".")}: ${i.message}`)
@@ -71,6 +76,11 @@ export function getEnv(): Env {
 
   cachedEnv = parsed.data;
   return cachedEnv;
+}
+
+export function needsAccountSetup() {
+  if (existsSync(localAccountFile)) return false;
+  return !envSchema.safeParse(process.env).success;
 }
 
 /** Safe subset for client — never includes SQL credentials */
