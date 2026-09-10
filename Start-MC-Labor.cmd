@@ -28,12 +28,19 @@ if errorlevel 1 (
   exit /b 1
 )
 
-if not exist "node_modules\next\package.json" (
-  echo Installing application dependencies...
-  call npm ci
-  if errorlevel 1 goto failed
-)
+if not exist "node_modules\.mc-labor-install-complete" goto install_dependencies
+if not exist "node_modules\next\package.json" goto install_dependencies
+goto run_app
 
+:install_dependencies
+echo Installing application dependencies. Please wait...
+call npm install
+if errorlevel 1 goto failed
+echo Installed successfully.>"node_modules\.mc-labor-install-complete"
+if errorlevel 1 goto failed
+echo Dependencies installed successfully. Starting MC Labor...
+
+:run_app
 echo Keep this window open while using MC Labor. Press Ctrl+C to stop.
 echo Opening http://localhost:3000 when the server is ready...
 start "" /b node "%MC_LABOR_ROOT%scripts\open-local-browser.cjs"

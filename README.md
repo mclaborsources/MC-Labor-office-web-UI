@@ -63,7 +63,8 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000).
 
 On Windows, double-click **Start-MC-Labor.cmd** in the project folder. It installs
-dependencies if missing, starts the local development server, and opens the browser
+dependencies with `npm install` on its first launch, waits for installation to
+succeed, starts the local development server, and opens the browser
 when the server responds. Keep its terminal window open while using the app.
 The launcher uses port 3000 and binds to this computer only.
 
