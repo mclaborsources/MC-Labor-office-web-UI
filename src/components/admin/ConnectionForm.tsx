@@ -3,7 +3,7 @@ import { useState } from "react";
 import type { DatabaseSettings } from "@/lib/config/database";
 
 export function ConnectionForm({ initial }: { initial: DatabaseSettings | null }) {
-  const [settings, setSettings] = useState<DatabaseSettings>(initial ?? { server: "", database: "McLabor", user: "mclabor", password: "", instance: "", encrypt: true, trustServerCertificate: false });
+  const [settings, setSettings] = useState<DatabaseSettings>(initial ?? { server: "", database: "McLabor", user: "mclabor", password: "", instance: "", encrypt: true, trustServerCertificate: true });
   const [busy, setBusy] = useState(false);
   const [cancelled, setCancelled] = useState(false);
   const [message, setMessage] = useState("");

@@ -4,6 +4,7 @@ import { requireSession } from "@/lib/auth/session";
 import { databaseSchema, saveDatabaseSettings } from "@/lib/config/database";
 import { buildConfig, closePool } from "@/lib/db/sql";
 import { hasSameOrigin } from "@/lib/auth/origin";
+import { connectionErrorMessage } from "@/lib/db/connectionError";
 
 export async function POST(request: Request) {
   if (!hasSameOrigin(request)) {
@@ -34,8 +35,8 @@ export async function POST(request: Request) {
   try {
     await candidate.connect();
     await candidate.request().query("SELECT 1 AS ok");
-  } catch {
-    return NextResponse.json({ error: "Cannot connect. Check the server, database, credentials, network access and encryption settings." }, { status: 400 });
+  } catch (error) {
+    return NextResponse.json({ error: connectionErrorMessage(error) }, { status: 400 });
   } finally {
     await candidate.close().catch(() => undefined);
   }
