@@ -13503,3 +13503,28 @@ body {
   .lien-paper tr { break-inside:avoid; }
   .lien-paper th { print-color-adjust:exact; -webkit-print-color-adjust:exact; }
 }
+.manpower-report { display:flex; flex-direction:column; min-height:0; padding:4px 6px; }
+.manpower-report > header { gap:8px; min-width:1880px; margin-bottom:10px; }
+.manpower-report header h1 { margin-right:25px; white-space:nowrap; }
+.manpower-report header select { width:105px; }
+.manpower-filters { display:flex; gap:8px; margin-left:30px; border:1px solid #bbb; padding:2px; }
+.manpower-filters select { width:145px!important; }
+.manpower-controls { display:grid; grid-template-columns:492px 426px 437px 1fr; gap:8px; min-width:1880px; }
+.manpower-controls input:not([type=radio]) { width:123px; }
+.manpower-controls fieldset { display:flex; flex-wrap:wrap; gap:12px 15px; border:1px solid #aaa; padding:6px; margin-top:10px; width:434px; }
+.manpower-controls input[type=radio] { width:12px; height:12px; margin-right:6px; }
+.manpower-controls fieldset > span { width:66px; }
+.manpower-refresh { display:flex; align-items:center; gap:8px; margin-top:4px; }
+.manpower-refresh output { border:1px solid #aaa; padding:4px; width:240px; }
+.manpower-refresh button { color:red; text-decoration:underline; height:38px; }
+.manpower-views { display:grid; grid-template-columns:repeat(4,1fr); gap:3px 8px; align-content:start; border:1px solid #aaa; padding:4px 8px; }
+.manpower-account-buttons { display:grid; grid-template-columns:repeat(4,1fr); gap:3px 8px; border:1px solid #aaa; padding:4px 8px; }
+.manpower-account-buttons output { text-align:center; padding:3px; background:white; color:red; }
+.manpower-audit { display:flex; align-items:center; gap:8px; margin-top:10px; }
+.manpower-note { color:#243be3; padding:36px 8px 0; }
+.manpower-note p { margin:0 0 16px; }
+.manpower-note button { display:block; margin:auto; }
+.manpower-report .customer-report-grid table { width:1842px; }
+.manpower-report .customer-report-grid td { color:#153957; }
+.manpower-report footer { height:22px; flex-shrink:0; }
+.ac-report-menu-status { padding:6px 10px; margin:4px 0; border:1px solid #cdb96a; background:#f7f1d8; color:#4a3d00; font-size:12px; }

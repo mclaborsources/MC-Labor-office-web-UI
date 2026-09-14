@@ -45,20 +45,26 @@ const TOOLBAR_ADMIN_ACTIONS = [
 ];
 
 const TRACKING_REPORT_OPTIONS = [
-  { label: "Reports", href: "/reports" },
+  { label: "Report Menu", href: "/reports" },
   { label: "Accounts Receivable Report", href: "/accounts-receivable" },
   { label: "Active Customers", href: "/active-customers" },
-  { label: "Seamus DB", href: "/open-invoices" },
-  { label: "Lien Summary", href: "/lien-summary" },
-  { label: "Employee Hours By Week", href: "/employee-hours-by-week" },
-  { label: "Employee Hours By Month", href: "/employee-hours-by-month" },
-  { label: "Weekly Customer Margin Report", href: "/weekly-customer-margin-report" },
-  { label: "WCC Payroll / Sales Report by Customer", href: "/wcc-payroll" },
-  { label: "Yearly Revenue", href: "/yearly-revenue" },
-  { label: "Invoice Search", href: "/invoice-search" },
-
+  { label: "Seamus QB", href: "/open-invoices" },
+  { label: "Seamus Lien Summary", href: "/lien-summary" },
+  { label: "Manpower Contact Report", href: "/manpower-report" },
+  ...[
+    "Invoices Contact Report", "Verify Hours Contact Report", "NOC", "NOI",
+    "Check Weekly Rates", "Employee Bonus Expense Report", "Attendance",
+    "Sick Hours Report - All", "Job Orders Report", "Copy to Per Diem",
+    "Invoices by Week Report", "Margin by Week Report", "OSHA Link Sent Report",
+    "Schooling Report", "Tools Report", "401(k) Report",
+  ].map(label => ({ label, href: `pending:${label}` })),
+  { label: "Insurance Certificate Request Report", href: "/insurance-certificate-request-search" },
+  { label: "Employee Review Search", href: "pending:Employee Review Search" },
+  { label: "Job Address and WCC Changes", href: "pending:Job Address and WCC Changes" },
+  { label: "WCC On Site", href: "pending:WCC On Site" },
+  { label: "Directions", href: "pending:Directions" },
+  { label: "Multiple Jobs per Employee", href: "pending:Multiple Jobs per Employee" },
 ];
-
 const TRACKING_REPORT_OPTIONS_2 = [
   { label: "Vacation Hours Report", href: "/vacation-hours-report" },
   { label: "Employee Advance Report", href: "/employee-advance-report" },
@@ -469,6 +475,7 @@ export function TrackingScreen({
   userDisplayName = "",
 }: TrackingScreenProps) {
   const router = useRouter();
+  const [reportMessage, setReportMessage] = useState("");
   const [jobInfoTab, setJobInfoTab] = useState("job-info");
   const [trackingTab, setTrackingTab] = useState("tracking");
   const [newJobApplicationOpen, setNewJobApplicationOpen] = useState(false);
@@ -566,7 +573,7 @@ export function TrackingScreen({
           className="ac-select"
           defaultValue=""
           aria-label="Reports menu"
-          onChange={(event) => { navigateSearch(event.target.value); event.target.value = ""; }}
+          onChange={(event) => { const value = event.target.value; if (value.startsWith("pending:")) setReportMessage(`${value.slice(8)} is not connected yet.`); else { setReportMessage(""); navigateSearch(value); } event.target.value = ""; }}
         >
           <option value="">&lt;Reports&gt;</option>
           {TRACKING_REPORT_OPTIONS.map(option => <option key={option.href} value={option.href}>{option.label}</option>)}
@@ -621,6 +628,7 @@ export function TrackingScreen({
         </AccessButton>
       </AccessToolbar>
 
+      {reportMessage && <p role="status" className="ac-report-menu-status">{reportMessage}</p>}
       <div className="ac-panel ac-panel-elevated ac-tracking-filter-panel ac-tracking-filter-panel--tall shrink-0 overflow-hidden">
         <div className="ac-tracking-job-shell ac-tracking-job-shell--tall">
           <aside className="ac-tracking-col-assign">
@@ -729,7 +737,7 @@ export function TrackingScreen({
 
             <div>
               <div className="ac-flabel">Reports</div>
-              <select className="ac-select w-full" defaultValue="" aria-label="Reports 2 menu" onChange={(event) => { navigateSearch(event.target.value); event.target.value = ""; }}>
+              <select className="ac-select w-full" defaultValue="" aria-label="Reports 2 menu" onChange={(event) => { const value = event.target.value; if (value.startsWith("pending:")) setReportMessage(`${value.slice(8)} is not connected yet.`); else { setReportMessage(""); navigateSearch(value); } event.target.value = ""; }}>
                 <option value="">&lt;Reports 2&gt;</option>
                 {TRACKING_REPORT_OPTIONS_2.map(option => <option key={option.href} value={option.href}>{option.label}</option>)}
               </select>
