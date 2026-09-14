@@ -444,6 +444,7 @@ export function TrackingScreen({
   const [jobInfoTab, setJobInfoTab] = useState("job-info");
   const [trackingTab, setTrackingTab] = useState("tracking");
   const [newJobApplicationOpen, setNewJobApplicationOpen] = useState(false);
+  const [applicationVariant, setApplicationVariant] = useState<"employee" | "sub">("employee");
 
   const rows = preview?.rows ?? [];
 
@@ -521,15 +522,16 @@ export function TrackingScreen({
           defaultValue=""
           aria-label="Job application menu"
           onChange={(event) => {
-            if (event.target.value === "/job-app-problems") router.push(event.target.value);
-            if (event.target.value === "new") setNewJobApplicationOpen(true);
+            if (["mls", "hsg", "datapay"].includes(event.target.value)) router.push(`/website-application?source=${event.target.value}`);
+            if (["new", "sub"].includes(event.target.value)) { setApplicationVariant(event.target.value === "sub" ? "sub" : "employee"); setNewJobApplicationOpen(true); }
+            event.target.value = "";
           }}
         >
           <option value="">&lt;Job Application&gt;</option>
-          <option value="new">New Application</option>
-          <option value="review">Review Queue</option>
-          <option value="/job-app-problems">Application Problems</option>
-          <option value="missing-documents">Missing Documents</option>
+          <option value="mls">Web App MLS</option><option value="new">New Employee MLS</option>
+          <option value="sub">New SUB</option>
+          <option value="hsg">Web App HSG</option>
+          <option value="datapay">Datapay App</option>
         </select>
         {TOOLBAR_ALERT_ACTIONS.map((label) => (
           <AccessButton
@@ -548,7 +550,7 @@ export function TrackingScreen({
             key={label}
             onClick={() => {
               if (label === "Office Staff Notes") router.push("/office-staff-notes");
-              if (label === "New Job App") setNewJobApplicationOpen(true);
+              if (label === "New Job App") { setApplicationVariant("employee"); setNewJobApplicationOpen(true); }
             }}
           >
             {label}
@@ -846,8 +848,10 @@ export function TrackingScreen({
         </div>
       )}
       <NewJobApplicationModal
+        key={applicationVariant}
+        variant={applicationVariant}
         open={newJobApplicationOpen}
-        onClose={() => setNewJobApplicationOpen(false)}
+        onClose={() => { setNewJobApplicationOpen(false); router.push("/employee-application"); }}
       />
     </div>
   );
