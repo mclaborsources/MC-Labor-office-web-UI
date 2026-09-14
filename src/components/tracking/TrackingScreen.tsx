@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Fragment, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
+import { compareTrackingRows, dailyTotal, filterTrackingRows, trackingCsv, trackingDays } from "@/lib/trackingGrid";
 import type {
   WeekContext,
   TrackingPreview,
@@ -446,9 +447,40 @@ export function TrackingScreen({
   const [newJobApplicationOpen, setNewJobApplicationOpen] = useState(false);
   const [applicationVariant, setApplicationVariant] = useState<"employee" | "sub">("employee");
 
-  const rows = preview?.rows ?? [];
+  const [query, setQuery] = useState("");
+  const [employeeFilter, setEmployeeFilter] = useState("");
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [sort, setSort] = useState<{ key: keyof TrackingPreviewRow; direction: "asc" | "desc" } | null>(null);
+  const visible = useMemo(() => {
+    const filtered = filterTrackingRows(preview?.rows ?? [], query, employeeFilter);
+    return sort ? filtered.sort((a,b) => compareTrackingRows(a.row,b.row,sort.key,sort.direction)) : filtered;
+  }, [preview, query, employeeFilter, sort]);
+  const rows = visible.map(item => item.row);
+  const position = Math.max(0, visible.findIndex(item => item.index === selectedIndex));
+  const selected = visible[position]?.row;
+  const selectedSourceIndex = visible[position]?.index;
+  const summaryHours = rows.reduce((sum,row) => sum + dailyTotal(row),0);
+  function selectRecord(index: number) {
+    if (!visible[index]) return;
+    setSelectedIndex(visible[index].index);
+    const element = document.getElementById(`tracking-row-${visible[index].index}`);
+    element?.scrollIntoView({ block:"nearest", inline:"nearest" });
+    element?.focus({ preventScroll:true });
+  }
+  function columnKey(col: GridCol): keyof TrackingPreviewRow | null {
+    return col.kind === "field" ? col.key : col.kind === "day" ? col.hoursKey : col.kind === "payroll" ? "payrollCo" : col.kind === "hl" ? "hlCv" : null;
+  }
+  function toggleSort(key: keyof TrackingPreviewRow) { setSort(v => ({ key, direction:v?.key === key && v.direction === "asc" ? "desc":"asc" })); }
+  function exportRows() {
+    const columns = GRID_COLUMNS.filter(col => col.kind !== "spacer");
+    const csv = trackingCsv(columns.map(headerLabel),rows.map(row => columns.map(col => row[columnKey(col)!])));
+    const url = URL.createObjectURL(new Blob(["\uFEFF",csv],{type:"text/csv;charset=utf-8"}));
+    const anchor=document.createElement("a"); anchor.href=url; anchor.download=`tracking-${week.assignYear}-${week.assignWeek}.csv`; anchor.click(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+  function openEmployee() { if (selected) router.push(`/employees/${encodeURIComponent(selected.employeeId)}`); }
 
   function navigateFilter(customerId: string, projectId: string) {
+    setSelectedIndex(null);
     const q = new URLSearchParams({ date: dateInputValue(week.displayDate) });
     if (customerId) q.set("customerId", customerId);
     if (projectId) q.set("projectId", projectId);
@@ -604,7 +636,7 @@ export function TrackingScreen({
                   ))}
                 </select>
                 <AccessButton xs>+</AccessButton>
-                <AccessButton xs>Reset</AccessButton>
+                <AccessButton xs onClick={() => { setQuery(""); setEmployeeFilter(""); setSort(null); navigateFilter("", ""); }}>Reset</AccessButton>
       </div>
     </div>
 
@@ -636,7 +668,7 @@ export function TrackingScreen({
                 <AccessButton>Transfer</AccessButton>
               </AccessButtonRow>
               <AccessButtonRow>
-                <AccessButton xs className="ac-tracking-assign-cell">
+                <AccessButton xs className="ac-tracking-assign-cell" onClick={() => router.push("/phone-number-search")}>
                   Cell # Search
                 </AccessButton>
               </AccessButtonRow>
@@ -644,7 +676,7 @@ export function TrackingScreen({
 
             <AccessButtonRow>
               <AccessButton>T Sheets HL</AccessButton>
-              <AccessButton>View Invoice</AccessButton>
+              <AccessButton onClick={() => router.push("/invoice-search")}>View Invoice</AccessButton>
             </AccessButtonRow>
           </aside>
 
@@ -739,28 +771,28 @@ export function TrackingScreen({
             <AccessButton>Payroll Change</AccessButton>
             <AccessToolbarDivider />
             <span className="ac-tracking-refresh-label">Refresh</span>
-            <AccessButton>All</AccessButton>
-            <AccessButton>Job</AccessButton>
-            <AccessButton>Emp</AccessButton>
+            <AccessButton onClick={() => { setQuery(""); setEmployeeFilter(""); navigateFilter("", ""); router.refresh(); }}>All</AccessButton>
+            <AccessButton onClick={() => { setQuery(""); setEmployeeFilter(""); router.refresh(); }}>Job</AccessButton>
+            <AccessButton disabled={!selected} onClick={() => { if (selected) setEmployeeFilter(selected.employeeId); router.refresh(); }}>Emp</AccessButton>
             <AccessButton>Delete</AccessButton>
             <AccessToolbarDivider />
             <div className="ac-tracking-record-nav">
-              <AccessButton xs aria-label="First record">
+              <AccessButton xs aria-label="First record" disabled={!rows.length || position === 0} onClick={() => selectRecord(0)}>
                 |◄
               </AccessButton>
-              <AccessButton xs aria-label="Previous record">
+              <AccessButton xs aria-label="Previous record" disabled={!rows.length || position === 0} onClick={() => selectRecord(position-1)}>
                 ◄
               </AccessButton>
               <input
                 type="text"
                 className="ac-input ac-tracking-record-input"
-                defaultValue={jobInfo?.customerName || (selectedCustomerId ? "Filtered customer" : "")}
+                readOnly value={selected ? `${selected.firstName} ${selected.lastName}` : ""}
                 title="Current customer filter"
               />
-              <AccessButton xs aria-label="Next record">
+              <AccessButton xs aria-label="Next record" disabled={!rows.length || position >= rows.length-1} onClick={() => selectRecord(position+1)}>
                 ►
               </AccessButton>
-              <AccessButton xs aria-label="Last record">
+              <AccessButton xs aria-label="Last record" disabled={!rows.length || position >= rows.length-1} onClick={() => selectRecord(rows.length-1)}>
                 ►|
               </AccessButton>
             </div>
@@ -773,7 +805,7 @@ export function TrackingScreen({
               ))}
             </span>
             <AccessButton>History Update</AccessButton>
-            <AccessButton>Browse</AccessButton>
+            <AccessButton disabled={!selected} onClick={openEmployee}>Browse</AccessButton><AccessButton disabled={!rows.length} onClick={exportRows}>Export CSV</AccessButton>
             <span className="ac-swatches ac-tracking-palette-swatches">
               {PALETTE_SWATCHES.map((c) => (
                 <span key={c} className="ac-swatch" style={{ background: c }} title="Palette" />
@@ -793,9 +825,9 @@ export function TrackingScreen({
                     <th
                       key={i}
                       className={col.kind === "spacer" ? "ac-grid-spacer" : undefined}
-                      style={col.kind === "day" ? { textAlign: "center" } : undefined}
+                      aria-sort={sort?.key === columnKey(col) ? (sort.direction === "asc" ? "ascending" : "descending") : undefined} style={col.kind === "day" ? { textAlign: "center" } : undefined}
                     >
-                      {headerLabel(col)}
+                      {columnKey(col) ? <button type="button" className="tracking-sort" onClick={() => toggleSort(columnKey(col)!)}>{headerLabel(col)}{sort?.key === columnKey(col) ? (sort.direction === "asc" ? " ▲" : " ▼") : ""}</button> : headerLabel(col)}
                     </th>
                   ))}
                 </tr>
@@ -804,7 +836,7 @@ export function TrackingScreen({
                 {rows.length === 0 ? (
                   <tr>
                     <td colSpan={COL_COUNT} className="ac-tracking-empty">
-                      No assignments for week {week.assignWeek}/{week.assignYear}.
+                      {query || employeeFilter ? "No assignments match your filters." : `No assignments for week ${week.assignWeek}/${week.assignYear}.`}
                       {selectedCustomerId ? " Try clearing the customer filter." : ""}
                     </td>
                   </tr>
@@ -812,7 +844,7 @@ export function TrackingScreen({
                   rows.map((r, i) => (
                     <tr
                       key={`${r.employeeId}-${i}`}
-                      className={r.placeholder ? "ac-tracking-row-placeholder" : ""}
+                      id={`tracking-row-${visible[i].index}`} aria-selected={selectedSourceIndex === visible[i].index} tabIndex={0} onClick={() => setSelectedIndex(visible[i].index)} onDoubleClick={() => router.push(`/employees/${encodeURIComponent(r.employeeId)}`)} onKeyDown={event => { if(event.key === "ArrowDown" || event.key === "ArrowUp") { event.preventDefault(); selectRecord(i + (event.key === "ArrowDown" ? 1 : -1)); } if(event.key === "Enter") router.push(`/employees/${encodeURIComponent(r.employeeId)}`); }} className={`${r.placeholder ? "ac-tracking-row-placeholder" : ""} ${selectedSourceIndex === visible[i].index ? "tracking-selected-row" : ""}`}
                     >
                       {GRID_COLUMNS.map((col, ci) => (
                         <Fragment key={ci}>{renderCell(col, r)}</Fragment>
@@ -825,14 +857,14 @@ export function TrackingScreen({
           </div>
           <div className="ac-recordbar shrink-0">
             <span className="font-mono text-slate-600">
-              Record: |◄ ◄ {rows.length === 0 ? 0 : 1} of {rows.length} ► ►|
+              Record: {rows.length === 0 ? 0 : position+1} of {rows.length} · {summaryHours.toFixed(2)} daily hours
             </span>
             <span className="text-slate-500">
               {selectedCustomerId ? jobInfo?.customerName || "Filtered" : "Unfiltered"}
             </span>
             <span className="ml-auto flex items-center gap-1.5">
               <span className="text-slate-500">Search</span>
-              <input type="search" className="ac-input w-[130px]" placeholder="Filter rows…" />
+              <input type="search" aria-label="Filter tracking rows" className="ac-input w-[130px]" placeholder="Filter rows…" value={query} onChange={event => setQuery(event.target.value)} />{(query || employeeFilter) && <AccessButton xs onClick={() => { setQuery(""); setEmployeeFilter(""); }}>Clear Filters</AccessButton>}
             </span>
           </div>
           <p className="ac-tracking-status">
@@ -843,8 +875,22 @@ export function TrackingScreen({
           </p>
         </div>
       ) : (
-        <div className="ac-tracking-shell-empty flex-1">
-          {TRACKING_TABS.find((t) => t.id === trackingTab)?.label} — read-only shell (SQL wiring pending).
+        <div className="ac-tracking-grid-shell flex min-h-0 flex-1 flex-col">
+          <div className="ac-grid ac-grid-tracking min-h-0 flex-1 overflow-auto">
+            <table><thead><tr><th>Employee</th><th>Job</th>
+              {trackingTab === "hours" ? <>{["Sat","Sun","Mon","Tue","Wed","Thu","Fri"].map(day => <th key={day}>{day}</th>)}<th>Daily Total</th><th>Notes</th></> :
+                trackingTab === "hours2" ? <><th>Daily Total</th><th>Recorded Total</th><th>Pay Rate</th><th>Bill Rate</th><th>Bill Rate OT</th><th>Margin</th><th>Notes</th></> :
+                trackingTab === "benefits" ? <><th>Health</th><th>Per Diem</th><th>WCC State</th><th>WCC</th><th>Parking / Hr</th><th>Payroll Co</th></> :
+                <><th>Week Ending</th><th>Assignment User</th><th>Assignment Timestamp</th><th>Hours AutoText User</th><th>Hours AutoText Timestamp</th><th>HL AutoText User</th><th>HL AutoText Timestamp</th></>}
+            </tr></thead><tbody>{visible.map(({row,index}) => <tr key={index} id={`tracking-row-${index}`} className={selectedSourceIndex === index ? "tracking-selected-row" : ""} onClick={() => setSelectedIndex(index)} onDoubleClick={() => router.push(`/employees/${encodeURIComponent(row.employeeId)}`)}><td><Link href={`/employees/${encodeURIComponent(row.employeeId)}`}>{row.firstName} {row.lastName}</Link></td><td>{row.jobSite}</td>
+              {(trackingTab === "hours" ? [...trackingDays.map(key => row[key]),dailyTotal(row).toFixed(2),row.hoursNote] :
+                trackingTab === "hours2" ? [dailyTotal(row).toFixed(2),row.totalHours,row.payRate,row.billRate,row.billRateOT,row.trackMargin,row.hoursNote] :
+                trackingTab === "benefits" ? [row.health,row.perDiem,row.wccState,row.wcc,row.parkingPerHr,row.payrollCo] :
+                [row.weekEnding,row.assignmentUser,row.assignmentTimestamp,row.hrsAutoTextUser,row.hrsAutoTextTimestamp,row.hlAutoTextUser,row.hlAutoTextTimestamp]).map((value,i) => <td key={i}>{value}</td>)}
+            </tr>)}{!rows.length && <tr><td colSpan={11}>No assignments match the current week and filters.</td></tr>}</tbody></table>
+          </div>
+          <div className="ac-recordbar"><span>{rows.length} records · {summaryHours.toFixed(2)} daily hours</span><input type="search" aria-label="Filter tracking rows" className="ac-input" value={query} placeholder="Filter rows…" onChange={e => setQuery(e.target.value)} /><AccessButton xs onClick={() => { setQuery(""); setEmployeeFilter(""); }}>Clear Filters</AccessButton></div>
+          <p className="ac-tracking-status">Read-only · {trackingTab === "ts-history" ? "Assignment and message timestamps for the selected week; archived timesheet history is not connected." : "Values from the loaded tracking assignments."}</p>
         </div>
       )}
       <NewJobApplicationModal
