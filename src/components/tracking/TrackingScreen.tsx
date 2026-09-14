@@ -581,7 +581,7 @@ export function TrackingScreen({
                 <div className="ac-flabel">Week</div>
                 <div className="ac-readonly ac-tracking-field-box font-mono text-center">{week.assignWeek}</div>
               </div>
-              <AccessButton xs className="ac-tracking-top-empl">
+              <AccessButton xs className="ac-tracking-top-empl" onClick={() => router.push("/employee-quick-search")}>
                 Empl Quick Search
               </AccessButton>
             </div>
