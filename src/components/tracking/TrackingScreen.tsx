@@ -44,6 +44,33 @@ const TOOLBAR_ADMIN_ACTIONS = [
   "New Job App",
 ];
 
+const TRACKING_REPORT_OPTIONS = [
+  { label: "Reports", href: "/reports" },
+  { label: "Accounts Receivable Report", href: "/accounts-receivable" },
+  { label: "Active Customers", href: "/active-customers" },
+  { label: "Seamus DB", href: "/open-invoices" },
+  { label: "Lien Summary", href: "/lien-summary" },
+  { label: "Employee Hours By Week", href: "/employee-hours-by-week" },
+  { label: "Employee Hours By Month", href: "/employee-hours-by-month" },
+  { label: "Weekly Customer Margin Report", href: "/weekly-customer-margin-report" },
+  { label: "WCC Payroll / Sales Report by Customer", href: "/wcc-payroll" },
+  { label: "Yearly Revenue", href: "/yearly-revenue" },
+  { label: "Invoice Search", href: "/invoice-search" },
+
+];
+
+const TRACKING_REPORT_OPTIONS_2 = [
+  { label: "Vacation Hours Report", href: "/vacation-hours-report" },
+  { label: "Employee Advance Report", href: "/employee-advance-report" },
+  { label: "Employee Health Insurance By Month", href: "/employee-health-insurance-by-month" },
+  { label: "Full-Time Employees By Month", href: "/full-time-employees-by-month" },
+  { label: "Payroll Exclusions", href: "/payroll-exclusions" },
+  { label: "Contract Report", href: "/contract-report" },
+  { label: "UI Report", href: "/ui-report" },
+  { label: "Accident Report Search", href: "/accident-report-search" },
+
+];
+
 const LEGACY_SEARCH_OPTIONS = [
   { label: "All Contacts Search", href: "/customers" },
   { label: "Customer Search", href: "/customers" },
@@ -539,13 +566,10 @@ export function TrackingScreen({
           className="ac-select"
           defaultValue=""
           aria-label="Reports menu"
+          onChange={(event) => { navigateSearch(event.target.value); event.target.value = ""; }}
         >
           <option value="">&lt;Reports&gt;</option>
-          <option value="weekly-schedule">Weekly Schedule</option>
-          <option value="timesheets">Timesheets</option>
-          <option value="payroll">Payroll</option>
-          <option value="customer-sales">Sales by Customer</option>
-          <option value="wcc">WCC Report</option>
+          {TRACKING_REPORT_OPTIONS.map(option => <option key={option.href} value={option.href}>{option.label}</option>)}
         </select>
         <AccessButton>Health Ins</AccessButton>
         <AccessButton className="ac-tracking-toolbar-alert">Bonus Exp</AccessButton>
@@ -705,13 +729,9 @@ export function TrackingScreen({
 
             <div>
               <div className="ac-flabel">Reports</div>
-              <select className="ac-select w-full" defaultValue="">
+              <select className="ac-select w-full" defaultValue="" aria-label="Reports 2 menu" onChange={(event) => { navigateSearch(event.target.value); event.target.value = ""; }}>
                 <option value="">&lt;Reports 2&gt;</option>
-                <option value="assignment-summary">Assignment Summary</option>
-                <option value="employee-hours">Employee Hours</option>
-                <option value="job-hours">Job Hours</option>
-                <option value="invoice-summary">Invoice Summary</option>
-                <option value="weekly-payroll">Weekly Payroll</option>
+                {TRACKING_REPORT_OPTIONS_2.map(option => <option key={option.href} value={option.href}>{option.label}</option>)}
               </select>
             </div>
 
