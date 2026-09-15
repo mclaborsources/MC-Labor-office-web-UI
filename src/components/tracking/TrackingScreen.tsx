@@ -17,6 +17,7 @@ import { AccessToolbar, AccessButtonRow, AccessToolbarDivider } from "@/componen
 import { AccessTabStrip } from "@/components/access/AccessTabStrip";
 import { TrackingJobTabBody } from "@/components/tracking/TrackingJobTabPanels";
 import { NewJobApplicationModal } from "@/components/tracking/NewJobApplicationModal";
+import { CopyPerDiemScreen, type PerDiemDestination } from "@/components/reports/CopyPerDiemScreen";
 import { DAY_FLAG_BG, HL_CV_COLORS } from "@/lib/trackingConstants";
 
 interface TrackingScreenProps {
@@ -28,6 +29,7 @@ interface TrackingScreenProps {
   selectedCustomerId?: string;
   selectedProjectId?: string;
   userDisplayName?: string;
+  perDiemDestinations?: PerDiemDestination[];
 }
 
 const TOOLBAR_ALERT_ACTIONS = [
@@ -60,17 +62,21 @@ const TRACKING_REPORT_OPTIONS = [
   { label: "Attendance", href: "/attendance" },
   { label: "Sick Hours Report - All", href: "/sick-hours-report" },
   { label: "Job Orders Report", href: "/job-orders-report" },
-  { label: "Copy to Per Diem", href: "/copy-to-per-diem" },
+  { label: "Copy to Per Diem", href: "modal:copy-per-diem" },
+  { label: "Invoices by Week Report", href: "/invoices-by-week-report" },
+  { label: "Margin by Week Report", href: "/margin-by-week-report" },
+  { label: "OSHA Link Sent Report", href: "/osha-link-sent-report" },
+  { label: "Schooling Report", href: "/schooling-report" },
+  { label: "Tools Report", href: "/tools-report" },
+  { label: "401(k) Report", href: "/401k-report" },
   ...[
-    "Invoices by Week Report", "Margin by Week Report", "OSHA Link Sent Report",
-    "Schooling Report", "Tools Report", "401(k) Report",
   ].map(label => ({ label, href: `pending:${label}` })),
   { label: "Insurance Certificate Request Report", href: "/insurance-certificate-request-search" },
-  { label: "Employee Review Search", href: "pending:Employee Review Search" },
-  { label: "Job Address and WCC Changes", href: "pending:Job Address and WCC Changes" },
-  { label: "WCC On Site", href: "pending:WCC On Site" },
-  { label: "Directions", href: "pending:Directions" },
-  { label: "Multiple Jobs per Employee", href: "pending:Multiple Jobs per Employee" },
+  { label: "Employee Review Search", href: "/employee-review-search" },
+  { label: "Job Address and WCC Changes", href: "/job-address-wcc-changes" },
+  { label: "WCC On Site", href: "/wcc-on-site" },
+  { label: "Directions", href: "/directions" },
+  { label: "Multiple Jobs per Employee", href: "/multiple-jobs-per-employee" },
 ];
 const TRACKING_REPORT_OPTIONS_2 = [
   { label: "Vacation Hours Report", href: "/vacation-hours-report" },
@@ -482,12 +488,14 @@ export function TrackingScreen({
   selectedCustomerId = "",
   selectedProjectId = "",
   userDisplayName = "",
+  perDiemDestinations = [],
 }: TrackingScreenProps) {
   const router = useRouter();
   const [reportMessage, setReportMessage] = useState("");
   const [jobInfoTab, setJobInfoTab] = useState("job-info");
   const [trackingTab, setTrackingTab] = useState("tracking");
   const [newJobApplicationOpen, setNewJobApplicationOpen] = useState(false);
+  const [copyPerDiemOpen, setCopyPerDiemOpen] = useState(false);
   const [applicationVariant, setApplicationVariant] = useState<"employee" | "sub">("employee");
 
   const [query, setQuery] = useState("");
@@ -582,7 +590,7 @@ export function TrackingScreen({
           className="ac-select"
           defaultValue=""
           aria-label="Reports menu"
-          onChange={(event) => { const value = event.target.value; if (value.startsWith("pending:")) setReportMessage(`${value.slice(8)} is not connected yet.`); else { setReportMessage(""); navigateSearch(value); } event.target.value = ""; }}
+          onChange={(event) => { const value = event.target.value; if (value === "modal:copy-per-diem") { setReportMessage(""); setCopyPerDiemOpen(true); } else if (value.startsWith("pending:")) setReportMessage(`${value.slice(8)} is not connected yet.`); else { setReportMessage(""); navigateSearch(value); } event.target.value = ""; }}
         >
           <option value="">&lt;Reports&gt;</option>
           {TRACKING_REPORT_OPTIONS.map(option => <option key={option.href} value={option.href}>{option.label}</option>)}
@@ -938,6 +946,7 @@ export function TrackingScreen({
         open={newJobApplicationOpen}
         onClose={() => { setNewJobApplicationOpen(false); router.push("/employee-application"); }}
       />
+      {copyPerDiemOpen && <CopyPerDiemScreen weekEnding={week.weekEndingDate} options={perDiemDestinations} onClose={() => setCopyPerDiemOpen(false)} />}
     </div>
   );
 }

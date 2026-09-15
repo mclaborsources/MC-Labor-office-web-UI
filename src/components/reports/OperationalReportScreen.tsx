@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import type { OperationalReportRow } from "@/lib/operationalReports";
 import { trackingCsv } from "@/lib/trackingGrid";
 
-export function OperationalReportScreen({title,rows,error="",variant}:{title:string;rows:OperationalReportRow[];error?:string;variant:"noc"|"noi"|"rates"|"bonus"|"sick"|"attendance"|"job-orders"}){
+export function OperationalReportScreen({title,rows,error="",variant}:{title:string;rows:OperationalReportRow[];error?:string;variant:"noc"|"noi"|"rates"|"bonus"|"sick"|"attendance"|"job-orders"|"invoices-week"|"margin-week"|"osha"|"schooling"|"tools"|"401k"|"insurance"|"employee-review"|"job-address-wcc"|"wcc-site"|"directions"|"multiple-jobs"}){
  const router=useRouter();const[query,setQuery]=useState("");const[view,setView]=useState("View 01");const[message,setMessage]=useState("");const columns=useMemo(()=>Array.from(new Set(rows.flatMap(Object.keys))).filter(k=>k!=="id"),[rows]);
  const visible=useMemo(()=>rows.filter(r=>!query||Object.values(r).join(" ").toLowerCase().includes(query.toLowerCase())),[rows,query]);
  function save(){localStorage.setItem(`${variant}-report-view`,JSON.stringify({view,query}));setMessage("View saved on this computer.");} function exportRows(){const csv=trackingCsv(columns,visible.map(r=>columns.map(c=>r[c]??"")));const url=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));const a=document.createElement("a");a.href=url;a.download=`${variant}-report.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}

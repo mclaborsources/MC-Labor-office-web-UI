@@ -8,6 +8,7 @@ import {
   getTrackingJobOptions,
   getTrackingJobInfo,
 } from "@/lib/tracking";
+import { getPerDiemDestinations } from "@/lib/operationalReports";
 
 interface PageProps {
   searchParams: Promise<Record<string, string | undefined>>;
@@ -40,7 +41,7 @@ export default async function TrackingPage({ searchParams }: PageProps) {
   const customerId = params.customerId?.trim() ?? "";
   const projectId = params.projectId?.trim() ?? "";
 
-  const [preview, customers, jobs, jobInfo] = await Promise.all([
+  const [preview, customers, jobs, jobInfo, perDiemDestinations] = await Promise.all([
     getTrackingPreview({
       week: week.assignWeek,
       year: week.assignYear,
@@ -53,6 +54,7 @@ export default async function TrackingPage({ searchParams }: PageProps) {
       ? getTrackingJobOptions(week.assignWeek, week.assignYear, customerId)
       : Promise.resolve([]),
     customerId ? getTrackingJobInfo(customerId, projectId || undefined) : Promise.resolve(null),
+    getPerDiemDestinations(week.assignWeek, week.assignYear).catch(() => []),
   ]);
 
   return (
@@ -68,6 +70,7 @@ export default async function TrackingPage({ searchParams }: PageProps) {
           selectedCustomerId={customerId}
           selectedProjectId={projectId}
           userDisplayName={session.user?.displayName}
+          perDiemDestinations={perDiemDestinations}
         />
       </div>
     </AppShell>
