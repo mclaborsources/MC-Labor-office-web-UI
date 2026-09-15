@@ -110,6 +110,9 @@ export interface TrackingReferralAgency {
 
 export interface TrackingJobInfo {
   customerName: string;
+  projectName: string;
+  siteAddress: string;
+  projectNotes: string;
   contractWith: string;
   contractDate: string;
   salesman: string;
@@ -133,4 +136,5 @@ export interface TrackingPreview {
   rows: TrackingPreviewRow[];
   source: string | null;
   fallback?: boolean;
+  error?: string;
 }

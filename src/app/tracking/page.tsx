@@ -52,7 +52,7 @@ export default async function TrackingPage({ searchParams }: PageProps) {
     customerId
       ? getTrackingJobOptions(week.assignWeek, week.assignYear, customerId)
       : Promise.resolve([]),
-    customerId ? getTrackingJobInfo(customerId) : Promise.resolve(null),
+    customerId ? getTrackingJobInfo(customerId, projectId || undefined) : Promise.resolve(null),
   ]);
 
   return (

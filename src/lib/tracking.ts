@@ -255,8 +255,9 @@ export async function getTrackingPreview(
        ORDER BY AssignmentTimestamp DESC`,
     );
     return { rows: recent.map(mapRow), source: "tblTracking" };
-  } catch {
-    return { rows: [], source: null };
+  } catch (error) {
+    console.error("[tracking] Unable to load assignments:", error);
+    return { rows: [], source: null, error: "The tracking assignments could not be loaded from SQL Server." };
   }
 }
 
@@ -323,6 +324,7 @@ export async function getTrackingJobOptions(
 
 export async function getTrackingJobInfo(
   customerId: string,
+  projectId?: string,
 ): Promise<TrackingJobInfo | null> {
   try {
     const rows = await queryReadOnly<{
@@ -333,6 +335,7 @@ export async function getTrackingJobInfo(
       WCxDate: string | Date | null;
       GLxDate: string | Date | null;
       CreditLimit: number | null;
+      SalesmanName: string | null;
     }>(
       `SELECT TOP (1)
          ISNULL(c.CustBusName, '') AS CustBusName,
@@ -341,10 +344,13 @@ export async function getTrackingJobInfo(
          ISNULL(p.PullDownContractWith_PayrollCoName, '') AS ContractWithName,
          c.WCxDate,
          c.GLxDate,
-         c.CreditLimit
+         c.CreditLimit,
+         LTRIM(RTRIM(ISNULL(s.PullDownSalesmanFName, '') + ' ' + ISNULL(s.PullDownSalesmanLName, ''))) AS SalesmanName
        FROM tblCustomer c WITH (NOLOCK)
        LEFT JOIN tblPullDownContractWith_PayrollCo p WITH (NOLOCK)
          ON c.CustContractWith_PayrollCoID = p.PullDownContractWith_PayrollCoID
+       LEFT JOIN tblPullDownSalesman s WITH (NOLOCK)
+         ON c.SalesmanID = s.PullDownSalesmanID
        WHERE CAST(c.CustomerID AS NVARCHAR(20)) = @customerId`,
       [{ name: "customerId", value: customerId }],
     );
@@ -361,6 +367,37 @@ export async function getTrackingJobInfo(
        ORDER BY BillRateSort, BillRateGrade`,
       [{ name: "customerId", value: customerId }],
     );
+
+    const projectRows = projectId
+      ? await queryReadOnly<{
+          SiteName: string | null;
+          SiteStreet: string | null;
+          SiteCity: string | null;
+          SiteState: string | null;
+          SiteZip: string | null;
+          ProjNote: string | null;
+        }>(
+          `SELECT TOP (1)
+             ISNULL(p.SiteName, '') AS SiteName,
+             ISNULL(p.SiteStreet, '') AS SiteStreet,
+             ISNULL(sc.City, '') AS SiteCity,
+             ISNULL(st.PullDownState, '') AS SiteState,
+             ISNULL(p.SiteZip, '') AS SiteZip,
+             ISNULL(p.ProjNote, '') AS ProjNote
+           FROM tblProject p WITH (NOLOCK)
+           LEFT JOIN tblPullDownStateCities sc WITH (NOLOCK)
+             ON p.SiteStateCityID = sc.PullDownStateCityID
+           LEFT JOIN tblPullDownStates st WITH (NOLOCK)
+             ON sc.StateID = st.PullDownStateID
+           WHERE CAST(p.CustomerID AS NVARCHAR(20)) = @customerId
+             AND CAST(p.ProjectID AS NVARCHAR(20)) = @projectId`,
+          [
+            { name: "customerId", value: customerId },
+            { name: "projectId", value: projectId },
+          ],
+        ).catch(() => [])
+      : [];
+    const project = projectRows[0];
 
     const [contactRows, salesmanRows, referralRows] = await Promise.all([
       queryReadOnly<{
@@ -431,9 +468,16 @@ export async function getTrackingJobInfo(
 
     return {
       customerName: str(c.CustBusName),
+      projectName: str(project?.SiteName),
+      siteAddress: [
+        str(project?.SiteStreet),
+        [str(project?.SiteCity), str(project?.SiteState)].filter(Boolean).join(", "),
+        str(project?.SiteZip),
+      ].filter(Boolean).join(" "),
+      projectNotes: str(project?.ProjNote),
       contractWith: str(c.ContractWithName),
       contractDate: fmtDate(c.ContractDate),
-      salesman: str(c.SalesmanID),
+      salesman: str(c.SalesmanName) || str(c.SalesmanID),
       creditHistory: c.CreditLimit ? money(c.CreditLimit) : "",
       oldestInvoice: "",
       totalOwed: "",
