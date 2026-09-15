@@ -87,3 +87,30 @@ export function getEmployeeBonusRows() {
   GROUP BY EmployeeID
   ORDER BY [Hrs Worked],[Last Name],[First Name]`);
 }
+
+export function getSickHoursRows(year: number) {
+  return queryReadOnly<OperationalReportRow>(`SELECT
+    CONCAT(CAST(EmployeeID AS NVARCHAR(20)),'-',ISNULL(PayrollCoOnSiteInitials,'')) AS id,
+    MAX(ISNULL(EmFirstName,'')) AS [First Name], MAX(ISNULL(EmLastName,'')) AS [Last Name], MAX(ISNULL(EmMiddle,'')) AS MI,
+    ISNULL(PayrollCoOnSiteInitials,'') AS [Payroll Co], CONVERT(VARCHAR(10),MIN(WeekEndingDate),101) AS [First Date on Job],
+    CONVERT(VARCHAR(10),MAX(WeekEndingDate),101) AS [Last Week Assigned], AssignYear AS [Assign Year],
+    SUM(ISNULL(TotalHours,0)) AS [Total Hours To Date],
+    SUM(ISNULL(SatHours,0)+ISNULL(SunHours,0)+ISNULL(MonHours,0)+ISNULL(TueHours,0)+ISNULL(WedHours,0)+ISNULL(ThuHours,0)+ISNULL(FriHours,0)) AS [Total Reg Hours To Date],
+    SUM(CASE WHEN ISNULL(SatHours,0)>0 THEN 1 ELSE 0 END+CASE WHEN ISNULL(SunHours,0)>0 THEN 1 ELSE 0 END+CASE WHEN ISNULL(MonHours,0)>0 THEN 1 ELSE 0 END+CASE WHEN ISNULL(TueHours,0)>0 THEN 1 ELSE 0 END+CASE WHEN ISNULL(WedHours,0)>0 THEN 1 ELSE 0 END+CASE WHEN ISNULL(ThuHours,0)>0 THEN 1 ELSE 0 END+CASE WHEN ISNULL(FriHours,0)>0 THEN 1 ELSE 0 END) AS [Days Worked],
+    FLOOR(SUM(ISNULL(TotalHours,0))/32.0) AS [Total Sick Hours Earned],
+    FLOOR(SUM(ISNULL(TotalHours,0))/32.0) AS [Balance Owed]
+  FROM tblTracking WITH (NOLOCK) WHERE EmployeeID IS NOT NULL AND AssignYear=@year
+  GROUP BY EmployeeID,PayrollCoOnSiteInitials,AssignYear ORDER BY [First Name],[Last Name]`,[{name:"year",value:year}]);
+}
+
+export function getAttendanceRows(week: number, year: number) {
+  return queryReadOnly<OperationalReportRow>(`SELECT TOP (750) CAST(TrackingID AS NVARCHAR(20)) AS id,
+    ISNULL(CustomerBusName,'') AS Customer, ISNULL(AssignmentUserName,'') AS Salesman, ISNULL(SiteName,'') AS Job,
+    ISNULL(EmFirstName,'') AS [Em First Name],ISNULL(EmLastName,'') AS [Em Last Name],ISNULL(EmMobilePhone,'') AS Cell,
+    CONVERT(VARCHAR(10),WeekEndingDate,101) AS [Week Ending],ISNULL(SatStatusFlagID,'') AS [Sat S],ISNULL(SunStatusFlagID,'') AS [Sun S],
+    ISNULL(MonStatusFlagID,'') AS Mon,ISNULL(TueStatusFlagID,'') AS Tue,ISNULL(WedStatusFlagID,'') AS Wed,ISNULL(ThuStatusFlagID,'') AS Thu,ISNULL(FriStatusFlagID,'') AS [Fri S],
+    ISNULL(AssignmentUserName,'') AS [Assign User],CONVERT(VARCHAR(19),AssignmentTimestamp,120) AS [Assignment Timestamp]
+  FROM tblTracking WITH (NOLOCK) WHERE AssignWeek=@week AND AssignYear=@year ORDER BY CustomerBusName,SiteName,EmLastName`,[{name:"week",value:week},{name:"year",value:year}]);
+}
+
+export function getPerDiemDestinations(week:number,year:number){return queryReadOnly<{customerId:string;projectId:string;customer:string;job:string}>(`SELECT DISTINCT CAST(CustomerID AS NVARCHAR(20)) customerId,CAST(ProjectID AS NVARCHAR(20)) projectId,ISNULL(CustomerBusName,'') customer,ISNULL(SiteName,'') job FROM tblTracking WITH (NOLOCK) WHERE AssignWeek=@week AND AssignYear=@year AND CustomerID IS NOT NULL AND ProjectID IS NOT NULL ORDER BY customer,job`,[{name:"week",value:week},{name:"year",value:year}]);}

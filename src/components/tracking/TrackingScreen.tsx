@@ -57,9 +57,11 @@ const TRACKING_REPORT_OPTIONS = [
   { label: "NOI", href: "/notice-of-identification-search" },
   { label: "Check Weekly Rates", href: "/check-weekly-rates" },
   { label: "Employee Bonus Expense Report", href: "/employee-bonus-expense-report" },
+  { label: "Attendance", href: "/attendance" },
+  { label: "Sick Hours Report - All", href: "/sick-hours-report" },
+  { label: "Job Orders Report", href: "/job-orders-report" },
+  { label: "Copy to Per Diem", href: "/copy-to-per-diem" },
   ...[
-    "Attendance",
-    "Sick Hours Report - All", "Job Orders Report", "Copy to Per Diem",
     "Invoices by Week Report", "Margin by Week Report", "OSHA Link Sent Report",
     "Schooling Report", "Tools Report", "401(k) Report",
   ].map(label => ({ label, href: `pending:${label}` })),
