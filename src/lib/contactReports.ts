@@ -37,7 +37,16 @@ export async function getContactReportRows(kind: ContactReportKind): Promise<Con
     : `LEFT JOIN tblCustomerContacts cc WITH (NOLOCK) ON cc.CustomerID = c.CustomerID`;
 
   return queryReadOnly<ContactReportRow>(
-    `SELECT
+    `WITH customerWeeks AS (
+       SELECT CustomerID, MIN(WeekEndingDate) AS CustomerSince,
+         MIN(CASE WHEN ISNULL(OpenBalance, 0) > 0 THEN WeekEndingDate END) AS OldestInvoice,
+         SUM(CASE WHEN ISNULL(OpenBalance, 0) > 0 THEN OpenBalance ELSE 0 END) AS TotalOwed
+       FROM tblCustomerWeeks WITH (NOLOCK) GROUP BY CustomerID
+     ), trackingWeeks AS (
+       SELECT CustomerID, MAX(WeekEndingDate) AS LastWeek
+       FROM tblTracking WITH (NOLOCK) GROUP BY CustomerID
+     )
+     SELECT TOP (2000)
        CAST(c.CustomerID AS NVARCHAR(20)) AS customerId,
        ISNULL(c.CustBusName, '') AS customer,
        LTRIM(RTRIM(ISNULL(cc.CustomerContactFName, '') + ' ' + ISNULL(cc.CustomerContactLName, ''))) AS contact,
@@ -45,27 +54,15 @@ export async function getContactReportRows(kind: ContactReportKind): Promise<Con
        ISNULL(cc.CustomerContactCell, '') AS cell,
        ISNULL(cc.CustomerContactEmail, '') AS email,
        LTRIM(RTRIM(ISNULL(s.PullDownSalesmanFName, '') + ' ' + ISNULL(s.PullDownSalesmanLName, ''))) AS salesman,
-       CONVERT(VARCHAR(10), history.CustomerSince, 23) AS customerSince,
-       CONVERT(VARCHAR(10), tracking.LastWeek, 23) AS lastWeekInTracking,
-       CONVERT(VARCHAR(10), invoices.OldestInvoice, 23) AS oldestInvoice,
-       ISNULL(invoices.TotalOwed, 0) AS totalOwed
+       CONVERT(VARCHAR(10), cw.CustomerSince, 23) AS customerSince,
+       CONVERT(VARCHAR(10), tw.LastWeek, 23) AS lastWeekInTracking,
+       CONVERT(VARCHAR(10), cw.OldestInvoice, 23) AS oldestInvoice,
+       ISNULL(cw.TotalOwed, 0) AS totalOwed
      FROM tblCustomer c WITH (NOLOCK)
      ${contactJoin}
      LEFT JOIN tblPullDownSalesman s WITH (NOLOCK) ON s.PullDownSalesmanID = c.SalesmanID
-     OUTER APPLY (
-       SELECT MIN(cw.WeekEndingDate) AS CustomerSince FROM tblCustomerWeeks cw WITH (NOLOCK)
-       WHERE cw.CustomerID = c.CustomerID
-     ) history
-     OUTER APPLY (
-       SELECT MAX(t.WeekEndingDate) AS LastWeek FROM tblTracking t WITH (NOLOCK)
-       WHERE t.CustomerID = c.CustomerID
-     ) tracking
-     OUTER APPLY (
-       SELECT MIN(CASE WHEN ISNULL(cw.OpenBalance, 0) > 0 THEN cw.WeekEndingDate END) AS OldestInvoice,
-              SUM(CASE WHEN ISNULL(cw.OpenBalance, 0) > 0 THEN cw.OpenBalance ELSE 0 END) AS TotalOwed
-       FROM tblCustomerWeeks cw WITH (NOLOCK)
-       WHERE cw.CustomerID = c.CustomerID
-     ) invoices
+     LEFT JOIN customerWeeks cw ON cw.CustomerID = c.CustomerID
+     LEFT JOIN trackingWeeks tw ON tw.CustomerID = c.CustomerID
      WHERE LEN(LTRIM(RTRIM(ISNULL(c.CustBusName, '')))) > 1
      ORDER BY c.CustBusName, cc.CustomerContactSort, cc.CustomerContactLName`,
   );

@@ -4,6 +4,24 @@ import type { QueryParam } from "@/types/db";
 
 let pool: sql.ConnectionPool | null = null;
 let poolPromise: Promise<sql.ConnectionPool> | null = null;
+const READ_CACHE_TTL_MS = 5 * 60 * 1000;
+const READ_CACHE_MAX_ENTRIES = 200;
+type CachedRead = { expiresAt: number; value: unknown[] };
+const readCache = new Map<string, CachedRead>();
+const pendingReads = new Map<string, Promise<unknown[]>>();
+
+function readCacheKey(query: string, params?: QueryParam[]): string {
+  return JSON.stringify([query, params?.map(({ name, value }) => [name, value]) ?? []]);
+}
+
+function pruneReadCache(now: number) {
+  for (const [key, entry] of readCache) if (entry.expiresAt <= now) readCache.delete(key);
+  while (readCache.size >= READ_CACHE_MAX_ENTRIES) {
+    const oldest = readCache.keys().next().value as string | undefined;
+    if (!oldest) break;
+    readCache.delete(oldest);
+  }
+}
 
 export function buildConfig(settings?: DatabaseSettings): sql.config {
   const env = settings ?? getDatabaseSettings();
@@ -56,18 +74,28 @@ export async function queryReadOnly<T = Record<string, unknown>>(
     throw new Error("Only read-only SELECT queries are allowed in Phase 1.");
   }
 
-  const connection = await getPool();
-  const request = connection.request();
+  const key = readCacheKey(query, params);
+  const now = Date.now();
+  const cached = readCache.get(key);
+  if (cached && cached.expiresAt > now) return cached.value as T[];
+  const pending = pendingReads.get(key);
+  if (pending) return pending as Promise<T[]>;
 
-  if (params) {
-    for (const param of params) {
-      request.input(param.name, param.value);
-    }
-  }
-
-  const result = await request.query<T>(query);
-  return result.recordset ?? [];
+  const execution = (async () => {
+    const connection = await getPool();
+    const request = connection.request();
+    if (params) for (const param of params) request.input(param.name, param.value);
+    const result = await request.query<T>(query);
+    const rows = result.recordset ?? [];
+    pruneReadCache(Date.now());
+    readCache.set(key, { expiresAt: Date.now() + READ_CACHE_TTL_MS, value: rows });
+    return rows;
+  })();
+  pendingReads.set(key, execution);
+  try { return await execution; } finally { pendingReads.delete(key); }
 }
+
+export function clearReadCache(): void { readCache.clear(); }
 
 export async function testConnection(): Promise<{
   ok: boolean;
@@ -95,6 +123,7 @@ export async function closePool(): Promise<void> {
   const previous = poolPromise;
   pool = null;
   poolPromise = null;
+  clearReadCache();
   const connected = await previous?.catch(() => null);
   await connected?.close();
 }
