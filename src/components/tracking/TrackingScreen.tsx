@@ -19,6 +19,7 @@ import { TrackingJobTabBody } from "@/components/tracking/TrackingJobTabPanels";
 import { NewJobApplicationModal } from "@/components/tracking/NewJobApplicationModal";
 import { CopyPerDiemScreen, type PerDiemDestination } from "@/components/reports/CopyPerDiemScreen";
 import { DAY_FLAG_BG, HL_CV_COLORS } from "@/lib/trackingConstants";
+import { ROUTE_LOADING_EVENT } from "@/components/layout/RouteLoadingIndicator";
 
 interface TrackingScreenProps {
   week: WeekContext;
@@ -539,7 +540,10 @@ export function TrackingScreen({
   }
 
   function navigateSearch(href: string) {
-    if (href) router.push(href);
+    if (href) {
+      window.dispatchEvent(new Event(ROUTE_LOADING_EVENT));
+      router.push(href);
+    }
   }
 
   function navigateWorkWeek(date: string) {
