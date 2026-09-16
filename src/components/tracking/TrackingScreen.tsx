@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { compareTrackingRows, dailyTotal, filterTrackingRows, trackingCsv, trackingDays } from "@/lib/trackingGrid";
 import type {
   WeekContext,
@@ -120,7 +120,7 @@ const LEGACY_ADMIN_OPTIONS = [
   { label: "Newsletter Search", href: "/newsletter-search" },
   { label: "Email Addresses", href: "/email-addresses" },
   { label: "Employee Licenses", href: "/employee-licenses" },
-  { label: "Health Ins", href: "/employees" },
+  { label: "Health Ins", href: "prompt:health-ins" },
   { label: "ID Drivers License", href: "/employees" },
   { label: "Interview Questions", href: "/interview-questions" },
   { label: "OSHA", href: "/osha" },
@@ -129,7 +129,7 @@ const LEGACY_ADMIN_OPTIONS = [
   { label: "Face Meeting", href: "/face-meeting" },
   { label: "Tracking Search", href: "/tracking-search" },
   { label: "Compare Tracking Weeks", href: "/tracking" },
-  { label: "Deleted Employees", href: "/employees" },
+  { label: "Deleted Employees", href: "/deleted-employees" },
 ] as const;
 
 const STATUS_SWATCHES = ["#22a06b", "#ffffff", "#f4c20d", "#4a90e2"];
@@ -356,12 +356,14 @@ function JobInfoDocRow({
   flag = "",
   openLabel,
   showValue = true,
+  onOpen,
 }: {
   label: string;
   value?: string;
   flag?: string;
   openLabel: string;
   showValue?: boolean;
+  onOpen: () => void;
 }) {
   return (
     <div className="ac-tracking-job-doc-row">
@@ -370,7 +372,8 @@ function JobInfoDocRow({
         <input
           type="text"
           className="ac-input ac-tracking-job-doc-value"
-          defaultValue={value || ""}
+          value={value || ""}
+          readOnly
           aria-label={label}
         />
       ) : (
@@ -379,10 +382,11 @@ function JobInfoDocRow({
       <input
         type="text"
         className="ac-input ac-tracking-job-doc-flag"
-        defaultValue={flag || ""}
+        value={flag || ""}
+        readOnly
         aria-label={`${label} flag`}
       />
-      <AccessButton className="ac-tracking-job-doc-open">
+      <AccessButton className="ac-tracking-job-doc-open" onClick={onOpen}>
         {openLabel}
       </AccessButton>
     </div>
@@ -392,9 +396,11 @@ function JobInfoDocRow({
 function JobInfoTabPanel({
   jobInfo,
   mapLabel,
+  onDocumentAction,
 }: {
   jobInfo?: TrackingJobInfo | null;
   mapLabel: string;
+  onDocumentAction: (label: string) => void;
 }) {
   const rates = jobInfo?.billRates ?? [];
   const gradeRows = [...rates];
@@ -414,12 +420,12 @@ function JobInfoTabPanel({
 
       <section className="ac-tracking-job-info-section ac-tracking-job-info-mid" aria-label="Documents">
         <div className="ac-tracking-job-info-doc-rows">
-          <JobInfoDocRow label="Contract Date" value={jobInfo?.contractDate ?? ""} openLabel="Open Contract" />
-          <JobInfoDocRow label="W-9" openLabel="Open W-9" showValue={false} flag={jobInfo?.w9OnFile ?? ""} />
-          <JobInfoDocRow label="WC x Date" value={jobInfo?.wcDate ?? ""} openLabel="Open WC" />
-          <JobInfoDocRow label="GL x Date" value={jobInfo?.glDate ?? ""} openLabel="Open GL" />
+          <JobInfoDocRow label="Contract Date" value={jobInfo?.contractDate ?? ""} openLabel="Open Contract" onOpen={() => onDocumentAction("Contract")} />
+          <JobInfoDocRow label="W-9" openLabel="Open W-9" showValue={false} flag={jobInfo?.w9OnFile ?? ""} onOpen={() => onDocumentAction("W-9")} />
+          <JobInfoDocRow label="WC x Date" value={jobInfo?.wcDate ?? ""} openLabel="Open WC" onOpen={() => onDocumentAction("WC")} />
+          <JobInfoDocRow label="GL x Date" value={jobInfo?.glDate ?? ""} openLabel="Open GL" onOpen={() => onDocumentAction("GL")} />
           <div className="ac-tracking-job-doc-hyperlinks">
-            <AccessButton className="ac-tracking-hyperlinks-btn">
+            <AccessButton className="ac-tracking-hyperlinks-btn" onClick={() => onDocumentAction("Hyperlinks")}>
               Hyperlinks
             </AccessButton>
           </div>
@@ -497,12 +503,23 @@ export function TrackingScreen({
   const [trackingTab, setTrackingTab] = useState("tracking");
   const [newJobApplicationOpen, setNewJobApplicationOpen] = useState(false);
   const [copyPerDiemOpen, setCopyPerDiemOpen] = useState(false);
+  const [healthPromptOpen, setHealthPromptOpen] = useState(false);
+  const [healthMinDate, setHealthMinDate] = useState("");
+  const [healthDateError, setHealthDateError] = useState("");
+  const healthDateInput = useRef<HTMLInputElement>(null);
   const [applicationVariant, setApplicationVariant] = useState<"employee" | "sub">("employee");
 
   const [query, setQuery] = useState("");
   const [employeeFilter, setEmployeeFilter] = useState("");
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [sort, setSort] = useState<{ key: keyof TrackingPreviewRow; direction: "asc" | "desc" } | null>(null);
+  useEffect(() => {
+    if (healthPromptOpen) healthDateInput.current?.focus();
+  }, [healthPromptOpen]);
+  useEffect(() => {
+    const savedJobView = localStorage.getItem("tracking-job-view");
+    if (savedJobView && JOB_INFO_TABS.some((tab) => tab.id === savedJobView)) setJobInfoTab(savedJobView);
+  }, []);
   const visible = useMemo(() => {
     const filtered = filterTrackingRows(preview?.rows ?? [], query, employeeFilter);
     return sort ? filtered.sort((a,b) => compareTrackingRows(a.row,b.row,sort.key,sort.direction)) : filtered;
@@ -531,6 +548,66 @@ export function TrackingScreen({
   }
   function openEmployee() { if (selected) router.push(`/employees/${encodeURIComponent(selected.employeeId)}`); }
 
+  function openDocument(kind: string) {
+    const hyperlink = selected?.hlCv?.trim() ?? "";
+    if (kind === "Hyperlinks" && /^https?:\/\//i.test(hyperlink)) {
+      window.open(hyperlink, "_blank", "noopener,noreferrer");
+      return;
+    }
+    setReportMessage(`${kind} location is not stored in the confirmed web data model. The Access hyperlink/document field must be identified before this can open the original file.`);
+  }
+
+  function setPanelCheckboxes(checked: boolean) {
+    document.querySelectorAll<HTMLInputElement>("#tracking-job-panel input[type=checkbox]").forEach((input) => {
+      if (!input.disabled) {
+        input.checked = checked;
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    });
+  }
+
+  function composeEmail(subject: string) {
+    const recipients = (jobInfo?.contacts ?? []).map((contact) => contact.email).filter(Boolean).join(",");
+    if (!recipients) { setReportMessage("No customer-contact email address is available for this job."); return; }
+    window.location.href = `mailto:${recipients}?subject=${encodeURIComponent(subject)}`;
+  }
+
+  function composeText(body: string) {
+    const phone = selected?.cell.replace(/[^\d+]/g, "");
+    if (!phone) { setReportMessage("Select an employee with a cell number before preparing a text."); return; }
+    window.location.href = `sms:${phone}?body=${encodeURIComponent(body)}`;
+  }
+
+  function handleJobPanelAction(label: string) {
+    const normalized = label.replace(/\s+/g, " ").trim();
+    const subject = `${jobInfo?.customerName || "Customer"} — ${jobInfo?.projectName || "Job"}`;
+    if (["All \"Y\"", "Select All", "Select", "Select Employees"].includes(normalized)) { setPanelCheckboxes(true); setReportMessage("All available recipients selected."); return; }
+    if (["Clear \"Y\"", "Clear All"].includes(normalized)) { setPanelCheckboxes(false); setReportMessage("Recipient selection cleared."); return; }
+    if (normalized === "Save View") { localStorage.setItem("tracking-job-view", jobInfoTab); setReportMessage("Job-panel view saved on this computer."); return; }
+    if (normalized === "Delete View") { localStorage.removeItem("tracking-job-view"); setReportMessage("Saved job-panel view deleted."); return; }
+    if (normalized === "View Directions") { const address = jobInfo?.siteAddress; if (address) window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, "_blank", "noopener,noreferrer"); else setReportMessage("No site address is available for this job."); return; }
+    if (normalized === "Print Directions") { window.print(); return; }
+    if (normalized.includes("Email")) { composeEmail(`${normalized}: ${subject}`); return; }
+    if (normalized.includes("Text") || normalized === "Send Directions") { composeText(`${subject}${jobInfo?.siteAddress ? ` — ${jobInfo.siteAddress}` : ""}`); return; }
+    const routes: Record<string, string> = {
+      "MLS Job App Problems": "/job-app-problems", "Wcc Rates": "/check-weekly-rates",
+      "Edit Salesman Report": "/reports", "View Invoice": "/invoice-search",
+      "Invoice Report": "/invoices-by-week-report", "Verify Report": "/verify-hours-contact-report",
+      "View V Hours": "/verify-hours-contact-report", "Copy Forward": "/reports",
+      "Payroll Adjustments": "/reports", "Cust Contact Kickbacks": "/customers",
+      "Employee Email Kickbacks": "/email-addresses", "Employee Text Kickbacks": "/phone-number-search",
+      "View Future Calls": "/tracking-search",
+      "Connection Status": "/admin/connection", "Office Staff": "/admin/office-staff",
+      "Health Ins": "/health-ins", "Deleted Employees": "/deleted-employees",
+    };
+    if (routes[normalized]) { router.push(routes[normalized]); return; }
+    if (normalized.startsWith("View ") || normalized.includes("Report")) { window.print(); return; }
+    const writeActions = ["Update Unassigned to Available", "Copy Forward History", "Import Employees", "Import Employee Carriers", "Import Employee New Addresses", "Import Customers - 3 Contacts [NR]", "Import Customers", "Import Customers - 2 Contacts", "Import Customers - 3 Contacts", "Import to Update Hunter"];
+    if (writeActions.includes(normalized)) { setReportMessage(`${normalized} requires the original Access append/update query and audit-table mapping before SQL writes can be enabled safely.`); return; }
+    if (normalized === "Email/Text Templates") { setReportMessage("The Access email/text template table has not yet been identified in the confirmed schema."); return; }
+    setReportMessage(`${normalized} is available as a UI control, but its original Access action or destination still needs confirmation.`);
+  }
+
   function navigateFilter(customerId: string, projectId: string) {
     setSelectedIndex(null);
     const q = new URLSearchParams({ date: dateInputValue(week.displayDate) });
@@ -540,10 +617,37 @@ export function TrackingScreen({
   }
 
   function navigateSearch(href: string) {
+    if (href === "prompt:health-ins") {
+      setHealthMinDate("");
+      setHealthDateError("");
+      setHealthPromptOpen(true);
+      return;
+    }
     if (href) {
       window.dispatchEvent(new Event(ROUTE_LOADING_EVENT));
       router.push(href);
     }
+  }
+
+  function openHealthInsurance() {
+    const value = healthMinDate.trim();
+    const match = value.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (!match) {
+      setHealthDateError("Enter a date as M/D/YYYY.");
+      return;
+    }
+    const month = Number(match[1]);
+    const day = Number(match[2]);
+    const year = Number(match[3]);
+    const date = new Date(year, month - 1, day);
+    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+      setHealthDateError("Enter a valid date.");
+      return;
+    }
+    const iso = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    setHealthPromptOpen(false);
+    window.dispatchEvent(new Event(ROUTE_LOADING_EVENT));
+    router.push(`/health-ins?minWeekEndingDate=${iso}`);
   }
 
   function navigateWorkWeek(date: string) {
@@ -743,10 +847,11 @@ export function TrackingScreen({
                 <JobInfoTabPanel
                   jobInfo={jobInfo}
                   mapLabel={selectedJobLabel || jobInfo?.customerName || "Site map / notes"}
+                  onDocumentAction={openDocument}
                 />
               </div>
             ) : (
-              <div className="ac-tracking-detail-body ac-tracking-detail-body--job-tab">
+              <div id="tracking-job-panel" className="ac-tracking-detail-body ac-tracking-detail-body--job-tab" onClick={(event) => { const button = (event.target as HTMLElement).closest("button"); if (button) handleJobPanelAction(button.textContent ?? ""); }} onBlur={(event) => { const field = event.target as HTMLInputElement | HTMLTextAreaElement; const nonDraftInput = field instanceof HTMLInputElement && (field.type === "checkbox" || field.type === "radio"); if (field.matches("input, textarea") && !nonDraftInput) { localStorage.setItem(`tracking-${jobInfoTab}-${field.getAttribute("aria-label") || "draft"}`, field.value); setReportMessage(`${field.getAttribute("aria-label") || "Field"} draft saved on this computer.`); } }}>
                 <TrackingJobTabBody tabId={jobInfoTab} jobInfo={jobInfo} />
               </div>
             )}
@@ -818,7 +923,7 @@ export function TrackingScreen({
             className="ac-tracking-action-tabs"
           />
           <AccessButtonRow className="ac-tracking-action-controls flex-1 justify-end">
-            <AccessButton disabled={!selected} onClick={() => setReportMessage("Automatic texts require the messaging service to be configured.")}>Hrs AutoText</AccessButton>
+            <AccessButton disabled={!selected} onClick={() => composeText(`Hours/timesheet reminder for week ending ${week.weekEndingDate}.`)}>Hrs AutoText</AccessButton>
             <AccessButton disabled={!selected} onClick={openEmployee}>Payroll Change</AccessButton>
             <AccessToolbarDivider />
             <span className="ac-tracking-refresh-label">Refresh</span>
@@ -951,6 +1056,15 @@ export function TrackingScreen({
         onClose={() => { setNewJobApplicationOpen(false); router.push("/employee-application"); }}
       />
       {copyPerDiemOpen && <CopyPerDiemScreen weekEnding={week.weekEndingDate} options={perDiemDestinations} onClose={() => setCopyPerDiemOpen(false)} />}
+      {healthPromptOpen && (
+        <div className="health-date-prompt-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setHealthPromptOpen(false); }}>
+          <section className="health-date-prompt" role="dialog" aria-modal="true" aria-labelledby="health-date-prompt-title" onKeyDown={(event) => { if (event.key === "Escape") setHealthPromptOpen(false); if (event.key === "Enter") openHealthInsurance(); }}>
+            <header><span id="health-date-prompt-title">Enter Parameter Value</span><button type="button" aria-label="Help">?</button><button type="button" aria-label="Close" onClick={() => setHealthPromptOpen(false)}>×</button></header>
+            <main><label htmlFor="health-min-week-ending">MinWeekEndingDate</label><input ref={healthDateInput} id="health-min-week-ending" value={healthMinDate} onChange={(event) => { setHealthMinDate(event.target.value); setHealthDateError(""); }} aria-invalid={Boolean(healthDateError)} aria-describedby={healthDateError ? "health-date-error" : undefined} />{healthDateError && <p id="health-date-error" role="alert">{healthDateError}</p>}</main>
+            <footer><button type="button" className="primary" onClick={openHealthInsurance}>OK</button><button type="button" onClick={() => setHealthPromptOpen(false)}>Cancel</button></footer>
+          </section>
+        </div>
+      )}
     </div>
   );
 }

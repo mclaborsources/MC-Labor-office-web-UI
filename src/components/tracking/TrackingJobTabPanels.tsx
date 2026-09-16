@@ -652,7 +652,11 @@ export function ReferralAgenciesTabPanel({
 export function SimpleJobTabPlaceholder({ label }: { label: string }) {
   return (
     <div className="ac-tracking-job-tab ac-tracking-job-tab--placeholder">
-      <span className="text-[10px] text-slate-500">{label} — read-only shell (SQL wiring pending).</span>
+      <span className="text-[10px] text-slate-500">{label} tools:</span>
+      <AccessButton>Connection Status</AccessButton>
+      <AccessButton>Office Staff</AccessButton>
+      <AccessButton>Health Ins</AccessButton>
+      <AccessButton>Deleted Employees</AccessButton>
     </div>
   );
 }
