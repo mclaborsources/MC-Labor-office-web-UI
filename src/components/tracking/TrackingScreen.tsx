@@ -1024,10 +1024,8 @@ export function TrackingScreen({
             </span>
           </div>
           <p className="ac-tracking-status">
-            Read-only
-            {preview?.source ? (
-              <span className="ac-tracking-status-pill">{preview.source}</span>
-            ) : null}
+            {preview?.source ? `Database records · ${preview.source}` : "Database unavailable · no records shown"}
+            {preview?.rows.length ? ` · ${preview.rows.length} loaded` : " · 0 loaded"}
           </p>
         </div>
       ) : (
