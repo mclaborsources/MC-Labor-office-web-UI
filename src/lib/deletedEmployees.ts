@@ -12,6 +12,9 @@ export interface DeletedEmployeeRow {
   trade: string;
   weekEnding: string;
   payrollCompany: string;
+  payrollCompanyId: string;
+  semus: string;
+  sendLiveCheck: string;
   margin: number | null;
   lastWeekAssigned: string;
 }
@@ -57,6 +60,9 @@ export async function getDeletedEmployees(comparisonOffset: 1 | 2): Promise<Dele
        ISNULL(t.GradeChange, '') trade,
        CONVERT(VARCHAR(10), t.WeekEndingDate, 101) weekEnding,
        ISNULL(t.PayrollCoOnSiteInitials, '') payrollCompany,
+       CAST(ISNULL(t.PayrollCoOnSiteID, 0) AS NVARCHAR(20)) payrollCompanyId,
+       ISNULL(t.Semus, '') semus,
+       ISNULL(t.SendLiveCheckColor, '') sendLiveCheck,
        t.TrackMargin margin,
        CONVERT(VARCHAR(10), la.LastWeekAssigned, 101) lastWeekAssigned
      FROM tblTracking t WITH (NOLOCK)

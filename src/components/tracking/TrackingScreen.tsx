@@ -92,7 +92,7 @@ const TRACKING_REPORT_OPTIONS_2 = [
 ];
 
 const LEGACY_SEARCH_OPTIONS = [
-  { label: "All Contacts Search", href: "/customers" },
+  { label: "All Contacts Search", href: "/all-contacts-search" },
   { label: "Customer Search", href: "/customers" },
   { label: "[Main] Employee Search 3", href: "/employees" },
   { label: "[Main] Employee Search 3 NEW", href: "/employees" },
