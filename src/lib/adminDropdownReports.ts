@@ -123,6 +123,7 @@ export function getAllAccidentReportRows(): Promise<OperationalReportRow[]> {
     ISNULL(tr.PullDownTrade,'') AS Trade,
     ISNULL(payrollCo.PullDownPayrollCoOnSiteInitials,'') AS PayrollCo,
     CONVERT(VARCHAR(10),r.ProjectAccidentReportDateOfInjury,101) AS Injury,
+    ISNULL(CONVERT(NVARCHAR(MAX),r.ProjectAccidentReportHowInjuryOccurred),N'') AS [How it happened],
     ISNULL(r.ProjectAccidentReportClaimNumber,'') AS Claim,
     ISNULL(c.CustBusName,'') AS Customer,
     CONVERT(VARCHAR(10),r.ProjectAccidentReportDateReturned,101) AS [Return Date],

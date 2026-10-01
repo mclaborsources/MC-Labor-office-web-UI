@@ -13663,3 +13663,12 @@ body {
 @media(max-width:1400px){.deleted-presets{left:900px}.deleted-report{margin-left:20px}.deleted-search-row{padding-left:300px}}
 .deleted-grid-wrap th:nth-child(n+2){width:auto}
 .operational-page-controls{margin-left:auto;display:inline-flex;align-items:center;gap:8px}.operational-page-controls button{height:21px;padding:1px 9px}
+.ac-accident-grid th.ac-accident-how-column,.ac-accident-grid td.ac-accident-how-column{width:1220px;min-width:1220px;white-space:nowrap;line-height:1.25}
+.ac-accident-grid-wrap.is-how-view .ac-accident-grid{width:100%;min-width:1540px}
+.ac-accident-grid-wrap.is-how-view .ac-accident-grid th:nth-child(1){width:110px}
+.ac-accident-grid-wrap.is-how-view .ac-accident-grid th:nth-child(2){width:1220px;text-align:left}
+.ac-accident-grid-wrap.is-how-view .ac-accident-grid th:nth-child(3),.ac-accident-grid-wrap.is-how-view .ac-accident-grid th:nth-child(5),.ac-accident-grid-wrap.is-how-view .ac-accident-grid th:nth-child(9){width:24px}
+.ac-accident-grid-wrap.is-how-view .ac-accident-grid th:nth-child(4){width:115px}
+.ac-accident-grid-wrap.is-how-view .ac-accident-grid th:nth-child(6){width:135px}
+.ac-accident-grid-wrap.is-how-view .ac-accident-grid th:nth-child(7){width:115px}
+.ac-accident-grid-wrap.is-how-view .ac-accident-grid th:nth-child(8){width:120px}
