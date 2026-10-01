@@ -15,6 +15,7 @@ export async function GET() {
     return NextResponse.json({ ok: true, data });
   } catch (error) {
     console.error("[api/reports/accidents] Failed to load report rows:", error);
-    return NextResponse.json({ ok: false, data: [], error: "Unable to load accident reports." }, { status: 500 });
+    const detail = error instanceof Error ? error.message : "Unknown database error.";
+    return NextResponse.json({ ok: false, data: [], error: `Unable to load accident reports: ${detail}` }, { status: 500 });
   }
 }

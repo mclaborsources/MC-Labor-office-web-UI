@@ -129,7 +129,7 @@ export function getAllAccidentReportRows(): Promise<OperationalReportRow[]> {
     ISNULL(r.ProjectAccidentReportWhyNotReturned,'') AS [Why Not Returned],
     ISNULL(r.ProjectAccidentReportTotalDaysOutOfWork,0) AS [Days Off],
     ISNULL(r.ProjectAccidentReportWorkdaysOutOfWork,0) AS [Workdays Out],
-    ISNULL(r.ProjectAccidentReportClaimNotes,'') AS [Claim Notes],
+    ISNULL(CONVERT(NVARCHAR(MAX),r.ProjectAccidentReportClaimNotes),N'') AS [Claim Notes],
     ISNULL(benefits.PullDownBenefitsStatus,'') AS [Benefits Status],
     CASE WHEN ISNULL(r.ProjectAccidentReportInHouse,0)<>0 THEN 'Yes' ELSE '' END AS [In House],
     ISNULL(r.ProjectAccidentReportReservedAmount,0) AS Reserve,
