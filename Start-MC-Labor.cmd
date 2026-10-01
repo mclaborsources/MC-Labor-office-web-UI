@@ -42,6 +42,7 @@ echo Dependencies installed successfully. Starting MC Labor...
 
 :run_app
 set "MC_LABOR_LOCAL_MODE=1"
+set "WRITES_ENABLED=true"
 echo Keep this window open while using MC Labor. Press Ctrl+C to stop.
 echo Opening http://localhost:3000 when the server is ready...
 start "" /b node "%MC_LABOR_ROOT%scripts\open-local-browser.cjs"
