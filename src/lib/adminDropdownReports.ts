@@ -112,6 +112,28 @@ export function getAllUnemploymentRequestContactRows(): Promise<OperationalRepor
     contact.PullDownUnemploymentRequestContactFName,contact.PullDownUnemploymentRequestContactLName`);
 }
 
+/** Lookup values used by the unemployment request editor, sourced from Access dropdown tables. */
+export async function getUnemploymentRequestDropdownRows() {
+  const [reasons, reasonDetails, contracts] = await Promise.all([
+    queryReadOnly<OperationalReportRow>(`SELECT
+      CAST(PullDownUnemploymentRequestReasonID AS NVARCHAR(20)) AS id,
+      ISNULL(PullDownUnemploymentRequestReason,'') AS label
+    FROM tblPullDownUnemploymentRequestReasons WITH (NOLOCK)
+    ORDER BY PullDownUnemploymentRequestReason`),
+    queryReadOnly<OperationalReportRow>(`SELECT
+      CAST(PullDownUnemploymentRequestReasonContID AS NVARCHAR(20)) AS id,
+      ISNULL(PullDownUnemploymentRequestReasonCont,'') AS label
+    FROM tblPullDownUnemploymentRequestReasonCont WITH (NOLOCK)
+    ORDER BY PullDownUnemploymentRequestReasonCont`),
+    queryReadOnly<OperationalReportRow>(`SELECT
+      CAST(PullDownContractWith_PayrollCoID AS NVARCHAR(20)) AS id,
+      ISNULL(PullDownContractWith_PayrollCoName,'') AS label
+    FROM tblPullDownContractWith_PayrollCo WITH (NOLOCK)
+    ORDER BY PullDownContractWith_PayrollCoName`),
+  ]);
+  return { reasons, reasonDetails, contracts };
+}
+
 /** Full Access accident report history, with no TOP or pagination cap. */
 export function getAllAccidentReportRows(): Promise<OperationalReportRow[]> {
   return queryReadOnly<OperationalReportRow>(`SELECT
