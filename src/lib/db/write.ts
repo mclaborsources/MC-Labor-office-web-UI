@@ -4,13 +4,12 @@ import { getEnv } from "@/lib/config/env";
 import type { QueryParam } from "@/types/db";
 
 // ---------------------------------------------------------------------------
-// WRITE INFRASTRUCTURE — Phase B0 (NOT YET WIRED TO ANY SCREEN).
+// WRITE INFRASTRUCTURE.
 //
 // This is the ONLY module allowed to run non-SELECT SQL. It is separate from
 // the read-only guard in sql.ts so reads can never accidentally gain write
-// power. Every public helper is gated behind WRITES_ENABLED (default false),
-// so importing this module changes nothing until writes are explicitly turned
-// on AND the architecture decision (docs/ARCHITECTURE_DECISION.md) is approved.
+// power. Writes are enabled by default and can be disabled per installation
+// with WRITES_ENABLED=false.
 //
 // Design contract for future write workflows (Phase B1+):
 //   1. Validate input in the data layer BEFORE opening a transaction.
@@ -25,8 +24,7 @@ import type { QueryParam } from "@/types/db";
 export class WritesDisabledError extends Error {
   constructor() {
     super(
-      "Write operations are disabled. Set WRITES_ENABLED=true and complete the " +
-        "architecture sign-off (docs/ARCHITECTURE_DECISION.md) before enabling writes.",
+      "Write operations are disabled. Set WRITES_ENABLED=true in the server environment to enable them.",
     );
     this.name = "WritesDisabledError";
   }

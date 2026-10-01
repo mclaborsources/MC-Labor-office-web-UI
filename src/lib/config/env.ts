@@ -42,12 +42,11 @@ const envSchema = z.object({
     .string()
     .optional()
     .transform((v) => v === "true" || v === "1"),
-  // Master kill-switch for all write workflows. Defaults to FALSE so writes stay
-  // disabled until the architecture decision is approved (Phase B). See
-  // docs/ARCHITECTURE_DECISION.md.
+  // Master kill-switch for app write workflows. Writes are enabled by default;
+  // installations can explicitly set WRITES_ENABLED=false to disable them.
   WRITES_ENABLED: z
     .string()
-    .optional()
+    .default("true")
     .transform((v) => v === "true" || v === "1"),
   SESSION_SECRET: z.string().min(32),
   DEV_LOGIN_USERNAME: z.string().min(1),
