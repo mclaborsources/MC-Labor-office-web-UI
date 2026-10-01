@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, type FocusEvent } from "react";
 import { compareTrackingRows, dailyTotal, filterTrackingRows, trackingCsv, trackingDays } from "@/lib/trackingGrid";
 import type {
   WeekContext,
@@ -520,6 +520,53 @@ export function TrackingScreen({
     const savedJobView = localStorage.getItem("tracking-job-view");
     if (savedJobView && JOB_INFO_TABS.some((tab) => tab.id === savedJobView)) setJobInfoTab(savedJobView);
   }, []);
+  function restoreJobTabDrafts(tabId: string) {
+    const panel = document.getElementById("tracking-job-panel");
+    if (!panel) return;
+    panel.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input:not([type=checkbox]):not([type=radio]), textarea").forEach((field, index) => {
+      const key = field.getAttribute("aria-label") || field.name || `field-${index}`;
+      const saved = localStorage.getItem(`tracking-${tabId}-${key}`);
+      if (saved !== null) field.value = saved;
+    });
+    panel.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((field, index) => {
+      const key = field.getAttribute("aria-label") || `checkbox-${index}`;
+      const saved = localStorage.getItem(`tracking-${tabId}-${key}`);
+      if (saved !== null) field.checked = saved === "true";
+    });
+    const radios = Array.from(panel.querySelectorAll<HTMLInputElement>('input[type="radio"]'));
+    const radioGroups = new Map<string, HTMLInputElement[]>();
+    radios.forEach((field) => {
+      if (!field.name) return;
+      radioGroups.set(field.name, [...(radioGroups.get(field.name) ?? []), field]);
+    });
+    radioGroups.forEach((group, name) => {
+      const saved = localStorage.getItem(`tracking-${tabId}-radio-${name}`);
+      if (saved !== null) group.forEach((field, index) => { field.checked = index === Number(saved); });
+    });
+  }
+  useEffect(() => { restoreJobTabDrafts(jobInfoTab); }, [jobInfoTab]);
+
+  function persistJobTabDraft(event: FocusEvent<HTMLDivElement>) {
+    const field = event.target;
+    if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) return;
+    if (!field.matches("input, textarea")) return;
+    const panel = event.currentTarget;
+    if (field instanceof HTMLInputElement && field.type === "radio") {
+      if (!field.name || !field.checked) return;
+      const group = Array.from(panel.querySelectorAll<HTMLInputElement>('input[type="radio"]')).filter((radio) => radio.name === field.name);
+      localStorage.setItem(`tracking-${jobInfoTab}-radio-${field.name}`, String(group.indexOf(field)));
+    } else if (field instanceof HTMLInputElement && field.type === "checkbox") {
+      const index = Array.from(panel.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')).indexOf(field);
+      const key = field.getAttribute("aria-label") || `checkbox-${index}`;
+      localStorage.setItem(`tracking-${jobInfoTab}-${key}`, String(field.checked));
+    } else {
+      const fields = Array.from(panel.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input:not([type=checkbox]):not([type=radio]), textarea"));
+      const index = fields.indexOf(field);
+      const key = field.getAttribute("aria-label") || field.name || `field-${index}`;
+      localStorage.setItem(`tracking-${jobInfoTab}-${key}`, field.value);
+    }
+    setReportMessage(`${field.getAttribute("aria-label") || "Field"} draft saved on this computer.`);
+  }
   const visible = useMemo(() => {
     const filtered = filterTrackingRows(preview?.rows ?? [], query, employeeFilter);
     return sort ? filtered.sort((a,b) => compareTrackingRows(a.row,b.row,sort.key,sort.direction)) : filtered;
@@ -567,15 +614,63 @@ export function TrackingScreen({
   }
 
   function composeEmail(subject: string) {
-    const recipients = (jobInfo?.contacts ?? []).map((contact) => contact.email).filter(Boolean).join(",");
+    const selectedContacts = getSelectedJobContacts();
+    if ((jobInfoTab === "salesmen" || jobInfoTab === "referral") && !selectedContacts.length) {
+      setReportMessage("Email addresses are not included in the loaded salesman or referral-agency data.");
+      return;
+    }
+    if (!selectedContacts.length && hasSelectedJobRecipients()) {
+      setReportMessage("The selected recipient list does not have email addresses in the loaded data.");
+      return;
+    }
+    const source = selectedContacts.length ? selectedContacts : jobInfo?.contacts ?? [];
+    const recipients = source.map((contact) => contact.email).filter(Boolean).join(",");
     if (!recipients) { setReportMessage("No customer-contact email address is available for this job."); return; }
     window.location.href = `mailto:${recipients}?subject=${encodeURIComponent(subject)}`;
   }
 
+  function getSelectedJobContacts() {
+    const panel = document.getElementById("tracking-job-panel");
+    if (!panel || !jobInfo?.contacts.length) return [];
+    const selectedNames = new Set<string>();
+    panel.querySelectorAll("table").forEach((table) => {
+      const headerCells = Array.from(table.querySelectorAll("thead th"));
+      const contactIndex = headerCells.findIndex((cell) => /Cust Contact/i.test(cell.textContent ?? ""));
+      const firstIndex = headerCells.findIndex((cell) => /FName/i.test(cell.textContent ?? ""));
+      const lastIndex = headerCells.findIndex((cell) => /LName/i.test(cell.textContent ?? ""));
+      if (contactIndex < 0 && firstIndex < 0) return;
+      table.querySelectorAll<HTMLInputElement>('tbody input[type="checkbox"]:checked').forEach((input) => {
+        const cells = input.closest("tr")?.querySelectorAll("td");
+        if (!cells?.length) return;
+        const name = contactIndex >= 0
+          ? cells[contactIndex]?.textContent?.trim()
+          : [cells[firstIndex]?.textContent?.trim(), lastIndex >= 0 ? cells[lastIndex]?.textContent?.trim() : ""].filter(Boolean).join(" ");
+        if (name && name !== "—") selectedNames.add(name.toLowerCase());
+      });
+    });
+    return jobInfo.contacts.filter((contact) => selectedNames.has(`${contact.firstName} ${contact.lastName}`.trim().toLowerCase()));
+  }
+
+  function hasSelectedJobRecipients() {
+    return Boolean(document.querySelector('#tracking-job-panel tbody input[type="checkbox"]:checked'));
+  }
+
   function composeText(body: string) {
-    const phone = selected?.cell.replace(/[^\d+]/g, "");
-    if (!phone) { setReportMessage("Select an employee with a cell number before preparing a text."); return; }
-    window.location.href = `sms:${phone}?body=${encodeURIComponent(body)}`;
+    const selectedContacts = getSelectedJobContacts();
+    if ((jobInfoTab === "salesmen" || jobInfoTab === "referral") && !selectedContacts.length) {
+      setReportMessage("Cell numbers are not included in the loaded salesman or referral-agency data.");
+      return;
+    }
+    if (!selectedContacts.length && hasSelectedJobRecipients()) {
+      setReportMessage("The selected recipient list does not have cell numbers in the loaded data.");
+      return;
+    }
+    const phoneNumbers = selectedContacts.length
+      ? selectedContacts.map((contact) => contact.cell).filter(Boolean)
+      : selected?.cell ? [selected.cell] : [];
+    const phones = phoneNumbers.map((phone) => phone.replace(/[^\d+]/g, "")).filter(Boolean);
+    if (!phones.length) { setReportMessage("Select a customer contact with a cell number, or an employee with a cell number, before preparing a text."); return; }
+    window.location.href = `sms:${phones.join(",")}?body=${encodeURIComponent(body)}`;
   }
 
   function handleJobPanelAction(label: string) {
@@ -597,6 +692,12 @@ export function TrackingScreen({
       "Payroll Adjustments": "/reports", "Cust Contact Kickbacks": "/customers",
       "Employee Email Kickbacks": "/email-addresses", "Employee Text Kickbacks": "/phone-number-search",
       "View Future Calls": "/tracking-search",
+      "Schedule Report": "/current-jobs", "View Schedule": "/current-jobs",
+      "View Timesheet": "/employee-hours-by-week", "Email Schedule": "/current-jobs",
+      "Email Timesheet": "/employee-hours-by-week", "Rates and Invoice Total": "/check-weekly-rates",
+      "Vacation Hours": "/vacation-hours-report", "Sick Hours": "/sick-hours-report",
+      "Advance Report": "/employee-advance-report", "Health Insurance": "/health-ins",
+      "Job App Problems": "/job-app-problems", "Contracts": "/contract-report",
       "Connection Status": "/admin/connection", "Office Staff": "/admin/office-staff",
       "Health Ins": "/health-ins", "Deleted Employees": "/deleted-employees",
     };
@@ -851,7 +952,7 @@ export function TrackingScreen({
                 />
               </div>
             ) : (
-              <div id="tracking-job-panel" className="ac-tracking-detail-body ac-tracking-detail-body--job-tab" onClick={(event) => { const button = (event.target as HTMLElement).closest("button"); if (button) handleJobPanelAction(button.textContent ?? ""); }} onBlur={(event) => { const field = event.target as HTMLInputElement | HTMLTextAreaElement; const nonDraftInput = field instanceof HTMLInputElement && (field.type === "checkbox" || field.type === "radio"); if (field.matches("input, textarea") && !nonDraftInput) { localStorage.setItem(`tracking-${jobInfoTab}-${field.getAttribute("aria-label") || "draft"}`, field.value); setReportMessage(`${field.getAttribute("aria-label") || "Field"} draft saved on this computer.`); } }}>
+              <div id="tracking-job-panel" className="ac-tracking-detail-body ac-tracking-detail-body--job-tab" onClick={(event) => { const button = (event.target as HTMLElement).closest("button"); if (button) handleJobPanelAction(button.textContent ?? ""); }} onBlur={persistJobTabDraft}>
                 <TrackingJobTabBody tabId={jobInfoTab} jobInfo={jobInfo} />
               </div>
             )}
