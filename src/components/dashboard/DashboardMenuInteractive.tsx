@@ -6,16 +6,8 @@ import { useCallback, useState } from "react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { DashboardRichText } from "@/components/dashboard/DashboardRichText";
 import type { CompanyPolicyRow, DashboardSettings } from "@/lib/dashboard";
-import {
-  PDF_MAP_RELATIVE_PATH,
-  ZIP_CODE_1_URL,
-  ZIP_CODE_2_URL,
-} from "@/lib/dashboardConstants";
-import {
-  DASHBOARD_VIEW_IDS,
-  dashboardViewLabel,
-  type DashboardViewId,
-} from "@/lib/dashboardViews";
+import { PDF_MAP_RELATIVE_PATH, ZIP_CODE_1_URL, ZIP_CODE_2_URL } from "@/lib/dashboardConstants";
+import { DASHBOARD_VIEW_IDS, dashboardViewLabel, type DashboardViewId } from "@/lib/dashboardViews";
 import type { WeekContext } from "@/types/tracking";
 
 interface DashboardMenuInteractiveProps {
@@ -24,86 +16,32 @@ interface DashboardMenuInteractiveProps {
   settings: DashboardSettings;
   policies: CompanyPolicyRow[];
   activePolicy: CompanyPolicyRow | null;
+  canWrite: boolean;
 }
 
-const workspaces = [
-  {
-    title: "Tracking",
-    description: "Review this week’s assignments and staffing status.",
-    links: [
-      { label: "Open this week", href: "tracking-week" },
-      { label: "Search tracking", href: "/tracking-search" },
-      { label: "Current jobs", href: "/current-jobs" },
-    ],
-  },
-  {
-    title: "Customers",
-    description: "Find customer records, contacts, and permits.",
-    href: "/customer-menu",
-    links: [
-      { label: "Customer menu", href: "/customer-menu" },
-      { label: "Search customers", href: "/customers" },
-      { label: "Customer permits", href: "/customer-permits" },
-    ],
-  },
-  {
-    title: "Employees",
-    description: "Search employee records and applications.",
-    href: "/employees",
-    links: [
-      { label: "Search employees", href: "/employees" },
-      { label: "Employee application", href: "/employee-application" },
-      { label: "Quick search", href: "/employee-quick-search" },
-    ],
-  },
-  {
-    title: "Jobs",
-    description: "Browse job orders and current openings.",
-    href: "/jobs",
-    links: [
-      { label: "Search jobs", href: "/jobs" },
-      { label: "Current jobs", href: "/current-jobs" },
-      { label: "Job orders report", href: "/job-orders-report" },
-    ],
-  },
-  {
-    title: "Reports",
-    description: "Open operational, payroll, and customer reports.",
-    href: "/reports",
-    links: [
-      { label: "All reports", href: "/reports" },
-      { label: "Open invoices", href: "/open-invoices" },
-      { label: "Manpower report", href: "/manpower-report" },
-    ],
-  },
-  {
-    title: "Office tools",
-    description: "Notes, contacts, and office references.",
-    href: "/office-staff-notes",
-    links: [
-      { label: "Staff notes", href: "/office-staff-notes" },
-      { label: "All contacts", href: "/all-contacts-search" },
-      { label: "Email addresses", href: "/email-addresses" },
-    ],
-  },
-];
+type SettingsTab = "policies" | "notes";
 
-export function DashboardMenuInteractive({
-  week,
-  activeView,
-  settings,
-  policies,
-  activePolicy,
-}: DashboardMenuInteractiveProps) {
-  const [showPolicy, setShowPolicy] = useState(false);
+export function DashboardMenuInteractive({ week, activeView, settings, policies, activePolicy, canWrite }: DashboardMenuInteractiveProps) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogTab, setDialogTab] = useState<SettingsTab>("policies");
+  const [selectedPolicy, setSelectedPolicy] = useState(activePolicy?.companyPolicy ?? dashboardViewLabel(activeView));
   const trackingHref = `/tracking?week=${week.assignWeek}&year=${week.assignYear}`;
 
+  const openPolicies = useCallback(() => {
+    setSelectedPolicy(activePolicy?.companyPolicy ?? dashboardViewLabel(activeView));
+    setDialogTab("policies");
+    setDialogOpen(true);
+  }, [activePolicy, activeView]);
+  const openNotes = useCallback(() => {
+    setDialogTab("notes");
+    setDialogOpen(true);
+  }, []);
   const openPdfMap = useCallback(async () => {
     try {
       const res = await fetch("/api/dashboard/pdf-map");
       if (!res.ok) {
         const body = (await res.json().catch(() => null)) as { hint?: string } | null;
-        window.alert(body?.hint ?? "Work Area PDF is not available on this server.");
+        window.alert(body?.hint ?? "Work Area PDF is not available on this server. Check SettingsBE RootFolder.");
         return;
       }
       window.open("/api/dashboard/pdf-map", "_blank", "noopener,noreferrer");
@@ -111,81 +49,100 @@ export function DashboardMenuInteractive({
       window.alert("Could not open Work Area PDF.");
     }
   }, []);
+  const openZip = useCallback((url: string) => window.open(url, "_blank", "noopener,noreferrer"), []);
+  const selectedPolicyRow = policies.find((policy) => policy.companyPolicy === selectedPolicy) ?? null;
 
   return (
-    <main className="ac-main-menu ac-main-menu--modern ac-main-menu-simple">
-      <section className="ac-dashboard-welcome" aria-labelledby="dashboard-title">
-        <div>
-          <p className="ac-dashboard-eyebrow">Main menu</p>
-          <h1 id="dashboard-title">{settings.companyApplicationTitle}</h1>
-          <p>Choose a work area to get started.</p>
-        </div>
-        <div className="ac-dashboard-week-actions" aria-label="Tracking week shortcuts">
-          <Link href="/tracking?weekOffset=-1">Last week</Link>
-          <Link href={trackingHref} aria-current="page">This week</Link>
-          <Link href="/tracking?weekOffset=1">Next week</Link>
-        </div>
-      </section>
+    <div className="ac-main-menu ac-main-menu--modern">
+      <div className="ac-main-menu-views" aria-label="Company policy views">
+        {DASHBOARD_VIEW_IDS.map((id) => {
+          const active = id === activeView;
+          return (
+            <Link key={id} href={`/dashboard?view=${id}`} className="ac-main-menu-view-link" aria-current={active ? "page" : undefined}>
+              <AccessButton className={active ? "ac-main-menu-view-btn-active" : ""} variant={active ? "go" : "default"}>
+                {dashboardViewLabel(id)}
+              </AccessButton>
+            </Link>
+          );
+        })}
+      </div>
 
-      <section className="ac-dashboard-workspaces" aria-label="Work areas">
-        {workspaces.map((workspace) => (
-          <article className="ac-dashboard-workspace" key={workspace.title}>
-            <div className="ac-dashboard-workspace-heading">
-              <h2>{workspace.title}</h2>
-              <p>{workspace.description}</p>
-            </div>
-            <div className="ac-dashboard-workspace-links">
-              {workspace.links.map((link) => (
-                <Link key={link.href} href={link.href === "tracking-week" ? trackingHref : link.href}>{link.label}<span aria-hidden="true">→</span></Link>
-              ))}
-            </div>
-          </article>
-        ))}
-      </section>
-
-      <section className="ac-dashboard-quick-tools" aria-label="Quick tools">
-        <div>
-          <h2>Quick tools</h2>
-          <p>Maps and company guidance</p>
-        </div>
-        <div className="ac-dashboard-tool-links">
-          <button type="button" onClick={openPdfMap} title={PDF_MAP_RELATIVE_PATH}>Work area map (PDF)</button>
-          <a href={ZIP_CODE_1_URL} target="_blank" rel="noreferrer">Local zip map <span aria-hidden="true">↗</span></a>
-          <a href={ZIP_CODE_2_URL} target="_blank" rel="noreferrer">Zip code lookup <span aria-hidden="true">↗</span></a>
-          <button type="button" onClick={() => setShowPolicy((shown) => !shown)} aria-expanded={showPolicy}>
-            {showPolicy ? "Hide company policy" : "View company policy"}
-          </button>
-          <Link href="/admin/connection">Settings</Link>
-        </div>
-      </section>
-
-      {showPolicy && (
-        <section className="ac-dashboard-policy" aria-label="Company policy">
-          <div className="ac-dashboard-policy-heading">
-            <div>
-              <h2>Company policy</h2>
-              <p>{dashboardViewLabel(activeView)}{policies.length ? ` · ${policies.length} views available` : ""}</p>
-            </div>
-            <select
-              aria-label="Policy view"
-              value={activeView}
-              onChange={(event) => { window.location.href = `/dashboard?view=${event.target.value}`; }}
-            >
-              {DASHBOARD_VIEW_IDS.map((id) => <option key={id} value={id}>{dashboardViewLabel(id)}</option>)}
-            </select>
+      <div className="ac-main-menu-grid">
+        <section className="ac-main-menu-panel">
+          <div className="ac-main-menu-panel-head">
+            <span>Company Policy · {dashboardViewLabel(activeView)}</span>
+            <AccessButton xs type="button" onClick={openPolicies}>View Policies</AccessButton>
           </div>
-          <DashboardRichText
-            html={activePolicy?.companyPolicyText ?? ""}
-            emptyMessage={`No policy text configured for ${dashboardViewLabel(activeView)}.`}
-          />
+          <div className="ac-main-menu-panel-body ac-main-menu-policy-scroll">
+            <DashboardRichText html={activePolicy?.companyPolicyText ?? ""} emptyMessage={`No policy text configured for ${dashboardViewLabel(activeView)}.`} />
+          </div>
         </section>
-      )}
 
-      <footer className="ac-dashboard-footer">
-        <Image src="/logo_dashboard.png" alt="" width={44} height={32} />
-        <span>{settings.companyApplicationTitle}</span>
-        <span className="ac-dashboard-version">Version 5.42.2</span>
-      </footer>
-    </main>
+        <section className="ac-main-menu-panel ac-main-menu-center">
+          <div className="ac-main-menu-panel-head"><span>Work Area</span></div>
+          <div className="ac-main-menu-panel-body ac-main-menu-work">
+            <div className="ac-main-menu-toolbar">
+              <AccessButton type="button" onClick={openPdfMap} title={PDF_MAP_RELATIVE_PATH}>PDF Map</AccessButton>
+              <AccessButton type="button" onClick={() => openZip(ZIP_CODE_1_URL)}>Zip Code 1</AccessButton>
+              <AccessButton type="button" onClick={() => openZip(ZIP_CODE_2_URL)}>Zip Code 2</AccessButton>
+            </div>
+            <div className="ac-main-menu-hero">
+              <div className="ac-main-menu-logo-wrap">
+                <Image src="/logo_dashboard.png" alt={settings.companyApplicationTitle} width={480} height={300} className="ac-main-menu-logo" priority />
+              </div>
+              <div className="ac-main-menu-brand">
+                <p className="ac-main-menu-brand-name">{settings.companyApplicationTitle}</p>
+                <span className="ac-main-menu-version">v5.42.2</span>
+              </div>
+            </div>
+            <div className="ac-main-menu-bottom">
+              <nav className="ac-main-menu-week-nav" aria-label="Tracking week">
+                <Link href="/tracking?weekOffset=-1" className="ac-main-menu-week-link"><AccessButton>Last Week</AccessButton></Link>
+                <Link href={trackingHref} className="ac-main-menu-week-link" aria-current="page"><AccessButton variant="go">This Week</AccessButton></Link>
+                <Link href="/tracking?weekOffset=1" className="ac-main-menu-week-link"><AccessButton>Next Week</AccessButton></Link>
+              </nav>
+              <p className="ac-main-menu-server">Work Area</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="ac-main-menu-panel">
+          <div className="ac-main-menu-panel-head">
+            <span>{settings.companyApplicationTitle}</span>
+            <AccessButton xs type="button" onClick={openNotes}>View Notes</AccessButton>
+          </div>
+          <div className="ac-main-menu-panel-body ac-main-menu-policy-scroll">
+            <DashboardRichText html={settings.companyHistoryNotes} emptyMessage="No company history notes in SettingsBE." />
+          </div>
+        </section>
+      </div>
+
+      {dialogOpen && (
+        <div className="ac-dash-dialog-backdrop" role="presentation" onClick={() => setDialogOpen(false)}>
+          <div className="ac-dash-dialog" role="dialog" aria-modal="true" aria-labelledby="dash-settings-title" onClick={(event) => event.stopPropagation()}>
+            <div className="ac-dash-dialog-head">
+              <h2 id="dash-settings-title">Company Information</h2>
+              <button type="button" className="ac-dash-dialog-close" onClick={() => setDialogOpen(false)} aria-label="Close">×</button>
+            </div>
+            <div className="ac-dash-dialog-tabs" role="tablist" aria-label="Company information">
+              <button type="button" role="tab" aria-selected={dialogTab === "policies"} className={dialogTab === "policies" ? "active" : ""} onClick={() => setDialogTab("policies")}>Company Policies</button>
+              <button type="button" role="tab" aria-selected={dialogTab === "notes"} className={dialogTab === "notes" ? "active" : ""} onClick={() => setDialogTab("notes")}>Company Notes</button>
+            </div>
+            {!canWrite && <p className="ac-dash-dialog-readonly">Read-only view. Editing is not available here.</p>}
+            {dialogTab === "policies" ? (
+              <div className="ac-dash-dialog-body">
+                <label className="ac-dash-field-label" htmlFor="policy-select">Policy view</label>
+                <select id="policy-select" className="ac-dash-select" value={selectedPolicy} onChange={(event) => setSelectedPolicy(event.target.value)}>
+                  {policies.length === 0 ? <option value="">No policies in database</option> : policies.map((policy) => <option key={policy.companyPolicyId} value={policy.companyPolicy}>{policy.companyPolicy}</option>)}
+                </select>
+                <div className="ac-dash-dialog-preview"><DashboardRichText html={selectedPolicyRow?.companyPolicyText ?? ""} emptyMessage="No policy text for this view." /></div>
+              </div>
+            ) : (
+              <div className="ac-dash-dialog-body"><div className="ac-dash-dialog-preview"><DashboardRichText html={settings.companyHistoryNotes} emptyMessage="No company history notes in SettingsBE." /></div></div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

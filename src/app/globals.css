@@ -3197,43 +3197,51 @@ body {
   font-size: 10px;
 }
 
-/* Simple dashboard launchpad */
-.ac-dashboard .ac-main-menu-simple {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  overflow: auto;
-  padding: clamp(1rem, 2.5vw, 2rem);
-  background: #f8fafc;
-  border-radius: 12px;
+/* Main menu refinements: preserve the familiar three-panel layout. */
+.ac-dashboard .ac-main-menu--modern .ac-main-menu-views .ac-main-menu-view-btn-active {
+  background: #fef3c7;
+  border-color: #fcd34d;
+  color: #78350f;
+  font-weight: 700;
 }
-.ac-dashboard-welcome { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 0.25rem 0 1.25rem; border-bottom: 1px solid var(--dash-border); }
-.ac-dashboard-welcome h1 { margin: 0.15rem 0 0.25rem; color: #172033; font-size: clamp(1.35rem, 2.3vw, 1.8rem); font-weight: 700; letter-spacing: -0.03em; }
-.ac-dashboard-welcome p { margin: 0; color: #64748b; font-size: 0.875rem; }
-.ac-dashboard-welcome .ac-dashboard-eyebrow { color: #8b3a42; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
-.ac-dashboard-week-actions { display: inline-flex; flex-shrink: 0; gap: 0.35rem; padding: 0.3rem; border: 1px solid #e2e8f0; border-radius: 9px; background: white; }
-.ac-dashboard-week-actions a, .ac-dashboard-tool-links > * { display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; min-height: 36px; padding: 0.45rem 0.75rem; border: 1px solid transparent; border-radius: 6px; color: #334155; font: inherit; font-size: 0.8rem; text-decoration: none; white-space: nowrap; background: transparent; cursor: pointer; }
-.ac-dashboard-week-actions a:hover, .ac-dashboard-tool-links > *:hover { background: #f1f5f9; }
-.ac-dashboard-week-actions a[aria-current="page"] { color: #7f1d1d; background: #fef2f2; border-color: #fecaca; font-weight: 600; }
-.ac-dashboard-workspaces { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.875rem; }
-.ac-dashboard-workspace { display: flex; min-height: 150px; flex-direction: column; justify-content: space-between; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 10px; background: white; box-shadow: 0 1px 2px rgb(15 23 42 / 0.03); }
-.ac-dashboard-workspace-heading h2, .ac-dashboard-quick-tools h2, .ac-dashboard-policy h2 { margin: 0; color: #172033; font-size: 1rem; font-weight: 650; }
-.ac-dashboard-workspace-heading p, .ac-dashboard-quick-tools p, .ac-dashboard-policy-heading p { margin: 0.3rem 0 0; color: #64748b; font-size: 0.78rem; }
-.ac-dashboard-workspace-links { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1rem; }
-.ac-dashboard-workspace-links a { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 32px; padding: 0.35rem 0.55rem; border-radius: 6px; color: #7f1d1d; background: #fff7f7; font-size: 0.75rem; font-weight: 550; text-decoration: none; }
-.ac-dashboard-workspace-links a:hover { background: #fee2e2; }
-.ac-dashboard-quick-tools, .ac-dashboard-policy { padding: 1rem; border: 1px solid #e2e8f0; border-radius: 10px; background: white; }
-.ac-dashboard-quick-tools { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-.ac-dashboard-tool-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.25rem; }
-.ac-dashboard-tool-links > * { border-color: #e2e8f0; }
-.ac-dashboard-policy-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.75rem; }
-.ac-dashboard-policy-heading select { min-height: 34px; padding: 0.35rem 0.6rem; border: 1px solid #cbd5e1; border-radius: 6px; background: white; color: #334155; }
-.ac-dashboard-policy .ac-rich-html { font-size: 0.85rem; line-height: 1.65; }
-.ac-dashboard-footer { display: flex; align-items: center; gap: 0.5rem; margin-top: auto; padding-top: 0.25rem; color: #475569; font-size: 0.75rem; }
-.ac-dashboard-footer img { width: 36px; height: 26px; object-fit: contain; }
-.ac-dashboard-version { color: #94a3b8; }
-@media (max-width: 900px) { .ac-dashboard-workspaces { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ac-dashboard-quick-tools { align-items: flex-start; flex-direction: column; } .ac-dashboard-tool-links { justify-content: flex-start; } }
-@media (max-width: 600px) { .ac-dashboard .ac-main-menu-simple { gap: 0.875rem; } .ac-dashboard-welcome { align-items: flex-start; flex-direction: column; } .ac-dashboard-week-actions { width: 100%; } .ac-dashboard-week-actions a { flex: 1; padding-inline: 0.35rem; } .ac-dashboard-workspaces { grid-template-columns: 1fr; } .ac-dashboard-workspace { min-height: 0; } .ac-dashboard-policy-heading { align-items: flex-start; flex-direction: column; } }
+.ac-dashboard .ac-main-menu--modern .ac-main-menu-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 1.1fr) minmax(0, 1fr);
+  gap: 0.75rem;
+}
+.ac-dashboard .ac-main-menu--modern .ac-main-menu-panel {
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 0.05);
+}
+.ac-dashboard .ac-main-menu--modern .ac-main-menu-panel-head {
+  min-height: 42px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.8rem;
+}
+.ac-dashboard .ac-main-menu--modern .ac-main-menu-panel-body {
+  padding: 0.875rem;
+}
+.ac-dashboard .ac-main-menu--modern .ac-rich-html {
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+.ac-dashboard .ac-main-menu--modern .ac-main-menu-week-nav {
+  max-width: 100%;
+}
+@media (max-width: 899px) {
+  .ac-dashboard .ac-main-menu--modern { overflow: auto; }
+  .ac-dashboard .ac-main-menu--modern .ac-main-menu-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ac-dashboard .ac-main-menu--modern .ac-main-menu-center { grid-column: 1 / -1; grid-row: 1; }
+  .ac-dashboard .ac-main-menu--modern .ac-main-menu-panel { min-height: 240px; }
+}
+@media (max-width: 560px) {
+  .ac-dashboard .ac-main-menu--modern { padding: 0.75rem; }
+  .ac-dashboard .ac-main-menu--modern .ac-main-menu-grid { grid-template-columns: 1fr; }
+  .ac-dashboard .ac-main-menu--modern .ac-main-menu-center { grid-column: auto; }
+  .ac-dashboard .ac-main-menu--modern .ac-main-menu-views { gap: 0.35rem; }
+  .ac-dashboard .ac-main-menu--modern .ac-main-menu-views .ac-btn { padding-inline: 0.6rem; }
+}
 
 /* Legacy main menu (non-dashboard) — keep base selectors for other routes */
 .ac-main-menu:not(.ac-main-menu--modern) {

@@ -5,6 +5,7 @@ import {
   getDashboardSettings,
 } from "@/lib/dashboard";
 import { type DashboardViewId } from "@/lib/dashboardViews";
+import { writesEnabled } from "@/lib/db/write";
 import type { WeekContext } from "@/types/tracking";
 
 interface AccessMainMenuProps {
@@ -27,6 +28,7 @@ export async function AccessMainMenu({ week, activeView }: AccessMainMenuProps) 
       settings={settings}
       policies={policies}
       activePolicy={activePolicy}
+      canWrite={writesEnabled()}
     />
   );
 }
