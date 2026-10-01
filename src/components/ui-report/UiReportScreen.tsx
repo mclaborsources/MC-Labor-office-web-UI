@@ -3,15 +3,16 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AccessButton } from "@/components/access/AccessButton";
+import { EmployeeWorkHistoryDialog } from "@/components/ui-report/EmployeeWorkHistoryDialog";
 
 type RequestRow = {
-  id: string; date: string; employee: string; lastDay: string; customer: string; trade: string;
+  id: string; employeeId: string; date: string; employee: string; lastDay: string; customer: string; trade: string;
   reason: string; reasonCont: string; reasonDate: string; contract: string; notes: string; user: string;
 };
 type ContactRow = { id: string; company: string; first: string; last: string; state: string; email: string; notes: string; active: string };
 type LookupOption = { id: string; label: string };
 type ReportResponse = { ok: boolean; data?: Record<string, unknown>[]; contacts?: Record<string, unknown>[]; contactsError?: string; dropdowns?: { reasons?: Record<string, unknown>[]; reasonDetails?: Record<string, unknown>[]; contracts?: Record<string, unknown>[] }; error?: string };
-const emptyRequest: RequestRow = { id: "", date: "", employee: "", lastDay: "", customer: "", trade: "", reason: "", reasonCont: "", reasonDate: "", contract: "", notes: "", user: "" };
+const emptyRequest: RequestRow = { id: "", employeeId: "", date: "", employee: "", lastDay: "", customer: "", trade: "", reason: "", reasonCont: "", reasonDate: "", contract: "", notes: "", user: "" };
 const gridColumns: { label: string; key: keyof RequestRow }[] = [
   { label: "Date", key: "date" }, { label: "Employee", key: "employee" }, { label: "Last Day of Work", key: "lastDay" },
   { label: "Last Customer", key: "customer" }, { label: "Trade", key: "trade" }, { label: "Reason", key: "reason" },
@@ -68,6 +69,7 @@ export function UiReportScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [contactsError, setContactsError] = useState("");
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -77,7 +79,7 @@ export function UiReportScreen() {
         if (!response.ok || !result.ok) throw new Error(result.error || "Unable to load unemployment requests.");
         if (!active) return;
         setRows((result.data ?? []).map((row) => ({
-          id: value(row, "id"), date: value(row, "Date"), employee: value(row, "Employee"),
+          id: value(row, "id"), employeeId: value(row, "EmployeeID"), date: value(row, "Date"), employee: value(row, "Employee"),
           lastDay: value(row, "Last Day of Work"), customer: value(row, "Last Customer"), trade: value(row, "Trade"),
           reason: value(row, "Reason"), reasonCont: value(row, "Reason Cont"), reasonDate: value(row, "Reason Cont Date"),
           contract: value(row, "Contract With"), notes: value(row, "Notes"), user: value(row, "User Name"),
@@ -122,8 +124,9 @@ export function UiReportScreen() {
       {filteredRows.map((row, i) => <tr key={row.id} className={i === selected ? "is-current" : undefined} onClick={() => setSelected(i)}><td/>{gridColumns.map(({key})=><td key={key}>{row[key]}</td>)}<td/><td/></tr>)}
     </tbody></table>{loading && <p role="status">Loading all unemployment requests…</p>}{error && <p role="alert">{error}</p>}{!loading && !error && rows.length === 0 && <p>No unemployment requests found.</p>}</div>
     <header className="ac-ui-title"><h1>Unemployment Requests</h1><div><AccessButton>New</AccessButton><AccessButton>Save</AccessButton><AccessButton onClick={() => router.push("/tracking")}>Cancel</AccessButton><AccessButton>Delete</AccessButton><AccessButton>View Email</AccessButton></div><button type="button" aria-label="Help">?</button></header>
-    <div className="ac-ui-editor"><strong>Enter/Edit Request</strong><AccessButton className="ac-ui-work">Employee Work History</AccessButton><div className="ac-ui-fields">{(["date","employee","lastDay","customer","trade","reason","reasonCont","reasonDate","contract","notes","user"] as (keyof RequestRow)[]).map((key,i)=>{const label=["Date","Employee","Last Day of Work","Last Customer","Trade","Reason","Reason Cont","Reason Cont Date","Contract With","Notes","User Name"][i];const options=key==="reason"?reasonOptions:key==="reasonCont"?reasonDetailOptions:key==="contract"?contractOptions:null;return <label key={key}><span>{label}</span>{options?<select value={current[key]} onChange={event=>setRows(old=>old.map((row,index)=>index===selected?{...row,[key]:event.target.value,...(key==="reason"?{reasonCont:""}:{})}:row))}><option value="">Select {label.toLowerCase()}…</option>{options.map(option=><option key={option.id} value={option.label}>{option.label}</option>)}</select>:<input value={current[key]} readOnly/>}</label>})}</div></div>
+    <div className="ac-ui-editor"><strong>Enter/Edit Request</strong><AccessButton className="ac-ui-work" onClick={()=>setHistoryOpen(true)}>Employee Work History</AccessButton><div className="ac-ui-fields">{(["date","employee","lastDay","customer","trade","reason","reasonCont","reasonDate","contract","notes","user"] as (keyof RequestRow)[]).map((key,i)=>{const label=["Date","Employee","Last Day of Work","Last Customer","Trade","Reason","Reason Cont","Reason Cont Date","Contract With","Notes","User Name"][i];const options=key==="reason"?reasonOptions:key==="reasonCont"?reasonDetailOptions:key==="contract"?contractOptions:null;return <label key={key}><span>{label}</span>{options?<select value={current[key]} onChange={event=>setRows(old=>old.map((row,index)=>index===selected?{...row,[key]:event.target.value,...(key==="reason"?{reasonCont:""}:{})}:row))}><option value="">Select {label.toLowerCase()}…</option>{options.map(option=><option key={option.id} value={option.label}>{option.label}</option>)}</select>:<input value={current[key]} readOnly/>}</label>})}</div></div>
     <div className="ac-ui-contacts"><strong>Select One Contact</strong><AccessButton>Edit Contact List</AccessButton><table><thead><tr><th/><th>Company</th><th>Contact F Name</th><th>Contact L Name</th><th>State</th><th>Email</th><th>Notes</th><th>Active</th><th>Select</th></tr></thead><tbody>{contacts.map((contact,i)=><tr key={contact.id} className={i===0?"is-current":undefined}><td/><td>{contact.company}</td><td>{contact.first}</td><td>{contact.last}</td><td>{contact.state}</td><td>{contact.email}</td><td>{contact.notes}</td><td>{contact.active}</td><td/></tr>)}</tbody></table>{contactsError && <p role="alert">Contact list: {contactsError}</p>}<div className="ac-ui-contact-record">Records: {contacts.length}　　▽ No Filter　 <span>Search</span></div></div>
     <footer className="ac-ui-record">Record:　|◀　◀　 <input value={filteredRows.length ? selected + 1 : 0} readOnly aria-label="Record number"/> of {filteredRows.length}　▶　▶|　　{Object.values(columnFilters).some(Boolean)?"▽ Filtered":"▽ No Filter"}　 <button type="button" onClick={()=>{setColumnFilters({});setSelected(0);}}>Clear Filters</button></footer>
+    {historyOpen && (current.employeeId ? <EmployeeWorkHistoryDialog employeeId={current.employeeId} employeeName={current.employee} onClose={()=>setHistoryOpen(false)}/> : <div className="ui-work-history-backdrop"><section className="ui-work-history" role="dialog" aria-modal="true"><p role="alert">This request does not have a linked employee record.</p><AccessButton onClick={()=>setHistoryOpen(false)}>Close</AccessButton></section></div>)}
   </section>;
 }

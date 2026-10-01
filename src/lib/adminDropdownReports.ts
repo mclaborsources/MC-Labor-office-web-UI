@@ -70,6 +70,7 @@ export function getYearlyRevenueRows(): Promise<OperationalReportRow[]> {
 export function getAllUnemploymentRequestRows(): Promise<OperationalReportRow[]> {
   return queryReadOnly<OperationalReportRow>(`SELECT
     CAST(r.UnemploymentRequestID AS NVARCHAR(20)) AS id,
+    CAST(r.UnemploymentRequestEmployeeID AS NVARCHAR(20)) AS EmployeeID,
     CONVERT(VARCHAR(10),r.UnemploymentRequestTimestamp,101) AS Date,
     LTRIM(RTRIM(CONCAT(ISNULL(e.EmFirstName,''),' ',ISNULL(e.EmMiddle,''),' ',ISNULL(e.EmLastName,'')))) AS Employee,
     CONVERT(VARCHAR(10),r.UnemploymentRequestLastWorkDate,101) AS [Last Day of Work],
@@ -132,6 +133,28 @@ export async function getUnemploymentRequestDropdownRows() {
     ORDER BY PullDownContractWith_PayrollCoName`),
   ]);
   return { reasons, reasonDetails, contracts };
+}
+
+/** Employee assignment and weekly work history for the Access Employee Work History view. */
+export function getEmployeeWorkHistoryRows(employeeId: number, startDate: string, endDate: string): Promise<OperationalReportRow[]> {
+  return queryReadOnly<OperationalReportRow>(`SELECT
+    CAST(t.TrackingID AS NVARCHAR(20)) AS id,
+    ISNULL(t.PayrollCoOnSiteInitials,'') AS [Payroll Co], ISNULL(t.CustomerBusName,'') AS Customer,
+    ISNULL(t.SiteName,'') AS Job, ISNULL(t.SiteState,'') AS State, ISNULL(t.GradeChange,'') AS Grade,
+    CONVERT(VARCHAR(10),t.WeekEndingDate,101) AS [Week Ending],
+    ISNULL(t.SatHours,0) AS Sat, ISNULL(t.SunHours,0) AS Sun, ISNULL(t.MonHours,0) AS Mon,
+    ISNULL(t.TueHours,0) AS Tue, ISNULL(t.WedHours,0) AS Wed, ISNULL(t.ThuHours,0) AS Thu, ISNULL(t.FriHours,0) AS Fri,
+    ISNULL(t.TotalHours,0) AS Total,
+    CAST(ISNULL(t.TotalHours,0)*ISNULL(t.PayRate,0) AS DECIMAL(12,2)) AS [Gross Payroll],
+    ISNULL(t.PayRate,0) AS [Pay Rate], ISNULL(t.BillRate,0) AS [Bill Rate], ISNULL(t.TrackMargin,0) AS Margin,
+    ISNULL(t.HoursNote,'') AS [Check Note], ISNULL(t.HealthInsuranceDesc,'') AS Health,
+    ISNULL(t.CoExpParkingPerHr,0) AS [Parking Per Hr],
+    ISNULL(t.EmFirstName,'') AS [First Name], ISNULL(t.EmMiddle,'') AS MI, ISNULL(t.EmLastName,'') AS [Last Name]
+  FROM tblTracking t WITH (NOLOCK)
+  WHERE t.EmployeeID=@employeeId AND t.WeekEndingDate>=@startDate AND t.WeekEndingDate<DATEADD(day,1,@endDate)
+  ORDER BY t.WeekEndingDate,t.CustomerBusName,t.SiteName,t.TrackingID`, [
+    { name: "employeeId", value: employeeId }, { name: "startDate", value: startDate }, { name: "endDate", value: endDate },
+  ]);
 }
 
 /** Full Access accident report history, with no TOP or pagination cap. */
