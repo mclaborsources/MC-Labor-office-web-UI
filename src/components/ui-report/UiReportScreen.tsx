@@ -11,7 +11,7 @@ type RequestRow = {
 };
 type ContactRow = { id: string; company: string; first: string; last: string; street: string; city: string; state: string; stateId: string; zip: string; phone: string; fax: string; email: string; sort: string; notes: string; active: string };
 type LookupOption = { id: string; label: string };
-type ReportResponse = { ok: boolean; data?: Record<string, unknown>[]; contacts?: Record<string, unknown>[]; contactsError?: string; dropdowns?: { reasons?: Record<string, unknown>[]; reasonDetails?: Record<string, unknown>[]; contracts?: Record<string, unknown>[] }; states?: Record<string, unknown>[]; statesError?: string; error?: string };
+type ReportResponse = { ok: boolean; data?: Record<string, unknown>[]; contacts?: Record<string, unknown>[]; contactsError?: string; dropdowns?: { reasons?: Record<string, unknown>[]; reasonDetails?: Record<string, unknown>[]; contracts?: Record<string, unknown>[] }; states?: Record<string, unknown>[]; statesError?: string; faxSupported?: boolean; error?: string };
 const emptyRequest: RequestRow = { id: "", employeeId: "", date: "", employee: "", lastDay: "", customer: "", trade: "", reason: "", reasonCont: "", reasonDate: "", contract: "", notes: "", user: "" };
 const gridColumns: { label: string; key: keyof RequestRow }[] = [
   { label: "Date", key: "date" }, { label: "Employee", key: "employee" }, { label: "Last Day of Work", key: "lastDay" },
@@ -54,7 +54,7 @@ function value(row: Record<string, unknown>, key: string) {
   return row[key] == null ? "" : String(row[key]);
 }
 
-function UnemploymentContactEditor({ contacts, states, onClose, onSaved }: { contacts: ContactRow[]; states: LookupOption[]; onClose: () => void; onSaved: (rows: ContactRow[]) => void }) {
+function UnemploymentContactEditor({ contacts, states, faxSupported, onClose, onSaved }: { contacts: ContactRow[]; states: LookupOption[]; faxSupported:boolean; onClose: () => void; onSaved: (rows: ContactRow[]) => void }) {
   const [draft, setDraft] = useState<ContactRow[]>(contacts.map(row=>({...row})));
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -79,7 +79,7 @@ function UnemploymentContactEditor({ contacts, states, onClose, onSaved }: { con
     finally { setSaving(false); }
   };
   const fields: {label:string;key:keyof ContactRow}[]=[{label:"ID",key:"id"},{label:"Company",key:"company"},{label:"Contact FName",key:"first"},{label:"Contact LName",key:"last"},{label:"Street",key:"street"},{label:"City",key:"city"},{label:"State",key:"stateId"},{label:"Zip",key:"zip"},{label:"Phone",key:"phone"},{label:"Fax",key:"fax"},{label:"Email",key:"email"},{label:"Sort",key:"sort"},{label:"Notes",key:"notes"},{label:"Active",key:"active"}];
-  return <div className="ui-contact-editor-backdrop" role="presentation" onMouseDown={event=>{if(event.target===event.currentTarget)onClose();}}><section className="ui-contact-editor" role="dialog" aria-modal="true" aria-label="Unemployment Request Contacts"><header><h1>Unemployment Request Contacts</h1><button type="button" aria-label="Close" onClick={onClose}>×</button></header><div className="ui-contact-editor-tools"><button type="button" onClick={()=>setDraft(old=>[...old,{...blank}])}>New</button><button type="button" disabled={saving} onClick={save}>{saving?"Saving…":"Save Changes"}</button><button type="button" onClick={()=>setDraft(contacts.map(row=>({...row})))}>Undo</button><button type="button" onClick={onClose}>Close</button>{message&&<span role="alert">{message}</span>}</div><div className="ui-contact-editor-grid"><table><thead><tr><th/>{fields.map(field=><th key={field.key}>{field.label}<b>▾</b></th>)}</tr></thead><tbody>{draft.map((row,index)=><tr key={row.id||`new-${index}`}><td>{index+1}</td>{fields.map(field=><td key={field.key}>{field.key==="stateId"?<select aria-label="State" value={row.stateId} onChange={event=>change(index,"stateId",event.target.value)}><option value="">—</option>{states.map(option=><option key={option.id} value={option.id}>{option.label}</option>)}</select>:field.key==="active"?<input type="checkbox" checked={row.active==="Active"} onChange={event=>change(index,"active",event.target.checked?"Active":"Inactive")}/>:<input aria-label={field.label} value={row[field.key]} readOnly={field.key==="id"&&Boolean(row.id)} onChange={event=>change(index,field.key,event.target.value)}/>}</td>)}</tr>)}</tbody></table></div><footer>Records: {draft.length}</footer></section></div>;
+  return <div className="ui-contact-editor-backdrop" role="presentation" onMouseDown={event=>{if(event.target===event.currentTarget)onClose();}}><section className="ui-contact-editor" role="dialog" aria-modal="true" aria-label="Unemployment Request Contacts"><header><h1>Unemployment Request Contacts</h1><button type="button" aria-label="Close" onClick={onClose}>×</button></header><div className="ui-contact-editor-tools"><button type="button" onClick={()=>setDraft(old=>[...old,{...blank}])}>New</button><button type="button" disabled={saving} onClick={save}>{saving?"Saving…":"Save Changes"}</button><button type="button" onClick={()=>setDraft(contacts.map(row=>({...row})))}>Undo</button><button type="button" onClick={onClose}>Close</button>{message&&<span role="alert">{message}</span>}{!faxSupported&&<span>Fax is not available in the SQL contact table.</span>}</div><div className="ui-contact-editor-grid"><table><thead><tr><th/>{fields.map(field=><th key={field.key}>{field.label}<b>▾</b></th>)}</tr></thead><tbody>{draft.map((row,index)=><tr key={row.id||`new-${index}`}><td>{index+1}</td>{fields.map(field=><td key={field.key}>{field.key==="stateId"?<select aria-label="State" value={row.stateId} onChange={event=>change(index,"stateId",event.target.value)}><option value="">—</option>{states.map(option=><option key={option.id} value={option.id}>{option.label}</option>)}</select>:field.key==="active"?<input type="checkbox" checked={row.active==="Active"} onChange={event=>change(index,"active",event.target.checked?"Active":"Inactive")}/>:<input aria-label={field.label} value={row[field.key]} readOnly={(field.key==="id"&&Boolean(row.id))||(field.key==="fax"&&!faxSupported)} onChange={event=>change(index,field.key,event.target.value)}/>}</td>)}</tr>)}</tbody></table></div><footer>Records: {draft.length}</footer></section></div>;
 }
 
 export function UiReportScreen() {
@@ -87,6 +87,7 @@ export function UiReportScreen() {
   const [rows, setRows] = useState<RequestRow[]>([]);
   const [contacts, setContacts] = useState<ContactRow[]>([]);
   const [contactStates, setContactStates] = useState<LookupOption[]>([]);
+  const [faxSupported, setFaxSupported] = useState(false);
   const [reasonOptions, setReasonOptions] = useState<LookupOption[]>([]);
   const [reasonDetailOptions, setReasonDetailOptions] = useState<LookupOption[]>([]);
   const [contractOptions, setContractOptions] = useState<LookupOption[]>([]);
@@ -121,6 +122,7 @@ export function UiReportScreen() {
           notes: value(row, "Notes"), active: value(row, "Active"),
         })));
         setContactStates((result.states??[]).map(row=>({id:value(row,"id"),label:value(row,"label")})));
+        setFaxSupported(result.faxSupported===true);
         setContactsError(result.contactsError ?? "");
         const mapOptions = (items: Record<string, unknown>[] | undefined) => (items ?? []).map(row => ({ id: value(row, "id"), label: value(row, "label") })).filter(option => option.label);
         setReasonOptions(mapOptions(result.dropdowns?.reasons));
@@ -160,6 +162,6 @@ export function UiReportScreen() {
     <div className="ac-ui-contacts"><strong>Select One Contact</strong><AccessButton onClick={()=>setContactEditorOpen(true)}>Edit Contact List</AccessButton><table><thead><tr><th/><th>Company</th><th>Contact F Name</th><th>Contact L Name</th><th>State</th><th>Email</th><th>Notes</th><th>Active</th><th>Select</th></tr></thead><tbody>{contacts.map((contact,i)=><tr key={contact.id} className={i===0?"is-current":undefined}><td/><td>{contact.company}</td><td>{contact.first}</td><td>{contact.last}</td><td>{contact.state}</td><td>{contact.email}</td><td>{contact.notes}</td><td>{contact.active}</td><td/></tr>)}</tbody></table>{contactsError && <p role="alert">Contact list: {contactsError}</p>}<div className="ac-ui-contact-record">Records: {contacts.length}　　▽ No Filter　 <span>Search</span></div></div>
     <footer className="ac-ui-record">Record:　|◀　◀　 <input value={filteredRows.length ? selected + 1 : 0} readOnly aria-label="Record number"/> of {filteredRows.length}　▶　▶|　　{Object.values(columnFilters).some(Boolean)?"▽ Filtered":"▽ No Filter"}　 <button type="button" onClick={()=>{setColumnFilters({});setSelected(0);}}>Clear Filters</button></footer>
     {historyOpen && (current.employeeId ? <EmployeeWorkHistoryDialog employeeId={current.employeeId} employeeName={current.employee} onClose={()=>setHistoryOpen(false)}/> : <div className="ui-work-history-backdrop"><section className="ui-work-history" role="dialog" aria-modal="true"><p role="alert">This request does not have a linked employee record.</p><AccessButton onClick={()=>setHistoryOpen(false)}>Close</AccessButton></section></div>)}
-    {contactEditorOpen&&<UnemploymentContactEditor contacts={contacts} states={contactStates} onClose={()=>setContactEditorOpen(false)} onSaved={setContacts}/>}
+    {contactEditorOpen&&<UnemploymentContactEditor contacts={contacts} states={contactStates} faxSupported={faxSupported} onClose={()=>setContactEditorOpen(false)} onSaved={setContacts}/>}
   </section>;
 }

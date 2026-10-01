@@ -97,6 +97,8 @@ export function getAllUnemploymentRequestRows(): Promise<OperationalReportRow[]>
 
 /** All contacts used by the unemployment request form. */
 export function getAllUnemploymentRequestContactRows(): Promise<OperationalReportRow[]> {
+  return getUnemploymentContactFaxColumn().then(faxColumn => {
+  const faxSelect = faxColumn ? `ISNULL(CONVERT(NVARCHAR(100),contact.[${faxColumn.replace(/]/g,"]]" )}),'')` : `CAST('' AS NVARCHAR(100))`;
   return queryReadOnly<OperationalReportRow>(`SELECT
     CAST(contact.PullDownUnemploymentRequestContactID AS NVARCHAR(20)) AS id,
     ISNULL(contact.PullDownUnemploymentRequestCompany,'') AS Company,
@@ -108,7 +110,7 @@ export function getAllUnemploymentRequestContactRows(): Promise<OperationalRepor
     CAST(ISNULL(contact.PullDownUnemploymentRequestContactStateID,0) AS NVARCHAR(20)) AS StateID,
     ISNULL(contact.PullDownUnemploymentRequestContactZip,'') AS Zip,
     ISNULL(contact.PullDownUnemploymentRequestContactPhone,'') AS Phone,
-    ISNULL(contact.PullDownUnemploymentRequestContactFax,'') AS Fax,
+    ${faxSelect} AS Fax,
     ISNULL(contact.PullDownUnemploymentRequestContactEmail,'') AS Email,
     ISNULL(contact.PullDownUnemploymentRequestContactSort,0) AS Sort,
     ISNULL(contact.PullDownUnemploymentRequestContactNotes,'') AS Notes,
@@ -118,6 +120,14 @@ export function getAllUnemploymentRequestContactRows(): Promise<OperationalRepor
     ON state.PullDownStateID=contact.PullDownUnemploymentRequestContactStateID
   ORDER BY contact.PullDownUnemploymentRequestContactSort,contact.PullDownUnemploymentRequestCompany,
     contact.PullDownUnemploymentRequestContactFName,contact.PullDownUnemploymentRequestContactLName`);
+  });
+}
+
+export async function getUnemploymentContactFaxColumn(): Promise<string | null> {
+  const columns = await queryReadOnly<{ name: string }>(`SELECT c.name
+    FROM sys.columns c
+    WHERE c.object_id=OBJECT_ID(N'dbo.tblPullDownUnemploymentRequestContacts')`);
+  return columns.find(({name})=>/fax/i.test(name))?.name ?? null;
 }
 
 export async function getUnemploymentContactStates(): Promise<OperationalReportRow[]> {

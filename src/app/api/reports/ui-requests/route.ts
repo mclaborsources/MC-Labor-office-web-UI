@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireSession } from "@/lib/auth/session";
-import { getAllUnemploymentRequestContactRows, getAllUnemploymentRequestRows, getUnemploymentContactStates, getUnemploymentRequestDropdownRows } from "@/lib/adminDropdownReports";
+import { getAllUnemploymentRequestContactRows, getAllUnemploymentRequestRows, getUnemploymentContactFaxColumn, getUnemploymentContactStates, getUnemploymentRequestDropdownRows } from "@/lib/adminDropdownReports";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +25,8 @@ export async function GET() {
     let statesError = "";
     try { states = await getUnemploymentContactStates(); }
     catch (error) { statesError = error instanceof Error ? error.message : "State list query failed."; }
-    return NextResponse.json({ ok: true, data, contacts, contactsError, dropdowns, states, statesError });
+    const faxColumn=await getUnemploymentContactFaxColumn();
+    return NextResponse.json({ ok: true, data, contacts, contactsError, dropdowns, states, statesError, faxSupported:Boolean(faxColumn) });
   } catch (error) {
     console.error("[api/reports/ui-requests] Failed to load report rows:", error);
     const detail = error instanceof Error ? error.message : "Unknown database error.";

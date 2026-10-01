@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireSession } from "@/lib/auth/session";
-import { getAllUnemploymentRequestContactRows, getUnemploymentContactStates } from "@/lib/adminDropdownReports";
+import { getAllUnemploymentRequestContactRows, getUnemploymentContactFaxColumn, getUnemploymentContactStates } from "@/lib/adminDropdownReports";
 import { clearReadCache } from "@/lib/db/sql";
 import { queryWrite } from "@/lib/db/write";
 
@@ -37,8 +37,8 @@ function failure(error: unknown) {
 export async function GET() {
   if (!(await authorized())) return NextResponse.json({ ok: false, error: "Sign in required." }, { status: 403 });
   try {
-    const [contacts, states] = await Promise.all([getAllUnemploymentRequestContactRows(), getUnemploymentContactStates()]);
-    return NextResponse.json({ ok:true, contacts, states });
+    const [contacts, states, faxColumn] = await Promise.all([getAllUnemploymentRequestContactRows(), getUnemploymentContactStates(), getUnemploymentContactFaxColumn()]);
+    return NextResponse.json({ ok:true, contacts, states, faxSupported:Boolean(faxColumn) });
   } catch (error) { return failure(error); }
 }
 
@@ -49,12 +49,14 @@ export async function PUT(request: NextRequest) {
     const input = mapInput(body);
     const id = Number(body.id);
     if (!Number.isInteger(id) || id <= 0) return NextResponse.json({ ok: false, error: "A valid contact ID is required." }, { status: 400 });
+    const faxColumn=await getUnemploymentContactFaxColumn();
+    const faxSet=faxColumn?`, [${faxColumn.replace(/]/g,"]]" )}]=@fax`:"";
     const affected = await queryWrite(`UPDATE tblPullDownUnemploymentRequestContacts SET
       PullDownUnemploymentRequestCompany=@company, PullDownUnemploymentRequestContactFName=@first,
       PullDownUnemploymentRequestContactLName=@last, PullDownUnemploymentRequestContactStreet=@street,
       PullDownUnemploymentRequestContactCity=@city, PullDownUnemploymentRequestContactStateID=@stateId,
-      PullDownUnemploymentRequestContactZip=@zip, PullDownUnemploymentRequestContactPhone=@phone,
-      PullDownUnemploymentRequestContactFax=@fax, PullDownUnemploymentRequestContactEmail=@email,
+      PullDownUnemploymentRequestContactZip=@zip, PullDownUnemploymentRequestContactPhone=@phone${faxSet},
+      PullDownUnemploymentRequestContactEmail=@email,
       PullDownUnemploymentRequestContactSort=@sort, PullDownUnemploymentRequestContactNotes=@notes,
       PullDownUnemploymentRequestContactActive=@active
       WHERE PullDownUnemploymentRequestContactID=@id`, [
@@ -74,13 +76,16 @@ export async function POST(request: NextRequest) {
   if (!(await authorized())) return NextResponse.json({ ok: false, error: "Sign in required." }, { status: 403 });
   try {
     const input = mapInput(await request.json() as ContactInput);
+    const faxColumn=await getUnemploymentContactFaxColumn();
+    const faxField=faxColumn?`,[${faxColumn.replace(/]/g,"]]" )}]`:"";
+    const faxValue=faxColumn?",@fax":"";
     const affected = await queryWrite(`INSERT INTO tblPullDownUnemploymentRequestContacts
       (PullDownUnemploymentRequestCompany,PullDownUnemploymentRequestContactFName,PullDownUnemploymentRequestContactLName,
        PullDownUnemploymentRequestContactStreet,PullDownUnemploymentRequestContactCity,PullDownUnemploymentRequestContactStateID,
-       PullDownUnemploymentRequestContactZip,PullDownUnemploymentRequestContactPhone,PullDownUnemploymentRequestContactFax,
+       PullDownUnemploymentRequestContactZip,PullDownUnemploymentRequestContactPhone${faxField},
        PullDownUnemploymentRequestContactEmail,PullDownUnemploymentRequestContactSort,PullDownUnemploymentRequestContactNotes,
        PullDownUnemploymentRequestContactActive)
-      VALUES (@company,@first,@last,@street,@city,@stateId,@zip,@phone,@fax,@email,@sort,@notes,@active)`, [
+      VALUES (@company,@first,@last,@street,@city,@stateId,@zip,@phone${faxValue},@email,@sort,@notes,@active)`, [
       { name:"company", value:input.company }, { name:"first", value:input.first }, { name:"last", value:input.last },
       { name:"street", value:input.street }, { name:"city", value:input.city }, { name:"stateId", value:input.stateId },
       { name:"zip", value:input.zip }, { name:"phone", value:input.phone }, { name:"fax", value:input.fax },
