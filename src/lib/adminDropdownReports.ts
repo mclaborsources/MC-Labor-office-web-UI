@@ -146,7 +146,7 @@ export function getAllAccidentReportRows(): Promise<OperationalReportRow[]> {
   LEFT JOIN tblPullDownStates siteState WITH (NOLOCK) ON siteState.PullDownStateID=siteCity.StateID
   LEFT JOIN tblPullDownTrade tr WITH (NOLOCK) ON tr.PullDownTradeID=r.ProjectAccidentReportRegularOccupationID
   LEFT JOIN tblEmployeePayrollCoOnSite ep WITH (NOLOCK) ON ep.EmployeePayrollCoOnSiteID=r.EmployeePayrollCompanyOnSiteID
-  LEFT JOIN tblPullDownPayrollCoOnSite payrollCo WITH (NOLOCK) ON payrollCo.PayrollCoOnSiteID=ep.PayrollCoOnSiteID
+  LEFT JOIN tblPullDownPayrollCoOnSite payrollCo WITH (NOLOCK) ON payrollCo.PullDownPayrollCoOnSiteID=ep.PayrollCoOnSiteID
   LEFT JOIN tblPullDownBenefitsStatus benefits WITH (NOLOCK) ON benefits.PullDownBenefitsStatusID=r.ProjectAccidentReportBenefitsStatusID
   LEFT JOIN tblInsuranceCompanyClaimsAdjusters adjuster WITH (NOLOCK) ON adjuster.InsuranceCompanyClaimsAdjusterID=r.ProjectAccidentReportClaimsAdjusterID
   LEFT JOIN tblPullDownProjectAccidentReportHistoryStatus history WITH (NOLOCK)
