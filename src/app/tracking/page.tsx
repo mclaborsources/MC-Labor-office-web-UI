@@ -35,6 +35,7 @@ export default async function TrackingPage({ searchParams }: PageProps) {
       params.week && !params.weekOffset ? Number(params.week) : undefined,
     explicitYear:
       params.year && !params.weekOffset ? Number(params.year) : undefined,
+    alignFromSql: params.noWeekAlign !== "1",
     // Keep the requested calendar week. A different week must never be shown
     // without the user explicitly navigating to it.
     allowFallback: false,

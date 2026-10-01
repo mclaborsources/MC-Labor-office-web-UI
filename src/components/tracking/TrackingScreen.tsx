@@ -711,7 +711,7 @@ export function TrackingScreen({
 
   function navigateFilter(customerId: string, projectId: string) {
     setSelectedIndex(null);
-    const q = new URLSearchParams({ date: dateInputValue(week.displayDate) });
+    const q = new URLSearchParams({ week: String(week.assignWeek), year: String(week.assignYear) });
     if (customerId) q.set("customerId", customerId);
     if (projectId) q.set("projectId", projectId);
     router.push(`/tracking?${q.toString()}`);

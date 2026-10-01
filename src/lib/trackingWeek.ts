@@ -81,6 +81,8 @@ export interface ResolveTrackingWeekOptions {
   weekOffset?: number;
   explicitWeek?: number;
   explicitYear?: number;
+  /** Skip SQL week-number alignment for an explicitly selected calendar date. */
+  alignFromSql?: boolean;
   /** When false, keep an explicitly requested work week even when it has no rows. */
   allowFallback?: boolean;
 }
@@ -107,7 +109,7 @@ export async function resolveTrackingWeek(
   const requestedWeek = assignWeek;
   const requestedYear = assignYear;
 
-  if (options.explicitWeek === undefined) {
+  if (options.explicitWeek === undefined && options.alignFromSql !== false) {
     const friday = parseDateUS(base.weekEndingDate);
     const sqlWeek = await alignWeekFromSql(friday);
     if (sqlWeek) {
@@ -120,6 +122,10 @@ export async function resolveTrackingWeek(
   const ctx: WeekContext = {
     ...base,
     ...dates,
+    // Keep the date control inside the week represented by AssignWeek/AssignYear.
+    // SQL may align the calendar week to a stored Access week number, so leaving
+    // the original reference date here can make the date and week fields conflict.
+    displayDate: dates.weekEndingDate,
     assignWeek,
     assignYear,
   };
@@ -136,6 +142,7 @@ export async function resolveTrackingWeek(
     return {
       ...base,
       ...reqDates,
+      displayDate: reqDates.weekEndingDate,
       assignWeek: requestedWeek,
       assignYear: requestedYear,
     };
@@ -149,6 +156,7 @@ export async function resolveTrackingWeek(
         return {
           ...base,
           ...latestDates,
+          displayDate: latestDates.weekEndingDate,
           assignWeek: latest.assignWeek,
           assignYear: latest.assignYear,
           fallback: true,
@@ -163,6 +171,7 @@ export async function resolveTrackingWeek(
   return {
     ...base,
     ...reqDates,
+    displayDate: reqDates.weekEndingDate,
     assignWeek: requestedWeek,
     assignYear: requestedYear,
   };
