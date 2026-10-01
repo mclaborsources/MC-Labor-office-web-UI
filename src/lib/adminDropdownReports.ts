@@ -65,3 +65,89 @@ export function getYearlyRevenueRows(): Promise<OperationalReportRow[]> {
   GROUP BY c.CustomerID,c.CustBusName,c.Street,c.City,c.State,ct.PullDownCustomerType,YEAR(cw.WeekEndingDate)
   ORDER BY [Revenue Year] DESC,Customer`);
 }
+
+/** Full Access unemployment request history, with no TOP or pagination cap. */
+export function getAllUnemploymentRequestRows(): Promise<OperationalReportRow[]> {
+  return queryReadOnly<OperationalReportRow>(`SELECT
+    CAST(r.UnemploymentRequestID AS NVARCHAR(20)) AS id,
+    CONVERT(VARCHAR(10),r.UnemploymentRequestTimestamp,101) AS Date,
+    LTRIM(RTRIM(CONCAT(ISNULL(e.EmFirstName,''),' ',ISNULL(e.EmMiddle,''),' ',ISNULL(e.EmLastName,'')))) AS Employee,
+    CONVERT(VARCHAR(10),r.UnemploymentRequestLastWorkDate,101) AS [Last Day of Work],
+    ISNULL(c.CustBusName,'') AS [Last Customer],
+    ISNULL(tr.PullDownTrade,'') AS Trade,
+    ISNULL(reason.PullDownUnemploymentRequestReason,'') AS Reason,
+    ISNULL(reasonCont.PullDownUnemploymentRequestReasonCont,'') AS [Reason Cont],
+    CONVERT(VARCHAR(10),r.UnemploymentRequestReasonContDate,101) AS [Reason Cont Date],
+    ISNULL(contract.PullDownContractWith_PayrollCoName,'') AS [Contract With],
+    ISNULL(r.UnemploymentRequestNotes,'') AS Notes,
+    ISNULL(r.UnemploymentRequestUserName,'') AS [User Name]
+  FROM tblUnemploymentRequests r WITH (NOLOCK)
+  LEFT JOIN tblEmployee e WITH (NOLOCK) ON e.EmployeeID=r.UnemploymentRequestEmployeeID
+  LEFT JOIN tblCustomer c WITH (NOLOCK) ON c.CustomerID=r.UnemploymentRequestLastCustomerID
+  LEFT JOIN tblPullDownTrade tr WITH (NOLOCK) ON tr.PullDownTradeID=r.UnemploymentRequestTradeID
+  LEFT JOIN tblPullDownUnemploymentRequestReasons reason WITH (NOLOCK)
+    ON reason.PullDownUnemploymentRequestReasonID=r.UnemploymentRequestReasonID
+  LEFT JOIN tblPullDownUnemploymentRequestReasonCont reasonCont WITH (NOLOCK)
+    ON reasonCont.PullDownUnemploymentRequestReasonContID=r.UnemploymentRequestReasonContID
+  LEFT JOIN tblPullDownContractWith_PayrollCo contract WITH (NOLOCK)
+    ON contract.PullDownContractWith_PayrollCoID=r.UnemploymentRequestContractWith_PayrollCoID
+  ORDER BY r.UnemploymentRequestTimestamp DESC,r.UnemploymentRequestID DESC`);
+}
+
+/** All contacts used by the unemployment request form. */
+export function getAllUnemploymentRequestContactRows(): Promise<OperationalReportRow[]> {
+  return queryReadOnly<OperationalReportRow>(`SELECT
+    CAST(UnemploymentRequestContactID AS NVARCHAR(20)) AS id,
+    ISNULL(PullDownUnemploymentRequestCompany,'') AS Company,
+    ISNULL(PullDownUnemploymentRequestContactFName,'') AS [Contact F Name],
+    ISNULL(PullDownUnemploymentRequestContactLName,'') AS [Contact L Name],
+    ISNULL(ContactState,'') AS State,
+    ISNULL(PullDownUnemploymentRequestContactEmail,'') AS Email,
+    ISNULL(PullDownUnemploymentRequestContactNotes,'') AS Notes,
+    ISNULL(ActiveText,'') AS Active
+  FROM tblUnemploymentRequestContacts WITH (NOLOCK)
+  ORDER BY PullDownUnemploymentRequestContactSort,PullDownUnemploymentRequestCompany,
+    PullDownUnemploymentRequestContactFName,PullDownUnemploymentRequestContactLName`);
+}
+
+/** Full Access accident report history, with no TOP or pagination cap. */
+export function getAllAccidentReportRows(): Promise<OperationalReportRow[]> {
+  return queryReadOnly<OperationalReportRow>(`SELECT
+    CAST(r.ProjectAccidentReportID AS NVARCHAR(20)) AS id,
+    CONVERT(VARCHAR(10),r.ProjectAccidentReportPreparedTimestamp,101) AS Date,
+    LTRIM(RTRIM(CONCAT(ISNULL(e.EmFirstName,''),' ',ISNULL(e.EmMiddle,''),' ',ISNULL(e.EmLastName,'')))) AS Employee,
+    ISNULL(p.SiteName,'') AS Job,
+    ISNULL(siteState.PullDownState,'') AS State,
+    ISNULL(tr.PullDownTrade,'') AS Trade,
+    ISNULL(payrollCo.PullDownPayrollCoOnSiteInitials,'') AS PayrollCo,
+    CONVERT(VARCHAR(10),r.ProjectAccidentReportDateOfInjury,101) AS Injury,
+    ISNULL(r.ProjectAccidentReportClaimNumber,'') AS Claim,
+    ISNULL(c.CustBusName,'') AS Customer,
+    CONVERT(VARCHAR(10),r.ProjectAccidentReportDateReturned,101) AS [Return Date],
+    ISNULL(r.ProjectAccidentReportWhyNotReturned,'') AS [Why Not Returned],
+    ISNULL(r.ProjectAccidentReportTotalDaysOutOfWork,0) AS [Days Off],
+    ISNULL(r.ProjectAccidentReportWorkdaysOutOfWork,0) AS [Workdays Out],
+    ISNULL(r.ProjectAccidentReportClaimNotes,'') AS [Claim Notes],
+    ISNULL(benefits.PullDownBenefitsStatus,'') AS [Benefits Status],
+    CASE WHEN ISNULL(r.ProjectAccidentReportInHouse,0)<>0 THEN 'Yes' ELSE '' END AS [In House],
+    ISNULL(r.ProjectAccidentReportReservedAmount,0) AS Reserve,
+    ISNULL(r.ProjectAccidentReportTotalCost,0) AS [Total Cost],
+    CASE WHEN ISNULL(r.ProjectAccidentReportClosedOut,0)<>0 THEN 'Yes' ELSE '' END AS Closed,
+    CONVERT(VARCHAR(10),r.ProjectAccidentReportFutureCall,101) AS [Future Call],
+    LTRIM(RTRIM(CONCAT(ISNULL(adjuster.InsuranceCompanyClaimsAdjusterFName,''),' ',ISNULL(adjuster.InsuranceCompanyClaimsAdjusterLName,'')))) AS [Last Adjuster],
+    ISNULL(history.PullDownProjectAccidentReportHistoryStatus,'') AS History
+  FROM tblProjectAccidentReports r WITH (NOLOCK)
+  LEFT JOIN tblEmployee e WITH (NOLOCK) ON e.EmployeeID=r.EmployeeID
+  LEFT JOIN tblProject p WITH (NOLOCK) ON p.ProjectID=r.ProjectID
+  LEFT JOIN tblCustomer c WITH (NOLOCK) ON c.CustomerID=p.CustomerID
+  LEFT JOIN tblPullDownStateCities siteCity WITH (NOLOCK) ON siteCity.PullDownStateCityID=p.SiteStateCityID
+  LEFT JOIN tblPullDownStates siteState WITH (NOLOCK) ON siteState.PullDownStateID=siteCity.StateID
+  LEFT JOIN tblPullDownTrade tr WITH (NOLOCK) ON tr.PullDownTradeID=r.ProjectAccidentReportRegularOccupationID
+  LEFT JOIN tblEmployeePayrollCoOnSite ep WITH (NOLOCK) ON ep.EmployeePayrollCoOnSiteID=r.EmployeePayrollCompanyOnSiteID
+  LEFT JOIN tblPullDownPayrollCoOnSite payrollCo WITH (NOLOCK) ON payrollCo.PayrollCoOnSiteID=ep.PayrollCoOnSiteID
+  LEFT JOIN tblPullDownBenefitsStatus benefits WITH (NOLOCK) ON benefits.PullDownBenefitsStatusID=r.ProjectAccidentReportBenefitsStatusID
+  LEFT JOIN tblInsuranceCompanyClaimsAdjusters adjuster WITH (NOLOCK) ON adjuster.InsuranceCompanyClaimsAdjusterID=r.ProjectAccidentReportClaimsAdjusterID
+  LEFT JOIN tblPullDownProjectAccidentReportHistoryStatus history WITH (NOLOCK)
+    ON history.PullDownProjectAccidentReportHistoryStatusID=r.ProjectAccidentReportHistoryStatusID
+  ORDER BY r.ProjectAccidentReportPreparedTimestamp DESC,r.ProjectAccidentReportID DESC`);
+}
