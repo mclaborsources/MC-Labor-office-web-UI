@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AccessButton } from "@/components/access/AccessButton";
 
 type RequestRow = {
@@ -20,11 +20,11 @@ const gridColumns: { label: string; key: keyof RequestRow }[] = [
 ];
 const blankValue = "__ACCESS_BLANK__";
 
-function AccessColumnFilter({ label, options, applied, onApply, onSort, onClear }: {
+function AccessColumnFilter({ label, options, applied, onApply, onSort, onClear, open, onToggle, onClose }: {
   label: string; options: string[]; applied: string[] | undefined;
   onApply: (values: string[] | undefined) => void; onSort: (descending: boolean) => void; onClear: () => void;
+  open: boolean; onToggle: () => void; onClose: () => void;
 }) {
-  const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState<string[]>([]);
   const [search, setSearch] = useState("");
   const choices = [blankValue, ...options.filter(value => value !== "")];
@@ -32,11 +32,11 @@ function AccessColumnFilter({ label, options, applied, onApply, onSort, onClear 
   const allChecked = draft.length === choices.length;
   const isDate = label.toLowerCase().includes("date") || label === "Date";
   return <div className="ac-ui-filter">
-    <button type="button" aria-label={`Filter ${label}`} title={`Filter ${label}`} className={applied ? "is-filtered" : ""} onClick={() => { setDraft(applied ?? [...choices]); setSearch(""); setOpen(value => !value); }}>▾</button>
+    <button type="button" aria-label={`Filter ${label}`} title={`Filter ${label}`} aria-expanded={open} className={applied ? "is-filtered" : ""} onClick={() => { setDraft(applied ?? [...choices]); setSearch(""); onToggle(); }}>▾</button>
     {open && <div className="ac-ui-filter-menu" role="dialog" aria-label={`${label} filter`}>
-      <button type="button" className="ac-ui-filter-command" onClick={() => { onSort(false); setOpen(false); }}>↧　Sort {isDate ? "Oldest to Newest" : "A to Z"}</button>
-      <button type="button" className="ac-ui-filter-command" onClick={() => { onSort(true); setOpen(false); }}>↥　Sort {isDate ? "Newest to Oldest" : "Z to A"}</button>
-      <button type="button" className="ac-ui-filter-command ac-ui-clear-filter" disabled={!applied} onClick={() => { onClear(); setDraft([...choices]); setOpen(false); }}>◇　Clear filter from {label}</button>
+      <button type="button" className="ac-ui-filter-command" onClick={() => { onSort(false); onClose(); }}>↧　Sort {isDate ? "Oldest to Newest" : "A to Z"}</button>
+      <button type="button" className="ac-ui-filter-command" onClick={() => { onSort(true); onClose(); }}>↥　Sort {isDate ? "Newest to Oldest" : "Z to A"}</button>
+      <button type="button" className="ac-ui-filter-command ac-ui-clear-filter" disabled={!applied} onClick={() => { onClear(); setDraft([...choices]); onClose(); }}>◇　Clear filter from {label}</button>
       <div className="ac-ui-filter-type">{isDate ? "Date Filters" : "Text Filters"}<span>›</span></div>
       <div className="ac-ui-filter-list">
         <label><input type="checkbox" checked={allChecked} onChange={event => setDraft(event.target.checked ? [...choices] : [])}/>(Select All)</label>
@@ -44,7 +44,7 @@ function AccessColumnFilter({ label, options, applied, onApply, onSort, onClear 
         <input className="ac-ui-filter-search" aria-label={`Search ${label} values`} placeholder="Search values" value={search} onChange={event => setSearch(event.target.value)}/>
         {visibleChoices.filter(value => value !== blankValue).map(value => <label key={value}><input type="checkbox" checked={draft.includes(value)} onChange={event => setDraft(old => event.target.checked ? [...old, value] : old.filter(item => item !== value))}/>{value}</label>)}
       </div>
-      <div className="ac-ui-filter-actions"><button type="button" onClick={() => { onApply(draft.length === choices.length ? undefined : draft); setOpen(false); }}>OK</button><button type="button" onClick={() => { setDraft(applied ?? [...choices]); setOpen(false); }}>Cancel</button></div>
+      <div className="ac-ui-filter-actions"><button type="button" onClick={() => { onApply(draft.length === choices.length ? undefined : draft); onClose(); }}>OK</button><button type="button" onClick={() => { setDraft(applied ?? [...choices]); onClose(); }}>Cancel</button></div>
     </div>}
   </div>;
 }
@@ -63,6 +63,8 @@ export function UiReportScreen() {
   const [selected, setSelected] = useState(0);
   const [columnFilters, setColumnFilters] = useState<Partial<Record<keyof RequestRow, string[]>>>({});
   const [sortState, setSortState] = useState<{ key: keyof RequestRow; descending: boolean } | null>(null);
+  const [activeFilter, setActiveFilter] = useState<keyof RequestRow | null>(null);
+  const gridWrapRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [contactsError, setContactsError] = useState("");
@@ -96,6 +98,10 @@ export function UiReportScreen() {
     return () => { active = false; };
   }, []);
 
+  useEffect(() => {
+    if (gridWrapRef.current) gridWrapRef.current.scrollLeft = 0;
+  }, []);
+
   const filteredRows = useMemo(() => rows.filter(row => gridColumns.every(({ key }) => {
     const filter = columnFilters[key];
     return filter === undefined || filter.includes(row[key] === "" ? blankValue : row[key]);
@@ -112,7 +118,7 @@ export function UiReportScreen() {
   const columnOptions = (key: keyof RequestRow) => Array.from(new Set(rows.map(row => row[key]))).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
 
   return <section className="ac-ui-report">
-    <div className="ac-ui-grid-wrap"><table className="ac-ui-grid"><thead><tr><th/><>{gridColumns.map(({ label, key })=><th key={key} className={columnFilters[key]!==undefined?"has-filter":""}><span>{label}</span><AccessColumnFilter label={label} options={columnOptions(key)} applied={columnFilters[key]} onApply={value=>setFilter(key,value)} onSort={descending=>setSortState({key,descending})} onClear={()=>setFilter(key,undefined)}/></th>)}</><th>Select</th><th/></tr></thead><tbody>
+    <div ref={gridWrapRef} className="ac-ui-grid-wrap"><table className="ac-ui-grid"><thead><tr><th/><>{gridColumns.map(({ label, key })=><th key={key} className={columnFilters[key]!==undefined?"has-filter":""}><span>{label}</span><AccessColumnFilter label={label} options={columnOptions(key)} applied={columnFilters[key]} onApply={value=>setFilter(key,value)} onSort={descending=>setSortState({key,descending})} onClear={()=>setFilter(key,undefined)} open={activeFilter===key} onToggle={()=>setActiveFilter(active=>active===key?null:key)} onClose={()=>setActiveFilter(null)}/></th>)}</><th>Select</th><th/></tr></thead><tbody>
       {filteredRows.map((row, i) => <tr key={row.id} className={i === selected ? "is-current" : undefined} onClick={() => setSelected(i)}><td/>{gridColumns.map(({key})=><td key={key}>{row[key]}</td>)}<td/><td/></tr>)}
     </tbody></table>{loading && <p role="status">Loading all unemployment requests…</p>}{error && <p role="alert">{error}</p>}{!loading && !error && rows.length === 0 && <p>No unemployment requests found.</p>}</div>
     <header className="ac-ui-title"><h1>Unemployment Requests</h1><div><AccessButton>New</AccessButton><AccessButton>Save</AccessButton><AccessButton onClick={() => router.push("/tracking")}>Cancel</AccessButton><AccessButton>Delete</AccessButton><AccessButton>View Email</AccessButton></div><button type="button" aria-label="Help">?</button></header>
