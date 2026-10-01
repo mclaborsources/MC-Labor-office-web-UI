@@ -98,7 +98,7 @@ export function getAllUnemploymentRequestRows(): Promise<OperationalReportRow[]>
 /** All contacts used by the unemployment request form. */
 export function getAllUnemploymentRequestContactRows(): Promise<OperationalReportRow[]> {
   return getUnemploymentContactFaxColumn().then(faxColumn => {
-  const faxSelect = faxColumn ? `ISNULL(CONVERT(NVARCHAR(100),contact.[${faxColumn.replace(/]/g,"]]" )}),'')` : `CAST('' AS NVARCHAR(100))`;
+  const faxSelect = faxColumn ? `ISNULL(CONVERT(NVARCHAR(100),contact.[${faxColumn.replace(/]/g,"]]" )}]),'')` : `CAST('' AS NVARCHAR(100))`;
   return queryReadOnly<OperationalReportRow>(`SELECT
     CAST(contact.PullDownUnemploymentRequestContactID AS NVARCHAR(20)) AS id,
     ISNULL(contact.PullDownUnemploymentRequestCompany,'') AS Company,
