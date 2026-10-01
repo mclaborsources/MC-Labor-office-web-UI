@@ -102,8 +102,15 @@ export function getAllUnemploymentRequestContactRows(): Promise<OperationalRepor
     ISNULL(contact.PullDownUnemploymentRequestCompany,'') AS Company,
     ISNULL(contact.PullDownUnemploymentRequestContactFName,'') AS [Contact F Name],
     ISNULL(contact.PullDownUnemploymentRequestContactLName,'') AS [Contact L Name],
+    ISNULL(contact.PullDownUnemploymentRequestContactStreet,'') AS Street,
+    ISNULL(contact.PullDownUnemploymentRequestContactCity,'') AS City,
     ISNULL(state.PullDownState,'') AS State,
+    CAST(ISNULL(contact.PullDownUnemploymentRequestContactStateID,0) AS NVARCHAR(20)) AS StateID,
+    ISNULL(contact.PullDownUnemploymentRequestContactZip,'') AS Zip,
+    ISNULL(contact.PullDownUnemploymentRequestContactPhone,'') AS Phone,
+    ISNULL(contact.PullDownUnemploymentRequestContactFax,'') AS Fax,
     ISNULL(contact.PullDownUnemploymentRequestContactEmail,'') AS Email,
+    ISNULL(contact.PullDownUnemploymentRequestContactSort,0) AS Sort,
     ISNULL(contact.PullDownUnemploymentRequestContactNotes,'') AS Notes,
     CASE WHEN ISNULL(contact.PullDownUnemploymentRequestContactActive,0)<>0 THEN 'Active' ELSE 'Inactive' END AS Active
   FROM tblPullDownUnemploymentRequestContacts contact WITH (NOLOCK)
@@ -111,6 +118,11 @@ export function getAllUnemploymentRequestContactRows(): Promise<OperationalRepor
     ON state.PullDownStateID=contact.PullDownUnemploymentRequestContactStateID
   ORDER BY contact.PullDownUnemploymentRequestContactSort,contact.PullDownUnemploymentRequestCompany,
     contact.PullDownUnemploymentRequestContactFName,contact.PullDownUnemploymentRequestContactLName`);
+}
+
+export async function getUnemploymentContactStates(): Promise<OperationalReportRow[]> {
+  return queryReadOnly<OperationalReportRow>(`SELECT CAST(PullDownStateID AS NVARCHAR(20)) AS id,ISNULL(PullDownState,'') AS label
+  FROM tblPullDownStates WITH (NOLOCK) ORDER BY PullDownState`);
 }
 
 /** Lookup values used by the unemployment request editor, sourced from Access dropdown tables. */
