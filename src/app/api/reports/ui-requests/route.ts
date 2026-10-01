@@ -11,13 +11,19 @@ export async function GET() {
     return NextResponse.json({ ok: false, data: [], contacts: [], error: "Sign in required." }, { status: 403 });
   }
   try {
-    const [data, contacts] = await Promise.all([
-      getAllUnemploymentRequestRows(),
-      getAllUnemploymentRequestContactRows(),
-    ]);
-    return NextResponse.json({ ok: true, data, contacts });
+    const data = await getAllUnemploymentRequestRows();
+    let contacts: Awaited<ReturnType<typeof getAllUnemploymentRequestContactRows>> = [];
+    let contactsError = "";
+    try {
+      contacts = await getAllUnemploymentRequestContactRows();
+    } catch (error) {
+      contactsError = error instanceof Error ? error.message : "Contact list query failed.";
+      console.error("[api/reports/ui-requests] Failed to load contacts:", error);
+    }
+    return NextResponse.json({ ok: true, data, contacts, contactsError });
   } catch (error) {
     console.error("[api/reports/ui-requests] Failed to load report rows:", error);
-    return NextResponse.json({ ok: false, data: [], error: "Unable to load unemployment requests." }, { status: 500 });
+    const detail = error instanceof Error ? error.message : "Unknown database error.";
+    return NextResponse.json({ ok: false, data: [], error: `Unable to load unemployment requests: ${detail}` }, { status: 500 });
   }
 }

@@ -97,17 +97,19 @@ export function getAllUnemploymentRequestRows(): Promise<OperationalReportRow[]>
 /** All contacts used by the unemployment request form. */
 export function getAllUnemploymentRequestContactRows(): Promise<OperationalReportRow[]> {
   return queryReadOnly<OperationalReportRow>(`SELECT
-    CAST(UnemploymentRequestContactID AS NVARCHAR(20)) AS id,
-    ISNULL(PullDownUnemploymentRequestCompany,'') AS Company,
-    ISNULL(PullDownUnemploymentRequestContactFName,'') AS [Contact F Name],
-    ISNULL(PullDownUnemploymentRequestContactLName,'') AS [Contact L Name],
-    ISNULL(ContactState,'') AS State,
-    ISNULL(PullDownUnemploymentRequestContactEmail,'') AS Email,
-    ISNULL(PullDownUnemploymentRequestContactNotes,'') AS Notes,
-    ISNULL(ActiveText,'') AS Active
-  FROM tblUnemploymentRequestContacts WITH (NOLOCK)
-  ORDER BY PullDownUnemploymentRequestContactSort,PullDownUnemploymentRequestCompany,
-    PullDownUnemploymentRequestContactFName,PullDownUnemploymentRequestContactLName`);
+    CAST(contact.PullDownUnemploymentRequestContactID AS NVARCHAR(20)) AS id,
+    ISNULL(contact.PullDownUnemploymentRequestCompany,'') AS Company,
+    ISNULL(contact.PullDownUnemploymentRequestContactFName,'') AS [Contact F Name],
+    ISNULL(contact.PullDownUnemploymentRequestContactLName,'') AS [Contact L Name],
+    ISNULL(state.PullDownState,'') AS State,
+    ISNULL(contact.PullDownUnemploymentRequestContactEmail,'') AS Email,
+    ISNULL(contact.PullDownUnemploymentRequestContactNotes,'') AS Notes,
+    CASE WHEN ISNULL(contact.PullDownUnemploymentRequestContactActive,0)<>0 THEN 'Active' ELSE 'Inactive' END AS Active
+  FROM tblPullDownUnemploymentRequestContacts contact WITH (NOLOCK)
+  LEFT JOIN tblPullDownStates state WITH (NOLOCK)
+    ON state.PullDownStateID=contact.PullDownUnemploymentRequestContactStateID
+  ORDER BY contact.PullDownUnemploymentRequestContactSort,contact.PullDownUnemploymentRequestCompany,
+    contact.PullDownUnemploymentRequestContactFName,contact.PullDownUnemploymentRequestContactLName`);
 }
 
 /** Full Access accident report history, with no TOP or pagination cap. */
