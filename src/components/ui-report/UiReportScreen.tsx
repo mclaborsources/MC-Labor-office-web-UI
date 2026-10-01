@@ -54,6 +54,24 @@ function value(row: Record<string, unknown>, key: string) {
   return row[key] == null ? "" : String(row[key]);
 }
 
+function dateInputValue(raw: string) {
+  const match = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  return match ? `${match[3]}-${match[1].padStart(2, "0")}-${match[2].padStart(2, "0")}` : raw;
+}
+function dateDisplayValue(raw: string) {
+  const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return match ? `${match[2]}/${match[3]}/${match[1]}` : raw;
+}
+
+function mapRequestRow(row: Record<string, unknown>): RequestRow {
+  return {
+    id: value(row, "id"), employeeId: value(row, "EmployeeID"), date: dateInputValue(value(row, "Date")), employee: value(row, "Employee"),
+    lastDay: dateInputValue(value(row, "Last Day of Work")), customer: value(row, "Last Customer"), trade: value(row, "Trade"),
+    reason: value(row, "Reason"), reasonCont: value(row, "Reason Cont"), reasonDate: dateInputValue(value(row, "Reason Cont Date")),
+    contract: value(row, "Contract With"), notes: value(row, "Notes"), user: value(row, "User Name"),
+  };
+}
+
 function UnemploymentContactEditor({ contacts, states, faxSupported, onClose, onSaved }: { contacts: ContactRow[]; states: LookupOption[]; faxSupported:boolean; onClose: () => void; onSaved: (rows: ContactRow[]) => void }) {
   const [draft, setDraft] = useState<ContactRow[]>(contacts.map(row=>({...row})));
   const [saving, setSaving] = useState(false);
@@ -109,12 +127,7 @@ export function UiReportScreen() {
         const result = await response.json() as ReportResponse;
         if (!response.ok || !result.ok) throw new Error(result.error || "Unable to load unemployment requests.");
         if (!active) return;
-        setRows((result.data ?? []).map((row) => ({
-          id: value(row, "id"), employeeId: value(row, "EmployeeID"), date: value(row, "Date"), employee: value(row, "Employee"),
-          lastDay: value(row, "Last Day of Work"), customer: value(row, "Last Customer"), trade: value(row, "Trade"),
-          reason: value(row, "Reason"), reasonCont: value(row, "Reason Cont"), reasonDate: value(row, "Reason Cont Date"),
-          contract: value(row, "Contract With"), notes: value(row, "Notes"), user: value(row, "User Name"),
-        })));
+        setRows((result.data ?? []).map(mapRequestRow));
         setContacts((result.contacts ?? []).map((row) => ({
           id: value(row, "id"), company: value(row, "Company"), first: value(row, "Contact F Name"),
           last: value(row, "Contact L Name"), street: value(row,"Street"), city:value(row,"City"), state: value(row, "State"), stateId:value(row,"StateID"),
@@ -152,13 +165,46 @@ export function UiReportScreen() {
     setSelected(0);
   };
   const columnOptions = (key: keyof RequestRow) => Array.from(new Set(rows.map(row => row[key]))).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+  const startNewRequest = () => {
+    setColumnFilters({}); setSortState(null); setActiveFilter(null);
+    setRows(old => [...old, { ...emptyRequest }]);
+    setSelected(rows.length);
+    setError("");
+    requestAnimationFrame(() => { if (gridWrapRef.current) gridWrapRef.current.scrollTop = gridWrapRef.current.scrollHeight; });
+  };
+  const changeCurrent = (key: keyof RequestRow, next: string) => {
+    const rowId = current.id;
+    setRows(old => old.map(row => row.id === rowId && (rowId !== "" || row === current)
+      ? { ...row, [key]: next, ...(key === "reason" ? { reasonCont: "" } : {}) }
+      : row));
+  };
+  const saveCurrent = async () => {
+    if (!current.employee.trim()) { setError("Enter the employee name before saving."); return; }
+    setError("");
+    try {
+      const response = await fetch("/api/reports/ui-requests", {
+        method: current.id ? "PUT" : "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(current),
+      });
+      const result = await response.json() as { ok: boolean; error?: string };
+      if (!response.ok || !result.ok) throw new Error(result.error || "Unable to save unemployment request.");
+      const refreshed = await fetch("/api/reports/ui-requests", { cache: "no-store" });
+      const report = await refreshed.json() as ReportResponse;
+      if (!refreshed.ok || !report.ok) throw new Error(report.error || "Saved, but unable to refresh the request list.");
+      const savedId = current.id;
+      const nextRows = (report.data ?? []).map(mapRequestRow);
+      setRows(nextRows);
+      const savedIndex = nextRows.findIndex(row => row.id === savedId && savedId !== "");
+      setSelected(savedIndex >= 0 ? savedIndex : 0);
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Unable to save unemployment request."); }
+  };
 
   return <section className="ac-ui-report">
     <div ref={gridWrapRef} className="ac-ui-grid-wrap"><table className="ac-ui-grid"><thead><tr><th/><>{gridColumns.map(({ label, key })=><th key={key} className={columnFilters[key]!==undefined?"has-filter":""}><span>{label}</span><AccessColumnFilter label={label} options={columnOptions(key)} applied={columnFilters[key]} onApply={value=>setFilter(key,value)} onSort={descending=>setSortState({key,descending})} onClear={()=>setFilter(key,undefined)} open={activeFilter===key} onToggle={()=>setActiveFilter(active=>active===key?null:key)} onClose={()=>setActiveFilter(null)}/></th>)}</><th>Select</th><th/></tr></thead><tbody>
-      {filteredRows.map((row, i) => <tr key={row.id} className={i === selected ? "is-current" : undefined} onClick={() => setSelected(i)}><td/>{gridColumns.map(({key})=><td key={key}>{row[key]}</td>)}<td/><td/></tr>)}
+      {filteredRows.map((row, i) => <tr key={row.id || `draft-${i}`} className={i === selected ? "is-current" : undefined} onClick={() => setSelected(i)}><td/>{gridColumns.map(({key})=><td key={key}>{key === "date" || key === "lastDay" || key === "reasonDate" ? dateDisplayValue(row[key]) : row[key]}</td>)}<td/><td/></tr>)}
     </tbody></table>{loading && <p role="status">Loading all unemployment requests…</p>}{error && <p role="alert">{error}</p>}{!loading && !error && rows.length === 0 && <p>No unemployment requests found.</p>}</div>
-    <header className="ac-ui-title"><h1>Unemployment Requests</h1><div><AccessButton>New</AccessButton><AccessButton>Save</AccessButton><AccessButton onClick={() => router.push("/tracking")}>Cancel</AccessButton><AccessButton>Delete</AccessButton><AccessButton>View Email</AccessButton></div><button type="button" aria-label="Help">?</button></header>
-    <div className="ac-ui-editor"><strong>Enter/Edit Request</strong><AccessButton className="ac-ui-work" onClick={()=>setHistoryOpen(true)}>Employee Work History</AccessButton><div className="ac-ui-fields">{(["date","employee","lastDay","customer","trade","reason","reasonCont","reasonDate","contract","notes","user"] as (keyof RequestRow)[]).map((key,i)=>{const label=["Date","Employee","Last Day of Work","Last Customer","Trade","Reason","Reason Cont","Reason Cont Date","Contract With","Notes","User Name"][i];const options=key==="reason"?reasonOptions:key==="reasonCont"?reasonDetailOptions:key==="contract"?contractOptions:null;return <label key={key}><span>{label}</span>{options?<select value={current[key]} onChange={event=>setRows(old=>old.map((row,index)=>index===selected?{...row,[key]:event.target.value,...(key==="reason"?{reasonCont:""}:{})}:row))}><option value="">Select {label.toLowerCase()}…</option>{options.map(option=><option key={option.id} value={option.label}>{option.label}</option>)}</select>:<input value={current[key]} readOnly/>}</label>})}</div></div>
+    <header className="ac-ui-title"><h1>Unemployment Requests</h1><div><AccessButton onClick={startNewRequest}>New</AccessButton><AccessButton onClick={saveCurrent}>Save</AccessButton><AccessButton onClick={() => router.push("/tracking")}>Cancel</AccessButton><AccessButton>Delete</AccessButton><AccessButton>View Email</AccessButton></div><button type="button" aria-label="Help">?</button></header>
+    <div className="ac-ui-editor"><strong>Enter/Edit Request</strong><AccessButton className="ac-ui-work" onClick={()=>setHistoryOpen(true)}>Employee Work History</AccessButton><div className="ac-ui-fields">{(["date","employee","lastDay","customer","trade","reason","reasonCont","reasonDate","contract","notes","user"] as (keyof RequestRow)[]).map((key,i)=>{const label=["Date","Employee","Last Day of Work","Last Customer","Trade","Reason","Reason Cont","Reason Cont Date","Contract With","Notes","User Name"][i];const options=key==="reason"?reasonOptions:key==="reasonCont"?reasonDetailOptions:key==="contract"?contractOptions:null;return <label key={key}><span>{label}</span>{options?<select value={current[key]} onChange={event=>changeCurrent(key,event.target.value)}><option value="">Select {label.toLowerCase()}…</option>{options.map(option=><option key={option.id} value={option.label}>{option.label}</option>)}</select>:<input type={key==="date"||key==="lastDay"||key==="reasonDate"?"date":"text"} value={current[key]} readOnly={key==="user"} onChange={event=>changeCurrent(key,event.target.value)} placeholder={key==="employee"||key==="customer"||key==="trade"?`Enter ${label.toLowerCase()}`:undefined}/>}</label>})}</div>{error&&<p role="alert">{error}</p>}</div>
     <div className="ac-ui-contacts"><strong>Select One Contact</strong><AccessButton onClick={()=>setContactEditorOpen(true)}>Edit Contact List</AccessButton><table><thead><tr><th/><th>Company</th><th>Contact F Name</th><th>Contact L Name</th><th>State</th><th>Email</th><th>Notes</th><th>Active</th><th>Select</th></tr></thead><tbody>{contacts.map((contact,i)=><tr key={contact.id} className={i===0?"is-current":undefined}><td/><td>{contact.company}</td><td>{contact.first}</td><td>{contact.last}</td><td>{contact.state}</td><td>{contact.email}</td><td>{contact.notes}</td><td>{contact.active}</td><td/></tr>)}</tbody></table>{contactsError && <p role="alert">Contact list: {contactsError}</p>}<div className="ac-ui-contact-record">Records: {contacts.length}　　▽ No Filter　 <span>Search</span></div></div>
     <footer className="ac-ui-record">Record:　|◀　◀　 <input value={filteredRows.length ? selected + 1 : 0} readOnly aria-label="Record number"/> of {filteredRows.length}　▶　▶|　　{Object.values(columnFilters).some(Boolean)?"▽ Filtered":"▽ No Filter"}　 <button type="button" onClick={()=>{setColumnFilters({});setSelected(0);}}>Clear Filters</button></footer>
     {historyOpen && (current.employeeId ? <EmployeeWorkHistoryDialog employeeId={current.employeeId} employeeName={current.employee} onClose={()=>setHistoryOpen(false)}/> : <div className="ui-work-history-backdrop"><section className="ui-work-history" role="dialog" aria-modal="true"><p role="alert">This request does not have a linked employee record.</p><AccessButton onClick={()=>setHistoryOpen(false)}>Close</AccessButton></section></div>)}

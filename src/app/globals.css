@@ -13679,3 +13679,28 @@ body {
 .ac-accident-grid-wrap.is-how-view .ac-accident-grid th:nth-child(6){width:135px}
 .ac-accident-grid-wrap.is-how-view .ac-accident-grid th:nth-child(7){width:115px}
 .ac-accident-grid-wrap.is-how-view .ac-accident-grid th:nth-child(8){width:120px}
+
+/* Compact Access-style sizing for the Employee Work History datasheet. */
+.ui-work-history-grid table{width:max-content;min-width:100%;table-layout:fixed}
+.ui-work-history-grid th:not(:first-child){min-width:0}
+.ui-work-history-grid th:nth-child(2),.ui-work-history-grid td:nth-child(2){width:38px;min-width:38px}
+.ui-work-history-grid th:nth-child(3),.ui-work-history-grid td:nth-child(3){width:118px;min-width:118px}
+.ui-work-history-grid th:nth-child(4),.ui-work-history-grid td:nth-child(4){width:130px;min-width:130px}
+.ui-work-history-grid th:nth-child(5),.ui-work-history-grid td:nth-child(5){width:32px;min-width:32px}
+.ui-work-history-grid th:nth-child(6),.ui-work-history-grid td:nth-child(6){width:30px;min-width:30px}
+.ui-work-history-grid th:nth-child(7),.ui-work-history-grid td:nth-child(7){width:72px;min-width:72px}
+.ui-work-history-grid th:nth-child(n+8):nth-child(-n+14),.ui-work-history-grid td:nth-child(n+8):nth-child(-n+14){width:30px;min-width:30px;text-align:center;padding-left:1px;padding-right:1px}
+.ui-work-history-grid th:nth-child(15),.ui-work-history-grid td:nth-child(15){width:54px;min-width:54px}
+.ui-work-history-grid th:nth-child(16),.ui-work-history-grid td:nth-child(16){width:84px;min-width:84px}
+.ui-work-history-grid th:nth-child(17),.ui-work-history-grid td:nth-child(17),.ui-work-history-grid th:nth-child(18),.ui-work-history-grid td:nth-child(18){width:72px;min-width:72px}
+.ui-work-history-grid th:nth-child(19),.ui-work-history-grid td:nth-child(19){width:66px;min-width:66px}
+.ui-work-history-grid th:nth-child(20),.ui-work-history-grid td:nth-child(20){width:95px;min-width:95px}
+.ui-work-history-grid th:nth-child(21),.ui-work-history-grid td:nth-child(21){width:64px;min-width:64px}
+.ui-work-history-grid th:nth-child(22),.ui-work-history-grid td:nth-child(22),.ui-work-history-grid th:nth-child(23),.ui-work-history-grid td:nth-child(23){width:64px;min-width:64px}
+.ui-work-history-grid th:nth-child(24),.ui-work-history-grid td:nth-child(24){width:50px;min-width:50px}
+.ui-work-history-grid th:nth-child(25),.ui-work-history-grid td:nth-child(25),.ui-work-history-grid th:nth-child(26),.ui-work-history-grid td:nth-child(26){width:80px;min-width:80px}
+.ui-work-history-grid th:nth-child(27),.ui-work-history-grid td:nth-child(27){width:78px;min-width:78px}
+.ui-work-history-grid th:nth-child(28),.ui-work-history-grid td:nth-child(28){width:65px;min-width:65px}
+.ui-work-history-grid td.work-color-travelhr{background:#a3d84d!important}
+.ui-work-history-grid td.work-color-vachr{background:#8ee2f2!important}
+.ui-work-history-grid td.work-color-sick{background:#fac08d!important}
