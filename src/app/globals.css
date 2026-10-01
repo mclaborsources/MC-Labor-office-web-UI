@@ -3078,6 +3078,19 @@ body {
   width: 100%;
 }
 
+.ac-main-menu-sql-check {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  min-width: 150px;
+  font-size: 10px;
+  text-align: center;
+}
+.ac-main-menu-sql-check.is-connected > span { color: #15803d; }
+.ac-main-menu-sql-check.is-disconnected > span { color: #b91c1c; }
+.ac-main-menu-sql-check.is-checking > span { color: #475569; }
+
 .ac-dashboard .ac-main-menu--modern .ac-main-menu-bottom {
   flex-shrink: 0;
   margin-top: auto;

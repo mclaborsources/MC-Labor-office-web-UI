@@ -20,10 +20,12 @@ interface DashboardMenuInteractiveProps {
 }
 
 type SettingsTab = "policies" | "notes";
+type SqlCheckState = { status: "idle" | "checking" | "connected" | "disconnected"; message: string };
 
 export function DashboardMenuInteractive({ week, activeView, settings, policies, activePolicy, canWrite }: DashboardMenuInteractiveProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogTab, setDialogTab] = useState<SettingsTab>("policies");
+  const [sqlCheck, setSqlCheck] = useState<SqlCheckState>({ status: "idle", message: "Not checked" });
   const [selectedPolicy, setSelectedPolicy] = useState(activePolicy?.companyPolicy ?? dashboardViewLabel(activeView));
   const trackingHref = `/tracking?week=${week.assignWeek}&year=${week.assignYear}`;
 
@@ -50,6 +52,20 @@ export function DashboardMenuInteractive({ week, activeView, settings, policies,
     }
   }, []);
   const openZip = useCallback((url: string) => window.open(url, "_blank", "noopener,noreferrer"), []);
+  const checkSqlConnection = useCallback(async () => {
+    setSqlCheck({ status: "checking", message: "Checking SQL Server…" });
+    try {
+      const response = await fetch("/api/health/db", { cache: "no-store" });
+      const result = await response.json() as { ok?: boolean; database?: string; error?: string };
+      if (!response.ok || !result.ok) {
+        setSqlCheck({ status: "disconnected", message: result.error || "SQL Server is not connected." });
+        return;
+      }
+      setSqlCheck({ status: "connected", message: `Connected · ${result.database || "SQL Server"}` });
+    } catch {
+      setSqlCheck({ status: "disconnected", message: "Could not reach the connection check." });
+    }
+  }, []);
   const selectedPolicyRow = policies.find((policy) => policy.companyPolicy === selectedPolicy) ?? null;
 
   return (
@@ -85,6 +101,12 @@ export function DashboardMenuInteractive({ week, activeView, settings, policies,
               <AccessButton type="button" onClick={openPdfMap} title={PDF_MAP_RELATIVE_PATH}>PDF Map</AccessButton>
               <AccessButton type="button" onClick={() => openZip(ZIP_CODE_1_URL)}>Zip Code 1</AccessButton>
               <AccessButton type="button" onClick={() => openZip(ZIP_CODE_2_URL)}>Zip Code 2</AccessButton>
+              <div className={`ac-main-menu-sql-check is-${sqlCheck.status}`}>
+                <AccessButton type="button" onClick={checkSqlConnection} disabled={sqlCheck.status === "checking"} aria-label="Check SQL Server connection">
+                  {sqlCheck.status === "checking" ? "Checking…" : "Check SQL Connection"}
+                </AccessButton>
+                <span role="status" aria-live="polite">{sqlCheck.message}</span>
+              </div>
             </div>
             <div className="ac-main-menu-hero">
               <div className="ac-main-menu-logo-wrap">

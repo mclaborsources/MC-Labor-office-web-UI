@@ -103,10 +103,13 @@ export async function testConnection(): Promise<{
   error?: string;
 }> {
   try {
-    const rows = await queryReadOnly<{ ok: number; db: string }>(
+    // A health check must hit SQL Server now instead of returning the cached
+    // result of an earlier check.
+    const connection = await getPool();
+    const result = await connection.request().query<{ ok: number; db: string }>(
       "SELECT 1 AS ok, DB_NAME() AS db",
     );
-    const row = rows[0];
+    const row = result.recordset?.[0];
     if (!row || row.ok !== 1) {
       return { ok: false, error: "Database health check returned unexpected result." };
     }
