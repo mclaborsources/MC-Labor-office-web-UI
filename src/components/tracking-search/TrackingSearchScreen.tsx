@@ -1,3 +1,25 @@
-"use client";import{useRouter}from"next/navigation";import{useMemo,useState}from"react";import{AccessButton}from"@/components/access/AccessButton";
-const NAMES=["Agilitas Energy, Inc. (29 Randall Lane)","Agilitas Energy, Inc. (523 Snipatuitt Rd)","Agilitas Energy, Inc. (Braily Hill North)","Agilitas Energy, Inc. (Middle Rd)","Alaris Construction, LLC","All-State Power And Controls, Inc","Amore Electric Co","Anytime Plumbing & Heating, Inc.","Atlantic Restoration","Bay State Piping Co Inc","Belsan Built LLC","Brookline Housing Authority","Commercial Air Control Inc","Commlink Integration Corporation","Crocker Electrical Co Inc","D M H Electric, Inc","Daniels Electric Corporation","Darana Hybrid, Inc.","Desmond Tech LLC","Di Foggio Electric","Dignis Electric Inc","East Coast Electric","ENERGY SYSTEMS","Florence Electric LLC","GenServ (25-00531 – JRC Construction)","GenServ (26-00289-240 Turnpike St.)","Glod Restoration & Renovation","Gregoire Electrical Co Inc","Hutter Construction Corporation","Industrial Power Group, Inc."];
-export function TrackingSearchScreen(){const router=useRouter();const[customer,setCustomer]=useState("");const[week,setWeek]=useState("7/10/2026");const[name,setName]=useState("");const[selected,setSelected]=useState<Set<number>>(new Set());const rows=useMemo(()=>NAMES.filter(n=>(!customer||n.toLowerCase().includes(customer.toLowerCase()))&&(!name||n.toLowerCase().includes(name.toLowerCase()))),[customer,name]);return <section className="ac-tracking-search"><header><h1>Tracking Search</h1><div><label>View:</label><select><option>01 Default Tracking Search</option></select><AccessButton>Save View</AccessButton><AccessButton>Delete View</AccessButton><AccessButton>Refresh</AccessButton><AccessButton onClick={()=>window.print()}>Export View</AccessButton></div><aside><AccessButton onClick={()=>router.push("/tracking")}>Cancel</AccessButton><button aria-label="Help">?</button></aside></header><div className="tracking-search-tools"><div><label>Customer<select value={customer} onChange={e=>setCustomer(e.target.value)}><option value=""/>{NAMES.map(n=><option key={n}>{n}</option>)}</select></label><label>Week Ending<input value={week} onChange={e=>setWeek(e.target.value)}/></label><label>Search in Name<input value={name} onChange={e=>setName(e.target.value)}/></label></div><section><p><AccessButton onClick={()=>window.print()}>Print Invoices</AccessButton><label>Print Address <input type="checkbox"/></label></p><AccessButton onClick={()=>window.print()}>Save Invoices to Single PDF</AccessButton><AccessButton>Invoice Payments Search</AccessButton></section></div><div className="tracking-search-select"><span>Select:</span><AccessButton onClick={()=>setSelected(new Set())}>Clear</AccessButton><AccessButton onClick={()=>setSelected(new Set(rows.map((_,i)=>i)))}>All</AccessButton></div><div className="tracking-search-grid-wrap"><table className="legacy-report-grid tracking-search-grid"><thead><tr><th/><th>Name</th><th>Week Ending Date</th><th/></tr></thead><tbody>{rows.map((n,i)=><tr key={n} className={i===0?"is-current":undefined} onClick={()=>setSelected(old=>{const next=new Set(old);if(next.has(i))next.delete(i);else next.add(i);return next})}><td>{selected.has(i)?"✓":""}</td><td>{n}</td><td>{week}</td><td/></tr>)}</tbody></table></div></section>}
+"use client";
+
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AccessButton } from "@/components/access/AccessButton";
+import type { TrackingPreviewRow } from "@/types/tracking";
+
+export function TrackingSearchScreen({ rows, weekEnding, error = "" }: { rows: TrackingPreviewRow[]; weekEnding: string; error?: string }) {
+  const router = useRouter();
+  const [customer, setCustomer] = useState("");
+  const [employee, setEmployee] = useState("");
+  const visible = useMemo(() => rows.filter((row) =>
+    (!customer || row.customer.toLowerCase().includes(customer.toLowerCase()) || row.jobSite.toLowerCase().includes(customer.toLowerCase())) &&
+    (!employee || `${row.firstName} ${row.lastName}`.toLowerCase().includes(employee.toLowerCase())),
+  ), [rows, customer, employee]);
+  return <section className="ac-tracking-search">
+    <header><h1>Tracking Search</h1><span>Week ending {weekEnding || "—"}</span><AccessButton onClick={() => router.refresh()}>Refresh</AccessButton><AccessButton onClick={() => { setCustomer(""); setEmployee(""); }}>Clear</AccessButton><AccessButton onClick={() => window.print()}>Print / Export</AccessButton><AccessButton onClick={() => router.push("/tracking")}>Cancel</AccessButton></header>
+    <div className="tracking-search-tools"><label>Customer or job<input value={customer} onChange={(event) => setCustomer(event.target.value)} /></label><label>Employee name<input value={employee} onChange={(event) => setEmployee(event.target.value)} /></label></div>
+    {error && <p role="alert" className="report-data-error">{error}</p>}
+    <div className="tracking-search-grid-wrap"><table className="legacy-report-grid tracking-search-grid"><thead><tr><th>Customer</th><th>Job</th><th>Employee</th><th>Cell</th><th>Week Ending</th><th>Payroll Co</th></tr></thead><tbody>
+      {visible.map((row, index) => <tr key={`${row.employeeId}-${row.jobSite}-${index}`}><td>{row.customer}</td><td>{row.jobSite}</td><td>{`${row.firstName} ${row.lastName}`.trim()}</td><td>{row.cell}</td><td>{row.weekEnding}</td><td>{row.payrollCo}</td></tr>)}
+      {!visible.length && <tr><td colSpan={6}>{error ? "Tracking data is unavailable." : "No tracking assignments found for this week."}</td></tr>}
+    </tbody></table></div><footer>{visible.length} tracking assignments</footer>
+  </section>;
+}
