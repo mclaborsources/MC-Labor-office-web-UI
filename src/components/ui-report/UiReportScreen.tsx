@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AccessButton } from "@/components/access/AccessButton";
 
 type RequestRow = {
@@ -12,6 +12,12 @@ type ContactRow = { id: string; company: string; first: string; last: string; st
 type LookupOption = { id: string; label: string };
 type ReportResponse = { ok: boolean; data?: Record<string, unknown>[]; contacts?: Record<string, unknown>[]; contactsError?: string; dropdowns?: { reasons?: Record<string, unknown>[]; reasonDetails?: Record<string, unknown>[]; contracts?: Record<string, unknown>[] }; error?: string };
 const emptyRequest: RequestRow = { id: "", date: "", employee: "", lastDay: "", customer: "", trade: "", reason: "", reasonCont: "", reasonDate: "", contract: "", notes: "", user: "" };
+const gridColumns: { label: string; key: keyof RequestRow }[] = [
+  { label: "Date", key: "date" }, { label: "Employee", key: "employee" }, { label: "Last Day of Work", key: "lastDay" },
+  { label: "Last Customer", key: "customer" }, { label: "Trade", key: "trade" }, { label: "Reason", key: "reason" },
+  { label: "Reason Cont", key: "reasonCont" }, { label: "Reason Cont Date", key: "reasonDate" }, { label: "Contract With", key: "contract" },
+  { label: "Notes", key: "notes" }, { label: "User Name", key: "user" },
+];
 
 function value(row: Record<string, unknown>, key: string) {
   return row[key] == null ? "" : String(row[key]);
@@ -25,6 +31,7 @@ export function UiReportScreen() {
   const [reasonDetailOptions, setReasonDetailOptions] = useState<LookupOption[]>([]);
   const [contractOptions, setContractOptions] = useState<LookupOption[]>([]);
   const [selected, setSelected] = useState(0);
+  const [columnFilters, setColumnFilters] = useState<Partial<Record<keyof RequestRow, string>>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [contactsError, setContactsError] = useState("");
@@ -58,15 +65,24 @@ export function UiReportScreen() {
     return () => { active = false; };
   }, []);
 
-  const current = rows[selected] ?? emptyRequest;
+  const filteredRows = useMemo(() => rows.filter(row => gridColumns.every(({ key }) => {
+    const filter = columnFilters[key];
+    return filter === undefined || (filter === "__EMPTY__" ? row[key] === "" : row[key] === filter);
+  })), [rows, columnFilters]);
+  const current = filteredRows[selected] ?? emptyRequest;
+  const setFilter = (key: keyof RequestRow, filter: string) => {
+    setColumnFilters(old => ({ ...old, [key]: filter === "" ? undefined : filter }));
+    setSelected(0);
+  };
+  const columnOptions = (key: keyof RequestRow) => Array.from(new Set(rows.map(row => row[key]))).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
 
   return <section className="ac-ui-report">
-    <div className="ac-ui-grid-wrap"><table className="ac-ui-grid"><thead><tr><th/><th>Date</th><th>Employee</th><th>Last Day of Work</th><th>Last Customer</th><th>Trade</th><th>Reason</th><th>Reason Cont</th><th>Reason Cont Date</th><th>Contract With</th><th>Notes</th><th>User Name</th><th>Select</th><th/></tr></thead><tbody>
-      {rows.map((row, i) => <tr key={row.id} className={i === selected ? "is-current" : undefined} onClick={() => setSelected(i)}><td/><td>{row.date}</td><td>{row.employee}</td><td>{row.lastDay}</td><td>{row.customer}</td><td>{row.trade}</td><td>{row.reason}</td><td>{row.reasonCont}</td><td>{row.reasonDate}</td><td>{row.contract}</td><td>{row.notes}</td><td>{row.user}</td><td/><td/></tr>)}
+    <div className="ac-ui-grid-wrap"><table className="ac-ui-grid"><thead><tr><th/><>{gridColumns.map(({ label, key })=><th key={key} className={columnFilters[key]!==undefined?"has-filter":""}><span>{label}</span><select aria-label={`Filter ${label}`} title={`Filter ${label}`} value={columnFilters[key]??""} onChange={event=>setFilter(key,event.target.value)}><option value="">All</option><option value="__EMPTY__">(Blanks)</option>{columnOptions(key).filter(option=>option!=="").map(option=><option key={option} value={option}>{option}</option>)}</select></th>)}</><th>Select</th><th/></tr></thead><tbody>
+      {filteredRows.map((row, i) => <tr key={row.id} className={i === selected ? "is-current" : undefined} onClick={() => setSelected(i)}><td/>{gridColumns.map(({key})=><td key={key}>{row[key]}</td>)}<td/><td/></tr>)}
     </tbody></table>{loading && <p role="status">Loading all unemployment requests…</p>}{error && <p role="alert">{error}</p>}{!loading && !error && rows.length === 0 && <p>No unemployment requests found.</p>}</div>
     <header className="ac-ui-title"><h1>Unemployment Requests</h1><div><AccessButton>New</AccessButton><AccessButton>Save</AccessButton><AccessButton onClick={() => router.push("/tracking")}>Cancel</AccessButton><AccessButton>Delete</AccessButton><AccessButton>View Email</AccessButton></div><button type="button" aria-label="Help">?</button></header>
     <div className="ac-ui-editor"><strong>Enter/Edit Request</strong><AccessButton className="ac-ui-work">Employee Work History</AccessButton><div className="ac-ui-fields">{(["date","employee","lastDay","customer","trade","reason","reasonCont","reasonDate","contract","notes","user"] as (keyof RequestRow)[]).map((key,i)=>{const label=["Date","Employee","Last Day of Work","Last Customer","Trade","Reason","Reason Cont","Reason Cont Date","Contract With","Notes","User Name"][i];const options=key==="reason"?reasonOptions:key==="reasonCont"?reasonDetailOptions:key==="contract"?contractOptions:null;return <label key={key}><span>{label}</span>{options?<select value={current[key]} onChange={event=>setRows(old=>old.map((row,index)=>index===selected?{...row,[key]:event.target.value,...(key==="reason"?{reasonCont:""}:{})}:row))}><option value="">Select {label.toLowerCase()}…</option>{options.map(option=><option key={option.id} value={option.label}>{option.label}</option>)}</select>:<input value={current[key]} readOnly/>}</label>})}</div></div>
     <div className="ac-ui-contacts"><strong>Select One Contact</strong><AccessButton>Edit Contact List</AccessButton><table><thead><tr><th/><th>Company</th><th>Contact F Name</th><th>Contact L Name</th><th>State</th><th>Email</th><th>Notes</th><th>Active</th><th>Select</th></tr></thead><tbody>{contacts.map((contact,i)=><tr key={contact.id} className={i===0?"is-current":undefined}><td/><td>{contact.company}</td><td>{contact.first}</td><td>{contact.last}</td><td>{contact.state}</td><td>{contact.email}</td><td>{contact.notes}</td><td>{contact.active}</td><td/></tr>)}</tbody></table>{contactsError && <p role="alert">Contact list: {contactsError}</p>}<div className="ac-ui-contact-record">Records: {contacts.length}　　▽ No Filter　 <span>Search</span></div></div>
-    <footer className="ac-ui-record">Record:　|◀　◀　 <input value={rows.length ? selected + 1 : 0} readOnly aria-label="Record number"/> of {rows.length}　▶　▶|　　▽ No Filter　 <span>Search</span></footer>
+    <footer className="ac-ui-record">Record:　|◀　◀　 <input value={filteredRows.length ? selected + 1 : 0} readOnly aria-label="Record number"/> of {filteredRows.length}　▶　▶|　　{Object.values(columnFilters).some(Boolean)?"▽ Filtered":"▽ No Filter"}　 <button type="button" onClick={()=>{setColumnFilters({});setSelected(0);}}>Clear Filters</button></footer>
   </section>;
 }
