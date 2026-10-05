@@ -13750,3 +13750,25 @@ body {
 .ac-accident-grid-wrap.is-meeting-report-view .ac-accident-grid th:nth-child(12){width:75px}
 .ac-accident-grid-wrap.is-meeting-report-view .ac-accident-grid td.ac-accident-how-column{font-size:15px;white-space:normal;line-height:1.25}
 
+
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid{width:100%;min-width:2250px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(1){width:22px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(2){width:18px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(3){width:78px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(4){width:140px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(5){width:32px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(6){width:95px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(7){width:85px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(8){width:85px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(9){width:100px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(10){width:18px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(11){width:145px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(12){width:82px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(13){width:96px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(14),.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(15){width:55px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(16){width:155px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(n+17){width:96px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(17),.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(20),.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(22){width:30px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(23){width:45px}
+.ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(25){width:155px}
+
