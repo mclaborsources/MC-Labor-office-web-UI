@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { EmployeeWorkHistoryDialog } from "@/components/ui-report/EmployeeWorkHistoryDialog";
 
@@ -76,14 +76,19 @@ function UnemploymentContactEditor({ contacts, states, faxSupported, onClose, on
   const [draft, setDraft] = useState<ContactRow[]>(contacts.map(row=>({...row})));
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
-  const change = (index: number, key: keyof ContactRow, next: string) => setDraft(old=>old.map((row,i)=>i===index?{...row,[key]:next,...(key==="stateId"?{state:states.find(option=>option.id===next)?.label??""}:{})}:row));
+  const change = (index: number, key: keyof ContactRow, next: string) => { setMessage(""); setDraft(old=>old.map((row,i)=>i===index?{...row,[key]:next,...(key==="stateId"?{state:states.find(option=>option.id===next)?.label??""}:{})}:row)); };
   const blank: ContactRow = { id:"",company:"",first:"",last:"",street:"",city:"",state:"",stateId:"",zip:"",phone:"",fax:"",email:"",sort:"0",notes:"",active:"Active" };
-  const save = async () => {
+  const save = useCallback(async () => {
+    if (saving) return false;
+    const pending = draft.filter(row => {
+      const original = contacts.find(item => item.id === row.id);
+      if (row.id && original) return JSON.stringify(row) !== JSON.stringify(original);
+      return !row.id && Boolean(row.company || row.first || row.last || row.street || row.city || row.stateId || row.zip || row.phone || row.fax || row.email || row.notes);
+    });
+    if (!pending.length) return true;
     setSaving(true);setMessage("");
     try {
-      for (let index=0;index<draft.length;index++) {
-        const row=draft[index], original=contacts.find(item=>item.id===row.id);
-        if (row.id && original && JSON.stringify(row)===JSON.stringify(original)) continue;
+      for (const row of pending) {
         const response=await fetch("/api/reports/ui-requests/contacts",{method:row.id?"PUT":"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:row.id,company:row.company,first:row.first,last:row.last,street:row.street,city:row.city,stateId:row.stateId,zip:row.zip,phone:row.phone,fax:row.fax,email:row.email,sort:row.sort,notes:row.notes,active:row.active==="Active"})});
         const result=await response.json() as {ok:boolean;error?:string};
         if(!response.ok||!result.ok) throw new Error(result.error||"Unable to save contact.");
@@ -91,13 +96,23 @@ function UnemploymentContactEditor({ contacts, states, faxSupported, onClose, on
       const response=await fetch("/api/reports/ui-requests/contacts",{cache:"no-store"});
       const result=await response.json() as {ok:boolean;contacts?:Record<string,unknown>[];error?:string};
       if(!response.ok||!result.ok) throw new Error(result.error||"Saved, but unable to refresh contacts.");
-      onSaved((result.contacts??[]).map(row=>({id:value(row,"id"),company:value(row,"Company"),first:value(row,"Contact F Name"),last:value(row,"Contact L Name"),street:value(row,"Street"),city:value(row,"City"),state:value(row,"State"),stateId:value(row,"StateID"),zip:value(row,"Zip"),phone:value(row,"Phone"),fax:value(row,"Fax"),email:value(row,"Email"),sort:value(row,"Sort"),notes:value(row,"Notes"),active:value(row,"Active")})));
-      onClose();
-    } catch(error) { setMessage(error instanceof Error?error.message:"Unable to save contacts."); }
+      const savedContacts=(result.contacts??[]).map(row=>({id:value(row,"id"),company:value(row,"Company"),first:value(row,"Contact F Name"),last:value(row,"Contact L Name"),street:value(row,"Street"),city:value(row,"City"),state:value(row,"State"),stateId:value(row,"StateID"),zip:value(row,"Zip"),phone:value(row,"Phone"),fax:value(row,"Fax"),email:value(row,"Email"),sort:value(row,"Sort"),notes:value(row,"Notes"),active:value(row,"Active")}));
+      onSaved(savedContacts);
+      setDraft([...savedContacts,...draft.filter(row=>!row.id&&!pending.includes(row))]);
+      setMessage("Saved");
+      return true;
+    } catch(error) { setMessage(error instanceof Error?error.message:"Unable to save contacts."); return false; }
     finally { setSaving(false); }
-  };
+  },[contacts,draft,onSaved,saving]);
+  useEffect(()=>{
+    if(saving||message) return;
+    const timer=window.setTimeout(()=>{ void save(); },650);
+    return ()=>window.clearTimeout(timer);
+  },[draft,save,saving,message]);
+  const undo = () => { setMessage(""); setDraft(contacts.map(row=>({...row}))); };
+  const close = async () => { if(await save()) onClose(); };
   const fields: {label:string;key:keyof ContactRow}[]=[{label:"ID",key:"id"},{label:"Company",key:"company"},{label:"Contact FName",key:"first"},{label:"Contact LName",key:"last"},{label:"Street",key:"street"},{label:"City",key:"city"},{label:"State",key:"stateId"},{label:"Zip",key:"zip"},{label:"Phone",key:"phone"},{label:"Fax",key:"fax"},{label:"Email",key:"email"},{label:"Sort",key:"sort"},{label:"Notes",key:"notes"},{label:"Active",key:"active"}];
-  return <div className="ui-contact-editor-backdrop" role="presentation" onMouseDown={event=>{if(event.target===event.currentTarget)onClose();}}><section className="ui-contact-editor" role="dialog" aria-modal="true" aria-label="Unemployment Request Contacts"><header><h1>Unemployment Request Contacts</h1><button type="button" aria-label="Close" onClick={onClose}>×</button></header><div className="ui-contact-editor-tools"><button type="button" onClick={()=>setDraft(old=>[...old,{...blank}])}>New</button><button type="button" disabled={saving} onClick={save}>{saving?"Saving…":"Save Changes"}</button><button type="button" onClick={()=>setDraft(contacts.map(row=>({...row})))}>Undo</button><button type="button" onClick={onClose}>Close</button>{message&&<span role="alert">{message}</span>}{!faxSupported&&<span>Fax is not available in the SQL contact table.</span>}</div><div className="ui-contact-editor-grid"><table><thead><tr><th/>{fields.map(field=><th key={field.key}>{field.label}<b>▾</b></th>)}</tr></thead><tbody>{draft.map((row,index)=><tr key={row.id||`new-${index}`}><td>{index+1}</td>{fields.map(field=><td key={field.key}>{field.key==="stateId"?<select aria-label="State" value={row.stateId} onChange={event=>change(index,"stateId",event.target.value)}><option value="">—</option>{states.map(option=><option key={option.id} value={option.id}>{option.label}</option>)}</select>:field.key==="active"?<input type="checkbox" checked={row.active==="Active"} onChange={event=>change(index,"active",event.target.checked?"Active":"Inactive")}/>:<input aria-label={field.label} value={row[field.key]} readOnly={(field.key==="id"&&Boolean(row.id))||(field.key==="fax"&&!faxSupported)} onChange={event=>change(index,field.key,event.target.value)}/>}</td>)}</tr>)}</tbody></table></div><footer>Records: {draft.length}</footer></section></div>;
+  return <div className="ui-contact-editor-backdrop" role="presentation" onMouseDown={event=>{if(event.target===event.currentTarget&&!saving)void close();}}><section className="ui-contact-editor" role="dialog" aria-modal="true" aria-label="Unemployment Request Contacts"><header><h1>Unemployment Request Contacts</h1><button type="button" aria-label="Close" disabled={saving} onClick={()=>void close()}>×</button></header><div className="ui-contact-editor-tools"><button type="button" disabled={saving} onClick={()=>setDraft(old=>[...old,{...blank}])}>New</button><button type="button" disabled={saving} onClick={undo}>Undo</button><button type="button" disabled={saving} onClick={()=>void close()}>Close</button>{saving&&<span role="status">Saving…</span>}{message&&<span role={message==="Saved"?"status":"alert"}>{message}</span>}{!faxSupported&&<span>Fax is not available in the SQL contact table.</span>}</div><div className="ui-contact-editor-grid"><table><thead><tr><th/>{fields.map(field=><th key={field.key}>{field.label}<b>▾</b></th>)}</tr></thead><tbody>{draft.map((row,index)=><tr key={row.id||`new-${index}`}><td>{index+1}</td>{fields.map(field=><td key={field.key}>{field.key==="stateId"?<select aria-label="State" disabled={saving} value={row.stateId} onChange={event=>change(index,"stateId",event.target.value)}><option value="">—</option>{states.map(option=><option key={option.id} value={option.id}>{option.label}</option>)}</select>:field.key==="active"?<input type="checkbox" disabled={saving} checked={row.active==="Active"} onChange={event=>change(index,"active",event.target.checked?"Active":"Inactive")}/>:<input aria-label={field.label} disabled={saving} value={row[field.key]} readOnly={(field.key==="id"&&Boolean(row.id))||(field.key==="fax"&&!faxSupported)} onChange={event=>change(index,field.key,event.target.value)}/>}</td>)}</tr>)}</tbody></table></div><footer>Records: {draft.length}</footer></section></div>;
 }
 
 export function UiReportScreen() {
