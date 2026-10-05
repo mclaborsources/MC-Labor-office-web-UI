@@ -13711,3 +13711,7 @@ body {
 .ac-accident-grid-wrap.is-claim-note-view .ac-accident-grid th:nth-child(1){width:28px}
 .ac-accident-grid-wrap.is-claim-note-view .ac-accident-grid th.ac-accident-how-column,.ac-accident-grid-wrap.is-claim-note-view .ac-accident-grid td.ac-accident-how-column{width:620px;min-width:620px;white-space:normal;line-height:1.25}
 .ac-accident-grid-wrap.is-claim-note-view .ac-accident-grid th:nth-child(n+3){width:145px}
+
+.ac-accident-grid-wrap.is-claim-note-view .ac-accident-grid th.ac-accident-how-column,.ac-accident-grid-wrap.is-claim-note-view .ac-accident-grid td.ac-accident-how-column{width:900px;min-width:900px;font-size:15px}
+.ac-accident-grid-wrap.is-claim-note-view .ac-accident-grid th:nth-child(n+3),.ac-accident-grid-wrap.is-claim-note-view .ac-accident-grid td:nth-child(n+3){width:105px;min-width:105px}
+.ac-accident-grid-wrap.is-claim-note-view .ac-accident-grid{min-width:1550px}
