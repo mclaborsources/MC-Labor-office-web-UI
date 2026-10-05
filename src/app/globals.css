@@ -13736,3 +13736,17 @@ body {
 .ac-accident-grid-wrap.is-prepared-by-view .ac-accident-grid th:nth-child(6){width:140px}
 .ac-accident-grid-wrap.is-prepared-by-view .ac-accident-grid th:nth-child(7){width:160px}
 .ac-accident-grid-wrap.is-prepared-by-view .ac-accident-grid th:nth-child(8){width:200px}
+
+.ac-accident-grid-wrap.is-meeting-report-view .ac-accident-grid{width:100%;min-width:2100px}
+.ac-accident-grid-wrap.is-meeting-report-view .ac-accident-grid th:nth-child(1){width:28px}
+.ac-accident-grid-wrap.is-meeting-report-view .ac-accident-grid th:nth-child(2){width:145px}
+.ac-accident-grid-wrap.is-meeting-report-view .ac-accident-grid th:nth-child(3){width:165px}
+.ac-accident-grid-wrap.is-meeting-report-view .ac-accident-grid th:nth-child(4),.ac-accident-grid-wrap.is-meeting-report-view .ac-accident-grid th:nth-child(7){width:100px}
+.ac-accident-grid-wrap.is-meeting-report-view .ac-accident-grid th:nth-child(5){width:530px;text-align:left}
+.ac-accident-grid-wrap.is-meeting-report-view .ac-accident-grid th:nth-child(6){width:130px}
+.ac-accident-grid-wrap.is-meeting-report-view .ac-accident-grid th:nth-child(8),.ac-accident-grid-wrap.is-meeting-report-view .ac-accident-grid th:nth-child(9){width:70px}
+.ac-accident-grid-wrap.is-meeting-report-view .ac-accident-grid th:nth-child(10){width:420px;text-align:left}
+.ac-accident-grid-wrap.is-meeting-report-view .ac-accident-grid th:nth-child(n+11){width:115px}
+.ac-accident-grid-wrap.is-meeting-report-view .ac-accident-grid th:nth-child(12){width:75px}
+.ac-accident-grid-wrap.is-meeting-report-view .ac-accident-grid td.ac-accident-how-column{font-size:15px;white-space:normal;line-height:1.25}
+
