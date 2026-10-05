@@ -13704,3 +13704,10 @@ body {
 .ui-work-history-grid td.work-color-travelhr{background:#a3d84d!important}
 .ui-work-history-grid td.work-color-vachr{background:#8ee2f2!important}
 .ui-work-history-grid td.work-color-sick{background:#fac08d!important}
+
+.ac-ui-title .ac-ui-work{position:static;right:auto;top:auto;height:27px!important;min-width:150px;border-radius:0!important}
+
+.ac-accident-grid-wrap.is-claim-note-view .ac-accident-grid{width:100%;min-width:1550px}
+.ac-accident-grid-wrap.is-claim-note-view .ac-accident-grid th:nth-child(1){width:28px}
+.ac-accident-grid-wrap.is-claim-note-view .ac-accident-grid th.ac-accident-how-column,.ac-accident-grid-wrap.is-claim-note-view .ac-accident-grid td.ac-accident-how-column{width:620px;min-width:620px;white-space:normal;line-height:1.25}
+.ac-accident-grid-wrap.is-claim-note-view .ac-accident-grid th:nth-child(n+3){width:145px}
