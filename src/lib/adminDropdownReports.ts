@@ -187,7 +187,7 @@ export function getAllAccidentReportRows(): Promise<OperationalReportRow[]> {
   return queryReadOnly<OperationalReportRow>(`SELECT
     CAST(r.ProjectAccidentReportID AS NVARCHAR(20)) AS id,
     CONVERT(VARCHAR(10),r.ProjectAccidentReportPreparedTimestamp,101) AS Date,
-    ISNULL(r.ProjectAccidentReportPreparedBy,'') AS [Prepared By],
+    LTRIM(RTRIM(CONCAT(ISNULL(preparedBy.PullDownSalesmanFName,''),' ',ISNULL(preparedBy.PullDownSalesmanLName,'')))) AS [Prepared By],
     LTRIM(RTRIM(CONCAT(ISNULL(e.EmFirstName,''),' ',ISNULL(e.EmMiddle,''),' ',ISNULL(e.EmLastName,'')))) AS Employee,
     ISNULL(p.SiteName,'') AS Job,
     ISNULL(siteState.PullDownState,'') AS State,
@@ -201,6 +201,12 @@ export function getAllAccidentReportRows(): Promise<OperationalReportRow[]> {
     ISNULL(r.ProjectAccidentReportWhyNotReturned,'') AS [Why Not Returned],
     ISNULL(r.ProjectAccidentReportTotalDaysOutOfWork,0) AS [Days Off],
     ISNULL(r.ProjectAccidentReportWorkdaysOutOfWork,0) AS [Workdays Out],
+    CASE
+      WHEN r.ProjectAccidentReportDateReturned IS NOT NULL THEN NULL
+      WHEN r.ProjectAccidentReportDateOfInjury IS NULL THEN NULL
+      WHEN workdays.Weekdays-2 < 0 THEN 0
+      ELSE workdays.Weekdays-2
+    END AS [Workdays Off To-Date],
     ISNULL(CONVERT(NVARCHAR(MAX),r.ProjectAccidentReportClaimNotes),N'') AS [Claim Notes],
     ISNULL(benefits.PullDownBenefitsStatus,'') AS [Benefits Status],
     CASE WHEN ISNULL(r.ProjectAccidentReportInHouse,0)<>0 THEN 'Yes' ELSE '' END AS [In House],
@@ -214,8 +220,10 @@ export function getAllAccidentReportRows(): Promise<OperationalReportRow[]> {
     ISNULL(adjuster.InsuranceCompanyClaimsAdjusterPhone,'') AS [Adjuster Phone],
     ISNULL(adjuster.InsuranceCompanyClaimsAdjusterExtension,'') AS [Adjuster Extension],
     ISNULL(CONVERT(NVARCHAR(MAX),adjuster.InsuranceCompanyClaimsAdjusterNotes),N'') AS [Adjuster Notes],
-    ISNULL(history.PullDownProjectAccidentReportHistoryStatus,'') AS History,
-    COUNT(*) OVER (PARTITION BY p.CustomerID) AS [Accidents with Customer]
+    CASE WHEN r.ProjectAccidentReportHistoryStatusID IS NULL THEN N'' ELSE CONCAT(
+      ISNULL(CONVERT(NVARCHAR(255),history.PullDownProjectAccidentReportHistoryStatus),N''),N' - ',
+      ISNULL(CONVERT(NVARCHAR(255),history.PullDownProjectAccidentReportHistoryStatusDesc),N'')) END AS History,
+    CASE WHEN p.CustomerID IS NULL THEN NULL ELSE COUNT(*) OVER (PARTITION BY r.EmployeeID,p.CustomerID) END AS [Accidents with Customer]
   FROM tblProjectAccidentReports r WITH (NOLOCK)
   LEFT JOIN tblEmployee e WITH (NOLOCK) ON e.EmployeeID=r.EmployeeID
   LEFT JOIN tblProject p WITH (NOLOCK) ON p.ProjectID=r.ProjectID
@@ -223,6 +231,7 @@ export function getAllAccidentReportRows(): Promise<OperationalReportRow[]> {
   LEFT JOIN tblPullDownStateCities siteCity WITH (NOLOCK) ON siteCity.PullDownStateCityID=p.SiteStateCityID
   LEFT JOIN tblPullDownStates siteState WITH (NOLOCK) ON siteState.PullDownStateID=siteCity.StateID
   LEFT JOIN tblPullDownTrade tr WITH (NOLOCK) ON tr.PullDownTradeID=r.ProjectAccidentReportRegularOccupationID
+  LEFT JOIN tblPullDownSalesman preparedBy WITH (NOLOCK) ON preparedBy.PullDownSalesmanID=r.ProjectAccidentReportPreparedByID
   LEFT JOIN tblEmployeePayrollCoOnSite ep WITH (NOLOCK) ON ep.EmployeePayrollCoOnSiteID=r.EmployeePayrollCompanyOnSiteID
   LEFT JOIN tblPullDownPayrollCoOnSite payrollCo WITH (NOLOCK) ON payrollCo.PullDownPayrollCoOnSiteID=ep.PayrollCoOnSiteID
   LEFT JOIN tblPullDownBenefitsStatus benefits WITH (NOLOCK) ON benefits.PullDownBenefitsStatusID=r.ProjectAccidentReportBenefitsStatusID
@@ -230,5 +239,14 @@ export function getAllAccidentReportRows(): Promise<OperationalReportRow[]> {
   LEFT JOIN tblInsuranceCompanyClaimsAdjusters adjuster WITH (NOLOCK) ON adjuster.InsuranceCompanyClaimsAdjusterID=r.ProjectAccidentReportClaimsAdjusterID
   LEFT JOIN tblPullDownProjectAccidentReportHistoryStatus history WITH (NOLOCK)
     ON history.PullDownProjectAccidentReportHistoryStatusID=r.ProjectAccidentReportHistoryStatusID
+  CROSS APPLY (VALUES (
+    DATEDIFF(DAY,CONVERT(DATE,'19000101'),CONVERT(DATE,r.ProjectAccidentReportDateOfInjury))%7,
+    DATEDIFF(DAY,CONVERT(DATE,r.ProjectAccidentReportDateOfInjury),CONVERT(DATE,GETDATE()))+1
+  )) span(StartWeekday,SpanDays)
+  CROSS APPLY (
+    SELECT 5*(span.SpanDays/7)+COALESCE(SUM(CASE WHEN (span.StartWeekday+days.DayOffset)%7<5 THEN 1 ELSE 0 END),0) AS Weekdays
+    FROM (VALUES (0),(1),(2),(3),(4),(5),(6)) days(DayOffset)
+    WHERE days.DayOffset<span.SpanDays%7
+  ) workdays
   ORDER BY r.ProjectAccidentReportPreparedTimestamp DESC,r.ProjectAccidentReportID DESC`);
 }
