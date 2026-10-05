@@ -207,7 +207,12 @@ export function getAllAccidentReportRows(): Promise<OperationalReportRow[]> {
     ISNULL(r.ProjectAccidentReportTotalCost,0) AS [Total Cost],
     CASE WHEN ISNULL(r.ProjectAccidentReportClosedOut,0)<>0 THEN 'Yes' ELSE '' END AS Closed,
     CONVERT(VARCHAR(10),r.ProjectAccidentReportFutureCall,101) AS [Future Call],
+    ISNULL(insurer.InsuranceCompanyName,'') AS [Insurance Company],
     LTRIM(RTRIM(CONCAT(ISNULL(adjuster.InsuranceCompanyClaimsAdjusterFName,''),' ',ISNULL(adjuster.InsuranceCompanyClaimsAdjusterLName,'')))) AS [Last Adjuster],
+    ISNULL(adjuster.InsuranceCompanyClaimsAdjusterEmail,'') AS [Adjuster Email],
+    ISNULL(adjuster.InsuranceCompanyClaimsAdjusterPhone,'') AS [Adjuster Phone],
+    ISNULL(adjuster.InsuranceCompanyClaimsAdjusterExtension,'') AS [Adjuster Extension],
+    ISNULL(CONVERT(NVARCHAR(MAX),adjuster.InsuranceCompanyClaimsAdjusterNotes),N'') AS [Adjuster Notes],
     ISNULL(history.PullDownProjectAccidentReportHistoryStatus,'') AS History
   FROM tblProjectAccidentReports r WITH (NOLOCK)
   LEFT JOIN tblEmployee e WITH (NOLOCK) ON e.EmployeeID=r.EmployeeID
@@ -219,6 +224,7 @@ export function getAllAccidentReportRows(): Promise<OperationalReportRow[]> {
   LEFT JOIN tblEmployeePayrollCoOnSite ep WITH (NOLOCK) ON ep.EmployeePayrollCoOnSiteID=r.EmployeePayrollCompanyOnSiteID
   LEFT JOIN tblPullDownPayrollCoOnSite payrollCo WITH (NOLOCK) ON payrollCo.PullDownPayrollCoOnSiteID=ep.PayrollCoOnSiteID
   LEFT JOIN tblPullDownBenefitsStatus benefits WITH (NOLOCK) ON benefits.PullDownBenefitsStatusID=r.ProjectAccidentReportBenefitsStatusID
+  LEFT JOIN tblInsuranceCompanies insurer WITH (NOLOCK) ON insurer.InsuranceCompanyID=r.ProjectAccidentReportInsuranceCompanyID
   LEFT JOIN tblInsuranceCompanyClaimsAdjusters adjuster WITH (NOLOCK) ON adjuster.InsuranceCompanyClaimsAdjusterID=r.ProjectAccidentReportClaimsAdjusterID
   LEFT JOIN tblPullDownProjectAccidentReportHistoryStatus history WITH (NOLOCK)
     ON history.PullDownProjectAccidentReportHistoryStatusID=r.ProjectAccidentReportHistoryStatusID
