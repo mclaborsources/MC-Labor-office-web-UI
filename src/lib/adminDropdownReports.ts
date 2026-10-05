@@ -243,10 +243,15 @@ export function getAllAccidentReportRows(): Promise<OperationalReportRow[]> {
     DATEDIFF(DAY,CONVERT(DATE,'19000101'),CONVERT(DATE,r.ProjectAccidentReportDateOfInjury))%7,
     DATEDIFF(DAY,CONVERT(DATE,r.ProjectAccidentReportDateOfInjury),CONVERT(DATE,GETDATE()))+1
   )) span(StartWeekday,SpanDays)
-  CROSS APPLY (
-    SELECT 5*(span.SpanDays/7)+COALESCE(SUM(CASE WHEN (span.StartWeekday+days.DayOffset)%7<5 THEN 1 ELSE 0 END),0) AS Weekdays
-    FROM (VALUES (0),(1),(2),(3),(4),(5),(6)) days(DayOffset)
-    WHERE days.DayOffset<span.SpanDays%7
-  ) workdays
+  CROSS APPLY (VALUES (
+    5*(span.SpanDays/7)
+    + CASE WHEN span.SpanDays%7>0 AND (span.StartWeekday+0)%7<5 THEN 1 ELSE 0 END
+    + CASE WHEN span.SpanDays%7>1 AND (span.StartWeekday+1)%7<5 THEN 1 ELSE 0 END
+    + CASE WHEN span.SpanDays%7>2 AND (span.StartWeekday+2)%7<5 THEN 1 ELSE 0 END
+    + CASE WHEN span.SpanDays%7>3 AND (span.StartWeekday+3)%7<5 THEN 1 ELSE 0 END
+    + CASE WHEN span.SpanDays%7>4 AND (span.StartWeekday+4)%7<5 THEN 1 ELSE 0 END
+    + CASE WHEN span.SpanDays%7>5 AND (span.StartWeekday+5)%7<5 THEN 1 ELSE 0 END
+    + CASE WHEN span.SpanDays%7>6 AND (span.StartWeekday+6)%7<5 THEN 1 ELSE 0 END
+  )) workdays(Weekdays)
   ORDER BY r.ProjectAccidentReportPreparedTimestamp DESC,r.ProjectAccidentReportID DESC`);
 }
