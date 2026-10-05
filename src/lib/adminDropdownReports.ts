@@ -187,6 +187,7 @@ export function getAllAccidentReportRows(): Promise<OperationalReportRow[]> {
   return queryReadOnly<OperationalReportRow>(`SELECT
     CAST(r.ProjectAccidentReportID AS NVARCHAR(20)) AS id,
     CONVERT(VARCHAR(10),r.ProjectAccidentReportPreparedTimestamp,101) AS Date,
+    ISNULL(r.ProjectAccidentReportPreparedBy,'') AS [Prepared By],
     LTRIM(RTRIM(CONCAT(ISNULL(e.EmFirstName,''),' ',ISNULL(e.EmMiddle,''),' ',ISNULL(e.EmLastName,'')))) AS Employee,
     ISNULL(p.SiteName,'') AS Job,
     ISNULL(siteState.PullDownState,'') AS State,
@@ -213,7 +214,8 @@ export function getAllAccidentReportRows(): Promise<OperationalReportRow[]> {
     ISNULL(adjuster.InsuranceCompanyClaimsAdjusterPhone,'') AS [Adjuster Phone],
     ISNULL(adjuster.InsuranceCompanyClaimsAdjusterExtension,'') AS [Adjuster Extension],
     ISNULL(CONVERT(NVARCHAR(MAX),adjuster.InsuranceCompanyClaimsAdjusterNotes),N'') AS [Adjuster Notes],
-    ISNULL(history.PullDownProjectAccidentReportHistoryStatus,'') AS History
+    ISNULL(history.PullDownProjectAccidentReportHistoryStatus,'') AS History,
+    COUNT(*) OVER (PARTITION BY p.CustomerID) AS [Accidents with Customer]
   FROM tblProjectAccidentReports r WITH (NOLOCK)
   LEFT JOIN tblEmployee e WITH (NOLOCK) ON e.EmployeeID=r.EmployeeID
   LEFT JOIN tblProject p WITH (NOLOCK) ON p.ProjectID=r.ProjectID

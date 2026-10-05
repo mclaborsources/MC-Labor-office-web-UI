@@ -13726,3 +13726,13 @@ body {
 .ac-accident-grid-wrap.is-claim-adjuster-view .ac-accident-grid th:nth-child(7){width:125px}
 .ac-accident-grid-wrap.is-claim-adjuster-view .ac-accident-grid th:nth-child(8){width:95px}
 .ac-accident-grid-wrap.is-claim-adjuster-view .ac-accident-grid th.ac-accident-how-column,.ac-accident-grid-wrap.is-claim-adjuster-view .ac-accident-grid td.ac-accident-how-column{width:620px;min-width:620px;white-space:normal;line-height:1.25;font-size:15px}
+
+.ac-accident-grid-wrap.is-prepared-by-view .ac-accident-grid{width:100%;min-width:1050px}
+.ac-accident-grid-wrap.is-prepared-by-view .ac-accident-grid th:nth-child(1){width:28px}
+.ac-accident-grid-wrap.is-prepared-by-view .ac-accident-grid th:nth-child(2){width:175px}
+.ac-accident-grid-wrap.is-prepared-by-view .ac-accident-grid th:nth-child(3){width:95px}
+.ac-accident-grid-wrap.is-prepared-by-view .ac-accident-grid th:nth-child(4){width:55px}
+.ac-accident-grid-wrap.is-prepared-by-view .ac-accident-grid th:nth-child(5){width:150px}
+.ac-accident-grid-wrap.is-prepared-by-view .ac-accident-grid th:nth-child(6){width:140px}
+.ac-accident-grid-wrap.is-prepared-by-view .ac-accident-grid th:nth-child(7){width:160px}
+.ac-accident-grid-wrap.is-prepared-by-view .ac-accident-grid th:nth-child(8){width:200px}
