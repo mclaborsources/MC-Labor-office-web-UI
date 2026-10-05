@@ -13772,3 +13772,58 @@ body {
 .ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(23){width:45px}
 .ac-accident-grid-wrap.is-brian-view .ac-accident-grid th:nth-child(25){width:155px}
 
+
+.accident-modal-shade,.accident-history-popup-shade{position:fixed;inset:0;z-index:1200;background:#0008;display:flex;align-items:center;justify-content:center;padding:18px}
+.accident-modal{width:min(1600px,96vw);height:min(900px,94vh);background:#dedede;border:1px solid #777;box-shadow:0 8px 32px #0005;display:flex;flex-direction:column;font:14px Arial,sans-serif;color:#090909}
+.accident-modal-header{flex:none;background:#ededed;border-bottom:1px solid #999;padding:0 18px 8px}
+.accident-modal-titlebar{height:28px;display:flex;justify-content:space-between;align-items:center;color:#222}
+.accident-modal-titlebar button,.accident-history-popup header button{font-size:22px;border:0;background:transparent;padding:0 8px;cursor:pointer}
+.accident-modal-header h2{font-size:24px;font-weight:400;margin:5px 10px 10px}
+.accident-modal-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.accident-modal-actions>button,.accident-modal button,.accident-history-popup button{height:29px;border:1px solid #999;background:linear-gradient(#fff,#e7e7e7);padding:3px 12px;color:#111;cursor:pointer}
+.accident-modal button:disabled{opacity:.5;cursor:not-allowed}
+.accident-modal-actions nav{display:flex;gap:12px;margin:0 auto}
+.accident-modal-actions nav button{border:0;background:transparent;color:#438a24;text-decoration:underline;padding:2px 5px;white-space:nowrap}
+.accident-modal-actions nav button.active{font-weight:bold;color:#1c5d08}
+.accident-modal-body{overflow:auto;flex:1;padding:10px 28px 22px}
+.accident-modal-body>section{padding:6px 0 28px;scroll-margin-top:8px;border-bottom:1px solid #bcbcbc}
+.accident-modal-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;margin-bottom:16px}
+.accident-modal-col{display:grid;grid-template-columns:minmax(195px,38%) minmax(190px,1fr);gap:5px 10px;align-content:start}
+.accident-modal-col h3{grid-column:1/-1;background:#050505;color:#fff;font-size:14px;margin:2px 0 4px;padding:3px 5px}
+.accident-modal-col label{display:contents;line-height:1.25}
+.accident-modal-col label input,.accident-modal-col label select,.accident-modal-col label textarea{box-sizing:border-box;width:100%;min-width:0;height:27px;border:1px solid #999;background:white;padding:3px 5px;color:#111;font:14px Arial,sans-serif}
+.accident-modal-col label textarea{height:56px;resize:vertical}
+.accident-modal-col label.accident-wide-field{grid-column:1/-1;display:grid;grid-template-columns:minmax(195px,38%) minmax(190px,1fr);gap:10px}
+.accident-modal-col label.accident-wide-field textarea{height:72px}
+.accident-modal-col label.accident-check-field{grid-column:1/-1;display:flex;align-items:center;gap:8px}
+.accident-modal-col label.accident-check-field input{width:15px;height:15px}
+.accident-modal-message{padding:7px 20px;margin:0;background:#fff7d8;color:#8b160e}
+.accident-modal>footer{height:35px;flex:none;border-top:1px solid #aaa;display:flex;justify-content:space-between;align-items:center;padding:0 12px;background:#eee}
+.accident-modal-history-head{display:flex;align-items:center;justify-content:space-between}
+.accident-modal-history-head h3{font-size:16px}
+.accident-history-compose{display:flex;gap:10px;align-items:stretch;margin:6px 0}
+.accident-history-compose textarea{flex:1;min-height:48px;border:1px solid #aaa;padding:5px;font:14px Arial,sans-serif}
+.accident-history-table-wrap{overflow:auto;max-height:320px;background:#fff;border:1px solid #aaa}
+.accident-history-table-wrap table{border-collapse:collapse;min-width:1100px;width:100%;font:13px Arial,sans-serif}
+.accident-history-table-wrap th,.accident-history-table-wrap td{border:1px solid #ddd;padding:5px 7px;text-align:left;white-space:nowrap}
+.accident-history-table-wrap th{background:#e6edf1;font-weight:400;position:sticky;top:0}
+.accident-history-popup{background:#eee;width:min(1150px,90vw);height:min(650px,80vh);display:flex;flex-direction:column;border:1px solid #777;padding:12px}
+.accident-history-popup header{display:flex;justify-content:space-between;font-size:20px;padding-bottom:10px}
+.accident-history-popup .accident-history-table-wrap{flex:1;max-height:none}
+.accident-report-preview{background:#fff;width:min(850px,90vw);height:min(850px,88vh);display:flex;flex-direction:column;border:1px solid #777;box-shadow:0 8px 32px #0005}
+.accident-report-preview>header{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:#eee;border-bottom:1px solid #aaa}
+.accident-report-preview>header div{display:flex;gap:8px}
+.accident-report-preview-content{padding:24px;overflow:auto}
+.accident-report-preview-content h1{font-size:24px;font-weight:400;margin:0 0 18px}
+.accident-report-preview-content>div{display:grid;grid-template-columns:240px 1fr;min-height:28px;padding:4px 0;border-bottom:1px solid #ddd}
+.accident-report-preview-content>div strong{font-weight:600}
+.accident-history-file-input{display:none}
+.accident-history-folder{margin:8px}
+@media print{
+  body:has(.accident-report-preview) *{visibility:hidden!important}
+  .accident-report-preview,.accident-report-preview *{visibility:visible!important}
+  .accident-report-preview-shade,.accident-report-preview{position:static!important;display:block!important;width:100%!important;height:auto!important;box-shadow:none!important;border:0!important;background:white!important}
+  .accident-report-preview>header{display:none!important}
+  .accident-report-preview-content{overflow:visible!important;padding:0!important}
+}
+@media(max-width:900px){.accident-modal{width:99vw;height:98vh}.accident-modal-grid{grid-template-columns:1fr;gap:14px}.accident-modal-actions nav{order:2;width:100%;overflow:auto}.accident-modal-header h2{font-size:18px}.accident-modal-body{padding:8px 12px}.accident-modal-col{grid-template-columns:minmax(145px,35%) minmax(130px,1fr)}.accident-modal-col label.accident-wide-field{grid-template-columns:minmax(145px,35%) minmax(130px,1fr)}}
