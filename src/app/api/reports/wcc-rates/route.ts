@@ -53,6 +53,10 @@ export async function GET() {
       const selected = candidates[0];
       const schema = selected.fields[0]?.TABLE_SCHEMA ?? "dbo";
       const table = selected.fields[0]?.TABLE_NAME ?? "";
+      const fieldMap = Object.fromEntries(ACCESS_COLUMNS.map(accessColumn => [
+        accessColumn.label,
+        selected.fields.find(field => accessColumn.aliases.includes(normalized(field.COLUMN_NAME)))?.COLUMN_NAME ?? "",
+      ]));
       const expressions = ACCESS_COLUMNS.map(accessColumn => {
         // Only map fields whose names are verified; ordinal mapping can put IDs
         // or unrelated values under the wrong Access headers.
@@ -68,7 +72,7 @@ export async function GET() {
         return `${actualName} AS [${accessColumn.label}]`;
       });
       const rows = await queryReadOnly<DataRow>(`SELECT TOP (2000) ${expressions.join(", ")} FROM [${schema.replaceAll("]", "]]" )}].[${table.replaceAll("]", "]]" )}] AS rates`);
-      return NextResponse.json({ ok: true, sourceTable: selected.name, sourceFields: selected.fields.map(field => field.COLUMN_NAME), columns: ACCESS_COLUMNS.map(column => column.label), rows, limited: rows.length === 2000 });
+      return NextResponse.json({ ok: true, sourceTable: selected.name, sourceFields: selected.fields.map(field => field.COLUMN_NAME), fieldMap, columns: ACCESS_COLUMNS.map(column => column.label), rows, limited: rows.length === 2000 });
     }
     const rows = await queryReadOnly<DataRow>(`SELECT TOP (2000) ISNULL(WCC,'') AS WCC, ISNULL(SiteState,'') AS State, ISNULL(PayrollCoOnSiteInitials,'') AS [Contract With], MAX(ISNULL(WccTracking,0)) AS [Tracking Wcc Rate] FROM tblTracking WITH (NOLOCK) WHERE NULLIF(LTRIM(RTRIM(ISNULL(WCC,''))),'') IS NOT NULL GROUP BY WCC,SiteState,PayrollCoOnSiteInitials ORDER BY WCC,SiteState,PayrollCoOnSiteInitials`);
     return NextResponse.json({ ok: true, sourceTable: "tblTracking (WCC usage fallback)", columns: ACCESS_COLUMNS.map(column => column.label), rows, limited: rows.length === 2000, rateMasterFound: false });
