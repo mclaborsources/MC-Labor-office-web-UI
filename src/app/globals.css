@@ -12796,22 +12796,22 @@ body {
 .ac-phone-search-filter, .ac-phone-search-status { height: 20px; padding: 2px 7px; border: 1px solid #aaa; background: #fff; }.ac-phone-search-filter { color: #aaa; }.ac-phone-search-status { min-width: 70px; }.ac-phone-search-recordbar > div { flex: 1; height: 18px; border: 1px solid #aaa; background: #f5f5f5; }
 @media (max-width: 1050px) { .ac-phone-search-tools { flex-wrap: wrap; }.ac-phone-search { grid-template-rows: auto auto minmax(0, 1fr) 24px; }.ac-phone-search-view-buttons { grid-template-columns: repeat(4, minmax(90px, 136px)); }.ac-phone-search-header h1 { flex-basis: 100%; }.ac-phone-search-closebar { margin-left: 0; } }
 
-.ac-job-app-problems { display: grid; grid-template-rows: 145px 95px minmax(0, 1fr) 26px; height: 100%; min-width: 1180px; overflow: hidden; background: #ededed; color: #000; font: 13px Arial, sans-serif; }
-.ac-job-app-problems-header { position: relative; display: flex; align-items: flex-start; gap: 130px; padding: 5px 12px; }
+.ac-job-app-problems { display: grid; grid-template-rows: 90px minmax(0, 1fr) 26px; height: 100%; min-width: 1180px; overflow: hidden; background: #ededed; color: #000; font: 13px Arial, sans-serif; }
+.ac-job-app-problems-header { position: relative; display: flex; align-items: flex-start; gap: 22px; padding: 5px 12px; }
 .ac-job-app-problems-header h1 { margin: 0; font-size: 26px; line-height: 34px; font-weight: 400; }
-.ac-job-app-problems-viewbar { display: flex; align-items: center; gap: 6px; height: 34px; }
+.ac-job-app-problems-viewbar { display: flex; align-items: center; gap: 6px; height: 34px; flex-wrap: wrap; padding-right: 140px; }
 .ac-job-app-problems-viewbar select { width: 135px; height: 28px; border: 1px solid #999; background: #fff; }
 .ac-job-app-problems-viewbar select:nth-of-type(2) { width: 100px; }
 .ac-job-app-problems-viewbar .ac-btn, .ac-job-app-problems-close .ac-btn, .ac-job-app-week-buttons .ac-btn, .ac-job-app-problems-filters > .ac-btn { height: 30px; min-height: 30px; border-radius: 0; border-color: #999; background: linear-gradient(#fff, #e4e4e4); color: #000; }
 .ac-job-app-problems-close { position: absolute; top: 5px; right: 7px; display: flex; gap: 7px; }
 .ac-job-app-help { width: 31px; height: 31px; border: 3px solid #f0cf00; background: #0875ce; color: #fff; font-size: 19px; font-weight: 700; line-height: 20px; }
-.ac-job-app-problems-filters { display: flex; align-items: flex-start; padding-left: 515px; gap: 7px; }
-.ac-job-app-problems-filters > label { padding-top: 8px; }
+.ac-job-app-problems-filters { position: absolute; top: 56px; left: 27%; right: 12px; display: flex; align-items: center; gap: 7px; }
+.ac-job-app-problems-filters > label { padding-top: 0; }
 .ac-job-app-problems-filters > input { width: 193px; height: 27px; border: 1px solid #aaa; background: #a9e8fb; }
 .ac-job-app-week-buttons { display: flex; gap: 7px; margin: -5px 0 0 20px; padding: 5px 7px; border: 1px solid #aaa; }
 .ac-job-app-week-buttons .ac-btn[aria-pressed="true"] { box-shadow: inset 0 0 0 1px #2674a5; background: #dbeaf5; }
-.ac-job-app-select-label { margin-left: auto; padding-top: 57px; }
-.ac-job-app-problems-filters > .ac-btn { margin: 50px 85px 0 55px; min-width: 50px; }
+.ac-job-app-select-label { margin-left: auto; }
+.ac-job-app-problems-filters > .ac-btn { min-width: 50px; }
 .ac-job-app-grid-wrap { min-height: 0; overflow: auto; border-top: 1px solid #aaa; background: #fff; }
 .ac-job-app-grid { width: max-content; min-width: 100%; border-collapse: collapse; table-layout: fixed; }
 .ac-job-app-grid th, .ac-job-app-grid td { height: 23px; border-right: 1px solid #e5e5e5; border-bottom: 1px solid #eee; padding: 2px 5px; overflow: hidden; white-space: nowrap; }
@@ -12821,6 +12821,11 @@ body {
 .ac-job-app-selector-col { width: 19px; }
 .ac-job-app-grid th:first-child, .ac-job-app-grid td:first-child { width: 19px; padding: 0; background: #e8edf1; }
 .ac-job-app-grid tbody tr:nth-child(even) td:not(:first-child) { background: #fafafa; }
+.ac-job-app-grid tbody tr { cursor: default; }
+.ac-job-app-grid tbody tr.is-selected td { background: #acd3ee !important; }
+.ac-job-app-grid input[type="checkbox"] { width: 13px; height: 13px; margin: 0; vertical-align: middle; }
+.ac-job-app-empty { position: sticky; left: 0; padding: 16px; color: #333; background: #fff; }
+.ac-job-app-error { color: #a40000; }
 .ac-job-app-recordbar { display: flex; align-items: center; gap: 3px; border-top: 1px solid #aaa; background: #eceff1; font-size: 11px; }
 .ac-job-app-recordbar button { width: 23px; height: 19px; border: 0; background: transparent; font-size: 9px; }
 .ac-job-app-recordbar input { width: 55px; height: 19px; border: 1px solid #aaa; background: #fff; }
@@ -12828,6 +12833,7 @@ body {
 .ac-job-app-search-status { height: 20px; min-width: 78px; padding: 2px 8px; border: 1px solid #aaa; background: #fff; }
 .ac-job-app-scrollbar { flex: 1; height: 18px; margin-left: 26px; border: 1px solid #aaa; background: #f3f3f3; }
 .ac-job-app-scrollbar span { display: block; width: 30%; height: 12px; margin: 2px 25%; border-radius: 8px; background: #7d7d7d; }
+@media print { .ac-job-app-problems { height: auto; overflow: visible; min-width: 0; grid-template-rows: auto auto; }.ac-job-app-problems-header { display: block; }.ac-job-app-problems-viewbar,.ac-job-app-problems-close,.ac-job-app-problems-filters,.ac-job-app-recordbar { display: none; }.ac-job-app-grid-wrap { overflow: visible; }.ac-job-app-grid { width: 100%; min-width: 0; font-size: 8px; }.ac-job-app-grid th,.ac-job-app-grid td { height: auto; white-space: normal; }.ac-job-app-grid th:first-child,.ac-job-app-grid td:first-child { display: none; } }
 
 /* Contract Report — legacy Access contract/customer grid. */
 .ac-contract-report { display: grid; grid-template-rows: 48px 100px minmax(0, 1fr) 26px; height: 100%; min-width: 1280px; overflow: hidden; background: #ededed; color: #000; font: 13px Arial, sans-serif; }
