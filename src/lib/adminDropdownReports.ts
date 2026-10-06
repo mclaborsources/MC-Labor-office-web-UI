@@ -223,7 +223,11 @@ export function getAllAccidentReportRows(): Promise<OperationalReportRow[]> {
     CASE WHEN r.ProjectAccidentReportHistoryStatusID IS NULL THEN N'' ELSE CONCAT(
       ISNULL(CONVERT(NVARCHAR(255),history.PullDownProjectAccidentReportHistoryStatus),N''),N' - ',
       ISNULL(CONVERT(NVARCHAR(255),history.PullDownProjectAccidentReportHistoryStatusDesc),N'')) END AS History,
-    CASE WHEN p.CustomerID IS NULL THEN NULL ELSE COUNT(*) OVER (PARTITION BY r.EmployeeID,p.CustomerID) END AS [Accidents with Customer]
+    CASE WHEN p.CustomerID IS NULL THEN NULL ELSE COUNT(*) OVER (PARTITION BY r.EmployeeID,p.CustomerID) END AS [Accidents with Customer],
+    ISNULL(r.ProjectAccidentReportOurCost,0) AS [Our Cost],
+    ISNULL(lastAdjusterHistory.ProjectAccidentReportContactHistoryNote,'') AS [Last Adjuster Note],
+    ISNULL(lastAdjusterHistory.ProjectAccidentReportContactHistoryUserName,'') AS [Last Adjuster User Name],
+    lastAdjusterHistory.ProjectAccidentReportContactHistoryTimestamp AS [Last Adjuster Timestamp]
   FROM tblProjectAccidentReports r WITH (NOLOCK)
   LEFT JOIN tblEmployee e WITH (NOLOCK) ON e.EmployeeID=r.EmployeeID
   LEFT JOIN tblProject p WITH (NOLOCK) ON p.ProjectID=r.ProjectID
@@ -239,6 +243,15 @@ export function getAllAccidentReportRows(): Promise<OperationalReportRow[]> {
   LEFT JOIN tblInsuranceCompanyClaimsAdjusters adjuster WITH (NOLOCK) ON adjuster.InsuranceCompanyClaimsAdjusterID=r.ProjectAccidentReportClaimsAdjusterID
   LEFT JOIN tblPullDownProjectAccidentReportHistoryStatus history WITH (NOLOCK)
     ON history.PullDownProjectAccidentReportHistoryStatusID=r.ProjectAccidentReportHistoryStatusID
+  OUTER APPLY (
+    SELECT TOP (1) h.ProjectAccidentReportContactHistoryNote,
+      h.ProjectAccidentReportContactHistoryUserName,
+      h.ProjectAccidentReportContactHistoryTimestamp
+    FROM tblProjectAccidentReportContactHistory h WITH (NOLOCK)
+    WHERE h.ProjectAccidentReportID=r.ProjectAccidentReportID
+      AND h.ProjectAccidentReportContactHistoryContactTypeID=1
+    ORDER BY h.ProjectAccidentReportContactHistoryTimestamp DESC,h.ProjectAccidentReportContactHistoryID DESC
+  ) lastAdjusterHistory
   CROSS APPLY (VALUES (
     DATEDIFF(DAY,CONVERT(DATE,'19000101'),CONVERT(DATE,r.ProjectAccidentReportDateOfInjury))%7,
     DATEDIFF(DAY,CONVERT(DATE,r.ProjectAccidentReportDateOfInjury),CONVERT(DATE,GETDATE()))+1
