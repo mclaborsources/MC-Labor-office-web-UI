@@ -696,6 +696,7 @@ export function TrackingScreen({
       "View V Hours": "/verify-hours-contact-report", "Copy Forward": "/reports",
       "Payroll Adjustments": "/reports", "Cust Contact Kickbacks": "/customer-contact-email-kickbacks",
       "Employee Email Kickbacks": "/employee-contact-email-kickbacks", "Employee Text Kickbacks": "/employee-contact-text-kickbacks",
+      "Email/Text Templates": "/email-text-templates",
       "View Future Calls": "/tracking-search",
       "Schedule Report": "/current-jobs", "View Schedule": "/current-jobs",
       "View Timesheet": "/employee-hours-by-week", "Email Schedule": "/current-jobs",
@@ -712,7 +713,6 @@ export function TrackingScreen({
     if (normalized.startsWith("View ") || normalized.includes("Report")) { window.print(); return; }
     const writeActions = ["Update Unassigned to Available", "Copy Forward History", "Import to Update Hunter"];
     if (writeActions.includes(normalized)) { setReportMessage(`${normalized} requires the original Access append/update query and audit-table mapping before SQL writes can be enabled safely.`); return; }
-    if (normalized === "Email/Text Templates") { setReportMessage("The Access email/text template table has not yet been identified in the confirmed schema."); return; }
     setReportMessage(`${normalized} is available as a UI control, but its original Access action or destination still needs confirmation.`);
   }
 
