@@ -7,6 +7,7 @@ type Option = { id: string; label: string };
 type Template = { id: number; name: string; typeId: string; sendId: string; queryName: string; sort: string; futureDays: string; addresses: string; cc: string; bcc: string; subject: string; body: string; newsletter: string };
 const EMPTY: Template = { id: 0, name: "", typeId: "", sendId: "", queryName: "", sort: "", futureDays: "", addresses: "", cc: "", bcc: "", subject: "", body: "", newsletter: "" };
 const SIGNATURE = "email-template-signature-v1", LOGO = "email-template-logo-v1";
+const normalizeTemplate = (row: Partial<Template>): Template => ({ id: Number(row.id) || 0, name: String(row.name ?? ""), typeId: String(row.typeId ?? ""), sendId: String(row.sendId ?? ""), queryName: String(row.queryName ?? ""), sort: String(row.sort ?? ""), futureDays: String(row.futureDays ?? ""), addresses: String(row.addresses ?? ""), cc: String(row.cc ?? ""), bcc: String(row.bcc ?? ""), subject: String(row.subject ?? ""), body: String(row.body ?? ""), newsletter: String(row.newsletter ?? "") });
 
 export function EmailTextTemplatesScreen() {
   const [rows, setRows] = useState<Template[]>([]), [types, setTypes] = useState<Option[]>([]), [sendTypes, setSendTypes] = useState<Option[]>([]), [queryOptions, setQueryOptions] = useState<{ value: string; label: string }[]>([]), [queryFields, setQueryFields] = useState<string[]>([]);
@@ -19,7 +20,7 @@ export function EmailTextTemplatesScreen() {
     try {
       const response = await fetch(`/api/admin/email-text-templates?search=${encodeURIComponent(search)}`, { cache: "no-store" });
       const data = await response.json(); if (!response.ok || !data.ok) throw new Error(data.error || "Could not load email templates.");
-      setRows(data.rows ?? []); setTypes(data.types ?? []); setSendTypes(data.sendTypes ?? []); setQueryOptions(data.queryOptions ?? []);
+      setRows((data.rows ?? []).map(normalizeTemplate)); setTypes((data.types ?? []).map((option: Option) => ({ id: String(option.id ?? ""), label: String(option.label ?? "") }))); setSendTypes((data.sendTypes ?? []).map((option: Option) => ({ id: String(option.id ?? ""), label: String(option.label ?? "") }))); setQueryOptions((data.queryOptions ?? []).map((option: {value:string;label:string}) => ({ value: String(option.value ?? ""), label: String(option.label ?? "") })));
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Could not load templates."); }
     finally { setBusy(false); }
   }, []);
@@ -31,7 +32,7 @@ export function EmailTextTemplatesScreen() {
   }, [activeQuery]);
   const visibleRows = useMemo(() => rows.filter(row => (!templateFilter || row.typeId === templateFilter) && (!sendFilter || row.sendId === sendFilter) && (!nameSearch || row.name.toLowerCase().includes(nameSearch.toLowerCase()))).slice().sort((a,b) => (Number(a.sort)||0)-(Number(b.sort)||0) || a.name.localeCompare(b.name)), [rows,templateFilter,sendFilter,nameSearch]);
   const set = (key: keyof Template, value: string) => setForm(old => ({ ...old, [key]: value }));
-  function select(row: Template) { setForm({ ...EMPTY, ...row }); setEditing(true); setNotice(""); setError(""); setActiveQuery(row.queryName); }
+  function select(row: Template) { const selected = normalizeTemplate(row); setForm(selected); setEditing(true); setNotice(""); setError(""); setActiveQuery(selected.queryName); }
   function startNew() { setForm({ ...EMPTY, typeId: templateFilter, sendId: sendFilter }); setEditing(true); setNotice(""); setError(""); setActiveQuery(""); }
   function cancel() { setForm(EMPTY); setEditing(false); setNotice(""); setError(""); }
   async function action(type: "save"|"copy"|"rename"|"delete", name?: string): Promise<boolean> {
