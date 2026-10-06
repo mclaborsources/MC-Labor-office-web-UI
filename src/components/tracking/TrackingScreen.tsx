@@ -682,8 +682,6 @@ export function TrackingScreen({
     if (normalized === "Delete View") { localStorage.removeItem("tracking-job-view"); setReportMessage("Saved job-panel view deleted."); return; }
     if (normalized === "View Directions") { const address = jobInfo?.siteAddress; if (address) window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, "_blank", "noopener,noreferrer"); else setReportMessage("No site address is available for this job."); return; }
     if (normalized === "Print Directions") { window.print(); return; }
-    if (normalized.includes("Email")) { composeEmail(`${normalized}: ${subject}`); return; }
-    if (normalized.includes("Text") || normalized === "Send Directions") { composeText(`${subject}${jobInfo?.siteAddress ? ` — ${jobInfo.siteAddress}` : ""}`); return; }
     const routes: Record<string, string> = {
       "Import Employees": "/employee-import",
       "Import Employee Carriers": "/employee-import?variant=carriers",
@@ -709,6 +707,8 @@ export function TrackingScreen({
       "Health Ins": "/health-ins", "Deleted Employees": "/deleted-employees",
     };
     if (routes[normalized]) { router.push(routes[normalized]); return; }
+    if (normalized.includes("Email")) { composeEmail(`${normalized}: ${subject}`); return; }
+    if (normalized.includes("Text") || normalized === "Send Directions") { composeText(`${subject}${jobInfo?.siteAddress ? ` — ${jobInfo.siteAddress}` : ""}`); return; }
     if (normalized.startsWith("View ") || normalized.includes("Report")) { window.print(); return; }
     const writeActions = ["Update Unassigned to Available", "Copy Forward History", "Import to Update Hunter"];
     if (writeActions.includes(normalized)) { setReportMessage(`${normalized} requires the original Access append/update query and audit-table mapping before SQL writes can be enabled safely.`); return; }
