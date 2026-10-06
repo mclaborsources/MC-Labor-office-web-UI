@@ -696,7 +696,7 @@ export function TrackingScreen({
       "Edit Salesman Report": "/edit-salesman-report", "View Invoice": "/invoice-search",
       "Invoice Report": "/invoices-by-week-report", "Verify Report": "/verify-hours-contact-report",
       "View V Hours": "/verify-hours-contact-report", "Copy Forward": "/reports",
-      "Payroll Adjustments": "/reports", "Cust Contact Kickbacks": "/customers",
+      "Payroll Adjustments": "/reports", "Cust Contact Kickbacks": "/customer-contact-email-kickbacks",
       "Employee Email Kickbacks": "/email-addresses", "Employee Text Kickbacks": "/phone-number-search",
       "View Future Calls": "/tracking-search",
       "Schedule Report": "/current-jobs", "View Schedule": "/current-jobs",
