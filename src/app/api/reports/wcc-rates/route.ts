@@ -3,7 +3,7 @@ import { requireSession } from "@/lib/auth/session";
 import { queryReadOnly } from "@/lib/db/sql";
 
 export const dynamic = "force-dynamic";
-type Column = { TABLE_SCHEMA: string; TABLE_NAME: string; COLUMN_NAME: string };
+type Column = { TABLE_SCHEMA: string; TABLE_NAME: string; COLUMN_NAME: string; ORDINAL_POSITION: number };
 type DataRow = Record<string, unknown>;
 const normalized = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, "");
 const ACCESS_COLUMNS = [
@@ -32,7 +32,7 @@ export async function GET() {
   try {
     const session = await requireSession();
     if (!session.user?.roles.includes("admin")) return NextResponse.json({ ok: false, error: "Administrator sign-in required." }, { status: 403 });
-    const columns = await queryReadOnly<Column>(`SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME LIKE '%WCC%' OR COLUMN_NAME LIKE '%WCC%'`);
+    const columns = await queryReadOnly<Column>(`SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME, ORDINAL_POSITION FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME LIKE '%WCC%' OR COLUMN_NAME LIKE '%WCC%' ORDER BY TABLE_SCHEMA, TABLE_NAME, ORDINAL_POSITION`);
     const groups = new Map<string, Column[]>();
     for (const column of columns) {
       const key = `${column.TABLE_SCHEMA}.${column.TABLE_NAME}`;
@@ -53,8 +53,10 @@ export async function GET() {
       const selected = candidates[0];
       const schema = selected.fields[0]?.TABLE_SCHEMA ?? "dbo";
       const table = selected.fields[0]?.TABLE_NAME ?? "";
-      const expressions = ACCESS_COLUMNS.map(accessColumn => {
-        const actual = selected.fields.find(field => accessColumn.aliases.includes(normalized(field.COLUMN_NAME)));
+      const expressions = ACCESS_COLUMNS.map((accessColumn, index) => {
+        // Prefer semantic aliases. Access query views often expose legacy names,
+        // but retain the same datasheet order, so use ordinal mapping as fallback.
+        const actual = selected.fields.find(field => accessColumn.aliases.includes(normalized(field.COLUMN_NAME))) ?? selected.fields[index];
         if (!actual) return `CAST(NULL AS NVARCHAR(255)) AS [${accessColumn.label}]`;
         const actualName = `[rates].[${actual.COLUMN_NAME.replaceAll("]", "]]" )}]`;
         if (accessColumn.label === "Contract With" && normalized(actual.COLUMN_NAME).endsWith("id")) {
