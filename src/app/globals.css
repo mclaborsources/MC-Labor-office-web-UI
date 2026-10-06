@@ -13827,3 +13827,41 @@ body {
   .accident-report-preview-content{overflow:visible!important;padding:0!important}
 }
 @media(max-width:900px){.accident-modal{width:99vw;height:98vh}.accident-modal-grid{grid-template-columns:1fr;gap:14px}.accident-modal-actions nav{order:2;width:100%;overflow:auto}.accident-modal-header h2{font-size:18px}.accident-modal-body{padding:8px 12px}.accident-modal-col{grid-template-columns:minmax(145px,35%) minmax(130px,1fr)}.accident-modal-col label.accident-wide-field{grid-template-columns:minmax(145px,35%) minmax(130px,1fr)}}
+.employee-import-screen {
+  display: flex; flex: 1; min-height: 0; flex-direction: column; gap: 12px; overflow: auto;
+  padding: 18px 22px; background: #e9e9e9; color: #222; font-size: 13px;
+}
+.employee-import-header,.employee-import-header>div,.employee-import-review-head,.employee-import-review-head>div {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+}
+.employee-import-header h1 { margin: 0; font-size: 21px; font-weight: 600; }
+.employee-import-header p,.employee-import-screen p { margin: 3px 0 7px; color: #555; }
+.employee-import-steps { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.employee-import-steps li { display: flex; align-items: center; gap: 6px; padding: 7px 10px; border: 1px solid #aaa; background: #f8f8f8; }
+.employee-import-steps b { display: inline-grid; width: 20px; height: 20px; place-items: center; border-radius: 50%; background: #7a3338; color: white; }
+.employee-import-actions { display: grid; grid-template-columns: minmax(300px,1fr) minmax(360px,1.3fr); gap: 12px; }
+.employee-import-actions section,.employee-import-mapping,.employee-import-review { border: 1px solid #aaa; background: #f5f5f5; padding: 12px; box-shadow: 0 1px 2px #00000012; }
+.employee-import-screen h2 { margin: 0 0 4px; color: #34282a; font-size: 15px; font-weight: 600; }
+.employee-import-file { display: inline-flex; position: relative; overflow: hidden; cursor: pointer; align-items: center; padding: 6px 10px; border: 1px solid #888; background: #eee; font-weight: 600; }
+.employee-import-file input { position: absolute; inset: 0; width: 100%; cursor: pointer; opacity: 0; }
+.employee-import-actions section>span,.employee-import-actions small { display: block; margin-top: 7px; color: #555; }
+.employee-import-map-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 6px 12px; margin: 10px 0; }
+.employee-import-map-grid label { display: grid; grid-template-columns: 1fr 1.1fr; align-items: center; gap: 8px; }
+.employee-import-map-grid span { overflow-wrap: anywhere; }
+.employee-import-screen select,.employee-import-table-wrap input,.employee-import-review-head select { min-width: 0; height: 27px; border: 1px solid #999; background: white; padding: 2px 5px; }
+.employee-import-review-head { align-items: flex-start; margin-bottom: 10px; }
+.employee-import-review-head>div:last-child { align-items: flex-end; flex-wrap: wrap; }
+.employee-import-review-head label { display: grid; gap: 4px; }
+.employee-import-table-wrap { overflow: auto; max-height: 52vh; border: 1px solid #aaa; background: white; }
+.employee-import-table-wrap table { width: max-content; min-width: 100%; border-collapse: collapse; font-size: 12px; }
+.employee-import-table-wrap th { position: sticky; top: 0; z-index: 1; background: #dedede; text-align: left; white-space: nowrap; }
+.employee-import-table-wrap th,.employee-import-table-wrap td { border: 1px solid #ccc; padding: 3px 5px; }
+.employee-import-table-wrap td input { width: 140px; }
+.employee-import-table-wrap td:first-child { text-align: center; }
+.employee-import-table-wrap .is-ready { color: #17652d; background: #e2f3e5; font-weight: 600; }
+.employee-import-table-wrap .has-error { min-width: 250px; color: #9d1b1b; background: #fde8e8; }
+.employee-import-error,.employee-import-message { margin: 0; padding: 9px 12px; border: 1px solid #999; }
+.employee-import-error { color: #921d1d; background: #ffe9e9; }
+.employee-import-message { color: #175a27; background: #e6f4e8; }
+.employee-import-screen footer { margin-top: auto; padding: 7px 4px 0; color: #555; }
+@media (max-width: 800px) { .employee-import-actions { grid-template-columns: 1fr; } .employee-import-review-head { flex-direction: column; } }

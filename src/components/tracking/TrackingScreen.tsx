@@ -685,6 +685,7 @@ export function TrackingScreen({
     if (normalized.includes("Email")) { composeEmail(`${normalized}: ${subject}`); return; }
     if (normalized.includes("Text") || normalized === "Send Directions") { composeText(`${subject}${jobInfo?.siteAddress ? ` — ${jobInfo.siteAddress}` : ""}`); return; }
     const routes: Record<string, string> = {
+      "Import Employees": "/employee-import",
       "MLS Job App Problems": "/job-app-problems", "Wcc Rates": "/check-weekly-rates",
       "Edit Salesman Report": "/reports", "View Invoice": "/invoice-search",
       "Invoice Report": "/invoices-by-week-report", "Verify Report": "/verify-hours-contact-report",
@@ -703,7 +704,7 @@ export function TrackingScreen({
     };
     if (routes[normalized]) { router.push(routes[normalized]); return; }
     if (normalized.startsWith("View ") || normalized.includes("Report")) { window.print(); return; }
-    const writeActions = ["Update Unassigned to Available", "Copy Forward History", "Import Employees", "Import Employee Carriers", "Import Employee New Addresses", "Import Customers - 3 Contacts [NR]", "Import Customers", "Import Customers - 2 Contacts", "Import Customers - 3 Contacts", "Import to Update Hunter"];
+    const writeActions = ["Update Unassigned to Available", "Copy Forward History", "Import Employee Carriers", "Import Employee New Addresses", "Import Customers - 3 Contacts [NR]", "Import Customers", "Import Customers - 2 Contacts", "Import Customers - 3 Contacts", "Import to Update Hunter"];
     if (writeActions.includes(normalized)) { setReportMessage(`${normalized} requires the original Access append/update query and audit-table mapping before SQL writes can be enabled safely.`); return; }
     if (normalized === "Email/Text Templates") { setReportMessage("The Access email/text template table has not yet been identified in the confirmed schema."); return; }
     setReportMessage(`${normalized} is available as a UI control, but its original Access action or destination still needs confirmation.`);
