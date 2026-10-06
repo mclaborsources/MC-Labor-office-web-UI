@@ -19,8 +19,9 @@ const headers = FIELDS.map(([, label]) => label);
 const emptyRow = (): ImportRow => Object.fromEntries(FIELDS.map(([key]) => [key, ""])) as ImportRow;
 const fieldKeyForHeader = (header: string): FieldKey | "" => FIELDS.find(([, label]) => label.toLowerCase() === header.trim().toLowerCase())?.[0] ?? "";
 
-export function EmployeeImportScreen() {
+export function EmployeeImportScreen({ variant = "employees" }: { variant?: "employees" | "carriers" | "addresses" }) {
   const router = useRouter();
+  const screenTitle = variant === "carriers" ? "Employee Import Carriers" : variant === "addresses" ? "Employee Import New Addresses" : "Employee Import";
   const [fileName, setFileName] = useState("");
   const [sourceFields, setSourceFields] = useState<string[]>([]);
   const [rawRows, setRawRows] = useState<Record<string, unknown>[]>([]);
@@ -70,7 +71,7 @@ export function EmployeeImportScreen() {
     const sheet = XLSX.utils.aoa_to_sheet([headers]);
     sheet["!cols"] = headers.map(header => ({ wch: Math.max(18, header.length + 3) }));
     const workbook = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(workbook, sheet, "Employees");
-    XLSX.writeFile(workbook, "employee-import-template.xlsx");
+    XLSX.writeFile(workbook, `${screenTitle.toLowerCase().replaceAll(" ", "-")}-template.xlsx`);
   }
 
   function analyze() {
@@ -123,10 +124,10 @@ export function EmployeeImportScreen() {
   }
 
   return <section className="employee-import-screen">
-    <header className="employee-import-header"><h1>Employee Import</h1><div><AccessButton onClick={() => { if ((!rows.length && !sourceFields.length) || window.confirm("There is import data that has not been completely imported yet. Continue closing?")) router.push("/tracking"); }}>Close</AccessButton><AccessButton onClick={() => { if ((rows.length || sourceFields.length) && !window.confirm("There is some data that has not been completely imported yet. Reset?")) return; setRows([]); setStatuses([]); setRawRows([]); setSourceFields([]); setMapping({}); setFileName(""); setGradeId(""); setMessage("Import reset."); setError(""); }}>Reset</AccessButton></div></header>
+    <header className="employee-import-header"><h1>{screenTitle}</h1><div><AccessButton onClick={() => { if ((rows.length || sourceFields.length) && !window.confirm("There is some data that has not been completely imported yet. Reset?")) return; setRows([]); setStatuses([]); setRawRows([]); setSourceFields([]); setMapping({}); setFileName(""); setGradeId(""); setMessage("Import reset."); setError(""); }}>Reset</AccessButton><AccessButton onClick={() => { if ((!rows.length && !sourceFields.length) || window.confirm("There is import data that has not been completely imported yet. Continue closing?")) router.push("/tracking"); }}>Close</AccessButton></div></header>
 
     <div className="employee-import-setup-row"><span>(1) Create a new import file.</span><AccessButton onClick={downloadTemplate}>Create</AccessButton></div>
-    <div className="employee-import-setup-row"><span>(2) Select an import file.</span><label className="employee-import-file">Browse<input type="file" accept=".xlsx" onChange={event => void chooseFile(event.target.files?.[0])}/></label><em>The Excel file must have a header row and the data must be in the first worksheet of the workbook. See the Employee Import Template.xlsx file as an example.</em>{fileName&&<strong>{fileName}</strong>}</div>
+    <div className="employee-import-setup-row"><span>(2) Select an import file.</span><label className="employee-import-file">Browse<input type="file" accept=".xlsx" onChange={event => void chooseFile(event.target.files?.[0])}/></label><em>The Excel file must have a header row and the data must be in the first worksheet of the workbook. See the {screenTitle} Template.xlsx file as an example.</em>{fileName&&<strong>{fileName}</strong>}</div>
 
     <div className="employee-import-match-area">
       <div className="employee-import-match-left"><div className="employee-import-section-title"><span>(3) Match the database fields.</span><em>Select a Database Field match for each Import Field that you wish to import.</em></div>

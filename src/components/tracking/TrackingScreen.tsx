@@ -686,10 +686,12 @@ export function TrackingScreen({
     if (normalized.includes("Text") || normalized === "Send Directions") { composeText(`${subject}${jobInfo?.siteAddress ? ` — ${jobInfo.siteAddress}` : ""}`); return; }
     const routes: Record<string, string> = {
       "Import Employees": "/employee-import",
+      "Import Employee Carriers": "/employee-import?variant=carriers",
+      "Import Employee New Addresses": "/employee-import?variant=addresses",
       "Import Customers": "/customer-import",
-      "Import Customers - 2 Contacts": "/customer-import?contacts=2",
-      "Import Customers - 3 Contacts": "/customer-import?contacts=3",
-      "Import Customers - 3 Contacts [NR]": "/customer-import?contacts=3&newRecordsOnly=1",
+      "Import Customers - 2 Contacts": "/customer-import?variant=2-contacts",
+      "Import Customers - 3 Contacts": "/customer-import?variant=3-contacts",
+      "Import Customers - 3 Contacts [NR]": "/customer-import?variant=3-contacts-nr",
       "MLS Job App Problems": "/job-app-problems", "Wcc Rates": "/check-weekly-rates",
       "Edit Salesman Report": "/reports", "View Invoice": "/invoice-search",
       "Invoice Report": "/invoices-by-week-report", "Verify Report": "/verify-hours-contact-report",
@@ -708,7 +710,7 @@ export function TrackingScreen({
     };
     if (routes[normalized]) { router.push(routes[normalized]); return; }
     if (normalized.startsWith("View ") || normalized.includes("Report")) { window.print(); return; }
-    const writeActions = ["Update Unassigned to Available", "Copy Forward History", "Import Employee Carriers", "Import Employee New Addresses", "Import to Update Hunter"];
+    const writeActions = ["Update Unassigned to Available", "Copy Forward History", "Import to Update Hunter"];
     if (writeActions.includes(normalized)) { setReportMessage(`${normalized} requires the original Access append/update query and audit-table mapping before SQL writes can be enabled safely.`); return; }
     if (normalized === "Email/Text Templates") { setReportMessage("The Access email/text template table has not yet been identified in the confirmed schema."); return; }
     setReportMessage(`${normalized} is available as a UI control, but its original Access action or destination still needs confirmation.`);
