@@ -30,6 +30,7 @@ if errorlevel 1 (
 
 if not exist "node_modules\.mc-labor-install-complete" goto install_dependencies
 if not exist "node_modules\next\package.json" goto install_dependencies
+if not exist "node_modules\xlsx\package.json" goto install_dependencies
 goto run_app
 
 :install_dependencies
