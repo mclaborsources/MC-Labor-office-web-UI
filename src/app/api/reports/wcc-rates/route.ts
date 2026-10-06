@@ -53,10 +53,10 @@ export async function GET() {
       const selected = candidates[0];
       const schema = selected.fields[0]?.TABLE_SCHEMA ?? "dbo";
       const table = selected.fields[0]?.TABLE_NAME ?? "";
-      const expressions = ACCESS_COLUMNS.map((accessColumn, index) => {
-        // Prefer semantic aliases. Access query views often expose legacy names,
-        // but retain the same datasheet order, so use ordinal mapping as fallback.
-        const actual = selected.fields.find(field => accessColumn.aliases.includes(normalized(field.COLUMN_NAME))) ?? selected.fields[index];
+      const expressions = ACCESS_COLUMNS.map(accessColumn => {
+        // Only map fields whose names are verified; ordinal mapping can put IDs
+        // or unrelated values under the wrong Access headers.
+        const actual = selected.fields.find(field => accessColumn.aliases.includes(normalized(field.COLUMN_NAME)));
         if (!actual) return `CAST(NULL AS NVARCHAR(255)) AS [${accessColumn.label}]`;
         const actualName = `[rates].[${actual.COLUMN_NAME.replaceAll("]", "]]" )}]`;
         if (accessColumn.label === "Contract With" && normalized(actual.COLUMN_NAME).endsWith("id")) {
@@ -68,7 +68,7 @@ export async function GET() {
         return `${actualName} AS [${accessColumn.label}]`;
       });
       const rows = await queryReadOnly<DataRow>(`SELECT TOP (2000) ${expressions.join(", ")} FROM [${schema.replaceAll("]", "]]" )}].[${table.replaceAll("]", "]]" )}] AS rates`);
-      return NextResponse.json({ ok: true, sourceTable: selected.name, columns: ACCESS_COLUMNS.map(column => column.label), rows, limited: rows.length === 2000 });
+      return NextResponse.json({ ok: true, sourceTable: selected.name, sourceFields: selected.fields.map(field => field.COLUMN_NAME), columns: ACCESS_COLUMNS.map(column => column.label), rows, limited: rows.length === 2000 });
     }
     const rows = await queryReadOnly<DataRow>(`SELECT TOP (2000) ISNULL(WCC,'') AS WCC, ISNULL(SiteState,'') AS State, ISNULL(PayrollCoOnSiteInitials,'') AS [Contract With], MAX(ISNULL(WccTracking,0)) AS [Tracking Wcc Rate] FROM tblTracking WITH (NOLOCK) WHERE NULLIF(LTRIM(RTRIM(ISNULL(WCC,''))),'') IS NOT NULL GROUP BY WCC,SiteState,PayrollCoOnSiteInitials ORDER BY WCC,SiteState,PayrollCoOnSiteInitials`);
     return NextResponse.json({ ok: true, sourceTable: "tblTracking (WCC usage fallback)", columns: ACCESS_COLUMNS.map(column => column.label), rows, limited: rows.length === 2000, rateMasterFound: false });

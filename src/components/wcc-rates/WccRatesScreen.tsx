@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { AccessButton } from "@/components/access/AccessButton";
 
 type Row = Record<string, unknown>;
-type Result = { ok: boolean; rows?: Row[]; columns?: string[]; sourceTable?: string; limited?: boolean; rateMasterFound?: boolean; error?: string };
+type Result = { ok: boolean; rows?: Row[]; columns?: string[]; sourceTable?: string; sourceFields?: string[]; limited?: boolean; rateMasterFound?: boolean; error?: string };
 const viewKey = "wcc-rates-view";
 const ACCESS_COLUMNS = ["WCC","Desc","Contract With","Hide","State","State Rate","Penalty %","MLS Cost","MLS Markup","SS","Med","State UI","EMAC","Fed UI","Co Exp Per Diem Per Hr","Tracking Wcc Rate","Rate Active","Code Wcc Rate","Base Wcc Rate"];
 const clean = (value: unknown) => value === null || value === undefined ? "" : String(value);
@@ -16,6 +16,7 @@ export function WccRatesScreen() {
   const router = useRouter();
   const [allRows, setAllRows] = useState<Row[]>([]);
   const [columns, setColumns] = useState<string[]>([]);
+  const [sourceFields, setSourceFields] = useState<string[]>([]);
   const [source, setSource] = useState("");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -36,6 +37,7 @@ export function WccRatesScreen() {
       const result = await response.json() as Result;
       if (!response.ok || !result.ok) throw new Error(result.error || "WCC data request failed.");
       setAllRows(result.rows ?? []); setColumns(result.columns ?? []); setSource(result.sourceTable ?? "");
+      setSourceFields(result.sourceFields ?? []);
       if (result.rateMasterFound === false) setNotice("No WCC rate master table was found. Showing actual WCC/state/payroll company combinations from Tracking.");
       else if (result.limited) setNotice("Showing the first 2,000 WCC rate rows.");
       else setNotice("");
@@ -82,7 +84,7 @@ export function WccRatesScreen() {
     <header className="wcc-rates-header"><h1>Wcc Rates</h1><label>View: <select value={view} onChange={event => loadView(event.target.value)}>{Array.from({length:8},(_,index)=><option key={index}>{index===0?"View 01":`View ${String(index+1).padStart(2,"0")}`}</option>)}</select></label><AccessButton onClick={saveView}>Save View</AccessButton><AccessButton onClick={deleteView}>Delete View</AccessButton><AccessButton onClick={exportRows} disabled={!rows.length}>Export View</AccessButton><AccessButton onClick={() => setRefresh(value => value + 1)} disabled={loading}>{loading?"Loading…":"Refresh"}</AccessButton><div className="wcc-rates-notes"><label>Notes: <input value={notes} onChange={event => setNotes(event.target.value)}/></label><AccessButton onClick={() => setNotice("Open File is not connected to a WCC rate document yet.")}>Open File</AccessButton><AccessButton onClick={() => setNotice("Select File is not connected to a WCC rate document yet.")}>Select File</AccessButton></div><AccessButton onClick={() => router.push("/tracking")}>Close</AccessButton></header>
     <div className="wcc-rates-toolbar"><fieldset><legend>FILTER</legend><label>Contract With <select value={contractWith} onChange={event=>setContractWith(event.target.value)}><option value=""/>{contracts.map(value=><option key={value}>{value}</option>)}</select></label><label>State <select value={state} onChange={event=>setState(event.target.value)}><option value=""/>{states.map(value=><option key={value}>{value}</option>)}</select></label><label>WCC <select value={wcc} onChange={event=>setWcc(event.target.value)}><option value=""/>{wccCodes.map(value=><option key={value}>{value}</option>)}</select></label><span>Incl Hide: <label><input type="radio" checked={!includeHidden} onChange={()=>setIncludeHidden(false)}/> No</label><label><input type="radio" checked={includeHidden} onChange={()=>setIncludeHidden(true)}/> Yes</label></span></fieldset><AccessButton onClick={clearFilters}>Clear Filters</AccessButton><fieldset className="wcc-rates-autofill"><legend>Auto Fill:</legend><span>State Rate <input aria-label="State Rate"/></span><span>Penalty % <input aria-label="Penalty percent"/></span><span>MLS Markup <input aria-label="MLS Markup"/></span><AccessButton onClick={()=>setNotice("Auto Fill edits are unavailable until the WCC rate write fields are verified.")}>Fill</AccessButton><span>SS <input aria-label="SS"/></span><span>Med <input aria-label="Med"/></span><span>State UI <input aria-label="State UI"/></span><span>EMAC <input aria-label="EMAC"/></span><span>Fed UI <input aria-label="Fed UI"/></span><AccessButton onClick={()=>setNotice("No auto-fill changes to clear.")}>Clear</AccessButton></fieldset><AccessButton onClick={()=>setNotice("Delete Rate is unavailable until the WCC rate write schema is confirmed.")}>Delete Rate</AccessButton><div className="wcc-rates-links"><button onClick={()=>setNotice("Web search opens when an individual rate record is selected.")}>RE-SEARCH</button><a href="https://www.google.com/search?q=workers+compensation+rate" target="_blank" rel="noreferrer">Business info on Google</a><a href="https://www.ncci.com/" target="_blank" rel="noreferrer">Google WCRIBMA</a><button onClick={()=>setNotice("Select a rate row to open its related lookup.")}>➜</button></div></div>
     {(error||notice)&&<p className={error?"wcc-rates-error":"wcc-rates-notice"} role={error?"alert":"status"}>{error||notice}</p>}
-    <div className="wcc-rates-source">Data source: {source || "SQL Server"}{loading?" · Loading records…":` · ${rows.length} of ${allRows.length} records`}</div>
+    <div className="wcc-rates-source">Data source: {source || "SQL Server"}{loading?" · Loading records…":` · ${rows.length} of ${allRows.length} records`}{sourceFields.length>0&&<details><summary>Database source fields</summary><span>{sourceFields.join(" · ")}</span></details>}</div>
     <div className="wcc-rates-select"><span>Select:</span><AccessButton onClick={() => setAllSelected(false)}>Clear</AccessButton></div>
     <div className="wcc-rates-grid">
       <table>

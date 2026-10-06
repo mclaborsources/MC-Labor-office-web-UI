@@ -13927,6 +13927,9 @@ body {
 .wcc-rates-links a { max-width:145px; white-space:normal; text-decoration:none; }
 .wcc-rates-links button:last-child { font-size:17px; }
 .wcc-rates-source { min-height:16px; color:#555; font-size:11px; }
+.wcc-rates-source details { display:inline-block; margin-left:10px; }
+.wcc-rates-source summary { display:inline; color:#173f82; cursor:pointer; }
+.wcc-rates-source details span { display:block; max-width:90vw; padding:6px; border:1px solid #aaa; background:#fff; white-space:normal; }
 .wcc-rates-grid { flex:1; min-height:100px; overflow:auto; border:1px solid #aaa; background:white; }
 .wcc-rates-select { display:flex; min-height:25px; align-items:center; gap:7px; }
 .wcc-rates-grid table { width:1980px; min-width:1980px; border-collapse:collapse; table-layout:fixed; font-size:12px; }
