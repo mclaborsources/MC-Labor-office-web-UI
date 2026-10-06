@@ -697,7 +697,7 @@ export function TrackingScreen({
       "Invoice Report": "/invoices-by-week-report", "Verify Report": "/verify-hours-contact-report",
       "View V Hours": "/verify-hours-contact-report", "Copy Forward": "/reports",
       "Payroll Adjustments": "/reports", "Cust Contact Kickbacks": "/customer-contact-email-kickbacks",
-      "Employee Email Kickbacks": "/email-addresses", "Employee Text Kickbacks": "/phone-number-search",
+      "Employee Email Kickbacks": "/employee-contact-email-kickbacks", "Employee Text Kickbacks": "/employee-contact-text-kickbacks",
       "View Future Calls": "/tracking-search",
       "Schedule Report": "/current-jobs", "View Schedule": "/current-jobs",
       "View Timesheet": "/employee-hours-by-week", "Email Schedule": "/current-jobs",
