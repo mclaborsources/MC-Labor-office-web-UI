@@ -7,6 +7,7 @@ import { AccessButton } from "@/components/access/AccessButton";
 type Row = Record<string, unknown>;
 type Result = { ok: boolean; rows?: Row[]; columns?: string[]; sourceTable?: string; limited?: boolean; rateMasterFound?: boolean; error?: string };
 const viewKey = "wcc-rates-view";
+const ACCESS_COLUMNS = ["WCC","Desc","Contract With","Hide","State","State Rate","Penalty %","MLS Cost","MLS Markup","SS","Med","State UI","EMAC","Fed UI","Co Exp Per Diem Per Hr","Tracking Wcc Rate","Rate Active","Code Wcc Rate","Base Wcc Rate"];
 const clean = (value: unknown) => value === null || value === undefined ? "" : String(value);
 const field = (columns: string[], terms: string[]) => columns.find(column => terms.includes(column.toLowerCase().replace(/[^a-z0-9]/g, "")));
 const choicesFor = (rows: Row[], column?: string) => [...new Set(rows.map(row => column ? clean(row[column]) : "").filter(Boolean))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
@@ -43,9 +44,9 @@ export function WccRatesScreen() {
   }, [refresh]);
   useEffect(() => { void load(); }, [load]);
 
-  const contractField = useMemo(() => field(columns, ["contractwith", "contractwithname", "payrollcompany", "payrollco", "company"]), [columns]);
-  const stateField = useMemo(() => field(columns, ["state", "statecode", "statename", "pull down state"]), [columns]);
-  const wccField = useMemo(() => field(columns, ["wcc", "wcccode", "wccid", "code"]), [columns]);
+  const contractField = useMemo(() => field(columns, ["contractwith", "contractwithname", "payrollcompany", "payrollco", "contractwithid"]), [columns]);
+  const stateField = useMemo(() => field(columns, ["state", "statecode", "statename", "wccstate"]), [columns]);
+  const wccField = useMemo(() => field(columns, ["wcc", "wcccode", "codewcc"]), [columns]);
   const hiddenField = useMemo(() => field(columns, ["hide", "hidden", "wccishidden", "hidewcc"]), [columns]);
   const contracts = useMemo(() => choicesFor(allRows, contractField), [allRows, contractField]);
   const states = useMemo(() => choicesFor(allRows, stateField), [allRows, stateField]);
@@ -82,18 +83,20 @@ export function WccRatesScreen() {
     <div className="wcc-rates-toolbar"><fieldset><legend>FILTER</legend><label>Contract With <select value={contractWith} onChange={event=>setContractWith(event.target.value)}><option value=""/>{contracts.map(value=><option key={value}>{value}</option>)}</select></label><label>State <select value={state} onChange={event=>setState(event.target.value)}><option value=""/>{states.map(value=><option key={value}>{value}</option>)}</select></label><label>WCC <select value={wcc} onChange={event=>setWcc(event.target.value)}><option value=""/>{wccCodes.map(value=><option key={value}>{value}</option>)}</select></label><span>Incl Hide: <label><input type="radio" checked={!includeHidden} onChange={()=>setIncludeHidden(false)}/> No</label><label><input type="radio" checked={includeHidden} onChange={()=>setIncludeHidden(true)}/> Yes</label></span></fieldset><AccessButton onClick={clearFilters}>Clear Filters</AccessButton><fieldset className="wcc-rates-autofill"><legend>Auto Fill:</legend><span>State Rate <input aria-label="State Rate"/></span><span>Penalty % <input aria-label="Penalty percent"/></span><span>MLS Markup <input aria-label="MLS Markup"/></span><AccessButton onClick={()=>setNotice("Auto Fill edits are unavailable until the WCC rate write fields are verified.")}>Fill</AccessButton><span>SS <input aria-label="SS"/></span><span>Med <input aria-label="Med"/></span><span>State UI <input aria-label="State UI"/></span><span>EMAC <input aria-label="EMAC"/></span><span>Fed UI <input aria-label="Fed UI"/></span><AccessButton onClick={()=>setNotice("No auto-fill changes to clear.")}>Clear</AccessButton></fieldset><AccessButton onClick={()=>setNotice("Delete Rate is unavailable until the WCC rate write schema is confirmed.")}>Delete Rate</AccessButton><div className="wcc-rates-links"><button onClick={()=>setNotice("Web search opens when an individual rate record is selected.")}>RE-SEARCH</button><a href="https://www.google.com/search?q=workers+compensation+rate" target="_blank" rel="noreferrer">Business info on Google</a><a href="https://www.ncci.com/" target="_blank" rel="noreferrer">Google WCRIBMA</a><button onClick={()=>setNotice("Select a rate row to open its related lookup.")}>➜</button></div></div>
     {(error||notice)&&<p className={error?"wcc-rates-error":"wcc-rates-notice"} role={error?"alert":"status"}>{error||notice}</p>}
     <div className="wcc-rates-source">Data source: {source || "SQL Server"}{loading?" · Loading records…":` · ${rows.length} of ${allRows.length} records`}</div>
+    <div className="wcc-rates-select"><span>Select:</span><AccessButton onClick={() => setAllSelected(false)}>Clear</AccessButton></div>
     <div className="wcc-rates-grid">
       <table>
-        <thead><tr><th>Select</th>{columns.map(column => <th key={column}>{column}</th>)}</tr></thead>
+        <colgroup>{[62,72,205,112,55,62,84,84,82,98,66,68,78,68,80,172,140,94,130,132].map((width,index)=><col key={index} style={{width}}/>)}</colgroup>
+        <thead><tr><th>Select</th>{ACCESS_COLUMNS.map(column => <th key={column}>{column}</th>)}</tr></thead>
         <tbody>
           {rows.map((row, index) => <tr key={`${clean(row[columns[0] ?? ""])}-${index}`} onClick={() => setSelected(old => { const next = new Set(old); if (next.has(index)) next.delete(index); else next.add(index); return next; })} className={selected.has(index) ? "is-selected" : index === 0 ? "is-current" : undefined}>
             <td><input type="checkbox" checked={selected.has(index)} onChange={() => setSelected(old => { const next = new Set(old); if (next.has(index)) next.delete(index); else next.add(index); return next; })} aria-label={`Select WCC row ${index + 1}`} /></td>
-            {columns.map(column => <td key={column}>{typeof row[column] === "boolean" ? <input type="checkbox" checked={Boolean(row[column])} readOnly aria-label={`${column} value`} /> : clean(row[column])}</td>)}
+            {ACCESS_COLUMNS.map(column => <td key={column}>{typeof row[column] === "boolean" ? <input type="checkbox" checked={Boolean(row[column])} readOnly aria-label={`${column} value`} /> : clean(row[column])}</td>)}
           </tr>)}
-          {!rows.length && !loading && <tr><td colSpan={columns.length + 1}>No WCC rate records match these filters.</td></tr>}
+          {!rows.length && !loading && <tr><td colSpan={ACCESS_COLUMNS.length + 1}>No WCC rate records match these filters.</td></tr>}
         </tbody>
       </table>
     </div>
-    <footer><span>{rows.length} row{rows.length===1?"":"s"}{notice&&` · ${notice}`}</span><div><AccessButton onClick={()=>setAllSelected(true)}>Select All</AccessButton><AccessButton onClick={()=>setAllSelected(false)}>Clear</AccessButton></div></footer>
+    <footer><span>{rows.length} row{rows.length===1?"":"s"}{notice&&` · ${notice}`}</span><div><AccessButton onClick={()=>setAllSelected(true)}>Select All</AccessButton></div></footer>
   </section>;
 }

@@ -13928,9 +13928,10 @@ body {
 .wcc-rates-links button:last-child { font-size:17px; }
 .wcc-rates-source { min-height:16px; color:#555; font-size:11px; }
 .wcc-rates-grid { flex:1; min-height:100px; overflow:auto; border:1px solid #aaa; background:white; }
-.wcc-rates-grid table { width:max-content; min-width:100%; border-collapse:collapse; font-size:12px; }
+.wcc-rates-select { display:flex; min-height:25px; align-items:center; gap:7px; }
+.wcc-rates-grid table { width:1980px; min-width:1980px; border-collapse:collapse; table-layout:fixed; font-size:12px; }
 .wcc-rates-grid th { position:sticky; top:0; z-index:2; height:21px; border:1px solid #c7c7c7; background:#d9dce0; text-align:left; white-space:nowrap; font-weight:400; }
-.wcc-rates-grid td { min-width:48px; height:20px; border:1px solid #e0ddd7; padding:1px 5px; white-space:nowrap; }
+.wcc-rates-grid td { height:20px; overflow:hidden; border:1px solid #e0ddd7; padding:1px 5px; white-space:nowrap; text-overflow:clip; }
 .wcc-rates-grid tbody tr:nth-child(even) { background:#f0f0f0; }
 .wcc-rates-grid tbody tr.is-current { background:#abd2ed; }
 .wcc-rates-grid tbody tr.is-selected { background:#c9dded; }
