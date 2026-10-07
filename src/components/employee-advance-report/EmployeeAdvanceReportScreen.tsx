@@ -1,3 +1,78 @@
-"use client";import{useRouter}from"next/navigation";import{useMemo,useState}from"react";import{AccessButton}from"@/components/access/AccessButton";
-const DATA=[["Corey","Lugg","B","4/15/2022","$350.00","$350.00","4/15/2022","advance JN 4/15/2022","JN","4/15/2022 12:07:32 PM","$50.00","4/15/2022"],["Corey","Lugg","B","9/16/2022","$540.46","$540.46","9/9/2022","","BMV","9/12/2022 3:33:06 PM","($667.11)","9/16/2022"],["Corey","Lugg","B","9/23/2022","$300.00","$300.00","9/23/2022","RON Venmo - Void Check KH 9/23/2022","KH","9/23/2022 8:06:13 AM","$600.00","9/23/2022"],["Luis","Fonseca","A","6/30/2023","$745.51","$745.51","7/7/2023","Work Obligation not fulfilled. Entire Advance taken KH","KH","7/13/2023 3:48:10 PM","$745.51",""] ,["Michael","Spellane","J","8/16/2024","$712.60","$100.00","8/9/2024","","KH","8/12/2024 3:51:18 PM","$712.60",""] ,["Shane","Britt","","12/27/2019","$300.00","$300.00","12/27/2019","Advance JN 12/24/2019","JN","12/24/2019 12:44:24 PM","$300.00",""] ,["Taron","Portis","A","1/20/2023","$2,000.00","$500.00","1/20/2023","Does not have enough to cover without working at least","KH","2/15/2023 1:10:17 PM","($105.25)","3/24/2023"]];
-export function EmployeeAdvanceReportScreen(){const router=useRouter();const[name,setName]=useState("");const rows=useMemo(()=>DATA.filter(r=>!name||`${r[0]} ${r[1]}`.toLowerCase().includes(name.toLowerCase())),[name]);const cols=["","First Name","Last Name","MI","Advance Date","Advance Amount","Repayment Amount","Start Week Ending","Advance Note","User Name","Timestamp","Balance","Up To Date"];return <section className="ac-advance-report"><header><h1>Employee Advance Report</h1><div><label>View:</label><select><option>View 01</option></select><AccessButton>Save View</AccessButton><AccessButton>Delete View</AccessButton><AccessButton>Refresh</AccessButton></div><aside><AccessButton onClick={()=>router.push("/tracking")}>Cancel</AccessButton><button aria-label="Help">?</button></aside></header><div className="advance-tools"><label>Search in Name:<input value={name} onChange={e=>setName(e.target.value)}/></label><div>{["Default","View 02","View 03","View 04","View 05","View 06"].map(v=><AccessButton key={v}>{v}</AccessButton>)}</div></div><div className="advance-grid-wrap"><table className="legacy-report-grid advance-grid"><thead><tr>{cols.map((c,i)=><th key={i}>{c}</th>)}</tr></thead><tbody>{rows.map((r,i)=><tr key={i}>{<td/>}{r.map((v,c)=><td key={c} className={c===11?"up-to-date":undefined}>{v}</td>)}</tr>)}</tbody></table></div></section>}
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AccessButton } from "@/components/access/AccessButton";
+import type { OperationalReportRow, ReportValue } from "@/lib/operationalReports";
+
+const columns = ["First Name", "Last Name", "MI", "Advance Date", "Advance Amount", "Repayment Amount", "Start Week Ending", "Advance Note", "User Name", "Timestamp", "Balance", "Up To Date"] as const;
+
+function displayValue(value: ReportValue, column: string): string {
+  if (value === null || value === undefined || value === "") return "";
+  if (["Advance Date", "Start Week Ending", "Up To Date"].includes(column)) {
+    const date = new Date(String(value));
+    return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleDateString("en-US");
+  }
+  if (column === "Timestamp") {
+    const date = new Date(String(value));
+    return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString("en-US");
+  }
+  if (["Advance Amount", "Repayment Amount", "Balance"].includes(column) && typeof value === "number") {
+    return value < 0 ? `($${Math.abs(value).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })})` : `$${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  }
+  return String(value);
+}
+
+export function EmployeeAdvanceReportScreen() {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [rows, setRows] = useState<OperationalReportRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [view, setView] = useState("View 01");
+
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await fetch("/api/reports/employee-advance", { cache: "no-store" });
+      const payload = await response.json();
+      if (!response.ok || !payload.ok) throw new Error(payload.error || "Employee advance data could not be loaded.");
+      setRows(payload.rows ?? []);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Employee advance data could not be loaded.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { void refresh(); }, [refresh]);
+
+  const visibleRows = useMemo(() => rows.filter(row => {
+    const fullName = `${row["First Name"] ?? ""} ${row["Last Name"] ?? ""}`.toLowerCase();
+    return fullName.includes(name.trim().toLowerCase());
+  }), [name, rows]);
+
+  return <section className="ac-advance-report">
+    <header>
+      <h1>Employee Advance Report</h1>
+      <div><label htmlFor="advance-view">View:</label><select id="advance-view" value={view} onChange={event => setView(event.target.value)}>{["View 01", "View 02", "View 03", "View 04", "View 05", "View 06"].map(option => <option key={option}>{option}</option>)}</select><AccessButton>Save View</AccessButton><AccessButton>Delete View</AccessButton><AccessButton onClick={() => void refresh()} disabled={loading}>Refresh</AccessButton></div>
+      <aside><AccessButton onClick={() => router.push("/tracking")}>Cancel</AccessButton><button aria-label="Help" title="Employee Advance Report">?</button></aside>
+    </header>
+    <div className="advance-tools">
+      <label>Search in Name:<input value={name} onChange={event => setName(event.target.value)} /></label>
+      <div>{["Default", "View 02", "View 03", "View 04", "View 05", "View 06"].map(option => <AccessButton key={option} onClick={() => setView(option === "Default" ? "View 01" : option)}>{option}</AccessButton>)}</div>
+    </div>
+    <div className="advance-grid-wrap">
+      <table className="legacy-report-grid advance-grid">
+        <thead><tr><th aria-label="Record selector" />{columns.map(column => <th key={column}>{column}</th>)}</tr></thead>
+        <tbody>
+          {visibleRows.map((row, index) => <tr key={String(row.id ?? index)}><td />{columns.map(column => <td key={column} className={column === "Up To Date" && row[column] ? "up-to-date" : undefined}>{displayValue(row[column], column)}</td>)}</tr>)}
+          {!loading && !error && visibleRows.length === 0 && <tr><td colSpan={columns.length + 1} className="advance-empty">{name ? "No employees match this search." : "No employee advance records were found."}</td></tr>}
+          {error && <tr><td colSpan={columns.length + 1} className="advance-error">{error}</td></tr>}
+          {loading && <tr><td colSpan={columns.length + 1} className="advance-empty">Loading employee advance records…</td></tr>}
+        </tbody>
+      </table>
+    </div>
+  </section>;
+}
