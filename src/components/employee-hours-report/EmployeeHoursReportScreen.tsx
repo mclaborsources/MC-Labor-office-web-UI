@@ -50,8 +50,8 @@ export function EmployeeHoursReportScreen({ mode, rows, year, error = "" }: { mo
         && (quarter === "all" || [...Array.from({ length: isWeek ? 13 : 3 }, (_, i) => (Number(quarter) - 1) * (isWeek ? 13 : 3) + i + 1)].some((month) => Number(row[String(month).padStart(2, "0")] ?? 0) > 0))
         && (workDays === "all" || Number(row.Days ?? 0) >= Number(workDays))
         && (daysOnSite === "all" || Number(row.Days ?? 0) === Number(daysOnSite));
-    }).sort((a, b) => String(a["Last Name"] ?? "").localeCompare(String(b["Last Name"] ?? ""), undefined, { sensitivity: "base" })
-      || String(a["First Name"] ?? "").localeCompare(String(b["First Name"] ?? ""), undefined, { sensitivity: "base" }));
+    }).sort((a, b) => String(a["First Name"] ?? "").localeCompare(String(b["First Name"] ?? ""), undefined, { sensitivity: "base" })
+      || String(a["Last Name"] ?? "").localeCompare(String(b["Last Name"] ?? ""), undefined, { sensitivity: "base" }));
   }, [sourceRows, periods, name, payroll, period, quarter, workDays, daysOnSite, startDate, endDate, hoursMode, isWeek]);
   const columns = ["First Name", "Last Name", "MI", "Payroll Co", ...periods.map((p) => String(p).padStart(2, "0"))];
   const clear = () => { setName(""); setQuarter("all"); setPeriod("all"); setStartDate(""); setEndDate(""); setPayroll("all"); setHoursMode("regular"); setWorkDays("all"); setDaysOnSite("all"); setShowDates(false); };
