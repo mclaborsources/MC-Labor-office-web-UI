@@ -55,6 +55,67 @@ export function getEmployeeHoursRows(mode: "week" | "month", year: number): Prom
   ORDER BY [Last Name],[First Name],Period`, [{ name: "year", value: year }]);
 }
 
+/** Years exposed by the Access Full-Time Employees by Month report. */
+export function getFullTimeEmployeeMonthYears(): Promise<number[]> {
+  return queryReadOnly<{ YearNum: number }>(`SELECT DISTINCT AssignYear AS YearNum
+    FROM tblCustomerWeeks WITH (NOLOCK)
+    WHERE AssignYear IS NOT NULL
+    ORDER BY AssignYear DESC`).then(rows => rows.map(row => Number(row.YearNum)).filter(Number.isFinite));
+}
+
+/** Payroll companies available to the Full-Time Employees by Month report. */
+export function getFullTimeEmployeeMonthPayrollOptions(): Promise<OperationalReportRow[]> {
+  return queryReadOnly<OperationalReportRow>(`SELECT CAST(PullDownPayrollCoOnSiteID AS NVARCHAR(20)) AS id,
+      ISNULL(PullDownPayrollCoOnSiteInitials,'') AS label
+    FROM tblPullDownPayrollCoOnSite WITH (NOLOCK)
+    WHERE ISNULL(PullDownPayrollCoOnSiteActive,0)<>0
+    ORDER BY PullDownPayrollCoOnSiteSort,PullDownPayrollCoOnSiteInitials`);
+}
+
+/** Monthly employee counts and hour thresholds, matching the Access holding-table columns. */
+export function getFullTimeEmployeesByMonthRows(year: number): Promise<OperationalReportRow[]> {
+  return queryReadOnly<OperationalReportRow>(`WITH employee_month AS (
+    SELECT t.AssignYear AS YearNum,MONTH(t.WeekEndingDate) AS MonthNum,
+      t.PayrollCoOnSiteID, t.EmployeeID,
+      SUM(ISNULL(t.TotalHours,0)) AS SumOfHours
+    FROM tblTracking t WITH (NOLOCK)
+    WHERE t.AssignYear=@year AND t.WeekEndingDate IS NOT NULL
+      AND t.EmployeeID IS NOT NULL AND t.ExpenseTypeID IS NULL
+    GROUP BY t.AssignYear,MONTH(t.WeekEndingDate),t.PayrollCoOnSiteID,t.EmployeeID
+  ), payroll_companies AS (
+    SELECT DISTINCT YearNum,PayrollCoOnSiteID FROM employee_month
+  ), months AS (
+    SELECT DISTINCT YearNum,MonthNum FROM employee_month
+  ), totals AS (
+    SELECT YearNum,PayrollCoOnSiteID,MonthNum,
+      COUNT(*) AS Employees,
+      SUM(CASE WHEN SumOfHours>=130 THEN 1 END) AS FullTimeEmployees,
+      SUM(CASE WHEN SumOfHours<130 THEN 1 END) AS PartTimeEmployees,
+      SUM(CASE WHEN SumOfHours<130 THEN SumOfHours END) AS PartTimeHours,
+      FLOOR(SUM(CASE WHEN SumOfHours<130 THEN SumOfHours END)/130.0) AS FTEEmployees
+    FROM employee_month
+    GROUP BY YearNum,PayrollCoOnSiteID,MonthNum
+  )
+  SELECT pc.YearNum AS Year,
+    CAST(pc.PayrollCoOnSiteID AS NVARCHAR(20)) AS PayrollCoID,
+    ISNULL(co.PullDownPayrollCoOnSiteInitials,'') AS [Payroll Co],
+    ISNULL(co.PullDownPayrollCoOnSiteColorID,0) AS PayrollCoColorID,
+    m.MonthNum AS MonthNum,
+    DATENAME(MONTH,DATEFROMPARTS(pc.YearNum,m.MonthNum,1)) AS Month,
+    t.Employees AS Employees,
+    t.FullTimeEmployees AS [Full-Time Employees],
+    t.PartTimeEmployees AS [Part-Time Employees],
+    t.PartTimeHours AS [Part-Time Hours],
+    t.FTEEmployees AS [FTE Employees],
+    ISNULL(t.FullTimeEmployees,0)+ISNULL(t.FTEEmployees,0) AS [Total Full-Time Employees]
+  FROM payroll_companies pc INNER JOIN months m ON m.YearNum=pc.YearNum
+  LEFT JOIN totals t ON t.YearNum=pc.YearNum AND t.PayrollCoOnSiteID=pc.PayrollCoOnSiteID AND t.MonthNum=m.MonthNum
+  LEFT JOIN tblPullDownPayrollCoOnSite co WITH (NOLOCK) ON co.PullDownPayrollCoOnSiteID=pc.PayrollCoOnSiteID
+  ORDER BY ISNULL(co.PullDownPayrollCoOnSiteSort,9999),[Payroll Co],m.MonthNum`, [
+    { name: "year", value: year },
+  ]);
+}
+
 export function getYearlyRevenueRows(): Promise<OperationalReportRow[]> {
   return queryReadOnly<OperationalReportRow>(`SELECT TOP (3000)
     CAST(c.CustomerID AS NVARCHAR(20)) id,ISNULL(c.CustBusName,'') Customer,
