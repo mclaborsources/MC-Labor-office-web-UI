@@ -45,7 +45,10 @@ export function getEmployeeHoursRows(mode: "week" | "month", year: number): Prom
     MAX(ISNULL(EmFirstName,'')) AS [First Name],MAX(ISNULL(EmLastName,'')) AS [Last Name],
     MAX(ISNULL(EmMiddle,'')) MI,ISNULL(PayrollCoOnSiteInitials,'') AS [Payroll Co],
     ${period} AS Period,
-    SUM(ISNULL(SatHours,0)+ISNULL(SunHours,0)+ISNULL(MonHours,0)+ISNULL(TueHours,0)+ISNULL(WedHours,0)+ISNULL(ThuHours,0)+ISNULL(FriHours,0)) AS [Hours]
+    MAX(WeekEndingDate) AS PeriodDate,
+    SUM(ISNULL(SatHours,0)+ISNULL(SunHours,0)+ISNULL(MonHours,0)+ISNULL(TueHours,0)+ISNULL(WedHours,0)+ISNULL(ThuHours,0)+ISNULL(FriHours,0)) AS [Hours],
+    SUM(ISNULL(TotalHours,0)) AS [Total Hours],
+    SUM(CASE WHEN ISNULL(SatHours,0)>0 THEN 1 ELSE 0 END+CASE WHEN ISNULL(SunHours,0)>0 THEN 1 ELSE 0 END+CASE WHEN ISNULL(MonHours,0)>0 THEN 1 ELSE 0 END+CASE WHEN ISNULL(TueHours,0)>0 THEN 1 ELSE 0 END+CASE WHEN ISNULL(WedHours,0)>0 THEN 1 ELSE 0 END+CASE WHEN ISNULL(ThuHours,0)>0 THEN 1 ELSE 0 END+CASE WHEN ISNULL(FriHours,0)>0 THEN 1 ELSE 0 END) AS Days
   FROM tblTracking WITH (NOLOCK)
   WHERE EmployeeID IS NOT NULL AND AssignYear=@year AND WeekEndingDate IS NOT NULL
   GROUP BY EmployeeID,PayrollCoOnSiteInitials,${period}
