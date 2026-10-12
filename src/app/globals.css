@@ -14034,3 +14034,61 @@ body {
 .ac-hours-grid th:first-child{width:140px}.ac-hours-grid th:nth-child(2){width:140px}.ac-hours-grid th:nth-child(3){width:42px}.ac-hours-grid th:nth-child(4){width:72px}.ac-hours-grid td:first-child,.ac-hours-grid td:nth-child(2){min-width:140px;max-width:140px;overflow:hidden;text-overflow:ellipsis}.ac-hours-grid td:nth-child(4){min-width:72px;max-width:72px}
 .ac-ft-view{margin-left:100px;gap:8px}.ac-ft-view select{height:28px}.ac-ft-tools{height:78px;align-items:flex-start;padding:6px 10px;gap:20px}.ac-ft-step{flex:none}.ac-ft-presets{margin-left:20px}.ac-ft-grid{min-width:1200px;width:100%;border-collapse:collapse;table-layout:fixed}.ac-ft-grid th,.ac-ft-grid td{height:25px;padding:2px 6px;white-space:nowrap;overflow:hidden;text-overflow:clip;border-right:1px solid #d8d8d8;border-bottom:1px solid #e5e5e5}.ac-ft-grid th{text-align:left;background:#e6edf1;font-weight:400}.ac-ft-grid tbody tr:nth-child(even) td{background:#f2f2f2}.ac-ft-grid tr.is-current td{background:#a8d1eb}.ac-ft-grid th:first-child,.ac-ft-grid td:first-child{width:19px;padding:0;background:#e2e7eb}.ac-ft-grid th:nth-child(2){width:82px}.ac-ft-grid th:nth-child(3){width:96px}.ac-ft-grid th:nth-child(4){width:100px}.ac-ft-grid th:nth-child(5){width:95px}.ac-ft-grid th:nth-child(6){width:150px}.ac-ft-grid th:nth-child(7){width:150px}.ac-ft-grid th:nth-child(8){width:130px}.ac-ft-grid th:nth-child(9){width:120px}.ac-ft-grid th:nth-child(10){width:175px}.ac-ft-grid td:nth-child(8),.ac-ft-grid td:nth-child(9),.ac-ft-grid td:nth-child(10){text-align:right}.ac-ft-grid td.ac-ft-payroll{color:white}.ac-ft-message{flex:none;margin:0 10px;padding:5px 8px;color:#7f1d1d;background:#fff1c9;border:1px solid #d8bd76}.ac-ft-record{flex:none;display:flex;align-items:center;gap:8px;height:23px;margin:0 10px 8px}.ac-ft-record label{margin-left:auto;display:flex;align-items:center;gap:4px}.ac-ft-record input{width:70px}.ac-ft-close .ac-btn{height:29px;border-radius:0}
 .ac-health-grid{min-width:3700px;width:100%;border-collapse:collapse;table-layout:fixed}.health-grid th,.health-grid td{height:25px;padding:2px 5px;text-overflow:clip}.health-grid th:first-child,.health-grid td:first-child{width:19px;padding:0;background:#e2e7eb}.health-grid th:nth-child(2){width:82px}.health-grid th:nth-child(3){width:90px}.health-grid th:nth-child(4){width:40px}.health-grid th:nth-child(5){width:100px}.health-grid th:nth-child(6){width:90px}.health-grid th:nth-child(7),.health-grid th:nth-child(8){width:24px}.health-grid th:nth-child(9){width:100px}.health-grid th:nth-child(10),.health-grid th:nth-child(11){width:80px}.health-grid th:nth-child(12){width:100px}.health-grid th:nth-child(13),.health-grid th:nth-child(14),.health-grid th:nth-child(16),.health-grid th:nth-child(17){width:115px}.health-grid th:nth-child(15){width:24px}.health-grid th:nth-child(18){width:290px}.health-grid th:nth-child(n+19){width:90px}.health-grid td.ac-health-company-cost{background:#e8f2fb}.health-grid td.ac-health-employee-cost{background:#dcecff;color:#07508a}.health-grid td.ac-health-company-cost.is-cobra{background:#ffd735!important}.health-grid td.is-selected-month{outline:2px solid #2675b9;outline-offset:-2px}.health-grid td.ac-health-folder{color:#17813a;text-decoration:underline}.ac-health-report-message{flex:none;margin:0;padding:4px 8px;color:#831515;background:#fff1c9}.ac-health-report-record{height:23px;flex:none;margin:0 10px 8px;padding:2px 5px;border:1px solid #aaa;background:#e7eaec;font-size:11px}.ac-health-report-record label{float:right;display:flex;align-items:center;gap:4px}.ac-health-report-record input{width:75px;height:18px}
+
+/* Weekly customer margin report parity and responsive control sizing. */
+.ac-margin-report{min-height:0;flex:1;display:flex;flex-direction:column;overflow:hidden;background:#eee;color:#050505;font:13px Arial,sans-serif}
+.ac-margin-report .margin-header{height:43px;flex:none;display:flex;align-items:flex-start;padding:6px 10px;gap:0}
+.ac-margin-report .margin-header h1{font-size:25px;font-weight:400;margin:0;white-space:nowrap}
+.ac-margin-report .margin-header-controls{display:flex;align-items:center;gap:7px;margin-left:auto}
+.ac-margin-report .margin-header-controls select{height:28px;width:105px;border:1px solid #aaa;background:white}
+.ac-margin-report .margin-header .ac-btn{height:29px;border-radius:0;white-space:nowrap}
+.ac-margin-report .margin-header aside{margin-left:auto;padding-left:12px;display:flex;gap:10px}
+.ac-margin-report .margin-header aside button:last-child{width:30px;height:30px;border:2px solid #d9aa00;background:#fff;color:#075ab5;font-weight:700;border-radius:50%}
+.ac-margin-report .margin-tools{height:44px;flex:none;display:flex;align-items:center;padding:2px 10px;gap:12px;white-space:nowrap}
+.ac-margin-report .margin-tools>label{display:flex;align-items:center;gap:7px}
+.ac-margin-report .margin-tools>label input{width:194px;height:27px;border:1px solid #aaa;background:#fff}
+.ac-margin-report .margin-tools fieldset{height:34px;display:flex;align-items:center;gap:12px;margin:0;padding:1px 8px;border:2px solid #d33}
+.ac-margin-report .margin-tools fieldset legend{padding:0 3px}
+.ac-margin-report .margin-tools fieldset label{display:flex;align-items:center;gap:3px}
+.ac-margin-report .margin-tools fieldset input{accent-color:#1672bd}
+.ac-margin-report .margin-tools .margin-exclude{margin-left:auto}
+.ac-margin-report .margin-tools em,.ac-margin-report .margin-dates i{color:#1515a0;font-style:normal}
+.ac-margin-report .margin-dates{height:76px;flex:none;display:flex;align-items:flex-start;padding:3px 10px;gap:10px;white-space:nowrap}
+.ac-margin-report .margin-dates>div{display:flex;align-items:center;gap:6px}
+.ac-margin-report .margin-dates .margin-week-dates{display:grid;grid-template-columns:auto auto;gap:2px 6px}
+.ac-margin-report .margin-dates .margin-week-dates b,.ac-margin-report .margin-dates .margin-week-dates i{grid-row:1}
+.ac-margin-report .margin-dates .margin-week-dates label{grid-row:2;display:flex;align-items:center;gap:5px}
+.ac-margin-report .margin-dates input{height:26px;border:1px solid #aaa;background:#fff}
+.ac-margin-report .margin-dates .margin-week-dates input{width:110px}
+.ac-margin-report .margin-dates .date-arrows{align-self:flex-start;margin-top:28px;gap:4px}
+.ac-margin-report .margin-dates .date-arrows .ac-btn{height:29px;min-width:28px;border-radius:0;padding:1px 5px}
+.ac-margin-report .margin-dates .margin-report-dates,.ac-margin-report .margin-dates .margin-payroll-dates{display:grid;grid-template-columns:repeat(2,145px);gap:2px 6px}
+.ac-margin-report .margin-dates .margin-report-dates b,.ac-margin-report .margin-dates .margin-payroll-dates b{grid-column:1/3}
+.ac-margin-report .margin-presets{height:39px;flex:none;display:flex;align-items:center;gap:9px;padding:1px 10px}
+.ac-margin-report .margin-presets .ac-btn{height:27px;min-width:135px;border-radius:0}
+.ac-margin-report .margin-summary{height:34px;flex:none;display:flex;align-items:center;gap:8px;padding:0 10px}
+.ac-margin-report .margin-summary label{display:flex;align-items:center;gap:8px}
+.ac-margin-report .margin-summary input{width:97px;height:27px;background:#a9df4a;border:1px solid #888}
+.ac-margin-report .margin-summary em{margin-left:auto;color:#1515a0;font-style:normal}
+.ac-margin-report .margin-summary i{width:257px;height:26px;background:#ffffa2;border:1px solid #ddd}
+.ac-margin-report .margin-summary strong{color:red;font-weight:400}
+.ac-margin-report .margin-data-note,.ac-margin-report .margin-error,.ac-margin-report .margin-message{flex:none;margin:0;padding:3px 10px;font-size:12px}
+.ac-margin-report .margin-data-note{color:#555}
+.ac-margin-report .margin-error{color:#831515;background:#fff1c9}
+.ac-margin-report .margin-message{color:#07508a}
+.ac-margin-report .margin-grid-wrap{flex:1;min-height:120px;margin:0 10px;overflow:auto;border:1px solid #aeb5bc;background:#fff}
+.ac-margin-report .margin-grid{width:100%;min-width:1870px;border-collapse:collapse;table-layout:fixed}
+.ac-margin-report .margin-grid th:first-child,.ac-margin-report .margin-grid td:first-child{width:18px;background:#e3e8eb}
+.ac-margin-report .margin-grid th:nth-child(2){width:86px}
+.ac-margin-report .margin-grid th:nth-child(3){width:230px}
+.ac-margin-report .margin-grid th:nth-child(4){width:120px}
+.ac-margin-report .margin-grid th:nth-child(5){width:100px}
+.ac-margin-report .margin-grid th:nth-child(n+6){width:115px}
+.ac-margin-report .margin-grid th:nth-child(15){width:225px}
+.ac-margin-report .margin-grid td.margin-unmapped{background:#fafafa}
+.ac-margin-report .margin-grid .margin-empty{text-align:center;color:#555;height:32px}
+.ac-margin-report .margin-recordbar{height:23px;flex:none;margin:0 10px 7px;padding:2px 5px;background:#e7eaec;border:1px solid #aaa;font-size:11px}
+.ac-margin-report .margin-recordbar>span{margin-left:20px}
+.ac-margin-report .margin-recordbar label{float:right;display:flex;align-items:center;gap:4px}
+.ac-margin-report .margin-recordbar input{width:150px;height:18px;border:1px solid #aaa}
+@media(max-width:1450px){.ac-margin-report .margin-header-controls{gap:4px}.ac-margin-report .margin-tools{overflow-x:auto}.ac-margin-report .margin-tools .margin-exclude{margin-left:10px}.ac-margin-report .margin-dates{overflow-x:auto}.ac-margin-report .margin-summary em{margin-left:20px}}
