@@ -14091,4 +14091,6 @@ body {
 .ac-margin-report .margin-recordbar>span{margin-left:20px}
 .ac-margin-report .margin-recordbar label{float:right;display:flex;align-items:center;gap:4px}
 .ac-margin-report .margin-recordbar input{width:150px;height:18px;border:1px solid #aaa}
+.ac-margin-report .margin-presets{position:relative}
+.ac-margin-report .margin-presets .margin-clear-filters{position:absolute;left:calc(100vw - 345px);top:1px;min-width:96px}
 @media(max-width:1450px){.ac-margin-report .margin-header-controls{gap:4px}.ac-margin-report .margin-tools{overflow-x:auto}.ac-margin-report .margin-tools .margin-exclude{margin-left:10px}.ac-margin-report .margin-dates{overflow-x:auto}.ac-margin-report .margin-summary em{margin-left:20px}}

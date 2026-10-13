@@ -6,7 +6,7 @@ import { AccessButton } from "@/components/access/AccessButton";
 import type { OperationalReportRow } from "@/lib/operationalReports";
 
 const columns = [
-  "Week Ending", "Customer", "Customer Type", "Invoice No", "Total Invoice", "Total Profit", "Margin", "Salesman",
+  "Week Ending", "Customer", "Customer Type", "Customer Since", "Total Invoice", "Total Profit", "Margin", "Salesman",
   "Per Diem", "SUB Sales", "Employee Sales", "Adj Total INV After 20%", "Gross Payroll", "Total Referral Cost Paid to Agent", "Total Owed",
 ];
 const monetaryColumns = new Set(["Total Invoice", "Total Profit", "Per Diem", "SUB Sales", "Employee Sales", "Adj Total INV After 20%", "Gross Payroll", "Total Referral Cost Paid to Agent", "Total Owed"]);
@@ -144,13 +144,12 @@ export function WeeklyCustomerMarginScreen({ rows: initialRows, error: initialEr
       <div className="margin-payroll-dates" title="Payroll check date filtering is not mapped in the current SQL source."><b>Start and End Payroll Chk Days</b><input type="date" value={payrollStart} disabled /><input type="date" value={payrollEnd} disabled /></div>
     </div>
 
-    <div className="margin-presets">{["By Customer", "By Job", "By Week", "View 04", "View 05"].map((label, index) => <AccessButton key={label} disabled={index === 1} onClick={() => { if (index === 2) setGroupBy("Week"); else if (index === 0) setGroupBy("Customer"); else if (index > 2) setView(label); }}>{label}</AccessButton>)}</div>
+    <div className="margin-presets">{["By Customer", "By Job", "By Week", "View 04", "View 05"].map((label, index) => <AccessButton key={label} disabled={index === 1} onClick={() => { if (index === 2) setGroupBy("Week"); else if (index === 0) setGroupBy("Customer"); else if (index > 2) setView(label); }}>{label}</AccessButton>)}<AccessButton className="margin-clear-filters" onClick={clearFilters}>Clear Filters</AccessButton></div>
     <div className="margin-summary"><label>Overall Margin <input readOnly value={overallMargin} /></label><AccessButton onClick={() => setMessage("Overall margin recalculated from the visible rows.")}>Recalc</AccessButton><em>Your mouse is over:</em><i /><strong>See note in Help about Gross Payroll</strong></div>
 
-    <p className="margin-data-note">Week ending dates filter the report. Payroll check dates, job grouping, designated-customer exclusion, and blank sales fields need additional SQL source mappings.</p>
     {(error || message) && <p className={error ? "margin-error" : "margin-message"} role={error ? "alert" : "status"}>{error || message}</p>}
     <div className="margin-grid-wrap"><table className="legacy-report-grid margin-grid"><thead><tr><th aria-label="Record selector" />{columns.map(column => <th key={column} title={["Per Diem", "SUB Sales", "Employee Sales", "Adj Total INV After 20%", "Total Referral Cost Paid to Agent"].includes(column) ? "Not available in the current SQL source" : undefined}>{column}</th>)}</tr></thead><tbody>
-      {visible.map((row, index) => <tr key={String(row.id ?? index)} className={index === 0 ? "is-current" : undefined}><td />{columns.map(column => <td key={column} className={row[column] == null && !["Week Ending", "Customer", "Customer Type", "Invoice No", "Margin", "Salesman"].includes(column) ? "margin-unmapped" : undefined}>{displayValue(row, column)}</td>)}</tr>)}
+      {visible.map((row, index) => <tr key={String(row.id ?? index)} className={index === 0 ? "is-current" : undefined}><td />{columns.map(column => <td key={column} className={row[column] == null && !["Week Ending", "Customer", "Customer Type", "Customer Since", "Margin", "Salesman"].includes(column) ? "margin-unmapped" : undefined}>{displayValue(row, column)}</td>)}</tr>)}
       {!visible.length && <tr><td colSpan={columns.length + 1} className="margin-empty">{error ? "Margin data is unavailable." : hasLoaded ? "No customer week records match these filters." : "Select a start and end week ending date, then click Refresh to view data."}</td></tr>}
     </tbody></table></div>
     <footer className="margin-recordbar">Records {visible.length ? `1–${visible.length}` : "0"} of {visible.length}<span>{visible.length} customer-week rows</span><label>Search <input value={search} onChange={event => setSearch(event.target.value)} /></label></footer>
