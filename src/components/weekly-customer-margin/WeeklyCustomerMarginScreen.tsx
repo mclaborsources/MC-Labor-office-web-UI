@@ -32,6 +32,7 @@ export function WeeklyCustomerMarginScreen({ rows: initialRows, error: initialEr
   const [view, setView] = useState("View 01");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   const visible = useMemo(() => {
     const matching = rows.filter(row => String(row.Customer ?? "").toLowerCase().includes(search.trim().toLowerCase()));
@@ -48,6 +49,11 @@ export function WeeklyCustomerMarginScreen({ rows: initialRows, error: initialEr
   }, [visible]);
 
   async function refresh(filterStart = startDate, filterEnd = endDate) {
+    if (!filterStart || !filterEnd) {
+      setError("Select both the start and end week ending dates, then click Refresh.");
+      setMessage("");
+      return;
+    }
     setLoading(true);
     setError("");
     setMessage("");
@@ -59,6 +65,7 @@ export function WeeklyCustomerMarginScreen({ rows: initialRows, error: initialEr
       const payload = await response.json();
       if (!response.ok || !payload.ok) throw new Error(payload.error || "Customer margin data could not be loaded.");
       setRows(payload.rows ?? []);
+      setHasLoaded(true);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Customer margin data could not be loaded.");
     } finally {
@@ -81,7 +88,10 @@ export function WeeklyCustomerMarginScreen({ rows: initialRows, error: initialEr
     setPayrollStart("");
     setPayrollEnd("");
     setGroupBy("Customer");
-    void refresh("", "");
+    setRows([]);
+    setHasLoaded(false);
+    setError("");
+    setMessage("Filters cleared. Select a week range and click Refresh to view data.");
   }
 
   function saveView() {
@@ -141,7 +151,7 @@ export function WeeklyCustomerMarginScreen({ rows: initialRows, error: initialEr
     {(error || message) && <p className={error ? "margin-error" : "margin-message"} role={error ? "alert" : "status"}>{error || message}</p>}
     <div className="margin-grid-wrap"><table className="legacy-report-grid margin-grid"><thead><tr><th aria-label="Record selector" />{columns.map(column => <th key={column} title={["Per Diem", "SUB Sales", "Employee Sales", "Adj Total INV After 20%", "Total Referral Cost Paid to Agent"].includes(column) ? "Not available in the current SQL source" : undefined}>{column}</th>)}</tr></thead><tbody>
       {visible.map((row, index) => <tr key={String(row.id ?? index)} className={index === 0 ? "is-current" : undefined}><td />{columns.map(column => <td key={column} className={row[column] == null && !["Week Ending", "Customer", "Customer Type", "Invoice No", "Margin", "Salesman"].includes(column) ? "margin-unmapped" : undefined}>{displayValue(row, column)}</td>)}</tr>)}
-      {!visible.length && <tr><td colSpan={columns.length + 1} className="margin-empty">{error ? "Margin data is unavailable." : "No customer week records match these filters."}</td></tr>}
+      {!visible.length && <tr><td colSpan={columns.length + 1} className="margin-empty">{error ? "Margin data is unavailable." : hasLoaded ? "No customer week records match these filters." : "Select a start and end week ending date, then click Refresh to view data."}</td></tr>}
     </tbody></table></div>
     <footer className="margin-recordbar">Records {visible.length ? `1–${visible.length}` : "0"} of {visible.length}<span>{visible.length} customer-week rows</span><label>Search <input value={search} onChange={event => setSearch(event.target.value)} /></label></footer>
   </section>;
