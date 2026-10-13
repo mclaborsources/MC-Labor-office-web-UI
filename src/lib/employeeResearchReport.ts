@@ -1,0 +1,68 @@
+import { queryReadOnly } from "@/lib/db/sql";
+
+type CatalogColumn = { TABLE_SCHEMA: string; TABLE_NAME: string; COLUMN_NAME: string };
+export type EmployeeResearchRow = Record<string, string | number | null>;
+
+const normalized = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, "");
+const aliases = {
+  id: ["employeeresearchid", "researchid", "id"],
+  staffId: ["officestaffid", "staffid"],
+  staff: ["staffname", "officestaffname", "researchstaffname"],
+  screen: ["screenname", "researchscreen", "employeeresearchscreen", "formname"],
+  type: ["researchtype", "employeeresearchtype", "type"],
+  employeeId: ["employeeid", "researchemployeeid"],
+  first: ["employeefirstname", "firstname", "emfirstName"],
+  middle: ["employeemiddleinitial", "employeemiddle", "middleinitial", "mi", "emmiddle"],
+  last: ["employeelastname", "lastname", "emlastname"],
+  date: ["researchdate", "employeeresearchdate", "date", "startdate"],
+  start: ["starttime", "researchstarttime", "employeeresearchstarttime"],
+  end: ["endtime", "researchendtime", "employeeresearchendtime"],
+  seconds: ["timesec", "timeseconds", "durationseconds", "researchseconds"],
+} as const;
+
+export async function getEmployeeResearchRows(): Promise<EmployeeResearchRow[]> {
+  const catalog = await queryReadOnly<CatalogColumn>(
+    `SELECT TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME LIKE '%Research%' OR COLUMN_NAME LIKE '%Research%' ORDER BY TABLE_SCHEMA,TABLE_NAME,ORDINAL_POSITION`,
+  );
+  const tables = new Map<string, CatalogColumn[]>();
+  for (const field of catalog) {
+    const key = `${field.TABLE_SCHEMA}.${field.TABLE_NAME}`;
+    tables.set(key, [...(tables.get(key) ?? []), field]);
+  }
+  const candidates = [...tables.entries()].filter(([, fields]) =>
+    fields.some(field => normalized(field.TABLE_NAME).includes("employeeresearch"))
+      || fields.some(field => normalized(field.COLUMN_NAME).includes("employeeresearch")),
+  ).sort((a, b) => Number(normalized(b[1][0]?.TABLE_NAME ?? "").includes("employeeresearch")) - Number(normalized(a[1][0]?.TABLE_NAME ?? "").includes("employeeresearch")));
+  const selected = candidates[0];
+  if (!selected) throw new Error("The Employee Research SQL table was not found.");
+
+  const [schema, table] = selected[0].split(".");
+  const fields = selected[1];
+  const find = (keys: readonly string[]) => fields.find(field => keys.includes(normalized(field.COLUMN_NAME)));
+  const quote = (value: string) => `[${value.replaceAll("]", "]]" )}]`;
+  const col = (key: keyof typeof aliases) => find(aliases[key]);
+  const source = (key: keyof typeof aliases) => {
+    const field = col(key);
+    return field ? `r.${quote(field.COLUMN_NAME)}` : `CAST(NULL AS NVARCHAR(255))`;
+  };
+  const staffName = col("staff")
+    ? `r.${quote(col("staff")!.COLUMN_NAME)}`
+    : col("staffId")
+      ? `(SELECT TOP (1) LTRIM(RTRIM(ISNULL(os.OfficeStaffFirstName,'')+' '+ISNULL(os.OfficeStaffLastName,''))) FROM tblOfficeStaff os WITH (NOLOCK) WHERE os.OfficeStaffID=r.${quote(col("staffId")!.COLUMN_NAME)})`
+      : `CAST(NULL AS NVARCHAR(255))`;
+  const employeeId = col("employeeId");
+  const employeeName = (key: "first" | "middle" | "last", employeeColumn: string) => col(key)
+    ? `ISNULL(${source(key, key)},'')`
+    : employeeId
+      ? `(SELECT TOP (1) ISNULL(e.${quote(employeeColumn)},'') FROM tblEmployee e WITH (NOLOCK) WHERE e.EmployeeID=r.${quote(employeeId.COLUMN_NAME)})`
+      : `CAST(NULL AS NVARCHAR(255))`;
+  const expressions = [
+    `${source("id")} AS id`, `${staffName} AS [Staff Name]`, `${source("screen")} AS [Screen Name]`,
+    `${source("type")} AS [Type]`, `${employeeName("first", "EmFirstName")} AS [First Name]`,
+    `${employeeName("middle", "EmMiddle")} AS MI`, `${employeeName("last", "EmLastName")} AS [Last Name]`,
+    `CONVERT(VARCHAR(10),${source("date")},101) AS [Date]`, `${source("start")} AS [Start Time]`,
+    `${source("end")} AS [End Time]`, `${source("seconds")} AS [Time Sec]`,
+  ];
+  const order = col("date") ? `ORDER BY r.${quote(col("date")!.COLUMN_NAME)} DESC` : "";
+  return queryReadOnly<EmployeeResearchRow>(`SELECT TOP (5000) ${expressions.join(", ")} FROM ${quote(schema)}.${quote(table)} r WITH (NOLOCK) ${order}`);
+}
