@@ -84,6 +84,7 @@ export interface TrackingCustomerOption {
 
 export interface TrackingJobOption {
   projectId: string;
+  customerId: string;
   label: string;
 }
 
@@ -122,6 +123,13 @@ export interface TrackingJobInfo {
   w9OnFile: string;
   wcDate: string;
   glDate: string;
+  documentLinks: {
+    contract: string;
+    w9: string;
+    wc: string;
+    gl: string;
+    site: string;
+  };
   tia: string;
   cpm: string;
   estimatedInvoice: string;

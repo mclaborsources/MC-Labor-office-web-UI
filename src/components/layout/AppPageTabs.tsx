@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 type PageTab = { href: string; label: string };
 const STORAGE_KEY = "mc-open-page-tabs-v2";
 const defaultTabs: PageTab[] = [
-  { href: "/dashboard", label: "Main Menu" }, { href: "/tracking", label: "Tracking" },
+  { href: "/dashboard", label: "Main Menu" },
 ];
 const labels: Record<string, string> = {
   "/dashboard": "Menu", "/tracking": "Tracking", "/reports": "Reports", "/customers": "Customers",
@@ -32,6 +32,8 @@ export function AppPageTabs() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [tabs, setTabs] = useState<PageTab[]>([]);
+  const query = searchParams?.toString() ?? "";
+  const activeHref = `${pathname}${query ? `?${query}` : ""}`;
 
   useEffect(() => {
     try {
@@ -48,27 +50,31 @@ export function AppPageTabs() {
   useEffect(() => {
     if (!pathname || pathname === "/login") return;
     setTabs((current) => {
-      const href = pathname;
-      const next = current.some((tab) => tab.href === href) ? current : [...current, { href, label: labelFor(pathname) }];
+      const href = activeHref;
+      const existingIndex = current.findIndex((tab) => tab.href.split("?")[0] === pathname);
+      const next = existingIndex >= 0
+        ? current.map((tab, index) => index === existingIndex ? { ...tab, href } : tab)
+        : [...current, { href, label: labelFor(pathname) }];
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch { /* browser storage may be disabled */ }
       return next;
     });
-  }, [pathname]);
+  }, [pathname, activeHref]);
 
   const closeTab = (href: string) => {
-    const index = tabs.findIndex((tab) => tab.href === href);
-    const next = tabs.filter((tab) => tab.href !== href);
+    const path = href.split("?")[0];
+    const index = tabs.findIndex((tab) => tab.href.split("?")[0] === path);
+    const next = tabs.filter((tab) => tab.href.split("?")[0] !== path);
     setTabs(next);
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch { /* browser storage may be disabled */ }
-    if (pathname === href) router.push(next[Math.max(0, index - 1)]?.href ?? "/dashboard");
+    if (pathname === path) router.push(next[Math.max(0, index - 1)]?.href ?? "/dashboard");
   };
 
   if (!tabs.length) return null;
   return <div className="app-page-tabs" role="tablist" aria-label="Open pages">
     {tabs.map((tab) => {
-      const active = pathname === tab.href;
+      const active = pathname === tab.href.split("?")[0];
       return <div key={tab.href} className={`app-page-tab ${active ? "is-active" : ""}`} role="presentation">
-        <Link href={`${tab.href}${active && searchParams?.size ? `?${searchParams.toString()}` : ""}`} role="tab" aria-selected={active}>{tab.label}</Link>
+        <Link href={tab.href} role="tab" aria-selected={active}>{tab.label}</Link>
         <button type="button" aria-label={`Close ${tab.label}`} title={`Close ${tab.label}`} onClick={() => closeTab(tab.href)}>×</button>
       </div>;
     })}

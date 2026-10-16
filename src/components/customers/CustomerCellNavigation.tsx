@@ -20,7 +20,7 @@ export function CustomerCellNavigation(){
    const customer=jobColumn&&customerIndex>=0?(cell.parentElement?.children[customerIndex]?.textContent??'').trim():'';
    const id=cell.getAttribute(jobColumn?'data-job-id':'data-customer-id');if(id){router.push(`/${entity}/${encodeURIComponent(id)}`);return;}
    setMessage(jobColumn?'Opening job details...':'Opening customer details...');
-   try{const response=await fetch(`/api/${entity}/resolve?name=${encodeURIComponent(name)}&customer=${encodeURIComponent(customer)}`);const result=await response.json();if(!response.ok)throw Error(result.error);if(result.matches.length===1){setMessage('');router.push(`/${entity}/${result.matches[0].id}`);}else if(result.matches.length>1){setMessage('Multiple records share this name. Choose the correct record in Search.');router.push(`/${entity}?search=${encodeURIComponent(name)}`);}else{setMessage('No matching record was found.');}}
+   try{const response=await fetch(`/api/${entity}/resolve?name=${encodeURIComponent(name)}&customer=${encodeURIComponent(customer)}`);const result=await response.json();if(!response.ok)throw Error(result.error);if(result.matches.length===1){setMessage('');router.push(`/${entity}/${result.matches[0].id}`);}else if(result.matches.length>1){setMessage('');router.push(`/${entity}?search=${encodeURIComponent(name)}`);}else{setMessage('No matching record was found.');}}
    catch{setMessage('Details could not be opened. Please try again.');}
   };
   document.addEventListener('dblclick',navigate,true);return()=>document.removeEventListener('dblclick',navigate,true);

@@ -14,7 +14,6 @@ import type {
 interface GetTrackingPreviewArgs {
   week?: number;
   year?: number;
-  limit?: number;
   customerId?: string;
   projectId?: string;
 }
@@ -213,7 +212,7 @@ function mapRow(r: TrackingRow): TrackingPreviewRow {
 export async function getTrackingPreview(
   args: GetTrackingPreviewArgs = {},
 ): Promise<TrackingPreview> {
-  const top = Math.max(1, Math.min(500, Math.floor(args.limit ?? 300)));
+  const top = 300;
   const hasWeek = typeof args.week === "number" && typeof args.year === "number";
   const customerId = args.customerId?.trim() || null;
   const projectId = args.projectId?.trim() || null;
@@ -237,7 +236,7 @@ export async function getTrackingPreview(
   try {
     if (hasWeek || customerId || projectId) {
       const rows = await queryReadOnly<TrackingRow>(
-        `SELECT TOP (${top}) ${SELECT_COLUMNS}
+        `SELECT ${hasWeek ? "" : `TOP (${top}) `}${SELECT_COLUMNS}
          FROM tblTracking WITH (NOLOCK)
          WHERE 1=1 ${filterSql}
          ORDER BY Placeholder ASC, EmLastName ASC, EmFirstName ASC`,
@@ -271,14 +270,16 @@ export async function getTrackingCustomerOptions(
       CustomerBusName: string;
       AssignmentCount: number;
     }>(
-      `SELECT CustomerID,
-              MAX(CustomerBusName) AS CustomerBusName,
-              COUNT(*) AS AssignmentCount
-       FROM tblTracking WITH (NOLOCK)
-       WHERE AssignWeek = @week AND AssignYear = @year
-         AND CustomerID IS NOT NULL
-       GROUP BY CustomerID
-       ORDER BY MAX(CustomerBusName)`,
+      `SELECT c.CustomerID,
+              ISNULL(c.CustBusName, '') AS CustomerBusName,
+              COUNT(t.TrackingID) AS AssignmentCount
+       FROM tblCustomer c WITH (NOLOCK)
+       INNER JOIN tblTracking t WITH (NOLOCK)
+         ON t.CustomerID = c.CustomerID
+        AND t.AssignWeek = @week
+        AND t.AssignYear = @year
+       GROUP BY c.CustomerID, c.CustBusName
+       ORDER BY ISNULL(c.CustBusName, ''), c.CustomerID`,
       [
         { name: "week", value: week },
         { name: "year", value: year },
@@ -297,25 +298,40 @@ export async function getTrackingCustomerOptions(
 export async function getTrackingJobOptions(
   week: number,
   year: number,
-  customerId: string,
+  customerId?: string,
 ): Promise<TrackingJobOption[]> {
   try {
-    const rows = await queryReadOnly<{ ProjectID: number; SiteName: string }>(
-      `SELECT DISTINCT ProjectID, SiteName
-       FROM tblTracking WITH (NOLOCK)
-       WHERE AssignWeek = @week AND AssignYear = @year
-         AND CAST(CustomerID AS NVARCHAR(20)) = @customerId
-         AND ProjectID IS NOT NULL
-       ORDER BY SiteName`,
+    const rows = await queryReadOnly<{
+      ProjectID: number;
+      CustomerID: number;
+      CustomerBusName: string;
+      SiteName: string;
+    }>(
+      `SELECT p.ProjectID, p.CustomerID,
+              ISNULL(c.CustBusName, '') AS CustomerBusName,
+              ISNULL(p.SiteName, '') AS SiteName
+       FROM tblProject p WITH (NOLOCK)
+       INNER JOIN tblCustomer c WITH (NOLOCK) ON c.CustomerID = p.CustomerID
+       INNER JOIN tblTracking t WITH (NOLOCK)
+         ON t.ProjectID = p.ProjectID
+        AND t.CustomerID = p.CustomerID
+        AND t.AssignWeek = @week
+        AND t.AssignYear = @year
+       WHERE (@customerId = '' OR CAST(p.CustomerID AS NVARCHAR(20)) = @customerId)
+       GROUP BY p.ProjectID, p.CustomerID, c.CustBusName, p.SiteName
+       ORDER BY ISNULL(c.CustBusName, ''), ISNULL(p.SiteName, ''), p.ProjectID`,
       [
         { name: "week", value: week },
         { name: "year", value: year },
-        { name: "customerId", value: customerId },
+        { name: "customerId", value: customerId ?? "" },
       ],
     );
     return rows.map((r) => ({
       projectId: str(r.ProjectID),
-      label: str(r.SiteName) || `Job #${r.ProjectID}`,
+      customerId: str(r.CustomerID),
+      label: customerId
+        ? str(r.SiteName) || `Job #${r.ProjectID}`
+        : `${str(r.CustomerBusName) || `Customer #${r.CustomerID}`} · ${str(r.SiteName) || `Job #${r.ProjectID}`}`,
     }));
   } catch {
     return [];
@@ -325,32 +341,82 @@ export async function getTrackingJobOptions(
 export async function getTrackingJobInfo(
   customerId: string,
   projectId?: string,
+  week?: number,
+  year?: number,
 ): Promise<TrackingJobInfo | null> {
   try {
+    const suffixByPayrollCode: Record<string, string> = {
+      AMP: "AMP", HDE: "HDE", HSG: "HSG", IPG: "IPG", ISG: "ISG", MLS: "MLS", "T&R": "T_R",
+    };
+    let documentSuffix = "";
+    if (projectId && typeof week === "number" && typeof year === "number") {
+      const payrollRows = await queryReadOnly<{ PayrollCode: string | null }>(
+        `SELECT TOP (1) ISNULL(pc.PullDownPayrollCoOnSiteInitials, '') AS PayrollCode
+         FROM tblTracking t WITH (NOLOCK)
+         LEFT JOIN tblPullDownPayrollCoOnSite pc WITH (NOLOCK)
+           ON pc.PullDownPayrollCoOnSiteID = t.PayrollCoOnSiteID
+         WHERE t.CustomerID = @customerId AND t.ProjectID = @projectId
+           AND t.AssignWeek = @week AND t.AssignYear = @year
+         ORDER BY t.AssignmentTimestamp DESC, t.TrackingID DESC`,
+        [
+          { name: "customerId", value: Number(customerId) },
+          { name: "projectId", value: Number(projectId) },
+          { name: "week", value: week },
+          { name: "year", value: year },
+        ],
+      ).catch(() => []);
+      const code = str(payrollRows[0]?.PayrollCode).trim().toUpperCase();
+      documentSuffix = suffixByPayrollCode[code] ?? "";
+    }
+    const suffixField = (base: string) => documentSuffix ? `c.[${base}${documentSuffix}]` : "NULL";
+    const contractLink = `COALESCE(NULLIF(${suffixField("HLinkSalesContract")}, ''), c.HLinkSalesContract, '')`;
+    const w9Link = `COALESCE(NULLIF(${suffixField("HLinkW9")}, ''), c.HLinkW9, '')`;
+    const wcLink = `COALESCE(NULLIF(${suffixField("HLinkWCxDate")}, ''), c.HLinkWCxDate, '')`;
+    const glLink = `COALESCE(NULLIF(${suffixField("HLinkGLxDate")}, ''), c.HLinkGLxDate, '')`;
+    const wcDate = `COALESCE(${suffixField("WCxDate")}, c.WCxDate)`;
+    const glDate = `COALESCE(${suffixField("GLxDate")}, c.GLxDate)`;
     const rows = await queryReadOnly<{
       CustBusName: string;
       ContractDate: string | Date | null;
       SalesmanID: number | null;
       ContractWithName: string | null;
-      WCxDate: string | Date | null;
-      GLxDate: string | Date | null;
       CreditLimit: number | null;
       SalesmanName: string | null;
+      OldestInvoice: string | Date | null;
+      TotalOwed: number | null;
+      ContractLink: string | null;
+      W9Link: string | null;
+      WCLink: string | null;
+      GLLink: string | null;
+      WCDate: string | Date | null;
+      GLDate: string | Date | null;
     }>(
       `SELECT TOP (1)
          ISNULL(c.CustBusName, '') AS CustBusName,
          c.ContractDate,
          c.SalesmanID,
          ISNULL(p.PullDownContractWith_PayrollCoName, '') AS ContractWithName,
-         c.WCxDate,
-         c.GLxDate,
+         ${wcDate} AS WCDate,
+         ${glDate} AS GLDate,
+         ${contractLink} AS ContractLink,
+         ${w9Link} AS W9Link,
+         ${wcLink} AS WCLink,
+         ${glLink} AS GLLink,
          c.CreditLimit,
+         inv.OldestInvoice,
+         inv.TotalOwed,
          LTRIM(RTRIM(ISNULL(s.PullDownSalesmanFName, '') + ' ' + ISNULL(s.PullDownSalesmanLName, ''))) AS SalesmanName
        FROM tblCustomer c WITH (NOLOCK)
        LEFT JOIN tblPullDownContractWith_PayrollCo p WITH (NOLOCK)
          ON c.CustContractWith_PayrollCoID = p.PullDownContractWith_PayrollCoID
        LEFT JOIN tblPullDownSalesman s WITH (NOLOCK)
          ON c.SalesmanID = s.PullDownSalesmanID
+       OUTER APPLY (
+         SELECT MIN(CASE WHEN ISNULL(cw.OpenBalance, 0) > 0 THEN cw.WeekEndingDate END) AS OldestInvoice,
+                SUM(CASE WHEN ISNULL(cw.OpenBalance, 0) > 0 THEN cw.OpenBalance ELSE 0 END) AS TotalOwed
+         FROM tblCustomerWeeks cw WITH (NOLOCK)
+         WHERE cw.CustomerID = c.CustomerID
+       ) inv
        WHERE CAST(c.CustomerID AS NVARCHAR(20)) = @customerId`,
       [{ name: "customerId", value: customerId }],
     );
@@ -376,6 +442,7 @@ export async function getTrackingJobInfo(
           SiteState: string | null;
           SiteZip: string | null;
           ProjNote: string | null;
+          SiteHyperlink: string | null;
         }>(
           `SELECT TOP (1)
              ISNULL(p.SiteName, '') AS SiteName,
@@ -383,7 +450,8 @@ export async function getTrackingJobInfo(
              ISNULL(sc.City, '') AS SiteCity,
              ISNULL(st.PullDownState, '') AS SiteState,
              ISNULL(p.SiteZip, '') AS SiteZip,
-             ISNULL(p.ProjNote, '') AS ProjNote
+             ISNULL(p.ProjNote, '') AS ProjNote,
+             ISNULL(p.SiteHyperlink, '') AS SiteHyperlink
            FROM tblProject p WITH (NOLOCK)
            LEFT JOIN tblPullDownStateCities sc WITH (NOLOCK)
              ON p.SiteStateCityID = sc.PullDownStateCityID
@@ -479,11 +547,18 @@ export async function getTrackingJobInfo(
       contractDate: fmtDate(c.ContractDate),
       salesman: str(c.SalesmanName) || str(c.SalesmanID),
       creditHistory: c.CreditLimit ? money(c.CreditLimit) : "",
-      oldestInvoice: "",
-      totalOwed: "",
-      w9OnFile: "",
-      wcDate: fmtDate(c.WCxDate),
-      glDate: fmtDate(c.GLxDate),
+      oldestInvoice: fmtDate(c.OldestInvoice),
+      totalOwed: c.TotalOwed ? money(c.TotalOwed) : "",
+      w9OnFile: str(c.W9Link) ? "On file" : "Not on file",
+      wcDate: fmtDate(c.WCDate),
+      glDate: fmtDate(c.GLDate),
+      documentLinks: {
+        contract: str(c.ContractLink),
+        w9: str(c.W9Link),
+        wc: str(c.WCLink),
+        gl: str(c.GLLink),
+        site: str(project?.SiteHyperlink),
+      },
       tia: "",
       cpm: "",
       estimatedInvoice: "",

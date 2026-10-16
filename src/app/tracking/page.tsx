@@ -50,13 +50,12 @@ export default async function TrackingPage({ searchParams }: PageProps) {
       year: week.assignYear,
       customerId: customerId || undefined,
       projectId: projectId || undefined,
-      limit: 300,
     }),
     getTrackingCustomerOptions(week.assignWeek, week.assignYear),
+    getTrackingJobOptions(week.assignWeek, week.assignYear, customerId || undefined),
     customerId
-      ? getTrackingJobOptions(week.assignWeek, week.assignYear, customerId)
-      : Promise.resolve([]),
-    customerId ? getTrackingJobInfo(customerId, projectId || undefined) : Promise.resolve(null),
+      ? getTrackingJobInfo(customerId, projectId || undefined, week.assignWeek, week.assignYear)
+      : Promise.resolve(null),
     getPerDiemDestinations(week.assignWeek, week.assignYear).catch(() => []),
   ]);
 

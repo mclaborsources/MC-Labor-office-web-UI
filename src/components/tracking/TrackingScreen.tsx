@@ -504,6 +504,7 @@ export function TrackingScreen({
   const [newJobApplicationOpen, setNewJobApplicationOpen] = useState(false);
   const [copyPerDiemOpen, setCopyPerDiemOpen] = useState(false);
   const [healthPromptOpen, setHealthPromptOpen] = useState(false);
+  const [hyperlinksOpen, setHyperlinksOpen] = useState(false);
   const [healthMinDate, setHealthMinDate] = useState("");
   const [healthDateError, setHealthDateError] = useState("");
   const healthDateInput = useRef<HTMLInputElement>(null);
@@ -596,12 +597,20 @@ export function TrackingScreen({
   function openEmployee() { if (selected) router.push(`/employees/${encodeURIComponent(selected.employeeId)}`); }
 
   function openDocument(kind: string) {
-    const hyperlink = selected?.hlCv?.trim() ?? "";
-    if (kind === "Hyperlinks" && /^https?:\/\//i.test(hyperlink)) {
+    if (kind === "Hyperlinks") {
+      setHyperlinksOpen(true);
+      return;
+    }
+    const linkKey = ({ Contract: "contract", "W-9": "w9", WC: "wc", GL: "gl" } as const)[kind as "Contract" | "W-9" | "WC" | "GL"];
+    const savedLink = linkKey ? jobInfo?.documentLinks[linkKey]?.trim() : "";
+    const hyperlink = savedLink && (/^https?:\/\//i.test(savedLink) ? savedLink : /^[\w.-]+\.[a-z]{2,}(?:\/|$)/i.test(savedLink) ? `https://${savedLink}` : "");
+    if (hyperlink) {
       window.open(hyperlink, "_blank", "noopener,noreferrer");
       return;
     }
-    setReportMessage(`${kind} location is not stored in the confirmed web data model. The Access hyperlink/document field must be identified before this can open the original file.`);
+    setReportMessage(savedLink
+      ? `${kind} is stored as a network/file path and cannot be opened directly in this browser.`
+      : `${kind} has no document link saved for this customer and payroll company.`);
   }
 
   function setPanelCheckboxes(checked: boolean) {
@@ -913,7 +922,11 @@ export function TrackingScreen({
                 <select
                   className="ac-select min-w-0 flex-1"
                   value={selectedProjectId}
-                  onChange={(e) => navigateFilter(selectedCustomerId, e.target.value)}
+                  onChange={(e) => {
+                    const job = jobs.find((option) => option.projectId === e.target.value);
+                    if (job) navigateFilter(job.customerId, job.projectId);
+                    else navigateFilter(selectedCustomerId, "");
+                  }}
                 >
                   <option value="">Select job…</option>
                   {jobs.map((j) => (
@@ -1168,6 +1181,30 @@ export function TrackingScreen({
             <header><span id="health-date-prompt-title">Enter Parameter Value</span><button type="button" aria-label="Help">?</button><button type="button" aria-label="Close" onClick={() => setHealthPromptOpen(false)}>×</button></header>
             <main><label htmlFor="health-min-week-ending">MinWeekEndingDate</label><input ref={healthDateInput} id="health-min-week-ending" value={healthMinDate} onChange={(event) => { setHealthMinDate(event.target.value); setHealthDateError(""); }} aria-invalid={Boolean(healthDateError)} aria-describedby={healthDateError ? "health-date-error" : undefined} />{healthDateError && <p id="health-date-error" role="alert">{healthDateError}</p>}</main>
             <footer><button type="button" className="primary" onClick={openHealthInsurance}>OK</button><button type="button" onClick={() => setHealthPromptOpen(false)}>Cancel</button></footer>
+          </section>
+        </div>
+      )}
+      {hyperlinksOpen && (
+        <div className="health-date-prompt-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setHyperlinksOpen(false); }}>
+          <section className="health-date-prompt" role="dialog" aria-modal="true" aria-labelledby="tracking-hyperlinks-title">
+            <header><span id="tracking-hyperlinks-title">Customer and Job Links</span><button type="button" aria-label="Close" onClick={() => setHyperlinksOpen(false)}>×</button></header>
+            <main className="grid gap-2">
+              {([
+                ["Contract", jobInfo?.documentLinks.contract],
+                ["W-9", jobInfo?.documentLinks.w9],
+                ["Workers’ Compensation", jobInfo?.documentLinks.wc],
+                ["General Liability", jobInfo?.documentLinks.gl],
+                ["Job / Site", jobInfo?.documentLinks.site],
+              ] as const).map(([label, savedLink]) => {
+                const value = savedLink?.trim() ?? "";
+                const href = value && (/^https?:\/\//i.test(value) ? value : /^[\w.-]+\.[a-z]{2,}(?:\/|$)/i.test(value) ? `https://${value}` : "");
+                return <div key={label} className="flex items-center justify-between gap-3 border-b border-slate-200 py-1">
+                  <span>{label}</span>
+                  {href ? <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-700 underline">Open saved link</a> : <span className="text-slate-500">{value ? "Saved network path; browser cannot open it" : "No link saved"}</span>}
+                </div>;
+              })}
+            </main>
+            <footer><button type="button" onClick={() => setHyperlinksOpen(false)}>Close</button></footer>
           </section>
         </div>
       )}
