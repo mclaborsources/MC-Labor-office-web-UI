@@ -458,6 +458,37 @@ body {
   font-weight: 600;
 }
 
+.app-page-tabs {
+  display: flex;
+  flex: none;
+  gap: 2px;
+  min-height: 31px;
+  overflow-x: auto;
+  padding: 3px 6px 0;
+  background: #cdd3dc;
+  border-bottom: 1px solid #97a0ad;
+}
+.app-page-tab {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  min-width: 100px;
+  height: 27px;
+  padding: 0 8px;
+  border: 1px solid #97a0ad;
+  border-bottom: 0;
+  border-radius: 3px 3px 0 0;
+  background: #e6e8ec;
+  color: #222;
+  font-size: 12px;
+}
+.app-page-tab > a { flex: 1; overflow: hidden; color: inherit; text-overflow: ellipsis; white-space: nowrap; }
+.app-page-tab > button { padding: 0 2px; color: #444; font-size: 16px; line-height: 1; }
+.app-page-tab > button:hover { color: #b42318; }
+.app-page-tab:hover { background: #eef0f3; }
+.app-page-tab.is-active { position: relative; top: 1px; background: #fff; font-weight: 600; }
+
 /* Toolbar band */
 .ac-toolbar {
   display: flex;
@@ -15539,3 +15570,13 @@ body {
 .deposits-grid td select,.deposits-grid td input { width:100%; min-width:0; height:20px; border:1px solid #b3b3b3; border-radius:0; background:#fff; padding:0 3px; font:13px Arial,sans-serif; }
 .deposits-grid .deposit-draft td { background:#acd1ee!important; }
 .deposits-grid .deposit-amount { text-align:right; }
+
+/* Shared pointer and hover feedback for interactive controls across screens. */
+button:not(:disabled), select:not(:disabled), [role="button"]:not([aria-disabled="true"]), [role="option"], summary, a[href], input[type="checkbox"], input[type="radio"] { cursor:pointer; }
+button:not(:disabled):hover, select:not(:disabled):hover, [role="button"]:not([aria-disabled="true"]):hover, [role="option"]:hover, summary:hover, a[href]:hover { filter:brightness(.96); box-shadow:0 0 0 2px rgb(37 99 235 / 28%)!important; }
+button:disabled, select:disabled, [role="button"][aria-disabled="true"] { cursor:not-allowed; }
+table tbody td:hover { cursor:pointer; background-color:#d8ecfb!important; box-shadow:inset 0 0 0 1px #86b6d8; }
+.route-loading-overlay { position:fixed; inset:0; z-index:10000; display:grid; place-items:center; background:rgb(15 23 42 / 20%); }
+.route-loading-card { display:flex; align-items:center; gap:12px; padding:14px 20px; border:1px solid #aeb8c5; background:#fff; color:#172536; box-shadow:0 6px 22px rgb(0 0 0 / 20%); font:14px Arial,sans-serif; }
+.route-loading-spinner { width:22px; height:22px; border:3px solid #d4e2ed; border-top-color:#2563eb; border-radius:50%; animation:route-loading-spin .75s linear infinite; }
+@keyframes route-loading-spin { to { transform:rotate(360deg); } }

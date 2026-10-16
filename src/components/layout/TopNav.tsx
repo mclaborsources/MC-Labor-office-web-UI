@@ -1,66 +1,37 @@
 "use client";
 
+import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { LogOut } from "lucide-react";
-import { CustomerSearchLoadingOverlay } from "@/components/customers/CustomerSearchLoadingOverlay";
 
-const NAV_ITEMS: { href: string; label: string; match: (p: string) => boolean }[] = [
-  { href: "/dashboard", label: "Main Menu", match: (p) => p === "/dashboard" || p === "/" },
-  { href: "/tracking", label: "Tracking", match: (p) => p.startsWith("/tracking") },
-  { href: "/customer-menu", label: "Customer Menu", match: (p) => p.startsWith("/customer-menu") },
-  { href: "/customers", label: "Customers", match: (p) => p.startsWith("/customers") },
-  { href: "/customer-permits", label: "Customer Permits", match: (p) => p.startsWith("/customer-permits") },
-  { href: "/employees", label: "Employees", match: (p) => p.startsWith("/employees") },
-  { href: "/jobs", label: "Jobs", match: (p) => p.startsWith("/jobs") },
-  { href: "/reports", label: "Reports", match: (p) => p.startsWith("/reports") },
-  { href: "/admin/connection", label: "Admin", match: (p) => p.startsWith("/admin") },
-];
+const navItems = [
+  ["/dashboard", "Main Menu"], ["/tracking", "Tracking"], ["/customer-menu", "Customer Menu"],
+  ["/customers", "Customers"], ["/customer-permits", "Customer Permits"], ["/employees", "Employees"],
+  ["/jobs", "Jobs"], ["/reports", "Reports"], ["/admin/connection", "Admin"],
+] as const;
 
 export function TopNav() {
   const pathname = usePathname();
-  const [isOpeningCustomers, setIsOpeningCustomers] = useState(false);
+  return <nav className="ac-menubar" aria-label="Main navigation">
+    {navItems.map(([href, label]) => {
+      const active = href === "/dashboard" ? pathname === "/dashboard" || pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
+      return <Link key={href} href={href} className={`ac-menuitem ${active ? "ac-menuitem-active" : ""}`}>{label}</Link>;
+    })}
+  </nav>;
+}
 
-  useEffect(() => {
-    setIsOpeningCustomers(false);
-  }, [pathname]);
-
+export function LogoutButton() {
   return (
-    <>
-      <nav className="ac-menubar sticky top-[42px] z-30" aria-label="Main navigation">
-        {NAV_ITEMS.map((item) => {
-          const active = item.match(pathname);
-          return (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`ac-menuitem ${active ? "ac-menuitem-active" : ""}`}
-              onClick={() => {
-                if (item.href === "/customers" && !pathname.startsWith("/customers")) {
-                  setIsOpeningCustomers(true);
-                }
-              }}
-            >
-              {item.label}
-            </Link>
-          );
-        })}
-        <span className="ml-auto">
-          <button
-            type="button"
-            className="ac-menuitem flex items-center gap-1.5 text-[#b91c1c] hover:bg-red-50"
-            onClick={async () => {
-              await fetch("/api/auth/logout", { method: "POST" });
-              window.location.href = "/login";
-            }}
-          >
-            <LogOut className="h-3.5 w-3.5" />
-            Log out
-          </button>
-        </span>
-      </nav>
-      {isOpeningCustomers && <CustomerSearchLoadingOverlay />}
-    </>
+    <button
+      type="button"
+      className="flex items-center gap-1.5 rounded border border-white/40 bg-white/10 px-2.5 py-1 text-xs text-white hover:bg-white/20"
+      onClick={async () => {
+        await fetch("/api/auth/logout", { method: "POST" });
+        window.location.href = "/login";
+      }}
+    >
+      <LogOut className="h-3.5 w-3.5" />
+      Log out
+    </button>
   );
 }
