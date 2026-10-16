@@ -121,14 +121,14 @@ const LEGACY_ADMIN_OPTIONS = [
   { label: "Email Addresses", href: "/email-addresses" },
   { label: "Employee Licenses", href: "/employee-licenses" },
   { label: "Health Ins", href: "prompt:health-ins" },
-  { label: "ID Drivers License", href: "/employees" },
+  { label: "ID Drivers License", href: "/id-drivers-license" },
   { label: "Interview Questions", href: "/interview-questions" },
   { label: "OSHA", href: "/osha" },
   { label: "Resume or Work History", href: "/resume-work-history" },
   { label: "Smart Phone", href: "/smart-phone" },
   { label: "Face Meeting", href: "/face-meeting" },
   { label: "Tracking Search", href: "/tracking-search" },
-  { label: "Compare Tracking Weeks", href: "/tracking" },
+  { label: "Compare Tracking Weeks", href: "/compare-tracking-weeks" },
   { label: "Deleted Employees", href: "/deleted-employees" },
 ] as const;
 

@@ -3,7 +3,7 @@ import { requireSession } from "@/lib/auth/session";
 import { getAllAccidentReportRows } from "@/lib/adminDropdownReports";
 import { withTransaction } from "@/lib/db/write";
 import { clearReadCache } from "@/lib/db/sql";
-import { accidentWritableFields, ensureAccidentIsUnique, mapAccidentPayload } from "./[id]/route";
+import { accidentWritableFields, ensureAccidentIsUnique, mapAccidentPayload } from "@/lib/accidentReportPayload";
 import type { NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";

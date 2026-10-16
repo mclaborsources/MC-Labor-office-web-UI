@@ -10,6 +10,7 @@ test("first run needs an account; saved local credentials work without an env fi
   const temporary = await mkdtemp(path.join(tmpdir(), "mc-labor-account-test-"));
   try {
     process.chdir(temporary);
+    process.env.MC_LABOR_AUTH_ENABLED = "1";
     delete process.env.SESSION_SECRET;
     delete process.env.DEV_LOGIN_USERNAME;
     delete process.env.DEV_LOGIN_PASSWORD_HASH;

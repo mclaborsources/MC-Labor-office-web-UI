@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, type ComponentType } from "react";
+import { Suspense, useEffect, useState, type ComponentType } from "react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { CustomerFilters } from "@/components/customers/CustomerFilters";
 import {
@@ -806,9 +806,27 @@ const TAB_CONTENT: readonly ComponentType<UserSettingsTabProps>[] = [
 
 export function CustomerSearchViewsPanel(props: CustomerSearchViewsPanelProps) {
   const [activeTab, setActiveTab] = useState(0);
+  const [customerUserFlagOptions, setCustomerUserFlagOptions] = useState(props.customerUserFlagOptions);
+  const [userFlagsLoaded, setUserFlagsLoaded] = useState(props.customerUserFlagOptions.some((options) => options.length > 0));
   const showCompactFilter = activeTab <= 2;
   const showDuplicates = activeTab <= 2;
   const TabContent = TAB_CONTENT[activeTab];
+
+  useEffect(() => {
+    if (activeTab !== 4 || userFlagsLoaded) return;
+    let active = true;
+    fetch("/api/customers/user-flags", { cache: "no-store" })
+      .then(async (response) => {
+        const result = await response.json();
+        if (!response.ok || !result.ok) throw new Error("Customer user settings could not be loaded.");
+        if (active) setCustomerUserFlagOptions(result.options as FilterOption[][]);
+      })
+      .catch(() => {
+        if (active) setCustomerUserFlagOptions(Array.from({ length: 8 }, () => []));
+      })
+      .finally(() => { if (active) setUserFlagsLoaded(true); });
+    return () => { active = false; };
+  }, [activeTab, userFlagsLoaded]);
 
   return (
     <div className="ac-customer-search-controls min-w-0 flex-1">
@@ -832,7 +850,7 @@ export function CustomerSearchViewsPanel(props: CustomerSearchViewsPanelProps) {
           <div className={`ac-customer-search-views-body ${showDuplicates ? "" : "ac-customer-search-views-body--full"}`}>
             <div className="ac-customer-search-views-left">
               <TabContent
-                customerUserFlagOptions={props.customerUserFlagOptions}
+                customerUserFlagOptions={customerUserFlagOptions}
                 lastActionUsers={props.lastActionUsers}
               />
             </div>

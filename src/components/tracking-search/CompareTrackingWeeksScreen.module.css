@@ -1,0 +1,11 @@
+﻿.report{flex:1;min-height:0;overflow:auto;background:#eee;color:#000;font:12px Arial,sans-serif}
+.report :global(.company-comparison-controls){display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px;padding:8px;position:sticky;top:0;background:#eee;z-index:2}
+.report :global(.company-comparison-controls) label{display:flex;gap:6px;align-items:center}
+.report :global(.company-comparison-controls) input,.report :global(.company-comparison-controls) select{height:25px;border:1px solid #aaa;background:white}
+.report :global(.company-comparison-paper){box-sizing:border-box;width:694px;min-height:898px;margin:12px auto 24px;padding:43px 40px 64px;background:#fff;border:1px solid #000;box-shadow:0 2px 10px #0005;position:relative}
+.report h1{font-size:21px;font-weight:400;margin:0 0 10px}
+.report table{width:100%;border-collapse:collapse;table-layout:fixed}
+.report th{text-align:left;font-size:11px}
+.report td,.report th{padding:4px 0;border-bottom:1px solid #000;vertical-align:top;overflow-wrap:anywhere;font-weight:400}
+.report footer{position:absolute;bottom:30px;left:0;right:0;text-align:center;font-size:11px}
+@media print{.report{position:absolute;inset:0;overflow:visible;background:white}.report :global(.company-comparison-controls){display:none}.report :global(.company-comparison-paper){width:8.5in;min-height:11in;margin:0;border:0;box-shadow:none;break-after:page}.report :global(.company-comparison-paper):last-child{break-after:auto}}

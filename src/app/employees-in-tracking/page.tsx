@@ -1,11 +1,11 @@
 import { AppShell } from "@/components/layout/AppShell";
 import { EmployeesInTrackingScreen } from "@/components/employees-in-tracking/EmployeesInTrackingScreen";
 import { getSessionOrDefault } from "@/lib/auth/session";
-import { getEmployees } from "@/lib/employees";
+import { getAllEmployeesOnJobRows } from "@/lib/allEmployeesOnJob";
 
 export default async function EmployeesInTrackingPage() {
   const session = await getSessionOrDefault();
-  let employees: Awaited<ReturnType<typeof getEmployees>>["data"] = [];
-  try { employees = (await getEmployees({})).data; } catch { /* Keep the legacy grid usable if SQL is unavailable. */ }
-  return <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth><EmployeesInTrackingScreen employees={employees} /></AppShell>;
+  let rows: Awaited<ReturnType<typeof getAllEmployeesOnJobRows>> = [];
+  try { rows = await getAllEmployeesOnJobRows(); } catch { /* Keep the report screen available if SQL is temporarily unavailable. */ }
+  return <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth><EmployeesInTrackingScreen rows={rows} /></AppShell>;
 }

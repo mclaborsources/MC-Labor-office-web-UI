@@ -1,46 +1,32 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { AccessButton } from "@/components/access/AccessButton";
-import type { EmployeeSummary } from "@/types/employee";
+import type { EmployeeDocumentMode, EmployeeDocumentRow } from "@/lib/adminReportQueries";
 
-type Mode = "licenses" | "interview" | "osha" | "resume" | "smartphone" | "face";
-const META: Record<Mode, { title: string; flag: string; note: string }> = {
-  licenses: { title: "Employee Licenses", flag: "EmployeeLicenseNumber", note: "EmployeeLicenseNotes" },
-  interview: { title: "Interview Questions", flag: "InterviewQuestions", note: "InterviewQuestionsNotes" },
-  osha: { title: "OSHA", flag: "OSHA", note: "OSHANotes" },
-  resume: { title: "Resume or Work History", flag: "ResumeOrWorkHistory", note: "ResumeOrWorkHistoryNotes" },
-  smartphone: { title: "Smart Phone", flag: "SmartPhone", note: "SmartPhoneNotes" },
-  face: { title: "Face Meeting", flag: "FaceMeeting", note: "FaceMeetingNotes" },
+const titles: Record<EmployeeDocumentMode, string> = {
+  licenses: "Employee Licenses", interview: "Interview Questions", osha: "OSHA",
+  resume: "Resume or Work History", smartphone: "Smart Phone", face: "Face Meeting", id: "ID Drivers License",
 };
+const columns = ["Employee", "Cell", "Trade", "Qualification", "Customer / Job", "Week Ending", "Status", "Details"];
 
-export function EmployeeDocumentReportScreen({ mode, employees, error = "" }: { mode: Mode; employees: EmployeeSummary[]; error?: string }) {
+export function EmployeeDocumentReportScreen({ mode, rows, page, search: initialSearch, error = "" }: { mode: EmployeeDocumentMode; rows: EmployeeDocumentRow[]; page: number; search: string; error?: string }) {
   const router = useRouter();
-  const [search, setSearch] = useState("");
-  const info = META[mode];
-  const rows = useMemo(() => employees.filter((employee) =>
-    !search || `${employee.fullName} ${employee.currentAssignment} ${employee.cellPhone}`.toLowerCase().includes(search.toLowerCase()),
-  ), [employees, search]);
-  const columns = ["Employee", "Cell", "Trade", "Qualification", "Customer / Job", "Week Ending", "Status", "Details"];
+  const pathname = usePathname();
+  const [search, setSearch] = useState(initialSearch);
+  const total = rows[0]?.totalRecords ?? 0;
+  const navigate = (nextPage: number, query = initialSearch) => router.push(pathname + "?" + new URLSearchParams({search:query,page:String(nextPage)}));
   return <section className="ac-employee-doc">
-    <header><h1>{info.title}</h1><div><label>Search:</label><input aria-label="Search employees" value={search} onChange={(event) => setSearch(event.target.value)} /><AccessButton onClick={() => router.refresh()}>Refresh</AccessButton><AccessButton onClick={() => setSearch("")}>Clear</AccessButton></div><aside><AccessButton onClick={() => router.push("/tracking")}>Cancel</AccessButton></aside></header>
+    <header><h1>{titles[mode]}</h1><form onSubmit={event => {event.preventDefault();navigate(1,search)}}><label>Search:</label><input aria-label="Search employees" value={search} onChange={event => setSearch(event.target.value)} /><AccessButton type="submit">Search</AccessButton><AccessButton onClick={() => router.refresh()}>Refresh</AccessButton><AccessButton onClick={() => navigate(1,"")}>Clear</AccessButton><AccessButton onClick={() => window.print()}>Print / Export</AccessButton></form><aside><AccessButton onClick={() => router.push("/tracking")}>Cancel</AccessButton></aside></header>
     {error && <p role="alert" className="report-data-error">{error}</p>}
-    {!error && <p className="report-data-note">Live employee records from SQL Server. Document-specific values are shown only when present in the Access holding table.</p>}
-    <div className="employee-doc-grid-wrap"><table className={`legacy-report-grid employee-doc-grid is-${mode}`}><thead><tr>{columns.map((column) => <th key={column}>{column}</th>)}</tr></thead><tbody>
-      {rows.map((employee) => {
-        const fields = employee.accessFields ?? {};
-        const qualification = String(fields.EmQualification ?? fields.Qualification ?? "");
-        const flag = String(fields[info.flag] ?? "");
-        const note = String(fields[info.note] ?? "");
-        return <tr key={employee.employeeId}>
-          <td><a href={`/employees/${encodeURIComponent(employee.employeeId)}`}>{employee.fullName}</a></td>
-          <td>{employee.cellPhone}</td><td>{employee.trade}</td><td>{qualification}</td>
-          <td>{employee.currentAssignment}</td><td>{employee.weekEnding}</td><td>{flag}</td><td>{note}</td>
-        </tr>;
-      })}
-      {!rows.length && <tr><td colSpan={columns.length}>{search ? "No employees match this search." : "No employee records were returned by SQL Server."}</td></tr>}
-    </tbody></table></div>
-    <footer className="ac-employee-doc-record">{rows.length} employee records</footer>
+    <div className="employee-doc-grid-wrap"><table className={"legacy-report-grid employee-doc-grid is-" + mode}><thead><tr>{columns.map(column => <th key={column}>{column}</th>)}</tr></thead><tbody>
+      {rows.map(row => <tr key={row.id}>
+        <td><a href={"/employees/" + encodeURIComponent(row.employeeId)}>{row.employee || "Employee #" + row.employeeId}</a></td>
+        <td>{row.cell}</td><td>{row.trade}</td><td>{row.qualification}</td>
+        <td>{row.assignment}</td><td>{row.weekEnding}</td><td>{row.status}</td><td>{row.details}</td>
+      </tr>)}
+      {!rows.length && <tr><td colSpan={columns.length}>{error ? "Employee data is unavailable." : "No records match this search."}</td></tr>}
+    </tbody></table></div><footer className="ac-employee-doc-record"><AccessButton disabled={page<=1} onClick={() => navigate(page-1)}>Previous</AccessButton> Page {page} · {rows.length} of {total} records <AccessButton disabled={page*200>=total} onClick={() => navigate(page+1)}>Next</AccessButton></footer>
   </section>;
 }

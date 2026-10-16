@@ -108,7 +108,7 @@ export function CustomerFilters({
           name="search"
           type="search"
           defaultValue={currentSearch}
-          placeholder={compact ? "" : "Name, ID, phone, city, salesman…"}
+          placeholder={compact ? "Start typing…" : "Starts with name, ID, phone, email, street, or city…"}
           className={`ac-input ${compact ? "ac-customer-search-search-input" : ""}`}
           aria-label="Search"
         />,

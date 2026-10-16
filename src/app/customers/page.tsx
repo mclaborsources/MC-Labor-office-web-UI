@@ -1,7 +1,7 @@
 import { AppShell } from "@/components/layout/AppShell";
 import { CustomerSearchScreen } from "@/components/customers/CustomerSearchScreen";
 import { getSessionOrDefault } from "@/lib/auth/session";
-import { getCustomerFilterOptions, getCustomerSearchRows, getCustomerUserFlagOptions } from "@/lib/customers";
+import { getCustomerFilterOptions, getCustomerSearchRows } from "@/lib/customers";
 import { getOfficeStaffList } from "@/lib/admin";
 import type { FilterOption } from "@/types/search";
 
@@ -10,22 +10,25 @@ interface PageProps { searchParams: Promise<Record<string, string | undefined>> 
 export default async function CustomersPage({ searchParams }: PageProps) {
   const [session, params] = await Promise.all([getSessionOrDefault(), searchParams]);
   const page = Math.max(1, Number(params.page) || 1);
-  const pageSize = Math.max(1, Math.min(100, Number(params.pageSize) || 25));
+  const pageSize = Math.max(1, Math.min(200, Number(params.pageSize) || 200));
   const filters = {
     search: params.search ?? "", salesmanId: params.salesmanId ?? "",
     customerTypeId: params.customerTypeId ?? "", statusId: params.statusId ?? "",
     city: params.city ?? "", state: params.state ?? "",
+    customerName: params.customerName ?? "", customerPhone: params.customerPhone ?? "",
+    contactName: params.contactName ?? "", contactPhone: params.contactPhone ?? "",
+    contactEmail: params.contactEmail ?? "", contactText: params.contactText ?? "",
     sortKey: params.sortKey ?? "", sortDirection: params.sortDirection === "desc" ? "desc" as const : "asc" as const,
     page, pageSize,
   };
   let customers: Awaited<ReturnType<typeof getCustomerSearchRows>>["data"] = [];
   let total = 0;
   let loadError = "";
-  const [filterOptions, customerUserFlagOptions, officeStaff] = await Promise.all([
+  const [filterOptions, officeStaff] = await Promise.all([
     getCustomerFilterOptions().catch(() => ({ salesmen: [], customerTypes: [], statuses: [], cities: [], states: [] })),
-    getCustomerUserFlagOptions().catch(() => []),
     getOfficeStaffList().catch(() => []),
   ]);
+  const customerUserFlagOptions = Array.from({ length: 8 }, () => [] as FilterOption[]);
   try {
     const result = await getCustomerSearchRows(filters);
     customers = result.data;
@@ -47,6 +50,9 @@ export default async function CustomersPage({ searchParams }: PageProps) {
       currentSearch={filters.search} currentSalesmanId={filters.salesmanId}
       currentCustomerTypeId={filters.customerTypeId} currentStatusId={filters.statusId}
       currentCity={filters.city} currentState={filters.state} currentSortKey={filters.sortKey}
+      currentCustomerName={filters.customerName} currentCustomerPhone={filters.customerPhone}
+      currentContactName={filters.contactName} currentContactPhone={filters.contactPhone}
+      currentContactEmail={filters.contactEmail} currentContactText={filters.contactText}
       currentSortDirection={filters.sortDirection} page={page} pageSize={pageSize}
       total={total} hasMore={page * pageSize < total}
     />

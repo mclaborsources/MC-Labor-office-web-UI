@@ -11,8 +11,12 @@ import type {
   EmployeeRate,
   EmployeeContact,
   EmployeeLicense,
+  EmployeeNote,
+  EmployeePhoneRow,
+  EmployeePayrollCompany,
 } from "@/types/employee";
 import type { FilterOption, PaginatedResult } from "@/types/search";
+import { buildTextSearchIndex, searchTextIndex, type TextSearchIndex } from "@/lib/textSearchIndex";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -73,7 +77,7 @@ function toEmployeeSummary(row: EmployeeRow): EmployeeSummary {
 // ---------------------------------------------------------------------------
 
 const EMPLOYEE_LIST_SQL = `
-SELECT TOP (200)
+SELECT
   e.EmployeeID,
   ISNULL(e.EmFirstName,         '')  AS EmFirstName,
   ISNULL(e.EmLastName,          '')  AS EmLastName,
@@ -94,27 +98,36 @@ FROM  tblEmployee e WITH (NOLOCK)
 LEFT  JOIN tblPullDownTrade           t WITH (NOLOCK) ON t.PullDownTradeID          = e.EmTradeID
 LEFT  JOIN tblPullDownEmployeeStatus  s WITH (NOLOCK) ON s.PullDownEmployeeStatusID = e.EmEmployeeStatusID
 LEFT  JOIN tblPullDownGrades          g WITH (NOLOCK) ON g.PullDownGradeID          = e.EmGradeID
-WHERE
-  (@searchPat IS NULL
-    OR e.EmLastName      LIKE @searchPat
-    OR e.EmFirstName     LIKE @searchPat
-    OR CAST(e.EmployeeID AS NVARCHAR(20)) LIKE @searchPat
-    OR e.EmMobilePhone   LIKE @searchPat
-    OR e.EmEmail         LIKE @searchPat
-    OR e.EmCity          LIKE @searchPat)
-  AND (@tradeId  IS NULL OR CAST(e.EmTradeID          AS NVARCHAR(20)) = @tradeId)
-  AND (@statusId IS NULL OR CAST(e.EmEmployeeStatusID AS NVARCHAR(20)) = @statusId)
-  AND (@gradeId  IS NULL OR CAST(e.EmGradeID          AS NVARCHAR(20)) = @gradeId)
-  AND (@city  IS NULL OR e.EmCity  = @city)
-  AND (@state IS NULL OR e.EmState = @state)
 ORDER BY e.EmLastName, e.EmFirstName
 `;
+
+const EMPLOYEE_INDEX_TTL_MS = 5 * 60 * 1000;
+let employeeIndexCache: { expiresAt: number; rows: EmployeeRow[]; index: TextSearchIndex } | null = null;
+let employeeIndexLoad: Promise<{ expiresAt: number; rows: EmployeeRow[]; index: TextSearchIndex }> | null = null;
+
+async function loadEmployeeSearchIndex() {
+  if (employeeIndexCache && employeeIndexCache.expiresAt > Date.now()) return employeeIndexCache;
+  if (!employeeIndexLoad) {
+    employeeIndexLoad = queryReadOnly<EmployeeRow>(EMPLOYEE_LIST_SQL).then((rows) => {
+      const index = buildTextSearchIndex(rows.map((row) => [
+        safeStr(row.EmFirstName), safeStr(row.EmLastName), safeStr(row.EmployeeID),
+        safeStr(row.EmMobilePhone), safeStr(row.EmEmail), safeStr(row.EmCity),
+      ]));
+      const cached = { expiresAt: Date.now() + EMPLOYEE_INDEX_TTL_MS, rows, index };
+      employeeIndexCache = cached;
+      return cached;
+    }).finally(() => { employeeIndexLoad = null; });
+  }
+  return employeeIndexLoad;
+}
 
 const EMPLOYEE_DETAIL_SQL = `
 SELECT TOP (1)
   e.EmployeeID,
   ISNULL(e.EmFirstName,         '')  AS EmFirstName,
   ISNULL(e.EmLastName,          '')  AS EmLastName,
+  ISNULL(e.EmMiddle,            '')  AS EmMiddle,
+  ISNULL(e.EmHomePhone,         '')  AS EmHomePhone,
   ISNULL(e.EmMobilePhone,       '')  AS EmMobilePhone,
   ISNULL(e.EmEmail,             '')  AS EmEmail,
   ISNULL(e.EmTradeID,           0)   AS EmTradeID,
@@ -132,6 +145,42 @@ LEFT  JOIN tblPullDownTrade           t WITH (NOLOCK) ON t.PullDownTradeID      
 LEFT  JOIN tblPullDownEmployeeStatus  s WITH (NOLOCK) ON s.PullDownEmployeeStatusID = e.EmEmployeeStatusID
 LEFT  JOIN tblPullDownGrades          g WITH (NOLOCK) ON g.PullDownGradeID          = e.EmGradeID
 WHERE e.EmployeeID = @employeeId
+`;
+
+const EMPLOYEE_NOTES_SQL = `
+SELECT
+  ISNULL(EmployeeNoteUserName, '') AS EmployeeNoteUserName,
+  CONVERT(VARCHAR(10), EmployeeNoteTimestamp, 101) AS EmployeeNoteDate,
+  ISNULL(EmployeeNoteTypeID, 0) AS EmployeeNoteTypeID,
+  ISNULL(EmployeeNoteReviewTypeID, 0) AS EmployeeNoteReviewTypeID,
+  ISNULL(EmployeeNoteCustomerID, 0) AS EmployeeNoteCustomerID,
+  CONVERT(VARCHAR(10), EmployeeNoteAssignmentDate, 101) AS EmployeeNoteAssignmentDate,
+  ISNULL(EmployeeNote, '') AS EmployeeNote
+FROM tblEmployeeNotes WITH (NOLOCK)
+WHERE EmployeeID = @employeeId
+ORDER BY EmployeeNoteTimestamp DESC
+`;
+
+const EMPLOYEE_PAYROLL_COMPANIES_SQL = `
+SELECT
+  ep.EmployeePayrollCoOnSiteID AS EmployeePayrollCoOnSiteID,
+  ISNULL(pc.PullDownPayrollCoOnSiteInitials, pc.PullDownPayrollCoOnSiteName) AS PayrollCompany,
+  ISNULL(ep.EmployeePayrollCoOnSiteDefault, 0) AS IsDefault,
+  CONVERT(VARCHAR(10), ep.EmployeePayrollCoOnSiteJobApplicationDate, 101) AS JobApplicationDate,
+  ISNULL(latest.JobApplicationStatusDesc, '') AS JobApplicationStatus,
+  CONVERT(VARCHAR(10), COALESCE(ep.EmployeePayrollCoOnSiteMaxWeekEndingDate, latest.WeekEndingDate), 101) AS LastWeekAssigned,
+  ISNULL(latest.CustomerBusName, '') AS Customer
+FROM tblEmployeePayrollCoOnSite ep WITH (NOLOCK)
+LEFT JOIN tblPullDownPayrollCoOnSite pc WITH (NOLOCK)
+  ON pc.PullDownPayrollCoOnSiteID = ep.PayrollCoOnSiteID
+OUTER APPLY (
+  SELECT TOP (1) t.WeekEndingDate, t.CustomerBusName, t.JobApplicationStatusDesc
+  FROM tblTracking t WITH (NOLOCK)
+  WHERE t.EmployeeID = ep.EmployeeID AND t.PayrollCoOnSiteID = ep.PayrollCoOnSiteID
+  ORDER BY t.WeekEndingDate DESC, t.AssignmentTimestamp DESC
+) latest
+WHERE ep.EmployeeID = @employeeId
+ORDER BY ISNULL(ep.EmployeePayrollCoOnSiteDefault, 0) DESC, pc.PullDownPayrollCoOnSiteInitials
 `;
 
 const EMPLOYEE_B_SQL = `
@@ -389,23 +438,17 @@ export interface GetEmployeesParams {
 export async function getEmployees(
   params: GetEmployeesParams = {},
 ): Promise<PaginatedResult<EmployeeSummary>> {
-  const searchPat = params.search ? `%${params.search}%` : null;
-  const tradeId = params.tradeId || null;
-  const statusId = params.statusId || null;
-  const gradeId = params.gradeId || null;
-  const city = params.city || null;
-  const state = params.state || null;
-
-  const rows = await queryReadOnly<EmployeeRow>(EMPLOYEE_LIST_SQL, [
-    { name: "searchPat", value: searchPat },
-    { name: "tradeId", value: tradeId },
-    { name: "statusId", value: statusId },
-    { name: "gradeId", value: gradeId },
-    { name: "city", value: city },
-    { name: "state", value: state },
-  ]);
-
-  const data = rows.map(toEmployeeSummary);
+  const { rows, index } = await loadEmployeeSearchIndex();
+  const filteredRows = searchTextIndex(index, params.search ?? "")
+    .map((rowIndex) => rows[rowIndex])
+    .filter((row) =>
+      (!params.tradeId || String(row.EmTradeID ?? "") === params.tradeId)
+      && (!params.statusId || String(row.EmEmployeeStatusID ?? "") === params.statusId)
+      && (!params.gradeId || String(row.EmGradeID ?? "") === params.gradeId)
+      && (!params.city || safeStr(row.EmCity) === params.city)
+      && (!params.state || safeStr(row.EmState) === params.state));
+  const total = filteredRows.length;
+  const data = filteredRows.slice(0, 200).map(toEmployeeSummary);
   const employeeIds = data.map((e) => e.employeeId);
   const [assignmentMap, holdingMap] = await Promise.all([
     loadCurrentAssignments(employeeIds),
@@ -420,13 +463,26 @@ export async function getEmployees(
     e.accessFields = holdingMap.get(e.employeeId) ?? {};
   }
 
-  return { data, total: data.length, page: 1, pageSize: 200, hasMore: false };
+  return { data, total, page: 1, pageSize: 200, hasMore: total > data.length };
+}
+
+export async function getEmployeeQuickSearchOptions(): Promise<Array<Pick<EmployeeSummary, "employeeId" | "fullName">>> {
+  const rows = await queryReadOnly<{ EmployeeID: unknown; EmFirstName: string | null; EmLastName: string | null }>(
+    `SELECT TOP (1000) EmployeeID, EmFirstName, EmLastName
+     FROM tblEmployee WITH (NOLOCK)
+     ORDER BY EmLastName, EmFirstName, EmployeeID`,
+  );
+  return rows.map(row => {
+    const first = safeStr(row.EmFirstName);
+    const last = safeStr(row.EmLastName);
+    return { employeeId: safeStr(row.EmployeeID), fullName: [first, last].filter(Boolean).join(" ") || "Unknown" };
+  });
 }
 
 export async function getEmployeeById(
   employeeId: string,
 ): Promise<EmployeeDetail | null> {
-  const [rows, bRows, rateRows, contactRows, licenseRows, stateMap, licenseTypeMap] =
+  const [rows, bRows, rateRows, contactRows, licenseRows, stateMap, licenseTypeMap, holdingMap, noteRows, payrollRows] =
     await Promise.all([
       queryReadOnly<EmployeeRow>(EMPLOYEE_DETAIL_SQL, [{ name: "employeeId", value: employeeId }]),
       queryReadOnly<EmployeeBRow>(EMPLOYEE_B_SQL, [{ name: "employeeId", value: employeeId }]).catch(
@@ -443,14 +499,52 @@ export async function getEmployeeById(
       ),
       loadStateMap(),
       loadLicenseTypeMap(),
+      loadEmployeeSearchHoldingFields([employeeId]),
+      queryReadOnly<Record<string, unknown>>(EMPLOYEE_NOTES_SQL, [{ name: "employeeId", value: employeeId }]).catch(() => []),
+      queryReadOnly<Record<string, unknown>>(EMPLOYEE_PAYROLL_COMPANIES_SQL, [{ name: "employeeId", value: employeeId }]).catch(() => []),
     ]);
 
   const row = rows[0];
   if (!row) return null;
 
   const summary = toEmployeeSummary(row);
+  const accessFields = holdingMap.get(employeeId) ?? {};
+  const phoneValue = (key: string, fallback = "") => accessFields[key] || fallback;
+  const phoneRows: EmployeePhoneRow[] = [1, 2, 3, 4].map((n) => ({
+    number: phoneValue(n === 1 ? "EmMobilePhone" : `EmMobilePhone${n}`, n === 1 ? summary.cellPhone : ""),
+    textAddress: phoneValue(n === 1 ? "TextMsgAddress" : `TextMsgAddress${n}`, n === 1 ? summary.email : ""),
+    noCommunication: bool(accessFields[n === 1 ? "EmployeeNoCommunicationText" : `EmployeeNoComm${n}Text`]),
+    valid: bool(accessFields[n === 1 ? "EmMobilePhoneVerifyText" : `EmMobilePhone${n}VerifyText`]),
+    verifyPrimary: bool(accessFields[n === 1 ? "VerifyPrimaryMobilePhone" : `VerifyPrimaryMobilePhone${n}`]),
+    user: phoneValue(n === 1 ? "EmployeeNoCommUserName" : `EmployeeNoCommUserName${n}`),
+    date: phoneValue(n === 1 ? "EmployeeNoCommDate" : `EmployeeNoCommDate${n}`),
+  }));
+  const notes: EmployeeNote[] = noteRows.map((note) => ({
+    user: safeStr(note.EmployeeNoteUserName),
+    date: safeStr(note.EmployeeNoteDate),
+    noteType: safeStr(note.EmployeeNoteTypeID),
+    reviewType: safeStr(note.EmployeeNoteReviewTypeID),
+    customer: safeStr(note.EmployeeNoteCustomerID),
+    assignmentDate: safeStr(note.EmployeeNoteAssignmentDate),
+    note: safeStr(note.EmployeeNote),
+  }));
+  const payrollCompanies: EmployeePayrollCompany[] = payrollRows.map((company) => ({
+    id: safeStr(company.EmployeePayrollCoOnSiteID),
+    name: safeStr(company.PayrollCompany),
+    isDefault: bool(company.IsDefault),
+    jobApplicationDate: safeStr(company.JobApplicationDate),
+    jobApplicationStatus: safeStr(company.JobApplicationStatus),
+    lastWeekAssigned: safeStr(company.LastWeekAssigned),
+    customer: safeStr(company.Customer),
+  }));
   return {
     ...summary,
+    middleInitial: safeStr(row.EmMiddle),
+    accessFields,
+    homePhone: phoneValue("EmHomePhone", safeStr(row.EmHomePhone)),
+    phoneRows,
+    notes,
+    payrollCompanies,
     address: safeStr(row.EmStreet),
     city: safeStr(row.EmCity),
     state: safeStr(row.EmState),
@@ -465,14 +559,18 @@ export async function getEmployeeById(
 
 export async function getEmployeeFilterOptions(): Promise<{
   trades: FilterOption[];
+  qualifications: FilterOption[];
   statuses: FilterOption[];
   grades: FilterOption[];
   cities: FilterOption[];
   states: FilterOption[];
 }> {
-  const [tradeRows, statusRows, gradeRows, cityRows, stateRows] = await Promise.all([
+  const [tradeRows, qualificationRows, statusRows, gradeRows, cityRows, stateRows] = await Promise.all([
     queryReadOnly<{ PullDownTradeID: unknown; PullDownTrade: string | null }>(
       "SELECT PullDownTradeID, ISNULL(PullDownTrade, '') AS PullDownTrade FROM tblPullDownTrade WITH (NOLOCK) ORDER BY PullDownTrade",
+    ).catch(() => []),
+    queryReadOnly<{ PullDownQualificationID: unknown; PullDownQualification: string | null }>(
+      "SELECT PullDownQualificationID, ISNULL(PullDownQualification, '') AS PullDownQualification FROM tblPullDownQualifications WITH (NOLOCK) ORDER BY PullDownQualification",
     ).catch(() => []),
     queryReadOnly<{ PullDownEmployeeStatusID: unknown; PullDownEmployeeStatus: string | null }>(
       "SELECT PullDownEmployeeStatusID, ISNULL(PullDownEmployeeStatus, '') AS PullDownEmployeeStatus FROM tblPullDownEmployeeStatus WITH (NOLOCK) ORDER BY PullDownEmployeeStatus",
@@ -493,6 +591,7 @@ export async function getEmployeeFilterOptions(): Promise<{
       value: String(r.PullDownTradeID ?? ""),
       label: r.PullDownTrade ?? "",
     })),
+    qualifications: qualificationRows.map((r) => ({ value: String(r.PullDownQualificationID ?? ""), label: r.PullDownQualification ?? "" })),
     statuses: statusRows.map((r) => ({
       value: String(r.PullDownEmployeeStatusID ?? ""),
       label: r.PullDownEmployeeStatus ?? "",
@@ -504,6 +603,34 @@ export async function getEmployeeFilterOptions(): Promise<{
     cities: toUniqueOptions(cityRows.map((r) => safeStr(r.EmCity))),
     states: toUniqueOptions(stateRows.map((r) => safeStr(r.EmState))),
   };
+}
+
+export async function getEmployeeLicenseDropdownOptions(): Promise<Record<string, string[]>> {
+  const keys = ["CTLevel", "LicenseStatus", "LicenseObtainedByMethod", "LicenseExpDateFlag", "Covid19VaccinationStatus", "SubTrade1", "SubTrade2", "SubTrade3", "SubTrade4"] as const;
+  const entries = await Promise.all(keys.map(async (key) => {
+    const rows = await queryReadOnly<{ value: unknown }>(
+      `SELECT DISTINCT LTRIM(RTRIM(CONVERT(NVARCHAR(255), ${key}))) AS value FROM tblEmployeeSearch3Holding WITH (NOLOCK) WHERE LEN(LTRIM(RTRIM(ISNULL(CONVERT(NVARCHAR(255), ${key}), '')))) > 0 ORDER BY value`,
+    ).catch(() => []);
+    return [key, rows.map((row) => safeStr(row.value)).filter(Boolean)] as const;
+  }));
+  return Object.fromEntries(entries);
+}
+
+export async function getEmployeeHealthInsuranceDropdownOptions(): Promise<{ insurance: FilterOption[]; flags: FilterOption[] }> {
+  const [insuranceRows, flagRows] = await Promise.all([
+    queryReadOnly<{ value: unknown; label: string | null }>("SELECT CAST(PullDownHealthInsuranceID AS NVARCHAR(20)) AS value, ISNULL(PullDownHealthInsuranceDesc,'') AS label FROM tblPullDownHealthInsurance WITH (NOLOCK) ORDER BY PullDownHealthInsuranceDesc").catch(() => []),
+    queryReadOnly<{ value: unknown; label: string | null }>("SELECT CAST(PullDownHealthInsuranceFlagID AS NVARCHAR(20)) AS value, ISNULL(PullDownHealthInsuranceFlag,'') AS label FROM tblPullDownHealthInsuranceFlags WITH (NOLOCK) ORDER BY PullDownHealthInsuranceFlag").catch(() => []),
+  ]);
+  return { insurance: insuranceRows.map(row => ({ value: String(row.value ?? ""), label: row.label ?? "" })).filter(row => row.label), flags: flagRows.map(row => ({ value: String(row.value ?? ""), label: row.label ?? "" })).filter(row => row.label) };
+}
+
+export async function getEmployeeReferralAgencyOptions(): Promise<string[]> {
+  const rows = await queryReadOnly<{ ReferralAgencyName: string | null }>(
+    `SELECT ISNULL(PullDownReferralAgencyName, '') AS ReferralAgencyName
+     FROM tblPullDownReferralAgency WITH (NOLOCK)
+     ORDER BY PullDownReferralAgencyName`,
+  ).catch(() => []);
+  return toUniqueOptions(rows.map(row => safeStr(row.ReferralAgencyName))).map(option => option.label);
 }
 
 /**

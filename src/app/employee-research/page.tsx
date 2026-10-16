@@ -3,11 +3,13 @@ import { EmployeeResearchScreen } from "@/components/employee-research/EmployeeR
 import { getSessionOrDefault } from "@/lib/auth/session";
 import { getEmployeeResearchRows } from "@/lib/employeeResearchReport";
 import type { EmployeeResearchRow } from "@/lib/employeeResearchReport";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
   const session = await getSessionOrDefault();
+  if (!session.isLoggedIn || !session.user?.active) redirect("/login");
   let rows: EmployeeResearchRow[] = [];
   let error = "";
   try {

@@ -34,6 +34,35 @@ function numericId(value: string | undefined): number | null {
   return Number.isSafeInteger(parsed) ? parsed : null;
 }
 
+function likePrefix(value: string | undefined): string | null {
+  const term = value?.trim().slice(0, 100);
+  if (!term) return null;
+  // Escape SQL LIKE metacharacters so user input is treated as text, then use
+  // a trailing wildcard. Prefix predicates can use ordinary B-tree indexes.
+  return `${term.replace(/[~%_[]/g, (character) => `~${character}`)}%`;
+}
+
+function phoneLikePrefixes(value: string | undefined): { raw: string | null; formatted: string | null; compact: string | null } {
+  const raw = likePrefix(value);
+  const digits = value?.replace(/\D/g, "").slice(0, 10) ?? "";
+  if (!digits) return { raw, formatted: null, compact: null };
+
+  const area = digits.slice(0, 3);
+  const exchange = digits.slice(3, 6);
+  const subscriber = digits.slice(6);
+  const formatted = digits.length <= 3
+    ? `(${digits}%`
+    : digits.length <= 6
+      ? `(${area}) ${exchange}%`
+      : `(${area}) ${exchange}-${subscriber}%`;
+  const compact = digits.length <= 3
+    ? `(${digits}%`
+    : digits.length <= 6
+      ? `(${area})${exchange}%`
+      : `(${area})${exchange}-${subscriber}%`;
+  return { raw, formatted, compact };
+}
+
 // ---------------------------------------------------------------------------
 // Customer base/list query — Street/City/State/Zip are all confirmed columns.
 // Lookup names (type, salesman) merged in app code so a wrong lookup column
@@ -54,12 +83,46 @@ WITH FilteredCustomers AS (
   FROM tblCustomer c WITH (NOLOCK)
   WHERE
     (@searchPat IS NULL
-      OR c.CustBusName LIKE @searchPat
-      OR CAST(c.CustomerID AS NVARCHAR(20)) LIKE @searchPat
-      OR c.Phone       LIKE @searchPat
-      OR c.CustEmail   LIKE @searchPat
-      OR c.Street      LIKE @searchPat
-      OR c.City        LIKE @searchPat)
+      OR c.CustBusName LIKE @searchPat ESCAPE '~'
+      OR c.Phone       LIKE @searchPat ESCAPE '~'
+      OR c.CustEmail   LIKE @searchPat ESCAPE '~'
+      OR c.Street      LIKE @searchPat ESCAPE '~'
+      OR c.City        LIKE @searchPat ESCAPE '~'
+      OR (@searchId IS NOT NULL AND c.CustomerID = @searchId))
+    AND (@customerNamePat IS NULL OR c.CustBusName LIKE @customerNamePat ESCAPE '~')
+    AND (@customerPhonePat IS NULL OR c.Phone LIKE @customerPhonePat ESCAPE '~'
+      OR c.Phone LIKE @customerPhoneFormattedPat ESCAPE '~'
+      OR c.Phone LIKE @customerPhoneCompactPat ESCAPE '~')
+    AND (@contactNameFirstPat IS NULL OR EXISTS (
+      SELECT 1 FROM tblCustomerContacts contactName WITH (NOLOCK)
+      WHERE contactName.CustomerID = c.CustomerID
+        AND (
+          (contactName.CustomerContactFName LIKE @contactNameFirstPat ESCAPE '~'
+            AND (@contactNameLastPat IS NULL OR contactName.CustomerContactLName LIKE @contactNameLastPat ESCAPE '~'))
+          OR (contactName.CustomerContactLName LIKE @contactNameFirstPat ESCAPE '~'
+            AND (@contactNameLastPat IS NULL OR contactName.CustomerContactFName LIKE @contactNameLastPat ESCAPE '~'))
+        )
+    ))
+    AND (@contactPhonePat IS NULL OR EXISTS (
+      SELECT 1 FROM tblCustomerContacts contactPhone WITH (NOLOCK)
+      WHERE contactPhone.CustomerID = c.CustomerID
+        AND (contactPhone.CustomerContactCell LIKE @contactPhonePat ESCAPE '~'
+          OR contactPhone.CustomerContactCell LIKE @contactPhoneFormattedPat ESCAPE '~'
+          OR contactPhone.CustomerContactCell LIKE @contactPhoneCompactPat ESCAPE '~'
+          OR contactPhone.CustomerContactOfficePhone LIKE @contactPhonePat ESCAPE '~'
+          OR contactPhone.CustomerContactOfficePhone LIKE @contactPhoneFormattedPat ESCAPE '~'
+          OR contactPhone.CustomerContactOfficePhone LIKE @contactPhoneCompactPat ESCAPE '~')
+    ))
+    AND (@contactEmailPat IS NULL OR EXISTS (
+      SELECT 1 FROM tblCustomerContacts contactEmail WITH (NOLOCK)
+      WHERE contactEmail.CustomerID = c.CustomerID
+        AND contactEmail.CustomerContactEmail LIKE @contactEmailPat ESCAPE '~'
+    ))
+    AND (@contactTextPat IS NULL OR EXISTS (
+      SELECT 1 FROM tblCustomerContacts contactText WITH (NOLOCK)
+      WHERE contactText.CustomerID = c.CustomerID
+        AND contactText.CustomerContactTextMsgAddress LIKE @contactTextPat ESCAPE '~'
+    ))
     AND (@salesmanId     IS NULL OR c.SalesmanID     = @salesmanId)
     AND (@customerTypeId IS NULL OR c.CustomerTypeID = @customerTypeId)
     AND (@statusId       IS NULL OR c.CustStatusID   = @statusId)
@@ -564,6 +627,12 @@ function emptyCustomerSearchFields(): Omit<
 
 export interface GetCustomersParams {
   search?: string;
+  customerName?: string;
+  customerPhone?: string;
+  contactName?: string;
+  contactPhone?: string;
+  contactEmail?: string;
+  contactText?: string;
   salesmanId?: string;
   customerTypeId?: string;
   statusId?: string;
@@ -592,7 +661,16 @@ export async function getCustomers(
 export async function getCustomerSearchRows(
   params: GetCustomersParams = {},
 ): Promise<PaginatedResult<CustomerSearchRow>> {
-  const searchPat = params.search ? `%${params.search}%` : null;
+  const searchPat = likePrefix(params.search);
+  const searchId = numericId(params.search);
+  const customerNamePat = likePrefix(params.customerName);
+  const customerPhonePatterns = phoneLikePrefixes(params.customerPhone);
+  const contactNameParts = params.contactName?.trim().split(/\s+/).filter(Boolean) ?? [];
+  const contactNameFirstPat = likePrefix(contactNameParts[0]);
+  const contactNameLastPat = likePrefix(contactNameParts.length > 1 ? contactNameParts.slice(1).join(" ") : undefined);
+  const contactPhonePatterns = phoneLikePrefixes(params.contactPhone);
+  const contactEmailPat = likePrefix(params.contactEmail);
+  const contactTextPat = likePrefix(params.contactText);
   // Bind numeric IDs as numbers so SQL Server can seek indexed integer columns
   // without converting every row to NVARCHAR first.
   const salesmanId = numericId(params.salesmanId);
@@ -607,6 +685,18 @@ export async function getCustomerSearchRows(
   const [rows, typeMap, salesmanMap, statusMap] = await Promise.all([
     queryReadOnly<CustomerSearchListRow>(customerSearchSql(params.sortKey, params.sortDirection, params.includeTotal), [
       { name: "searchPat", value: searchPat },
+      { name: "searchId", value: searchId },
+      { name: "customerNamePat", value: customerNamePat },
+      { name: "customerPhonePat", value: customerPhonePatterns.raw },
+      { name: "customerPhoneFormattedPat", value: customerPhonePatterns.formatted },
+      { name: "customerPhoneCompactPat", value: customerPhonePatterns.compact },
+      { name: "contactNameFirstPat", value: contactNameFirstPat },
+      { name: "contactNameLastPat", value: contactNameLastPat },
+      { name: "contactPhonePat", value: contactPhonePatterns.raw },
+      { name: "contactPhoneFormattedPat", value: contactPhonePatterns.formatted },
+      { name: "contactPhoneCompactPat", value: contactPhonePatterns.compact },
+      { name: "contactEmailPat", value: contactEmailPat },
+      { name: "contactTextPat", value: contactTextPat },
       { name: "salesmanId", value: salesmanId },
       { name: "customerTypeId", value: customerTypeId },
       { name: "statusId", value: statusId },

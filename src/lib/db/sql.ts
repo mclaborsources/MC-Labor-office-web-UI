@@ -95,6 +95,19 @@ export async function queryReadOnly<T = Record<string, unknown>>(
   try { return await execution; } finally { pendingReads.delete(key); }
 }
 
+/** Read a sensitive single-purpose value without retaining it in the shared result cache. */
+export async function queryReadOnlyUncached<T = Record<string, unknown>>(
+  query: string,
+  params?: QueryParam[],
+): Promise<T[]> {
+  if (!isReadOnlyQuery(query)) throw new Error("Only read-only SELECT queries are allowed.");
+  const connection = await getPool();
+  const request = connection.request();
+  if (params) for (const param of params) request.input(param.name, param.value);
+  const result = await request.query<T>(query);
+  return result.recordset ?? [];
+}
+
 export function clearReadCache(): void { readCache.clear(); }
 
 export async function testConnection(): Promise<{

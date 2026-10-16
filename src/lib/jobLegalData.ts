@@ -1,0 +1,33 @@
+﻿import {readFile} from 'node:fs/promises';
+import path from 'node:path';
+import {queryReadOnly} from '@/lib/db/sql';
+export async function getJobLegalData(id:string){
+ const rows=await queryReadOnly<Record<string,unknown>>(`SELECT p.*,c.CustBusName,c.Street CustomerStreet,c.Zip CustomerZip,cc.City CustomerCity,cs.PullDownState CustomerState,sc.City SiteCity,ss.PullDownState SiteState,
+ co.PullDownContractWith_PayrollCoName ContractCompanyName,co.PullDownContractWith_PayrollCoStreet ContractCompanyStreet,co.PullDownContractWith_PayrollCoCity ContractCompanyCity,co.PullDownContractWith_PayrollCoZip ContractCompanyZip,co.PullDownContractWith_PayrollCoPhone ContractCompanyPhone,co.PullDownContractWith_PayrollCoFaxNum ContractCompanyFax,coState.PullDownState ContractCompanyState,
+ o.ProjectOwnerName OwnerName,o.ProjectOwnerStreet OwnerStreet,o.ProjectOwnerZip OwnerZip,oc.City OwnerCity,os.PullDownState OwnerState,
+ g.PullDownGeneralContractorName GCName,g.PullDownGeneralContractorStreet GCStreet,g.PullDownGeneralContractorZip GCZip,gc.City GCCity,gs.PullDownState GCState,
+ pg.ProjectGeneralContractorNOICertMailNumber GCCertMailNumber,county.PullDownStateCounty LegalCounty,ls.PullDownStateName LegalState,
+ LTRIM(RTRIM(CONCAT(noi.PullDownSalesmanFName,' ',noi.PullDownSalesmanLName))) NOISignedBy,
+ LTRIM(RTRIM(CONCAT(noc.PullDownSalesmanFName,' ',noc.PullDownSalesmanLName))) NOCSignedBy,
+ LTRIM(RTRIM(CONCAT(soa.PullDownSalesmanFName,' ',soa.PullDownSalesmanLName))) SOASignedBy,
+ LTRIM(RTRIM(CONCAT(soco.PullDownSalesmanFName,' ',soco.PullDownSalesmanLName))) SOCOLienSignedBy,
+ LTRIM(RTRIM(CONCAT(sonoc.PullDownSalesmanFName,' ',sonoc.PullDownSalesmanLName))) SONOCSignedBy,
+ LTRIM(RTRIM(CONCAT(spn.PullDownSalesmanFName,' ',spn.PullDownSalesmanLName))) SPNSignedBy,
+ LTRIM(RTRIM(CONCAT(mo.PullDownSalesmanFName,' ',mo.PullDownSalesmanLName))) MOSignedBy
+ FROM tblProject p JOIN tblCustomer c ON c.CustomerID=p.CustomerID
+ LEFT JOIN tblPullDownStateCities cc ON cc.PullDownStateCityID=c.StateCityID LEFT JOIN tblPullDownStates cs ON cs.PullDownStateID=cc.StateID
+ LEFT JOIN tblPullDownStateCities sc ON sc.PullDownStateCityID=p.SiteStateCityID LEFT JOIN tblPullDownStates ss ON ss.PullDownStateID=sc.StateID
+ LEFT JOIN tblProjectOwners o ON o.ProjectOwnerID=p.ProjectOwnerID LEFT JOIN tblPullDownStateCities oc ON oc.PullDownStateCityID=o.ProjectOwnerStateCityID LEFT JOIN tblPullDownStates os ON os.PullDownStateID=oc.StateID
+ LEFT JOIN tblProjectGeneralContractors pg ON pg.ProjectGeneralContractorID=p.ProjectGeneralContractorID LEFT JOIN tblPullDownGeneralContractors g ON g.PullDownGeneralContractorID=pg.GeneralContractorID LEFT JOIN tblPullDownStateCities gc ON gc.PullDownStateCityID=g.PullDownGeneralContractorStateCityID LEFT JOIN tblPullDownStates gs ON gs.PullDownStateID=gc.StateID
+ LEFT JOIN tblPullDownContractWith_PayrollCo co ON co.PullDownContractWith_PayrollCoName=p.NoticeOfContractContractWith LEFT JOIN tblPullDownStates coState ON coState.PullDownStateID=co.PullDownContractWith_PayrollCoStateID
+ LEFT JOIN tblPullDownStateCounties county ON county.PullDownStateCountyID=p.LegalStateCountyID LEFT JOIN tblPullDownStates ls ON ls.PullDownStateID=county.StateID
+ LEFT JOIN tblPullDownSalesman noi ON noi.PullDownSalesmanID=p.NOISignedByID LEFT JOIN tblPullDownSalesman noc ON noc.PullDownSalesmanID=p.NOCSignedByID LEFT JOIN tblPullDownSalesman soa ON soa.PullDownSalesmanID=p.SOASignedByID LEFT JOIN tblPullDownSalesman soco ON soco.PullDownSalesmanID=p.SOCOLienSignedByID LEFT JOIN tblPullDownSalesman sonoc ON sonoc.PullDownSalesmanID=p.SONOCSignedByID LEFT JOIN tblPullDownSalesman spn ON spn.PullDownSalesmanID=p.SPNSignedByID LEFT JOIN tblPullDownSalesman mo ON mo.PullDownSalesmanID=p.MOSignedByID WHERE p.ProjectID=@id`,[{name:'id',value:id}]);
+ const raw=rows[0]??{};const data:Record<string,string|number|boolean|null>={};for(const [key,value] of Object.entries(raw))data[key]=value instanceof Date?value.toISOString().slice(0,10):value as string|number|boolean|null;
+ try{Object.assign(data,JSON.parse((await readFile(path.join(process.cwd(),'.local-config/access-company.json'),'utf8')).replace(/^\uFEFF/,'')));}catch{throw new Error('Access company report settings are unavailable.');}
+ const state=await queryReadOnly<{State:string}>('SELECT PullDownState State FROM tblPullDownStates WHERE PullDownStateID=@id',[{name:'id',value:Number(data.CompanyStateID)||0}]);data.CompanyState=state[0]?.State??'';
+ const address=(name:unknown,street:unknown,city:unknown,state:unknown,zip:unknown)=>[name,street,city].filter(Boolean).join(', ')+(state?', '+state:'')+(zip?' '+zip:'');
+ data.CompanyFullAddress=address(data.CompanyName,data.CompanyStreet,data.CompanyCity,data.CompanyState,data.CompanyZip);data.CompanyPartialAddress=address('',data.CompanyStreet,data.CompanyCity,data.CompanyState,data.CompanyZip);data.CompanyMailingAddress=[data.CompanyStreet,address('','',data.CompanyCity,data.CompanyState,data.CompanyZip)].filter(Boolean).join('\n');
+ for(const prefix of ['Customer','Owner','GC','Site']){data[prefix+'FullAddress']=address(prefix==='Site'?'':prefix==='Customer'?data.CustBusName:data[prefix+'Name'],data[prefix+'Street'],data[prefix+'City'],data[prefix+'State'],data[prefix+'Zip']);data[prefix+'MailingAddress']=[data[prefix+'Street'],address('','',data[prefix+'City'],data[prefix+'State'],data[prefix+'Zip'])].filter(Boolean).join('\n');}
+ data.FullBookPage='Book/Page - '+String(data.BookPage??'');data.Party=data.NOCIncludeMcLabor?[data.CompanyName,data.NoticeOfContractContractWith].filter(Boolean).join('/'):data.NoticeOfContractContractWith;data.PartyFullAddress=address(data.Party,data.CompanyStreet,data.CompanyCity,data.CompanyState,data.CompanyZip);const owing=await queryReadOnly<{Amount:number|null}>(`WITH billed AS(SELECT t.WeekEndingDate,cw.InvoiceNum,cw.InvoiceYear,cw.Paid,SUM(t.InvoiceAmount) Invoice,SUM(CASE WHEN p.ExcludeSalesTax=1 OR st.PullDownStateSalesTaxPercent IS NULL THEN 0 ELSE st.PullDownStateSalesTaxPercent/100.0*t.InvoiceAmount END) Tax FROM tblTracking t JOIN tblProject p ON p.ProjectID=t.ProjectID JOIN tblCustomerWeeks cw ON cw.CustomerID=t.CustomerID AND cw.AssignWeek=t.AssignWeek AND cw.AssignYear=t.AssignYear LEFT JOIN tblPullDownStateCities sc ON sc.PullDownStateCityID=p.SiteStateCityID LEFT JOIN tblPullDownStates st ON st.PullDownStateID=sc.StateID WHERE t.ProjectID=@id GROUP BY t.WeekEndingDate,cw.InvoiceNum,cw.InvoiceYear,cw.Paid) SELECT SUM(CASE WHEN Paid=0 THEN Invoice+CEILING(Tax*100)/100.0 END) Amount FROM billed`,[{name:'id',value:id}]);data.MOAmountOwed=owing[0]?.Amount??0;
+ return data;
+}

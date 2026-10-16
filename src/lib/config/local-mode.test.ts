@@ -10,6 +10,7 @@ test("local launch skips account setup and persists a secret without login crede
   const temporary = await mkdtemp(path.join(tmpdir(), "mc-labor-local-test-"));
   try {
     process.chdir(temporary);
+    delete process.env.MC_LABOR_AUTH_ENABLED;
     process.env.MC_LABOR_LOCAL_MODE = "1";
     delete process.env.SESSION_SECRET;
     delete process.env.DEV_LOGIN_USERNAME;

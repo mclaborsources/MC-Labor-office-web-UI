@@ -1,30 +1,87 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AccessButton } from "@/components/access/AccessButton";
-import type { EmployeeSummary } from "@/types/employee";
+import type { AllEmployeesOnJobRow } from "@/lib/allEmployeesOnJob";
 
-export function EmployeesInTrackingScreen({ employees }: { employees: EmployeeSummary[] }) {
+const PRESET_VIEWS = ["Default", "View 02", "View 03", "View 04", "View 05", "View 06"];
+
+export function EmployeesInTrackingScreen({ rows: sourceRows }: { rows: AllEmployeesOnJobRow[] }) {
   const router = useRouter();
+  const [name, setName] = useState("");
   const [customer, setCustomer] = useState("");
-  const [employee, setEmployee] = useState("");
-  const [cell, setCell] = useState("");
-  const [week, setWeek] = useState("7/10/2026");
+  const [job, setJob] = useState("<ALL>");
+  const [onePerEmployee, setOnePerEmployee] = useState(false);
   const [view, setView] = useState("View 01");
-  const [useButton, setUseButton] = useState("no");
-  const rows = useMemo(() => employees.filter(row =>
-    (!customer || row.currentAssignment.toLowerCase().includes(customer.toLowerCase())) &&
-    (!employee || row.fullName.toLowerCase().includes(employee.toLowerCase())) &&
-    (!cell || row.cellPhone.includes(cell))
-  ), [employees, customer, employee, cell]);
-  const clear = () => { setCustomer(""); setEmployee(""); setCell(""); };
-  return <section className="ac-eit">
-    <header className="ac-eit-header"><h1>Employee Menu</h1><div className="ac-eit-view"><label>View:</label><select value={view} onChange={e => setView(e.target.value)}>{["View 01","View 02","View 03","View 04","View 05"].map(v => <option key={v}>{v}</option>)}</select><AccessButton>Save View</AccessButton><AccessButton>Delete View</AccessButton><AccessButton>Refresh</AccessButton><AccessButton onClick={clear}>Zero</AccessButton><AccessButton onClick={() => window.print()}>Export View</AccessButton></div><div className="ac-eit-close"><AccessButton onClick={() => router.push("/tracking")}>Cancel</AccessButton><button type="button" aria-label="Help">?</button></div></header>
-    <div className="ac-eit-tools"><div className="ac-eit-search-word">S<br/>E<br/>A<br/>R<br/>C<br/>H</div><div className="ac-eit-fields"><label>Customer:<input value={customer} onChange={e => setCustomer(e.target.value)} /></label><label>Employee:<input value={employee} onChange={e => setEmployee(e.target.value)} /></label><label>Cell #:<input value={cell} onChange={e => setCell(e.target.value)} /></label></div><AccessButton className="ac-eit-search-btn">Search</AccessButton><fieldset><legend>Use<br/>Button</legend><label><input type="radio" checked={useButton === "yes"} onChange={() => setUseButton("yes")} /> Yes</label><label><input type="radio" checked={useButton === "no"} onChange={() => setUseButton("no")} /> No</label></fieldset><div className="ac-eit-presets">{["Default","View 02","View 03","View 04","View 05"].map((v,i) => <AccessButton key={v} onClick={() => setView(i ? v : "View 01")}>{v}</AccessButton>)}<div /></div><AccessButton className="ac-eit-clear" onClick={clear}>Clear Filters</AccessButton></div>
-    <div className="ac-eit-week"><label>Week Ending:<input value={week} onChange={e => setWeek(e.target.value)} /></label><AccessButton>Refresh</AccessButton><span>Double-click Assigned Customer to open the customer in Tracking for the selected Week Ending.</span></div>
-    <div className="ac-eit-grid-wrap"><table className="ac-eit-grid"><thead><tr><th /><th>Employee</th><th>Cell Phone</th><th>Assigned Customer</th><th>Referral Agency</th><th>Trade</th><th>Qualification</th><th>Grade</th><th>WCC</th><th /></tr></thead><tbody>{rows.map((row,i) => <tr key={row.employeeId} className={i === 0 ? "is-current" : undefined}><td /><td><Link href={`/employees/${row.employeeId}`}>{row.fullName}</Link></td><td>{row.cellPhone}</td><td onDoubleClick={() => router.push(`/tracking?date=2026-07-10&customerId=${encodeURIComponent(row.currentAssignment)}`)}>{row.currentAssignment}</td><td>{row.howReferred}</td><td>{row.trade}</td><td>{row.qualification}</td><td>{row.grade}</td><td>{row.accessFields.WCC ?? row.accessFields.WCCName ?? ""}</td><td /></tr>)}</tbody></table></div>
-    <footer className="ac-eit-recordbar"><span>Record:</span><button disabled>|◀</button><button disabled>◀</button><input value={rows.length ? 1 : 0} readOnly aria-label="Record number"/><span>of {rows.length}</span><button disabled>▶</button><button disabled>▶|</button><span>▽ No Filter</span><span>Search</span><div /></footer>
+  const [messageMode, setMessageMode] = useState<"freehand" | "list">("list");
+  const [messageText, setMessageText] = useState("");
+  const [message, setMessage] = useState("");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [searchCommitted, setSearchCommitted] = useState(false);
+  const jobs = useMemo(() => [...new Set(sourceRows.map(row => row.job).filter(Boolean))].sort((a, b) => a.localeCompare(b)), [sourceRows]);
+  const filteredRows = useMemo(() => {
+    const query = name.trim().toLocaleLowerCase();
+    const filtered = sourceRows.filter(row =>
+      (!query || `${row.first} ${row.middle} ${row.last}`.toLocaleLowerCase().includes(query)) &&
+      (!customer.trim() || row.customer.toLocaleLowerCase().includes(customer.trim().toLocaleLowerCase())) &&
+      (job === "<ALL>" || row.job === job)
+    );
+    if (!onePerEmployee) return filtered;
+    const latestByEmployee = new Map<string, AllEmployeesOnJobRow>();
+    for (const row of filtered) if (!latestByEmployee.has(row.employeeId)) latestByEmployee.set(row.employeeId, row);
+    return [...latestByEmployee.values()];
+  }, [sourceRows, name, customer, job, onePerEmployee]);
+  const visibleRows = searchCommitted ? filteredRows : sourceRows;
+
+  function clearFilters() {
+    setName(""); setCustomer(""); setJob("<ALL>"); setSearchCommitted(false); setMessage("");
+  }
+  function saveView() {
+    try {
+      const saved = JSON.parse(localStorage.getItem("all-employees-on-job-views") ?? "{}");
+      saved[view] = { name, customer, job, onePerEmployee };
+      localStorage.setItem("all-employees-on-job-views", JSON.stringify(saved));
+      setMessage(`${view} saved.`);
+    } catch { setMessage("Could not save this view in the browser."); }
+  }
+  function selectView(next: string) {
+    setView(next);
+    try {
+      const saved = JSON.parse(localStorage.getItem("all-employees-on-job-views") ?? "{}");
+      const state = saved[next];
+      if (state) { setName(state.name ?? ""); setCustomer(state.customer ?? ""); setJob(state.job ?? "<ALL>"); setOnePerEmployee(Boolean(state.onePerEmployee)); setSearchCommitted(true); }
+      else if (next === "Default") clearFilters();
+    } catch { /* Ignore invalid saved local settings. */ }
+  }
+  function deleteView() {
+    try {
+      const saved = JSON.parse(localStorage.getItem("all-employees-on-job-views") ?? "{}");
+      delete saved[view]; localStorage.setItem("all-employees-on-job-views", JSON.stringify(saved)); setMessage(`${view} deleted.`);
+    } catch { setMessage("Could not delete this view."); }
+  }
+  function toggleRow(id: string) {
+    setSelected(current => { const next = new Set(current); if (next.has(id)) next.delete(id); else next.add(id); return next; });
+  }
+  function toggleAll() {
+    setSelected(current => current.size === visibleRows.length ? new Set() : new Set(visibleRows.map(row => row.id)));
+  }
+  function sendText() {
+    const count = visibleRows.filter(row => selected.has(row.id) && row.cell).length;
+    setMessage(count ? `Text sending is not configured in this portal yet. ${count} selected employee${count === 1 ? "" : "s"} have a cell number.` : "Select employees with cell numbers first.");
+  }
+
+  return <section className="aej-screen">
+    <header className="aej-titlebar"><h1>All Employees on a Job</h1><div className="aej-toolbar"><label>View: <select value={view} onChange={event => selectView(event.target.value)}>{["View 01", ...PRESET_VIEWS.slice(1)].map(item => <option key={item}>{item}</option>)}</select></label><AccessButton onClick={saveView}>Save View</AccessButton><AccessButton onClick={deleteView}>Delete View</AccessButton><label>Go To: <select aria-label="Go To" defaultValue=""><option value="" />{visibleRows.map((row, index) => <option key={row.id} value={index + 1}>{index + 1} - {row.first} {row.last}</option>)}</select></label><AccessButton onClick={() => { setSearchCommitted(true); setMessage(""); }}>Refresh</AccessButton><AccessButton onClick={clearFilters}>Zero</AccessButton><AccessButton onClick={() => window.print()}>Export View</AccessButton></div><AccessButton className="aej-cancel" onClick={() => router.push("/reports")}>Cancel</AccessButton></header>
+    <div className="aej-control-area">
+      <div className="aej-search-panel"><div className="aej-search-heading">SEARCH</div><label>Name:<input autoComplete="off" value={name} onChange={event => setName(event.target.value)} onKeyDown={event => { if (event.key === "Enter") setSearchCommitted(true); }} /></label></div>
+      <div className="aej-filter-panel"><label>Customer<input value={customer} onChange={event => setCustomer(event.target.value)} onKeyDown={event => { if (event.key === "Enter") setSearchCommitted(true); }} /></label><div className="aej-like"><label><input type="radio" name="aej-match" defaultChecked />Like</label><label><input type="radio" name="aej-match" />=</label><AccessButton onClick={() => setSearchCommitted(true)}>Search</AccessButton></div><label className="aej-job">Job<select value={job} onChange={event => { setJob(event.target.value); setSearchCommitted(true); }}><option>&lt;ALL&gt;</option>{jobs.map(item => <option key={item}>{item}</option>)}</select></label><label className="aej-records">Records:<span><label><input type="radio" checked={!onePerEmployee} onChange={() => setOnePerEmployee(false)} />All</label><label><input type="radio" checked={onePerEmployee} onChange={() => setOnePerEmployee(true)} />1 Per Employee</label></span></label></div>
+      <div className="aej-views">{PRESET_VIEWS.map((preset, index) => <AccessButton key={preset} className={view === (index === 0 ? "View 01" : preset) ? "is-active" : ""} onClick={() => selectView(index === 0 ? "View 01" : preset)}>{preset}</AccessButton>)}</div>
+      <AccessButton className="aej-clear" onClick={clearFilters}>Clear Filters</AccessButton>
+      <div className="aej-textbox"><div className="aej-textbox-head"><strong>Text:</strong><label><input type="radio" checked={messageMode === "freehand"} onChange={() => setMessageMode("freehand")} />Freehand</label><label><input type="radio" checked={messageMode === "list"} onChange={() => setMessageMode("list")} />Select from List</label><AccessButton disabled={!selected.size} onClick={sendText}>Send Text</AccessButton></div>{messageMode === "freehand" ? <textarea value={messageText} onChange={event => setMessageText(event.target.value)} aria-label="Text message" /> : <select className="aej-message-list" aria-label="Select message" value={messageText} onChange={event => setMessageText(event.target.value)}><option value="" />{["Please call the office when available.", "Your assignment has been updated.", "Please confirm your availability for this job."].map(item => <option key={item}>{item}</option>)}</select>}<small>Placeholders: [Employee First Name], [User First Name], [User Full Name]</small></div>
+    </div>
+    <div className="aej-selection"><span>Select:</span><AccessButton onClick={() => setSelected(new Set())}>Clear</AccessButton><AccessButton onClick={toggleAll}>All</AccessButton>{message && <span role="status">{message}</span>}</div>
+    <div className="aej-grid-wrap"><table className="aej-grid"><thead><tr><th className="aej-select-col">Sel</th>{[["customer","Customer"],["job","Job"],["city","Job City"],["state","Job State"],["first","First"],["middle","MI"],["last","Last"],["trade","Trade"],["cell","Cell #"],["status","EE Status"],["weekEnding","Week Ending"],["firstWeek","First Week"],["lastWeek","Last Week"],["text","Text Msg Add"]].map(([key,label]) => <th key={key}>{label}<span>⌄</span></th>)}</tr></thead><tbody>{visibleRows.map(row => <tr key={row.id}><td className="aej-select-col"><input type="checkbox" checked={selected.has(row.id)} onChange={() => toggleRow(row.id)} aria-label={`Select ${row.first} ${row.last}`} /></td><td>{row.customer}</td><td>{row.job}</td><td>{row.city}</td><td>{row.state}</td><td>{row.first}</td><td>{row.middle}</td><td>{row.last}</td><td>{row.trade}</td><td>{row.cell}</td><td>{row.status}</td><td>{row.weekEnding}</td><td>{row.firstWeek}</td><td>{row.lastWeek}</td><td /></tr>)}</tbody></table>{visibleRows.length === 0 && <div className="aej-empty">No employee/job records match these filters.</div>}</div>
+    <footer className="aej-recordbar"><span>Record:</span><button disabled>|◀</button><button disabled>◀</button><input readOnly value={visibleRows.length ? "1" : "0"} aria-label="Current record"/><span>of {visibleRows.length}</span><button disabled>▶</button><button disabled>▶|</button><span>▽ No Filter</span><span>Search</span><div /></footer>
   </section>;
 }

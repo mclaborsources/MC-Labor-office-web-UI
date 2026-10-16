@@ -1,5 +1,6 @@
 import { queryReadOnly } from "@/lib/db/sql";
 import type { AllContactRow } from "@/types/allContacts";
+import { buildTextSearchIndex, searchTextIndex, type TextSearchIndex } from "@/lib/textSearchIndex";
 
 interface RawContactRow {
   id: unknown; profileType: unknown; customerId: unknown; customerName: unknown;
@@ -27,13 +28,6 @@ SELECT * FROM (
   FROM tblEmployeeContacts ec WITH (NOLOCK)
   INNER JOIN tblEmployee e WITH (NOLOCK) ON e.EmployeeID = ec.EmployeeID
 ) contacts
-WHERE (@search IS NULL OR firstName LIKE @search OR lastName LIKE @search OR customerName LIKE @search OR employeeName LIKE @search OR cell1 LIKE @search OR cell2 LIKE @search OR cell3 LIKE @search OR cell4 LIKE @search OR email LIKE @search)
-  AND (@name IS NULL OR firstName LIKE @name OR lastName LIKE @name OR (firstName + ' ' + lastName) LIKE @name)
-  AND (@cell IS NULL OR cell1 LIKE @cell OR cell2 LIKE @cell OR cell3 LIKE @cell OR cell4 LIKE @cell)
-  AND (@email IS NULL OR email LIKE @email)
-  AND (@includeCompanies = 1 OR profileType <> 'Company Contact')
-  AND (@includeEmployees = 1 OR profileType <> 'Employee Contact')
-  AND (@includeNoCommunication = 1 OR noCommunication = 0)
 ORDER BY lastName, firstName, customerName, employeeName`;
 
 export interface AllContactFilters {
@@ -41,21 +35,48 @@ export interface AllContactFilters {
   includeCompanies: boolean; includeEmployees: boolean; includeNoCommunication: boolean;
 }
 
+const CONTACT_INDEX_TTL_MS = 5 * 60 * 1000;
+let contactIndexCache: { expiresAt: number; rows: AllContactRow[]; index: TextSearchIndex } | null = null;
+let contactIndexLoad: Promise<{ expiresAt: number; rows: AllContactRow[]; index: TextSearchIndex }> | null = null;
+
+async function loadContactIndex() {
+  if (contactIndexCache && contactIndexCache.expiresAt > Date.now()) return contactIndexCache;
+  if (!contactIndexLoad) {
+    contactIndexLoad = queryReadOnly<RawContactRow>(ALL_CONTACTS_SQL).then((rawRows) => {
+      const rows = rawRows.map((r) => ({
+        id: String(r.id ?? ""), profileType: String(r.profileType ?? "Company Contact") as AllContactRow["profileType"],
+        customerId: String(r.customerId ?? ""), customerName: String(r.customerName ?? ""),
+        employeeId: String(r.employeeId ?? ""), employeeName: String(r.employeeName ?? ""),
+        firstName: String(r.firstName ?? ""), lastName: String(r.lastName ?? ""),
+        cell1: String(r.cell1 ?? ""), cell2: String(r.cell2 ?? ""), cell3: String(r.cell3 ?? ""), cell4: String(r.cell4 ?? ""),
+        email: String(r.email ?? ""), noCommunication: Boolean(r.noCommunication),
+      }));
+      const index = buildTextSearchIndex(rows.map((r) => [
+        r.firstName, r.lastName, r.customerName, r.employeeName, r.cell1, r.cell2, r.cell3, r.cell4, r.email,
+      ]));
+      const cached = { expiresAt: Date.now() + CONTACT_INDEX_TTL_MS, rows, index };
+      contactIndexCache = cached;
+      return cached;
+    }).finally(() => { contactIndexLoad = null; });
+  }
+  return contactIndexLoad;
+}
+
 export async function getAllContacts(filters: AllContactFilters): Promise<AllContactRow[]> {
-  const pat = (s?: string) => s?.trim() ? `%${s.trim()}%` : null;
-  const rows = await queryReadOnly<RawContactRow>(ALL_CONTACTS_SQL, [
-    { name: "search", value: pat(filters.search) }, { name: "name", value: pat(filters.name) },
-    { name: "cell", value: pat(filters.cell) }, { name: "email", value: pat(filters.email) },
-    { name: "includeCompanies", value: filters.includeCompanies ? 1 : 0 },
-    { name: "includeEmployees", value: filters.includeEmployees ? 1 : 0 },
-    { name: "includeNoCommunication", value: filters.includeNoCommunication ? 1 : 0 },
-  ]);
-  return rows.map((r) => ({
-    id: String(r.id ?? ""), profileType: String(r.profileType ?? "Company Contact") as AllContactRow["profileType"],
-    customerId: String(r.customerId ?? ""), customerName: String(r.customerName ?? ""),
-    employeeId: String(r.employeeId ?? ""), employeeName: String(r.employeeName ?? ""),
-    firstName: String(r.firstName ?? ""), lastName: String(r.lastName ?? ""),
-    cell1: String(r.cell1 ?? ""), cell2: String(r.cell2 ?? ""), cell3: String(r.cell3 ?? ""), cell4: String(r.cell4 ?? ""),
-    email: String(r.email ?? ""), noCommunication: Boolean(r.noCommunication),
-  }));
+  const { rows, index } = await loadContactIndex();
+  return searchTextIndex(index, filters.search ?? "")
+    .map((rowIndex) => rows[rowIndex])
+    .filter((row) => {
+      const name = filters.name?.trim().toLocaleLowerCase() ?? "";
+      const cell = filters.cell?.trim().toLocaleLowerCase() ?? "";
+      const email = filters.email?.trim().toLocaleLowerCase() ?? "";
+      const names = [row.firstName, row.lastName, row.firstName + " " + row.lastName].map((value) => value.toLocaleLowerCase());
+      const cells = [row.cell1, row.cell2, row.cell3, row.cell4].map((value) => value.toLocaleLowerCase());
+      return (!name || names.some((value) => value.includes(name)))
+        && (!cell || cells.some((value) => value.includes(cell)))
+        && (!email || row.email.toLocaleLowerCase().includes(email))
+        && (filters.includeCompanies || row.profileType !== "Company Contact")
+        && (filters.includeEmployees || row.profileType !== "Employee Contact")
+        && (filters.includeNoCommunication || !row.noCommunication);
+    });
 }

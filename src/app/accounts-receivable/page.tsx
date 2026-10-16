@@ -1,4 +1,13 @@
 import { AppShell } from "@/components/layout/AppShell";
-import { CustomerReportScreen } from "@/components/reports/CustomerReportScreen";
+import { AccountsReceivableReportScreen } from "@/components/reports/AccountsReceivableReportScreen";
 import { getSessionOrDefault } from "@/lib/auth/session";
-export default async function AccountsReceivablePage() {const session=await getSessionOrDefault();return <AppShell userDisplayName={session.user?.displayName} fullWidth fillViewport><CustomerReportScreen kind="ar" rows={[]} error="Accounts receivable balances, payments, and aging rules have not been mapped to SQL yet."/></AppShell>;}
+import { getOpenInvoiceRows, type OpenInvoiceRow } from "@/lib/operationalReports";
+
+export default async function AccountsReceivablePage() {
+  const session=await getSessionOrDefault();
+  let rows:OpenInvoiceRow[]=[];
+  let error="";
+  try { rows=await getOpenInvoiceRows(); }
+  catch { error="The accounts receivable report could not be loaded from the office database."; }
+  return <AppShell userDisplayName={session.user?.displayName} fullWidth fillViewport><AccountsReceivableReportScreen rows={rows} error={error}/></AppShell>;
+}

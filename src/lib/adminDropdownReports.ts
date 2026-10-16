@@ -1,6 +1,112 @@
 import { queryReadOnly } from "@/lib/db/sql";
 import type { OperationalReportRow } from "@/lib/operationalReports";
 
+/** Access OSHA overview displays the status lookup code, preserving missing statuses. */
+export function getOshaRows(): Promise<OperationalReportRow[]> {
+  return queryReadOnly<OperationalReportRow>(`SELECT CAST(e.EmployeeID AS VARCHAR(20)) id,
+    t.CustomerBusName Customer,t.SiteName Job,e.EmFirstName AS [Em First Name],e.EmMiddle MI,
+    e.EmLastName AS [Em Last Name],e.EmMobilePhone Cell,
+    CONVERT(VARCHAR(10),t.WeekEndingDate,101) AS [Week Ending],
+    os.PullDownOSHA10StatusDesc OSHA,t.PayrollCoOnSiteInitials AS [Payroll Co],t.TrackMargin Margin,
+    e.EmOSHANotes AS [OSHA Notes],t.SickTime AS [Sick Time],
+    t.CoExpSchoolingPerHr AS [Schooling Per Hr],t.CoExpToolsPerHr AS [Tools Per Hr],
+    t.CoExpParkingPerHr AS [Parking Per Hr]
+    FROM tblEmployee e WITH (NOLOCK)
+    JOIN tblTracking t WITH (NOLOCK) ON t.TrackingID=e.MaxTrackingID
+    LEFT JOIN tblPullDownOSHA10Status os WITH (NOLOCK) ON os.PullDownOSHA10StatusID=e.OSHA10StatusID
+    WHERE e.EmEmployeeStatusID=17 ORDER BY e.EmFirstName,e.EmLastName,e.EmployeeID`);
+}
+
+/** Face Meeting overview uses Assigned employees and the Access latest-tracking pointer. */
+export function getFaceMeetingRows(): Promise<OperationalReportRow[]> {
+  return queryReadOnly<OperationalReportRow>(`SELECT CAST(e.EmployeeID AS VARCHAR(20)) id,
+    t.CustomerBusName Customer,t.SiteName Job,e.EmFirstName AS [Em First Name],e.EmMiddle MI,
+    e.EmLastName AS [Em Last Name],e.EmMobilePhone Cell,
+    CONVERT(VARCHAR(10),t.WeekEndingDate,101) AS [Week Ending],
+    CASE WHEN e.FaceMeeting IS NULL THEN '' WHEN e.FaceMeeting<>0 THEN 'Yes' ELSE 'No' END AS [Face Meeting],
+    t.PayrollCoOnSiteInitials AS [Payroll Co],
+    t.TrackMargin Margin,t.SickTime AS [Sick Time],t.CoExpSchoolingPerHr AS [Schooling Per Hr],
+    t.CoExpToolsPerHr AS [Tools Per Hr],t.CoExpParkingPerHr AS [Parking Per Hr]
+    FROM tblEmployee e WITH (NOLOCK)
+    JOIN tblTracking t WITH (NOLOCK) ON t.TrackingID=e.MaxTrackingID
+    WHERE e.EmEmployeeStatusID=17
+    ORDER BY e.EmFirstName,e.EmLastName,e.EmployeeID`);
+}
+
+/** Smart Phone overview uses Assigned employees and the Access latest-tracking pointer. */
+export function getSmartPhoneRows(): Promise<OperationalReportRow[]> {
+  return queryReadOnly<OperationalReportRow>(`SELECT CAST(e.EmployeeID AS VARCHAR(20)) id,
+    t.CustomerBusName Customer,t.SiteName Job,e.EmFirstName AS [Em First Name],e.EmMiddle MI,
+    e.EmLastName AS [Em Last Name],e.EmMobilePhone Cell,
+    CONVERT(VARCHAR(10),t.WeekEndingDate,101) AS [Week Ending],
+    e.EmSmartPhone AS [Smart Phone],
+    t.PayrollCoOnSiteInitials AS [Payroll Co],
+    t.TrackMargin Margin,t.SickTime AS [Sick Time],t.CoExpSchoolingPerHr AS [Schooling Per Hr],
+    t.CoExpToolsPerHr AS [Tools Per Hr],t.CoExpParkingPerHr AS [Parking Per Hr]
+    FROM tblEmployee e WITH (NOLOCK)
+    JOIN tblTracking t WITH (NOLOCK) ON t.TrackingID=e.MaxTrackingID
+    WHERE e.EmEmployeeStatusID=17
+    ORDER BY e.EmFirstName,e.EmLastName,e.EmployeeID`);
+}
+
+/** Resume or Work History overview uses Assigned employees and the Access latest-tracking pointer. */
+export function getResumeWorkHistoryRows(): Promise<OperationalReportRow[]> {
+  return queryReadOnly<OperationalReportRow>(`SELECT CAST(e.EmployeeID AS VARCHAR(20)) id,
+    t.CustomerBusName Customer,t.SiteName Job,e.EmFirstName AS [Em First Name],e.EmMiddle MI,
+    e.EmLastName AS [Em Last Name],e.EmMobilePhone Cell,
+    CONVERT(VARCHAR(10),t.WeekEndingDate,101) AS [Week Ending],
+    CASE WHEN e.ResumeOrWorkHistory IS NULL THEN '' WHEN e.ResumeOrWorkHistory<>0 THEN 'Yes' ELSE 'No' END AS [Resume or Work History],
+    t.PayrollCoOnSiteInitials AS [Payroll Co],e.ResumeOrWorkHistoryNotes AS [Resume or Work History Notes],
+    t.TrackMargin Margin,t.SickTime AS [Sick Time],t.CoExpSchoolingPerHr AS [Schooling Per Hr],
+    t.CoExpToolsPerHr AS [Tools Per Hr],t.CoExpParkingPerHr AS [Parking Per Hr]
+    FROM tblEmployee e WITH (NOLOCK)
+    JOIN tblTracking t WITH (NOLOCK) ON t.TrackingID=e.MaxTrackingID
+    WHERE e.EmEmployeeStatusID=17
+    ORDER BY e.EmFirstName,e.EmLastName,e.EmployeeID`);
+}
+
+/** Interview overview uses Assigned employees and the Access latest-tracking pointer. */
+export function getInterviewQuestionRows(): Promise<OperationalReportRow[]> {
+  return queryReadOnly<OperationalReportRow>(`SELECT CAST(e.EmployeeID AS VARCHAR(20)) id,
+    t.CustomerBusName Customer,t.SiteName Job,e.EmFirstName AS [Em First Name],e.EmMiddle MI,
+    e.EmLastName AS [Em Last Name],e.EmMobilePhone Cell,
+    CONVERT(VARCHAR(10),t.WeekEndingDate,101) AS [Week Ending],
+    CASE WHEN e.InterviewQuestions IS NULL THEN '' WHEN e.InterviewQuestions<>0 THEN 'Yes' ELSE 'No' END AS [Interview Questions],
+    t.PayrollCoOnSiteInitials AS [Payroll Co],e.InterviewQuestionsNotes AS [Interview Question Notes],
+    t.TrackMargin Margin,t.SickTime AS [Sick Time],t.CoExpSchoolingPerHr AS [Schooling Per Hr],
+    t.CoExpToolsPerHr AS [Tools Per Hr],t.CoExpParkingPerHr AS [Parking Per Hr]
+    FROM tblEmployee e WITH (NOLOCK)
+    JOIN tblTracking t WITH (NOLOCK) ON t.TrackingID=e.MaxTrackingID
+    WHERE e.EmEmployeeStatusID=17
+    ORDER BY e.EmFirstName,e.EmLastName,e.EmployeeID`);
+}
+
+/** Preserve employees without licenses and one row for each recorded license. */
+export function getEmployeeLicenseRows(): Promise<OperationalReportRow[]> {
+  return queryReadOnly<OperationalReportRow>(`SELECT
+    CONCAT(e.EmployeeID,'-',ISNULL(l.EmployeeLicenseID,0)) id,
+    t.CustomerBusName Customer,
+    LTRIM(RTRIM(CONCAT(s.PullDownSalesmanFName,' ',s.PullDownSalesmanLName))) Salesman,
+    t.SiteName Job,e.EmFirstName AS [Em First Name],e.EmLastName AS [Em Last Name],
+    g.PullDownGrade Grade,e.EmMobilePhone Cell,CONVERT(VARCHAR(10),t.WeekEndingDate,101) AS [Week Ending],
+    tr.PullDownTrade Trade,q.PullDownQualification Qualification,ls.PullDownState AS [Licensed State],
+    CONVERT(VARCHAR(10),l.EmployeeLicenseExpDate,101) AS [License Exp Date],
+    l.EmployeeLicenseCopyOnFile AS [License Copy On File],l.EmployeeLicenseNotes AS [License Notes],
+    t.PayrollCoOnSiteInitials AS [Payroll Co],t.TrackMargin Margin,
+    st.PullDownEmployeeStatus AS [Employee Status]
+    FROM tblEmployee e WITH (NOLOCK)
+    JOIN tblTracking t WITH (NOLOCK) ON t.TrackingID=e.MaxTrackingID
+    LEFT JOIN tblEmployeeLicenses l WITH (NOLOCK) ON l.EmployeeID=e.EmployeeID
+    LEFT JOIN tblCustomer c WITH (NOLOCK) ON c.CustomerID=t.CustomerID
+    LEFT JOIN tblPullDownSalesman s WITH (NOLOCK) ON s.PullDownSalesmanID=c.SalesmanID
+    LEFT JOIN tblPullDownGrades g WITH (NOLOCK) ON g.PullDownGradeID=e.EmGradeID
+    LEFT JOIN tblPullDownTrade tr WITH (NOLOCK) ON tr.PullDownTradeID=e.EmTradeID
+    LEFT JOIN tblPullDownQualifications q WITH (NOLOCK) ON q.PullDownQualificationID=e.EmQualificationID
+    LEFT JOIN tblPullDownStates ls WITH (NOLOCK) ON ls.PullDownStateID=l.EmployeeLicenseStateID
+    LEFT JOIN tblPullDownEmployeeStatus st WITH (NOLOCK) ON st.PullDownEmployeeStatusID=e.EmEmployeeStatusID
+    ORDER BY e.EmFirstName,e.EmLastName,l.EmployeeLicenseID`);
+}
+
 /** Data-backed invoice search using the confirmed tblCustomerWeeks invoice fields. */
 export function getInvoiceSearchRows(): Promise<OperationalReportRow[]> {
   return queryReadOnly<OperationalReportRow>(`SELECT TOP (2000)
@@ -18,23 +124,24 @@ export function getInvoiceSearchRows(): Promise<OperationalReportRow[]> {
   ORDER BY cw.WeekEndingDate DESC,c.CustBusName`);
 }
 
-/** Employee assignment/contact fields confirmed by the tracking and employee data modules. */
+/** Access Email Addresses: status 17 employees and their stored latest tracking record. */
 export function getEmailAddressRows(): Promise<OperationalReportRow[]> {
   return queryReadOnly<OperationalReportRow>(`WITH ranked AS (
     SELECT t.TrackingID,t.CustomerBusName,t.SiteName,t.EmFirstName,t.EmLastName,t.EmMobilePhone,
       t.WeekEndingDate,t.PayrollCoOnSiteInitials,e.EmEmail,t.AssignmentUserName,
-      ROW_NUMBER() OVER (PARTITION BY t.EmployeeID ORDER BY t.AssignmentTimestamp DESC,t.TrackingID DESC) rn
-    FROM tblTracking t WITH (NOLOCK)
-    LEFT JOIN tblEmployee e WITH (NOLOCK) ON e.EmployeeID=t.EmployeeID
-    WHERE t.EmployeeID IS NOT NULL
+      t.TrackMargin,t.SickTime,t.CoExpSchoolingPerHr,t.CoExpToolsPerHr,t.CoExpParkingPerHr
+    FROM tblEmployee e WITH (NOLOCK)
+    JOIN tblTracking t WITH (NOLOCK) ON t.TrackingID=e.MaxTrackingID
+    WHERE e.EmEmployeeStatusID=17
   )
-  SELECT TOP (1000) CAST(TrackingID AS NVARCHAR(20)) id,
+  SELECT CAST(TrackingID AS NVARCHAR(20)) id,
     ISNULL(CustomerBusName,'') Customer,ISNULL(SiteName,'') Job,
     ISNULL(EmFirstName,'') AS [Em First Name],ISNULL(EmLastName,'') AS [Em Last Name],
     ISNULL(EmMobilePhone,'') Cell,CONVERT(VARCHAR(10),WeekEndingDate,101) AS [Week Ending],
     ISNULL(PayrollCoOnSiteInitials,'') AS [Payroll Co],ISNULL(EmEmail,'') Email,
-    ISNULL(AssignmentUserName,'') Assignment
-  FROM ranked WHERE rn=1 ORDER BY EmLastName,EmFirstName`);
+    TrackMargin Margin,SickTime AS [Sick Time],CoExpSchoolingPerHr AS [Schooling Per Hr],
+    CoExpToolsPerHr AS [Tools Per Hr],CoExpParkingPerHr AS [Parking Per Hr]
+  FROM ranked ORDER BY EmFirstName,EmLastName,TrackingID`);
 }
 
 /** Weekly/monthly employee hours aggregated from the confirmed tracking hour columns. */

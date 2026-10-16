@@ -1,0 +1,21 @@
+﻿"use client";
+import { useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AccessButton } from "@/components/access/AccessButton";
+import type { OperationalReportRow } from "@/lib/operationalReports";
+import type { TrackingWeekOption } from "@/lib/adminReportQueries";
+import styles from "./CompareTrackingWeeksScreen.module.css";
+export function CompareTrackingWeeksScreen({rows,weeks,current,previous,error=""}:{rows:OperationalReportRow[];weeks:TrackingWeekOption[];current:string;previous:string;error?:string}){
+ const reportRef=useRef<HTMLDivElement>(null);
+ const router=useRouter();const [search,setSearch]=useState("");
+ const visible=useMemo(()=>rows.filter(row=>[row['Last Week'],row['This Week'],row.Salesman].some(value=>String(value??'').toLowerCase().includes(search.trim().toLowerCase()))),[rows,search]);
+ const pages=Array.from({length:Math.max(1,Math.ceil(visible.length/28))},(_,index)=>visible.slice(index*28,index*28+28));
+ function selectWeek(key:string,value:string){const params=new URLSearchParams({current,previous});params.set(key,value);router.push(`/compare-tracking-weeks?${params}`);}
+ function downloadReport(){
+  if(!reportRef.current)return;
+  const css = '.company-comparison-paper{box-sizing:border-box;width:694px;min-height:898px;margin:24px auto;padding:43px 40px 64px;background:white;border:1px solid black;position:relative;break-after:page;font:12px Arial,sans-serif}.company-comparison-paper h1{font-size:21px;font-weight:400;margin:0 0 10px}table{width:100%;border-collapse:collapse;table-layout:fixed}th{text-align:left;font-size:11px}td,th{padding:4px 0;border-bottom:1px solid black;vertical-align:top;overflow-wrap:anywhere;font-weight:400}footer{position:absolute;bottom:30px;left:0;right:0;text-align:center;font-size:11px}@media print{@page{size:letter;margin:0}.company-comparison-paper{width:8.5in;min-height:11in;margin:0;border:0}}';
+  const html='<!doctype html><html><head><meta charset="utf-8"><title>Compare Company Tracking Weeks</title><style>'+css+'</style></head><body>'+reportRef.current.innerHTML+'</body></html>';
+  const url=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));const link=document.createElement('a');link.href=url;link.download='compare-company-tracking-weeks-'+current+'.html';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ }
+ return <section className={`company-comparison ${styles.report}`}><div className="company-comparison-controls"><label>Last Week<select value={previous} onChange={e=>selectWeek('previous',e.target.value)}>{weeks.map(week=><option key={week.value} value={week.value}>{week.label}</option>)}</select></label><label>This Week<select value={current} onChange={e=>selectWeek('current',e.target.value)}>{weeks.map(week=><option key={week.value} value={week.value}>{week.label}</option>)}</select></label><label>Search<input value={search} onChange={e=>setSearch(e.target.value)}/></label><AccessButton onClick={()=>router.refresh()}>Refresh</AccessButton><AccessButton onClick={()=>window.print()}>Print / Save PDF</AccessButton><AccessButton onClick={downloadReport}>Download Report</AccessButton><AccessButton onClick={()=>router.push('/tracking')}>Cancel</AccessButton></div>{error&&<p role="alert">{error}</p>}<div ref={reportRef} className="company-comparison-pages">{pages.map((page,index)=><article className="company-comparison-paper" key={index}><h1>Compare Company Tracking Weeks</h1><table><colgroup><col style={{width:'34%'}}/><col style={{width:'5%'}}/><col style={{width:'34%'}}/><col style={{width:'5%'}}/><col style={{width:'22%'}}/></colgroup><thead><tr><th title={previous}>Last Week</th><th>Inv#</th><th title={current}>This Week</th><th>Inv#</th><th>Salesman</th></tr></thead><tbody>{page.map(row=><tr key={String(row.id)}><td>{row['Last Week']}</td><td>{row['Last Invoice']}</td><td>{row['This Week']}</td><td>{row['This Invoice']}</td><td>{row.Salesman}</td></tr>)}{!page.length&&<tr><td colSpan={5}>{error?'Report unavailable.':'No company weeks found.'}</td></tr>}</tbody></table><footer>Page {index+1} of {pages.length}</footer></article>)}</div></section>;
+}

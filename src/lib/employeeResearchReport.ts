@@ -8,7 +8,7 @@ const aliases = {
   id: ["employeeresearchid", "researchid", "id"],
   staffId: ["officestaffid", "staffid"],
   staff: ["staffname", "officestaffname", "researchstaffname"],
-  screen: ["screenname", "researchscreen", "employeeresearchscreen", "employeeresearchscreenname", "formname", "viewname"],
+  screen: ["screenname", "researchscreen", "employeeresearchscreen", "employeeresearchscreenname", "employeeresearchobject", "formname", "viewname"],
   type: ["researchtype", "employeeresearchtype", "type"],
   employeeId: ["employeeid", "researchemployeeid"],
   first: ["employeefirstname", "firstname", "emfirstName"],
@@ -17,7 +17,7 @@ const aliases = {
   date: ["researchdate", "employeeresearchdate", "date", "startdate", "timestamp", "datetime"],
   start: ["starttime", "researchstarttime", "employeeresearchstarttime", "startdatetime"],
   end: ["endtime", "researchendtime", "employeeresearchendtime", "enddatetime"],
-  seconds: ["timesec", "timeseconds", "durationseconds", "researchseconds", "employeeresearchseconds", "durationinseconds", "seconds", "duration", "elapsed"],
+  seconds: ["employeeresearchtime", "timesec", "timeseconds", "durationseconds", "researchseconds", "employeeresearchseconds", "durationinseconds", "seconds", "duration", "elapsed"],
 } as const;
 
 export async function getEmployeeResearchRows(): Promise<EmployeeResearchRow[]> {
@@ -70,6 +70,21 @@ export async function getEmployeeResearchRows(): Promise<EmployeeResearchRow[]> 
       ? `(SELECT TOP (1) LTRIM(RTRIM(ISNULL(os.OfficeStaffFirstName,'')+' '+ISNULL(os.OfficeStaffLastName,''))) FROM tblOfficeStaff os WITH (NOLOCK) WHERE os.OfficeStaffID=r.${quote(col("staffId")!.COLUMN_NAME)})`
       : `CAST(NULL AS NVARCHAR(255))`;
   const employeeId = col("employeeId");
+  const typeColumn = col("type");
+  const typeName = typeColumn ? normalized(typeColumn.COLUMN_NAME) : "";
+  const typeLookup = typeName.endsWith("id") ? [...tables.entries()].find(([key, lookupFields]) =>
+    key !== selected[0]
+      && lookupFields.some(field => [typeName, `pulldown${typeName}`].includes(normalized(field.COLUMN_NAME)))
+      && lookupFields.some(field => [typeName.slice(0, -2), `pulldown${typeName.slice(0, -2)}`].includes(normalized(field.COLUMN_NAME))),
+  ) : undefined;
+  const typeExpression = typeLookup && typeColumn
+    ? (() => {
+        const [lookupSchema, lookupTable] = typeLookup[0].split(".");
+        const lookupId = typeLookup[1].find(field => [typeName, `pulldown${typeName}`].includes(normalized(field.COLUMN_NAME)))!;
+        const lookupLabel = typeLookup[1].find(field => [typeName.slice(0, -2), `pulldown${typeName.slice(0, -2)}`].includes(normalized(field.COLUMN_NAME)))!;
+        return `COALESCE((SELECT TOP (1) CONVERT(NVARCHAR(255),rt.${quote(lookupLabel.COLUMN_NAME)}) FROM ${quote(lookupSchema)}.${quote(lookupTable)} rt WITH (NOLOCK) WHERE rt.${quote(lookupId.COLUMN_NAME)}=r.${quote(typeColumn.COLUMN_NAME)}),CONVERT(NVARCHAR(255),${source("type")}))`;
+      })()
+    : `CONVERT(NVARCHAR(255),${source("type")})`;
   const screenColumn = col("screen");
   const screenId = screenColumn && normalized(screenColumn.COLUMN_NAME).endsWith("id");
   const screenLookup = screenId ? [...tables.entries()].find(([key, lookupFields]) => {
@@ -107,19 +122,23 @@ export async function getEmployeeResearchRows(): Promise<EmployeeResearchRow[]> 
     ? `FORMAT(TRY_CONVERT(DATETIME2,r.${quote(field.COLUMN_NAME)}),'h:mm:ss tt')`
     : fallback;
   const secondsColumn = col("seconds");
+  // Match Access's Time Sec field and totals using its stored value, including NULLs.
+  // Timestamp differences are only a compatibility fallback when no stored field exists.
   const derivedSeconds = startColumn && endColumn
     ? `DATEDIFF(SECOND,TRY_CONVERT(DATETIME2,${startExpression}),TRY_CONVERT(DATETIME2,${endExpression}))`
     : `CAST(NULL AS INT)`;
   const secondsExpression = secondsColumn
-    ? `COALESCE(TRY_CONVERT(INT,r.${quote(secondsColumn.COLUMN_NAME)}),${derivedSeconds})`
+    ? `TRY_CONVERT(INT,r.${quote(secondsColumn.COLUMN_NAME)})`
     : derivedSeconds;
   const expressions = [
     `${source("id")} AS id`, `${staffName} AS [Staff Name]`, `${screenExpression} AS [Screen Name]`,
-    `CASE WHEN TRY_CONVERT(INT,${source("type")})=1 THEN 'Work Time' WHEN TRY_CONVERT(INT,${source("type")})=2 THEN 'Sleep Time' ELSE CONVERT(NVARCHAR(255),${source("type")}) END AS [Type]`, `${employeeName("first", "EmFirstName")} AS [First Name]`,
+    `${source("employeeId")} AS [Employee ID]`,
+    `${typeExpression} AS [Type]`, `${employeeName("first", "EmFirstName")} AS [First Name]`,
     `${employeeName("middle", "EmMiddle")} AS MI`, `${employeeName("last", "EmLastName")} AS [Last Name]`,
-    `CONVERT(VARCHAR(10),${dateExpression},101) AS [Date]`, `${formatTime(startColumn, `CONVERT(VARCHAR(20),${startExpression},100)`)} AS [Start Time]`,
+    `FORMAT(TRY_CONVERT(DATE,${dateExpression}),'M/d/yyyy') AS [Date]`, `${formatTime(startColumn, `CONVERT(VARCHAR(20),${startExpression},100)`)} AS [Start Time]`,
     `${formatTime(endColumn, `CONVERT(VARCHAR(20),${endExpression},100)`)} AS [End Time]`, `${secondsExpression} AS [Time Sec]`,
   ];
-  const order = dateColumn ? `ORDER BY r.${quote(dateColumn.COLUMN_NAME)} DESC` : "";
+  const recordId = col("id");
+  const order = `ORDER BY [Staff Name] ASC${recordId ? `,r.${quote(recordId.COLUMN_NAME)} ASC` : dateColumn ? `,r.${quote(dateColumn.COLUMN_NAME)} ASC` : ""}`;
   return queryReadOnly<EmployeeResearchRow>(`SELECT TOP (5000) ${expressions.join(", ")} FROM ${quote(schema)}.${quote(table)} r WITH (NOLOCK) ${order}`);
 }

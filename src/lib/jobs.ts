@@ -8,6 +8,7 @@ import type {
   ProjectWeekRow,
 } from "@/types/job";
 import type { FilterOption, PaginatedResult } from "@/types/search";
+import { buildTextSearchIndex, searchTextIndex, type TextSearchIndex } from "@/lib/textSearchIndex";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -211,7 +212,7 @@ async function loadCustomerOptions(): Promise<FilterOption[]> {
 // ---------------------------------------------------------------------------
 
 const JOB_LIST_SQL = `
-SELECT TOP (200)
+SELECT
   p.ProjectID,
   p.CustomerID,
   ISNULL(c.CustBusName,    '')  AS CustBusName,
@@ -230,24 +231,28 @@ SELECT TOP (200)
   ISNULL(p.CustomerEmail,  '')  AS CustomerEmail
 FROM  tblProject p WITH (NOLOCK)
 JOIN  tblCustomer c WITH (NOLOCK) ON c.CustomerID = p.CustomerID
-WHERE
-  (@searchPat IS NULL
-    OR p.SiteName    LIKE @searchPat
-    OR CAST(p.ProjectID  AS NVARCHAR(20)) LIKE @searchPat
-    OR CAST(p.CustomerID AS NVARCHAR(20)) LIKE @searchPat
-    OR c.CustBusName LIKE @searchPat
-    OR p.CustomerPhone LIKE @searchPat)
-  AND (@customerId     IS NULL OR CAST(p.CustomerID     AS NVARCHAR(20)) = @customerId)
-  AND (@salesmanId     IS NULL OR CAST(c.SalesmanID     AS NVARCHAR(20)) = @salesmanId)
-  AND (@customerTypeId IS NULL OR CAST(c.CustomerTypeID AS NVARCHAR(20)) = @customerTypeId)
-  AND (@statusId       IS NULL OR CAST(p.ProjStatusID   AS NVARCHAR(20)) = @statusId)
-  AND (@city  IS NULL OR p.SiteStateCityID IN (
-        SELECT sc.PullDownStateCityID FROM tblPullDownStateCities sc WITH (NOLOCK) WHERE sc.City = @city))
-  AND (@stateId IS NULL OR p.SiteStateCityID IN (
-        SELECT sc.PullDownStateCityID FROM tblPullDownStateCities sc WITH (NOLOCK)
-        WHERE CAST(sc.StateID AS NVARCHAR(20)) = @stateId))
 ORDER BY p.ProjectID DESC
 `;
+
+const JOB_INDEX_TTL_MS = 5 * 60 * 1000;
+let jobIndexCache: { expiresAt: number; rows: JobRow[]; index: TextSearchIndex } | null = null;
+let jobIndexLoad: Promise<{ expiresAt: number; rows: JobRow[]; index: TextSearchIndex }> | null = null;
+
+async function loadJobSearchIndex() {
+  if (jobIndexCache && jobIndexCache.expiresAt > Date.now()) return jobIndexCache;
+  if (!jobIndexLoad) {
+    jobIndexLoad = queryReadOnly<JobRow>(JOB_LIST_SQL).then((rows) => {
+      const index = buildTextSearchIndex(rows.map((row) => [
+        safeStr(row.SiteName), safeStr(row.ProjectID), safeStr(row.CustomerID),
+        safeStr(row.CustBusName), safeStr(row.CustomerPhone),
+      ]));
+      const cached = { expiresAt: Date.now() + JOB_INDEX_TTL_MS, rows, index };
+      jobIndexCache = cached;
+      return cached;
+    }).finally(() => { jobIndexLoad = null; });
+  }
+  return jobIndexLoad;
+}
 
 const JOB_DETAIL_SQL = `
 SELECT TOP (1)
@@ -375,32 +380,26 @@ export interface GetJobsParams {
 export async function getJobs(
   params: GetJobsParams = {},
 ): Promise<PaginatedResult<JobSummary>> {
-  const searchPat = params.search ? `%${params.search}%` : null;
-  const customerId = params.customerId || null;
-  const salesmanId = params.salesmanId || null;
-  const customerTypeId = params.customerTypeId || null;
-  const statusId = params.statusId || null;
-  const city = params.city || null;
-  const stateId = params.stateId || null;
-
-  const [rows, typeMap, salesmanMap, statusMap, stateCityMap] = await Promise.all([
-    queryReadOnly<JobRow>(JOB_LIST_SQL, [
-      { name: "searchPat",     value: searchPat },
-      { name: "customerId",    value: customerId },
-      { name: "salesmanId",    value: salesmanId },
-      { name: "customerTypeId",value: customerTypeId },
-      { name: "statusId",      value: statusId },
-      { name: "city",          value: city },
-      { name: "stateId",       value: stateId },
-    ]),
+  const [{ rows, index }, typeMap, salesmanMap, statusMap, stateCityMap] = await Promise.all([
+    loadJobSearchIndex(),
     loadCustomerTypeMap(),
     loadSalesmanMap(),
     loadStatusMap(),
     loadStateCityMap(),
   ]);
 
-  const data = rows.map((row) => toJobBase(row, typeMap, salesmanMap, statusMap, stateCityMap));
-  return { data, total: data.length, page: 1, pageSize: 200, hasMore: false };
+  const filteredRows = searchTextIndex(index, params.search ?? "")
+    .map((rowIndex) => rows[rowIndex])
+    .filter((row) =>
+      (!params.customerId || String(row.CustomerID ?? "") === params.customerId)
+      && (!params.salesmanId || String(row.SalesmanID ?? "") === params.salesmanId)
+      && (!params.customerTypeId || String(row.CustomerTypeID ?? "") === params.customerTypeId)
+      && (!params.statusId || String(row.ProjStatusID ?? "") === params.statusId)
+      && (!params.city || stateCityMap.get(String(row.SiteStateCityID ?? ""))?.city === params.city)
+      && (!params.stateId || stateCityMap.get(String(row.SiteStateCityID ?? ""))?.stateId === params.stateId));
+  const total = filteredRows.length;
+  const data = filteredRows.slice(0, 200).map((row) => toJobBase(row, typeMap, salesmanMap, statusMap, stateCityMap));
+  return { data, total, page: 1, pageSize: 200, hasMore: total > data.length };
 }
 
 export async function getJobById(jobId: string): Promise<JobDetail | null> {

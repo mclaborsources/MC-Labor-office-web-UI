@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { RouteLoadingIndicator } from "@/components/layout/RouteLoadingIndicator";
 import "./globals.css";
+import { CustomerCellNavigation } from "@/components/customers/CustomerCellNavigation";
+import { UnhandledRejectionDiagnostics } from "@/components/layout/UnhandledRejectionDiagnostics";
 
 export const metadata: Metadata = {
   title: "MC Labor — Office Portal",
@@ -19,6 +21,8 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased">
         {children}
+        <CustomerCellNavigation />
+        <UnhandledRejectionDiagnostics />
         <RouteLoadingIndicator />
       </body>
     </html>

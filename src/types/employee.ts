@@ -38,6 +38,40 @@ export interface EmployeeDetail extends EmployeeSummary {
   licenses: EmployeeLicense[];
   /** Placeholder — assignment data expanded in Milestone 4 */
   recentAssignments: EmployeeAssignmentRow[];
+  homePhone: string;
+  phoneRows: EmployeePhoneRow[];
+  notes: EmployeeNote[];
+  payrollCompanies: EmployeePayrollCompany[];
+}
+
+export interface EmployeePayrollCompany {
+  id: string;
+  name: string;
+  isDefault: boolean;
+  jobApplicationDate: string;
+  jobApplicationStatus: string;
+  lastWeekAssigned: string;
+  customer: string;
+}
+
+export interface EmployeePhoneRow {
+  number: string;
+  textAddress: string;
+  noCommunication: boolean;
+  valid: boolean;
+  verifyPrimary: boolean;
+  user: string;
+  date: string;
+}
+
+export interface EmployeeNote {
+  user: string;
+  date: string;
+  noteType: string;
+  reviewType: string;
+  customer: string;
+  assignmentDate: string;
+  note: string;
 }
 
 /** Selected fields from tblEmployeeB (extended employee record) */
@@ -114,6 +148,7 @@ export interface EmployeeRow {
   EmCity: string | null;
   EmState: string | null;
   EmZip: string | null;
+  EmHomePhone: string | null;
 }
 
 /** Selected confirmed columns from tblEmployeeB */

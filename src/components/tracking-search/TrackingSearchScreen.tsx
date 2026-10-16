@@ -1,25 +1,25 @@
-"use client";
-
+﻿"use client";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AccessButton } from "@/components/access/AccessButton";
-import type { TrackingPreviewRow } from "@/types/tracking";
-
-export function TrackingSearchScreen({ rows, weekEnding, error = "" }: { rows: TrackingPreviewRow[]; weekEnding: string; error?: string }) {
-  const router = useRouter();
-  const [customer, setCustomer] = useState("");
-  const [employee, setEmployee] = useState("");
-  const visible = useMemo(() => rows.filter((row) =>
-    (!customer || row.customer.toLowerCase().includes(customer.toLowerCase()) || row.jobSite.toLowerCase().includes(customer.toLowerCase())) &&
-    (!employee || `${row.firstName} ${row.lastName}`.toLowerCase().includes(employee.toLowerCase())),
-  ), [rows, customer, employee]);
-  return <section className="ac-tracking-search">
-    <header><h1>Tracking Search</h1><span>Week ending {weekEnding || "—"}</span><AccessButton onClick={() => router.refresh()}>Refresh</AccessButton><AccessButton onClick={() => { setCustomer(""); setEmployee(""); }}>Clear</AccessButton><AccessButton onClick={() => window.print()}>Print / Export</AccessButton><AccessButton onClick={() => router.push("/tracking")}>Cancel</AccessButton></header>
-    <div className="tracking-search-tools"><label>Customer or job<input value={customer} onChange={(event) => setCustomer(event.target.value)} /></label><label>Employee name<input value={employee} onChange={(event) => setEmployee(event.target.value)} /></label></div>
-    {error && <p role="alert" className="report-data-error">{error}</p>}
-    <div className="tracking-search-grid-wrap"><table className="legacy-report-grid tracking-search-grid"><thead><tr><th>Customer</th><th>Job</th><th>Employee</th><th>Cell</th><th>Week Ending</th><th>Payroll Co</th></tr></thead><tbody>
-      {visible.map((row, index) => <tr key={`${row.employeeId}-${row.jobSite}-${index}`}><td>{row.customer}</td><td>{row.jobSite}</td><td>{`${row.firstName} ${row.lastName}`.trim()}</td><td>{row.cell}</td><td>{row.weekEnding}</td><td>{row.payrollCo}</td></tr>)}
-      {!visible.length && <tr><td colSpan={6}>{error ? "Tracking data is unavailable." : "No tracking assignments found for this week."}</td></tr>}
-    </tbody></table></div><footer>{visible.length} tracking assignments</footer>
-  </section>;
+import type { TrackingSearchRow, TrackingWeekOption } from "@/lib/adminReportQueries";
+export function TrackingSearchScreen({ rows, weeks, weekEnding, error = "" }: { rows: TrackingSearchRow[]; weeks: TrackingWeekOption[]; weekEnding: string; error?: string }) {
+ const router=useRouter();
+ const [customer,setCustomer]=useState(""); const [name,setName]=useState(""); const [view,setView]=useState("0");
+ const [selected,setSelected]=useState<Set<string>>(new Set()); const [message,setMessage]=useState("");
+ const [preview,setPreview]=useState(false);
+ const visible=useMemo(()=>rows.filter(row=>(!customer||row.customer===customer)&&row.customer.toLowerCase().includes(name.trim().toLowerCase())),[rows,customer,name]);
+ const invoices=visible.filter(row=>selected.has(row.id));
+ function toggle(id:string){setSelected(old=>{const next=new Set(old);if(next.has(id))next.delete(id);else next.add(id);return next;});}
+ function loadView(value:string){setView(value);setSelected(new Set());try{const saved=JSON.parse(localStorage.getItem(`tracking-search-view-${value}`)||"null");setCustomer(saved?.customer||"");setName(saved?.name||"");if(saved?.weekEnding&&saved.weekEnding!==weekEnding)router.push(`/tracking-search?weekEnding=${encodeURIComponent(saved.weekEnding)}`);}catch{setMessage("Saved view could not be read.");}}
+ function invoicePreview(){if(!invoices.length){setMessage("Select one or more customer weeks first.");return;}setPreview(true);setMessage("Invoice summary ready. Use Print / Save PDF to print or save all selected records together.");}
+ function exportView(){const csv=[["Name","Week Ending Date","Invoice","Invoice Total","Open Balance"],...visible.map(row=>[row.customer,row.weekEnding,row.invoice??"",row.total??"",row.balance??""])].map(row=>row.map(value=>'"'+String(value).replaceAll('"','""')+'"').join(',')).join('\r\n');const url=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));const link=document.createElement('a');link.href=url;link.download=`tracking-search-${weekEnding}.csv`;link.click();URL.revokeObjectURL(url);}
+ return <section className="ac-tracking-search">
+ <header><h1>Tracking Search</h1><div><label htmlFor="tracking-search-view">View:</label><select id="tracking-search-view" value={view} onChange={e=>loadView(e.target.value)}>{["01 Default Tracking Search","02 View","03 View","04 View","05 View"].map((label,index)=><option key={label} value={index}>{label}</option>)}</select><AccessButton onClick={()=>{localStorage.setItem(`tracking-search-view-${view}`,JSON.stringify({customer,name,weekEnding}));setMessage("View saved.");}}>Save View</AccessButton><AccessButton onClick={()=>{localStorage.removeItem(`tracking-search-view-${view}`);setCustomer("");setName("");setSelected(new Set());setMessage("Saved view cleared.");}}>Delete View</AccessButton><AccessButton onClick={()=>router.refresh()}>Refresh</AccessButton><AccessButton onClick={exportView}>Export View</AccessButton></div><aside><AccessButton onClick={()=>router.push('/tracking')}>Cancel</AccessButton><AccessButton aria-label="Help" onClick={()=>setMessage("Choose a week and customer, then select records. Invoice actions open a summary for printing or saving as a PDF.")}>?</AccessButton></aside></header>
+ <div className="tracking-search-tools"><div><label htmlFor="tracking-search-customer">Customer<select id="tracking-search-customer" value={customer} onChange={e=>{setCustomer(e.target.value);setSelected(new Set());}}><option value="" />{Array.from(new Set(rows.map(row=>row.customer))).sort().map(customer=><option key={customer}>{customer}</option>)}</select></label><label htmlFor="tracking-search-week">Week Ending<input id="tracking-search-week" type="date" value={weekEnding} list="tracking-search-weeks" onChange={e=>{if(e.target.value)router.push(`/tracking-search?weekEnding=${encodeURIComponent(e.target.value)}`);}}/><datalist id="tracking-search-weeks">{weeks.map(week=><option key={week.value} value={week.value}>{week.label}</option>)}</datalist></label><label htmlFor="tracking-search-name">Search in Name<input id="tracking-search-name" value={name} onChange={e=>{setName(e.target.value);setSelected(new Set());}}/></label></div><section><p><AccessButton onClick={invoicePreview}>Print Invoices</AccessButton><label title="Invoice address printing requires the original invoice document layout.">Print Address <input type="checkbox" disabled /></label></p><AccessButton onClick={invoicePreview}>Save Invoices to Single PDF</AccessButton><AccessButton className="tracking-payment-search" onClick={()=>router.push('/invoice-search')}>Invoice Payments Search</AccessButton></section></div>
+ <div className="tracking-search-select"><span>Select:</span><AccessButton onClick={()=>setSelected(new Set())}>Clear</AccessButton><AccessButton onClick={()=>setSelected(new Set(visible.map(row=>row.id)))}>All</AccessButton><span role="status">{message}</span></div>
+ {error&&<p role="alert" className="report-data-error">{error}</p>}
+ <div className="tracking-search-grid-wrap"><table className="legacy-report-grid tracking-search-grid"><colgroup><col style={{width:19}}/><col style={{width:230}}/><col style={{width:140}}/><col/></colgroup><thead><tr><th aria-label="Select"/><th>Name</th><th>Week Ending Date</th><th/></tr></thead><tbody>{visible.map(row=><tr key={row.id} className={selected.has(row.id)?"tracking-search-selected":""} onClick={()=>toggle(row.id)}><td><input type="checkbox" aria-label={`Select ${row.customer}`} checked={selected.has(row.id)} onClick={e=>e.stopPropagation()} onChange={()=>toggle(row.id)}/></td><td>{row.customer}</td><td>{row.weekEnding}</td><td/></tr>)}{!visible.length&&<tr><td colSpan={4}>{error?"Records unavailable.":"No customer weeks found for these filters."}</td></tr>}</tbody></table></div><footer>{visible.length} records | {selected.size} selected</footer>
+ {preview&&<div className="tracking-invoice-overlay" role="dialog" aria-modal="true" aria-label="Invoice summary"><div className="tracking-invoice-preview"><div className="tracking-invoice-actions"><AccessButton onClick={()=>window.print()}>Print / Save PDF</AccessButton><AccessButton onClick={()=>setPreview(false)}>Close</AccessButton></div><h2>Invoice Summary</h2><p>Week ending {weekEnding}</p><table><thead><tr><th>Customer</th><th>Invoice</th><th>Total</th><th>Open Balance</th></tr></thead><tbody>{invoices.map(row=><tr key={row.id}><td>{row.customer}</td><td>{row.invoice}</td><td>{row.total==null?'':Number(row.total).toLocaleString('en-US',{style:'currency',currency:'USD'})}</td><td>{row.balance==null?'':Number(row.balance).toLocaleString('en-US',{style:'currency',currency:'USD'})}</td></tr>)}</tbody></table></div></div>}
+ </section>;
 }

@@ -30,7 +30,7 @@ export default async function CustomerDetailPage({ params }: PageProps) {
   return (
     <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth>
       {loadError && <ErrorAlert title="Could not load customer" message={loadError} />}
-      {customer && <CustomerProfileScreen customer={customer} />}
+      {customer && <CustomerProfileScreen key={customerId} customer={customer} />}
     </AppShell>
   );
 }

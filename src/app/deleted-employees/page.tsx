@@ -13,5 +13,5 @@ export default async function DeletedEmployeesPage({ searchParams }: PageProps) 
   let error = "";
   try { result = await getDeletedEmployees(comparisonOffset); }
   catch { error = "Deleted employee assignments could not be loaded. Check the SQL Server connection in Admin."; }
-  return <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth legacyAccessFrame legacyAccessTabs={[{ label: "Menu", href: "/dashboard" }, { label: "Tracking", href: "/tracking" }, { label: "Deleted Employees", active: true }]}><DeletedEmployeesScreen {...result} comparisonOffset={comparisonOffset} error={error} /></AppShell>;
+  return <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth><DeletedEmployeesScreen {...result} comparisonOffset={comparisonOffset} error={error} /></AppShell>;
 }

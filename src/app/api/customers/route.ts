@@ -7,6 +7,12 @@ export async function GET(request: Request): Promise<NextResponse<ApiListRespons
   try {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search") ?? undefined;
+    const customerName = searchParams.get("customerName") ?? undefined;
+    const customerPhone = searchParams.get("customerPhone") ?? undefined;
+    const contactName = searchParams.get("contactName") ?? undefined;
+    const contactPhone = searchParams.get("contactPhone") ?? undefined;
+    const contactEmail = searchParams.get("contactEmail") ?? undefined;
+    const contactText = searchParams.get("contactText") ?? undefined;
     const salesmanId = searchParams.get("salesmanId") ?? undefined;
     const customerTypeId = searchParams.get("customerTypeId") ?? undefined;
     const statusId = searchParams.get("statusId") ?? undefined;
@@ -17,6 +23,12 @@ export async function GET(request: Request): Promise<NextResponse<ApiListRespons
 
     const result = await getCustomers({
       search,
+      customerName,
+      customerPhone,
+      contactName,
+      contactPhone,
+      contactEmail,
+      contactText,
       salesmanId,
       customerTypeId,
       statusId,

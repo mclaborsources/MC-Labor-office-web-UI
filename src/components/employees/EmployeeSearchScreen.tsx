@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { Suspense } from "react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { EmployeeSearchViewsPanel, EmployeeSearchUtilityRail } from "@/components/employees/EmployeeSearchViewsPanel";
@@ -11,6 +11,7 @@ import {
 } from "@/lib/employeeSearchColumns";
 import type { EmployeeSummary } from "@/types/employee";
 import type { FilterOption } from "@/types/search";
+import { EmployeeNameCell } from "@/components/employees/EmployeeNameCell";
 
 interface EmployeeSearchScreenProps {
   employees: EmployeeSummary[];
@@ -108,12 +109,10 @@ function EmployeeSearchTable({ employees }: { employees: EmployeeSummary[] }) {
                         </td>
                       );
                     }
-                    if (col.key === "EmFirstName") {
+                    if (col.key === "EmFirstName" || col.key === "EmLastName") {
                       return (
-                        <td key={col.key}>
-                          <Link href={`/employees/${row.employeeId}`} className="font-semibold">
-                            {row.firstName || "â€”"}
-                          </Link>
+                        <td key={col.key} className="font-semibold">
+                          <EmployeeNameCell employeeId={row.employeeId} name={col.key === "EmFirstName" ? row.firstName : row.lastName} />
                         </td>
                       );
                     }

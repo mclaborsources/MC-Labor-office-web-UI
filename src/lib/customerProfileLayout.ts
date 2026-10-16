@@ -12,7 +12,6 @@ export const CUSTOMER_PROFILE_TABS = [
   { id: "10-mult", label: "10 Rate Multipliers" },
   { id: "11-jobs", label: "11 Jobs" },
   { id: "12-saleshist", label: "12 Sales History" },
-  { id: "13-segments", label: "13 Segments" },
 ] as const;
 
 export const CUSTOMER_PROFILE_LINK_ENTITIES = ["AMP", "GS", "HDE", "HSG", "IPG", "ISG", "MLS"] as const;

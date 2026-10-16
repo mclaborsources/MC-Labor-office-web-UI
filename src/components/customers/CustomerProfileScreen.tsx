@@ -489,15 +489,6 @@ function CustomerBillRatesTab({ customer }: { customer: CustomerDetail }) {
   );
 }
 
-function CustomerProfileStub({ id, title }: { id: string; title: string }) {
-  return (
-    <section id={id} className="ac-customer-profile-stub">
-      <div className="ac-customer-profile-stub-title">{title}</div>
-      <p className="ac-customer-profile-stub-text">Read-only shell — full tab content coming later.</p>
-    </section>
-  );
-}
-
 const CUSTOMER_INSURANCE_CARRIERS = ["AMP", "GS", "HDE", "HSG", "IPG", "ISG", "MLS"] as const;
 
 function CustomerInsuranceInfoTab() {
@@ -1415,9 +1406,7 @@ export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) 
               {activeTab === "10-mult" ? <CustomerRateMultipliersTab /> : null}
               {activeTab === "11-jobs" ? <CustomerJobsTab customer={customer} /> : null}
               {activeTab === "12-saleshist" ? <CustomerSalesHistoryTab customer={customer} /> : null}
-              {activeTab !== "01-basic" && activeTab !== "02-contacts" && activeTab !== "03-billrates" && activeTab !== "04-insurance" && activeTab !== "05-sales" && activeTab !== "06-collections" && activeTab !== "07-wcc" && activeTab !== "08-inscert" && activeTab !== "09-options" && activeTab !== "10-mult" && activeTab !== "11-jobs" && activeTab !== "12-saleshist" ? (
-                <CustomerProfileStub id={activeTab} title={CUSTOMER_PROFILE_TABS.find((tab) => tab.id === activeTab)?.label ?? activeTab} />
-              ) : null}
+
             </div>
           </div>
         </div>

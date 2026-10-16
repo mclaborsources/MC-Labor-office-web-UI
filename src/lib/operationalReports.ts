@@ -50,8 +50,8 @@ export function getNoticeOfIdentificationRows() {
   ORDER BY [Oldest Invoice] DESC`);
 }
 
-export function getWeeklyRateRows(week: number, year: number) {
-  return queryReadOnly<OperationalReportRow>(`SELECT TOP (750)
+export function getWeeklyRateRows(week: number, year: number, payrollCompany = "") {
+  return queryReadOnly<OperationalReportRow>(`SELECT
     CAST(TrackingID AS NVARCHAR(20)) AS id,
     ISNULL(PayrollCoOnSiteInitials,'') AS Pay,
     LTRIM(RTRIM(ISNULL(CustomerBusName,'')+CASE WHEN NULLIF(SiteName,'') IS NULL THEN '' ELSE ' ('+SiteName+')' END)) AS Customer,
@@ -66,7 +66,36 @@ export function getWeeklyRateRows(week: number, year: number) {
     ISNULL(ExpenseType,'') AS [Vac/Hr]
   FROM tblTracking WITH (NOLOCK)
   WHERE AssignWeek=@week AND AssignYear=@year
-  ORDER BY CustomerBusName,SiteName,EmLastName,EmFirstName`, [{name:"week",value:week},{name:"year",value:year}]);
+    AND (@payrollCompany='' OR ISNULL(PayrollCoOnSiteInitials,'')=@payrollCompany)
+  ORDER BY CustomerBusName,SiteName,EmLastName,EmFirstName`, [
+    { name: "week", value: week },
+    { name: "year", value: year },
+    { name: "payrollCompany", value: payrollCompany },
+  ]);
+}
+
+export function getWeeklyRateRowsForDate(weekEnding: string, payrollCompany: string) {
+  return queryReadOnly<OperationalReportRow>(`SELECT
+    CAST(TrackingID AS NVARCHAR(20)) AS id,
+    ISNULL(PayrollCoOnSiteInitials,'') AS Pay,
+    LTRIM(RTRIM(ISNULL(CustomerBusName,'')+CASE WHEN NULLIF(SiteName,'') IS NULL THEN '' ELSE ' ('+SiteName+')' END)) AS Customer,
+    ISNULL(AssignmentUserName,'') AS [Contract Salesman],
+    ISNULL(AssignmentUserName,'') AS [Salesman (Master Control)],
+    CONVERT(VARCHAR(10),WeekEndingDate,101) AS [Week Ending Date],
+    ISNULL(EmFirstName,'') AS [First Name], ISNULL(EmMiddle,'') AS MI, ISNULL(EmLastName,'') AS [Last Name],
+    ISNULL(PayRate,0) AS [Pay Rate], ISNULL(GradeChange,'') AS Grade, ISNULL(BillRate,0) AS [Bill Rate],
+    ISNULL(TrackMargin,0) AS Margin,
+    ISNULL(BillRate,0)-ISNULL(PayRate,0) AS [Margin $],
+    ISNULL(HealthInsuranceDesc,'') AS [Health Ins], ISNULL(CoExpParkingPerHr,0) AS [Travel/Hr],
+    ISNULL(ExpenseType,'') AS [Vac/Hr]
+  FROM tblTracking WITH (NOLOCK)
+  WHERE WeekEndingDate >= CONVERT(date,@weekEnding,23)
+    AND WeekEndingDate < DATEADD(day,1,CONVERT(date,@weekEnding,23))
+    AND (@payrollCompany='' OR ISNULL(PayrollCoOnSiteInitials,'')=@payrollCompany)
+  ORDER BY CustomerBusName,SiteName,EmLastName,EmFirstName`, [
+    { name: "weekEnding", value: weekEnding },
+    { name: "payrollCompany", value: payrollCompany },
+  ]);
 }
 
 export function getEmployeeBonusRows() {
@@ -116,6 +145,44 @@ export function getAttendanceRows(week: number, year: number) {
 export function getPerDiemDestinations(week:number,year:number){return queryReadOnly<{customerId:string;projectId:string;customer:string;job:string}>(`SELECT DISTINCT CAST(CustomerID AS NVARCHAR(20)) customerId,CAST(ProjectID AS NVARCHAR(20)) projectId,ISNULL(CustomerBusName,'') customer,ISNULL(SiteName,'') job FROM tblTracking WITH (NOLOCK) WHERE AssignWeek=@week AND AssignYear=@year AND CustomerID IS NOT NULL AND ProjectID IS NOT NULL ORDER BY customer,job`,[{name:"week",value:week},{name:"year",value:year}]);}
 
 export function getInvoicesByWeekRows(){return queryReadOnly<OperationalReportRow>(`SELECT TOP (2000) CAST(cw.CustomerWeekID AS NVARCHAR(20)) id,CONVERT(VARCHAR(10),cw.WeekEndingDate,101) AS [Week Ending],ISNULL(c.CustBusName,'') Customer,ISNULL(ct.PullDownCustomerType,'') AS [Customer Type],LTRIM(RTRIM(ISNULL(s.PullDownSalesmanFName,'')+' '+ISNULL(s.PullDownSalesmanLName,''))) Sales,ISNULL(cw.InvoiceNum,'') AS [Invoice No],ISNULL(cw.InvoiceTotal,0) AS [Invoice Total],ISNULL(cw.OpenBalance,0) AS [Open Balance],CASE WHEN cw.Paid<>0 THEN 'Yes' ELSE 'No' END Paid FROM tblCustomerWeeks cw WITH (NOLOCK) JOIN tblCustomer c WITH (NOLOCK) ON c.CustomerID=cw.CustomerID LEFT JOIN tblPullDownCustomerTypes ct WITH (NOLOCK) ON ct.PullDownCustomerTypeID=c.CustomerTypeID LEFT JOIN tblPullDownSalesman s WITH (NOLOCK) ON s.PullDownSalesmanID=c.SalesmanID ORDER BY cw.WeekEndingDate DESC,c.CustBusName`)}
+
+export interface OpenInvoiceRow {
+  id: string; customerId: string; customer: string; creditHistory: string;
+  customerSince: string; contractWith: string; salesman: string; collectionsNote: string;
+  invoiceDate: string; invoiceNumber: string; age: number; openBalance: number;
+  invoiceNote: string;
+}
+
+/** Current unpaid invoice records, with customer-level AR fields from the office database. */
+export function getOpenInvoiceRows(): Promise<OpenInvoiceRow[]> {
+  return queryReadOnly<OpenInvoiceRow>(`WITH customer_since AS (
+    SELECT CustomerID, MIN(WeekEndingDate) AS CustomerSince
+    FROM tblCustomerWeeks WITH (NOLOCK) GROUP BY CustomerID
+  )
+  SELECT CAST(q.QBOpenInvoicesID AS NVARCHAR(20)) AS id,
+    CAST(q.CustomerID AS NVARCHAR(20)) AS customerId,
+    ISNULL(c.CustBusName,ISNULL(q.QBCustomerName,'')) AS customer,
+    ISNULL(ps.PullDownCustPaymentStatus,'') AS creditHistory,
+    CONVERT(VARCHAR(10),COALESCE(q.CustomerSince,cs.CustomerSince),101) AS customerSince,
+    ISNULL(pcw.PullDownContractWith_PayrollCoInitials,ISNULL(pc.PullDownContractWith_PayrollCoInitials,'')) AS contractWith,
+    ISNULL(NULLIF(q.Salesman,''),ISNULL(q.SalesmanFilter,'')) AS salesman,
+    COALESCE(NULLIF(q.CollectionsNote,''),NULLIF(hdr.CollectionsNote,''),ISNULL(c.CollectionsNote,'')) AS collectionsNote,
+    CONVERT(VARCHAR(10),q.InvoiceDate,101) AS invoiceDate,
+    ISNULL(NULLIF(q.RefNumber,''),LTRIM(RTRIM(ISNULL(CAST(q.InvoiceYear AS NVARCHAR(8))+' ','')+ISNULL(q.InvoiceNum,'')))) AS invoiceNumber,
+    ISNULL(q.Aging,DATEDIFF(DAY,q.InvoiceDate,GETDATE())) AS age,
+    CAST(ISNULL(q.OpenBalance,0) AS DECIMAL(18,2)) AS openBalance,
+    COALESCE(NULLIF(q.InvoiceNote,''),NULLIF(c.LastInvoiceNote,''),ISNULL(c.InvoiceNote,'')) AS invoiceNote
+  FROM tblQBOpenInvoices q WITH (NOLOCK)
+  LEFT JOIN tblCustomer c WITH (NOLOCK) ON c.CustomerID=q.CustomerID
+  LEFT JOIN customer_since cs ON cs.CustomerID=q.CustomerID
+  LEFT JOIN tblPullDownCustPaymentStatus ps WITH (NOLOCK) ON ps.PullDownCustPaymentStatusID=c.CustPaymentStatusID
+  LEFT JOIN tblPullDownContractWith_PayrollCo pc WITH (NOLOCK) ON pc.PullDownContractWith_PayrollCoID=c.CustContractWith_PayrollCoID
+  LEFT JOIN tblCustomerWeeks cw WITH (NOLOCK) ON cw.CustomerID=q.CustomerID AND cw.InvoiceYear=q.InvoiceYear AND cw.InvoiceNum=q.InvoiceNum
+  LEFT JOIN tblPullDownContractWith_PayrollCo pcw WITH (NOLOCK) ON pcw.PullDownContractWith_PayrollCoID=cw.CustomerWeekContractWith_PayrollCoID
+  OUTER APPLY (SELECT TOP (1) h.CollectionsNote FROM tblQBOpenInvoices h WITH (NOLOCK) WHERE h.CustomerID=q.CustomerID AND h.InvoiceDate IS NULL ORDER BY h.QBOpenInvoicesID) hdr
+  WHERE q.InvoiceDate IS NOT NULL AND ISNULL(q.OpenBalance,0)>0
+  ORDER BY ISNULL(c.CustBusName,q.QBCustomerName),q.InvoiceDate,q.QBOpenInvoicesID`);
+}
 
 export function getMarginByWeekRows(startDate = "", endDate = ""){return queryReadOnly<OperationalReportRow>(`WITH recent AS (
   SELECT CustomerWeekID,CustomerID,WeekEndingDate,InvoiceTotal,OpenBalance,InvoiceNum

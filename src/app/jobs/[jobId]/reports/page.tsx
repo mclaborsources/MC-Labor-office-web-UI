@@ -1,0 +1,7 @@
+﻿import {queryReadOnly} from '@/lib/db/sql';
+import {notFound} from 'next/navigation';
+import {AppShell} from '@/components/layout/AppShell';
+import {getSessionOrDefault} from '@/lib/auth/session';
+import {getJobLegalData} from '@/lib/jobLegalData';
+import {JobLegalReport} from '@/components/jobs/JobLegalReport';
+export default async function Page({params,searchParams}:{params:Promise<{jobId:string}>;searchParams:Promise<{type?:string}>}){const {jobId}=await params;const session=await getSessionOrDefault();const {type='statement'}=await searchParams;const [data,counties,signers,companies]=await Promise.all([getJobLegalData(jobId),queryReadOnly<{id:number;label:string}>("SELECT c.PullDownStateCountyID id,CONCAT(c.PullDownStateCounty,', ',s.PullDownState) label FROM tblPullDownStateCounties c JOIN tblPullDownStates s ON s.PullDownStateID=c.StateID ORDER BY s.PullDownState,c.PullDownStateCounty"),queryReadOnly<{id:number;label:string}>("SELECT PullDownSalesmanID id,LTRIM(RTRIM(CONCAT(PullDownSalesmanFName,' ',PullDownSalesmanLName))) label FROM tblPullDownSalesman ORDER BY label"),queryReadOnly<{id:string;label:string}>("SELECT PullDownContractWith_PayrollCoName id,PullDownContractWith_PayrollCoName label FROM tblPullDownContractWith_PayrollCo ORDER BY label")]);if(!data.ProjectID)notFound();return <AppShell userDisplayName={session.user?.displayName} fullWidth fillViewport><JobLegalReport key={jobId+type} jobId={jobId} type={type} data={data} counties={counties} signers={signers} companies={companies}/></AppShell>;}

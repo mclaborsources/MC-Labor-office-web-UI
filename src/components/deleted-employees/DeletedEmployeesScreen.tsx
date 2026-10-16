@@ -7,7 +7,7 @@ import type { DeletedEmployeeRow } from "@/lib/deletedEmployees";
 import { trackingCsv } from "@/lib/trackingGrid";
 
 interface Props { rows: DeletedEmployeeRow[]; comparisonOffset: 1 | 2; currentWeekEnding: string; comparisonWeekEnding: string; error?: string; }
-type ColumnKey = "customer"|"salesman"|"job"|"firstName"|"lastName"|"cell"|"trade"|"weekEnding"|"semus"|"payrollCompany"|"lastWeekAssigned"|"employeeNotes"|"payrollCompanyId"|"sendLiveCheck";
+type ColumnKey = "customer"|"salesman"|"job"|"firstName"|"lastName"|"cell"|"trade"|"weekEnding"|"semus"|"payrollCompany"|"lastWeekAssigned"|"employeeNotes"|"payrollCompanyId"|"sendLiveCheck"|"margin"|"schoolingPerHr"|"toolsPerHr";
 type ColumnDef = { key: ColumnKey; label: string; width: number };
 const DEFAULT_COLUMNS: ColumnDef[] = [
   {key:"customer",label:"Customer",width:268},{key:"salesman",label:"Salesman",width:96},{key:"job",label:"Job",width:176},
@@ -17,7 +17,7 @@ const VIEW_13_COLUMNS: ColumnDef[] = [
   {key:"customer",label:"Customer",width:239},{key:"salesman",label:"Salesman",width:96},{key:"job",label:"Job",width:168},
   {key:"firstName",label:"Em First Name",width:96},{key:"lastName",label:"Em Last Name",width:96},{key:"cell",label:"Cell",width:108},
   {key:"trade",label:"Trade",width:137},{key:"weekEnding",label:"Week Ending",width:109},{key:"semus",label:"S",width:22},
-  {key:"payrollCompany",label:"Payroll Co",width:90},{key:"lastWeekAssigned",label:"Last Week Assigned",width:150},
+  {key:"payrollCompany",label:"Payroll Co",width:90},{key:"margin",label:"Margin",width:70},{key:"schoolingPerHr",label:"Schooling Per Hr",width:120},{key:"toolsPerHr",label:"Tools Per Hr",width:96},{key:"lastWeekAssigned",label:"Last Week Assigned",width:150},
   {key:"employeeNotes",label:"Emp Notes",width:30},{key:"payrollCompanyId",label:"PayrollCoOnSiteID",width:96},{key:"sendLiveCheck",label:"S L Ck",width:127},
 ];
 
@@ -28,7 +28,7 @@ export function DeletedEmployeesScreen({ rows, comparisonOffset, currentWeekEndi
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [message, setMessage] = useState("");
   const [columns, setColumns] = useState<ColumnDef[]>(VIEW_13_COLUMNS);
-  const visible = useMemo(() => rows.filter((row) => !query || Object.values(row).join(" ").toLowerCase().includes(query.toLowerCase())), [rows, query]);
+  const visible = useMemo(() => rows.filter((row) => !query || `${row.firstName} ${row.lastName}`.toLowerCase().includes(query.toLowerCase())), [rows, query]);
   const allSelected = visible.length > 0 && visible.every((row) => selected.has(row.id));
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export function DeletedEmployeesScreen({ rows, comparisonOffset, currentWeekEndi
     <div className="deleted-week-filter"><label>Current Week vs.<select value={comparisonOffset} onChange={(event) => router.push(`/deleted-employees?compare=${event.target.value}`)}><option value={1}>Last Week</option><option value={2}>Two Weeks Ago</option></select></label></div>
     <div className="deleted-search-row"><label>Search in Employee:<input value={query} onChange={(event) => setQuery(event.target.value)} /></label><div><span>Select:</span><AccessButton onClick={() => setSelected(allSelected ? new Set() : new Set(visible.map((row) => row.id)))}>{allSelected ? "None" : "All"}</AccessButton></div></div>
     {(error || message) && <p className="deleted-message" role={error ? "alert" : "status"}>{error || message}</p>}
-    <div className="deleted-grid-wrap"><table style={{width: Math.max(900, columns.reduce((sum,column)=>sum+column.width,20))}}><colgroup><col style={{width:20}} />{columns.map(column=><col key={column.key} style={{width:column.width}} />)}</colgroup><thead><tr><th />{columns.map(column=><th key={column.key}>{column.label}</th>)}</tr></thead><tbody>{visible.map((row, index) => <tr key={row.id} className={index === 0 ? "is-current" : undefined} onDoubleClick={() => router.push(`/employees/${row.employeeId}`)}><td><input type="checkbox" checked={selected.has(row.id)} onChange={() => setSelected((current) => { const next = new Set(current); if (next.has(row.id)) next.delete(row.id); else next.add(row.id); return next; })} aria-label={`Select ${row.firstName} ${row.lastName}`} /></td>{columns.map(column=><td key={column.key}>{column.key === "employeeNotes" ? <a href={`/employees/${row.employeeId}`}>{value(row,column.key)}</a> : value(row,column.key)}</td>)}</tr>)}{!visible.length && <tr><td colSpan={columns.length+1}>No employees were removed between the selected tracking weeks.</td></tr>}</tbody></table></div>
+    <div className="deleted-grid-wrap"><table style={{width: Math.max(900, columns.reduce((sum,column)=>sum+column.width,20))}}><colgroup><col style={{width:20}} />{columns.map(column=><col key={column.key} style={{width:column.width}} />)}</colgroup><thead><tr><th />{columns.map(column=><th key={column.key}>{column.label}</th>)}</tr></thead><tbody>{visible.map((row, index) => <tr key={row.id} className={index === 0 || selected.has(row.id) ? "is-current" : undefined} onDoubleClick={() => router.push(`/employees/${row.employeeId}`)}><td><input type="checkbox" checked={selected.has(row.id)} onChange={() => setSelected((current) => { const next = new Set(current); if (next.has(row.id)) next.delete(row.id); else next.add(row.id); return next; })} aria-label={`Select ${row.firstName} ${row.lastName}`} /></td>{columns.map(column=><td key={column.key}>{column.key === "employeeNotes" ? <a href={`/employees/${row.employeeId}`}>{value(row,column.key)}</a> : value(row,column.key)}</td>)}</tr>)}{!visible.length && <tr><td colSpan={columns.length+1}>No employees were removed between the selected tracking weeks.</td></tr>}</tbody></table></div>
     <footer><span>Record: {visible.length ? 1 : 0} of {visible.length}</span><span className={query ? "is-filtered" : ""}>⌕ {query ? "Filtered" : "No Filter"}</span><input aria-label="Search deleted employees" placeholder="Search" value={query} onChange={(event) => setQuery(event.target.value)} /></footer>
   </section>;
 }

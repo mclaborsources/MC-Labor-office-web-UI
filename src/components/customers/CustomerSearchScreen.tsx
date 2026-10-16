@@ -33,6 +33,12 @@ interface CustomerSearchScreenProps {
   currentStatusId: string;
   currentCity: string;
   currentState: string;
+  currentCustomerName: string;
+  currentCustomerPhone: string;
+  currentContactName: string;
+  currentContactPhone: string;
+  currentContactEmail: string;
+  currentContactText: string;
   currentSortKey: string;
   currentSortDirection: "asc" | "desc";
   page: number;
@@ -298,7 +304,13 @@ const CUSTOMER_SEARCH_SIDE_ROWS = [
   { label: "Text", customer: false, contact: true },
 ] as const;
 
-function CustomerSearchSidebar() {
+function CustomerSearchSidebar({
+  searchValues,
+  preservedFilters,
+}: {
+  searchValues: Record<string, string>;
+  preservedFilters: Record<string, string>;
+}) {
   const [activeScreenSize, setActiveScreenSize] = useState<string>("normal");
 
   return (
@@ -340,20 +352,28 @@ function CustomerSearchSidebar() {
         <div className="ac-customer-search-side-label" aria-hidden>
           Search
         </div>
-        <div className="ac-customer-search-side-main">
+        <form className="ac-customer-search-side-main" action="/customers" method="get">
+          {Object.entries(preservedFilters).map(([key, value]) => value ? (
+            <input key={key} type="hidden" name={key} value={value} />
+          ) : null)}
           <div className="ac-customer-search-side-grid-area">
             <div className="ac-customer-search-side-grid">
               <div className="ac-customer-search-side-corner" />
               <div className="ac-customer-search-side-head">Customer</div>
               <div className="ac-customer-search-side-head">Contact</div>
 
-              {CUSTOMER_SEARCH_SIDE_ROWS.map((row) => (
+              {CUSTOMER_SEARCH_SIDE_ROWS.map((row) => {
+                const key = row.label === "Name" ? "Name" : row.label === "Ph/Cell #" ? "Phone" : row.label;
+                const customerField = `customer${key}`;
+                const contactField = `contact${key}`;
+                return (
                 <div key={row.label} className="ac-customer-search-side-row">
                   <div className="ac-customer-search-side-field-label">{row.label}</div>
                   {row.customer ? (
                     <input
                       className="ac-input ac-customer-search-side-input"
-                      defaultValue=""
+                      name={customerField}
+                      defaultValue={searchValues[customerField] ?? ""}
                       aria-label={`Customer ${row.label}`}
                     />
                   ) : (
@@ -362,18 +382,20 @@ function CustomerSearchSidebar() {
                   {row.contact ? (
                     <input
                       className="ac-input ac-customer-search-side-input"
-                      defaultValue=""
+                      name={contactField}
+                      defaultValue={searchValues[contactField] ?? ""}
                       aria-label={`Contact ${row.label}`}
                     />
                   ) : (
                     <div className="ac-customer-search-side-spacer" aria-hidden />
                   )}
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="ac-customer-search-side-search-col">
-              <AccessButton xs disabled className="ac-customer-search-side-search-btn">
+              <AccessButton xs type="submit" className="ac-customer-search-side-search-btn">
                 Search
               </AccessButton>
               <div className="ac-customer-search-use-button">
@@ -393,7 +415,7 @@ function CustomerSearchSidebar() {
           <AccessButton xs disabled className="ac-customer-search-deselect-btn">
             Deselect Duplicate Email
           </AccessButton>
-        </div>
+        </form>
       </div>
     </aside>
   );
@@ -473,6 +495,12 @@ export function CustomerSearchScreen({
   currentStatusId,
   currentCity,
   currentState,
+  currentCustomerName,
+  currentCustomerPhone,
+  currentContactName,
+  currentContactPhone,
+  currentContactEmail,
+  currentContactText,
   currentSortKey,
   currentSortDirection,
   page,
@@ -490,6 +518,12 @@ export function CustomerSearchScreen({
       statusId: currentStatusId,
       city: currentCity,
       state: currentState,
+      customerName: currentCustomerName,
+      customerPhone: currentCustomerPhone,
+      contactName: currentContactName,
+      contactPhone: currentContactPhone,
+      contactEmail: currentContactEmail,
+      contactText: currentContactText,
       sortKey: currentSortKey,
       sortDirection: currentSortKey ? currentSortDirection : "",
     }).filter(([, value]) => Boolean(value)),
@@ -508,7 +542,27 @@ export function CustomerSearchScreen({
         <div className="ac-customer-search-body min-h-0 flex-1 flex-col">
           <div className="ac-panel ac-panel-elevated ac-customer-search-shell min-h-0 flex-1">
             <div className="ac-customer-search-shell-inner">
-              <CustomerSearchSidebar />
+              <CustomerSearchSidebar
+                searchValues={{
+                  customerName: currentCustomerName,
+                  customerPhone: currentCustomerPhone,
+                  contactName: currentContactName,
+                  contactPhone: currentContactPhone,
+                  contactEmail: currentContactEmail,
+                  contactText: currentContactText,
+                }}
+                preservedFilters={{
+                  search: currentSearch,
+                  salesmanId: currentSalesmanId,
+                  customerTypeId: currentCustomerTypeId,
+                  statusId: currentStatusId,
+                  city: currentCity,
+                  state: currentState,
+                  sortKey: currentSortKey,
+                  sortDirection: currentSortKey ? currentSortDirection : "",
+                  pageSize: String(pageSize),
+                }}
+              />
 
               <CustomerSearchViewsPanel
                 salesmen={salesmen}
