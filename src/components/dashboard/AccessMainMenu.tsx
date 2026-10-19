@@ -1,7 +1,6 @@
 import { DashboardMenuInteractive } from "@/components/dashboard/DashboardMenuInteractive";
 import {
   getCompanyPolicies,
-  getCompanyPolicyForView,
   getDashboardSettings,
 } from "@/lib/dashboard";
 import { type DashboardViewId } from "@/lib/dashboardViews";
@@ -15,10 +14,9 @@ interface AccessMainMenuProps {
 
 /** Server wrapper — loads SQL data for frmMenu parity. */
 export async function AccessMainMenu({ week, activeView }: AccessMainMenuProps) {
-  const [settings, policies, activePolicy] = await Promise.all([
+  const [settings, policies] = await Promise.all([
     getDashboardSettings(),
     getCompanyPolicies(),
-    getCompanyPolicyForView(activeView),
   ]);
 
   return (
@@ -27,7 +25,6 @@ export async function AccessMainMenu({ week, activeView }: AccessMainMenuProps) 
       activeView={activeView}
       settings={settings}
       policies={policies}
-      activePolicy={activePolicy}
       canWrite={writesEnabled()}
     />
   );

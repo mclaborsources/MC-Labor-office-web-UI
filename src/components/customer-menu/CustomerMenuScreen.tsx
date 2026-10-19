@@ -33,14 +33,14 @@ export function CustomerMenuScreen({
           </span>
         </div>
         <div className="ac-customer-menu-toolbar-center">
-          <AccessButton xs disabled>
+          <AccessButton data-action-status="missing" xs disabled>
             Refresh from Tracking
           </AccessButton>
           <span className="ac-customer-menu-entity ac-customer-menu-entity--ipg">IPG {ipgCount}</span>
           <span className="ac-customer-menu-entity ac-customer-menu-entity--isg">ISG {isgCount}</span>
         </div>
         <div className="ac-customer-menu-toolbar-right">
-          <AccessButton xs disabled>
+          <AccessButton data-action-status="missing" xs disabled>
             Reset Customer Colors
           </AccessButton>
         </div>

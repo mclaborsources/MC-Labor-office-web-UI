@@ -50,9 +50,9 @@ export function WeeklyCertifiedPayrollScreen({ weeks, rows, initialWeekEnding, e
       <label>Job<select aria-label="Job" value={selectedId} onChange={(event) => setProjectId(event.target.value)}>
         {projects.map((project) => <option key={project.id} value={project.id}>{project.label}</option>)}
       </select></label>
-      <AccessButton onClick={() => router.refresh()}>Refresh</AccessButton>
-      <AccessButton onClick={download} disabled={!reportRows.length}>Download CSV</AccessButton>
-      <AccessButton onClick={() => window.print()} disabled={!report}>Print / Save PDF</AccessButton>
+      <AccessButton data-action-status="complete" onClick={() => router.refresh()}>Refresh</AccessButton>
+      <AccessButton data-action-status="complete" onClick={download} disabled={!reportRows.length}>Download CSV</AccessButton>
+      <AccessButton data-action-status="complete" onClick={() => window.print()} disabled={!report}>Print / Save PDF</AccessButton>
     </header>
     {error && <p className="weekly-certified-error" role="alert">{error}</p>}
     {!error && !report && <p className="weekly-certified-empty">No employee hours were found for this week.</p>}

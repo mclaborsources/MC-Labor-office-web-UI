@@ -13,7 +13,7 @@ export function PhoneNumberSearchScreen({ rows, error = "" }: { rows: AllContact
     return numbers.length > 0 && (!phone || numbers.join(" ").replace(/\D/g, "").includes(phone.replace(/\D/g, "")));
   }), [rows, phone]);
   return <section className="ac-phone-search">
-    <header><h1>Phone Number Search</h1><AccessButton onClick={() => router.refresh()}>Refresh</AccessButton><AccessButton onClick={() => setPhone("")}>Clear</AccessButton><AccessButton onClick={() => router.push("/tracking")}>Cancel</AccessButton></header>
+    <header><h1>Phone Number Search</h1><AccessButton data-action-status="complete" onClick={() => router.refresh()}>Refresh</AccessButton><AccessButton data-action-status="complete" onClick={() => setPhone("")}>Clear</AccessButton><AccessButton data-action-status="linked" onClick={() => router.push("/tracking")}>Cancel</AccessButton></header>
     <div className="ac-phone-search-tools"><label>Phone number<input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} /></label></div>
     {error && <p role="alert" className="report-data-error">{error}</p>}
     <div className="ac-phone-search-grid-wrap"><table className="ac-phone-search-grid"><thead><tr><th>Contact</th><th>Customer / Employee</th><th>Type</th><th>Phone</th><th>Email</th></tr></thead><tbody>

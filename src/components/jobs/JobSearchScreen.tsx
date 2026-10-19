@@ -145,17 +145,17 @@ function JobSearchSidebar() {
     <aside className="ac-customer-search-sidebar ac-employee-search-sidebar ac-job-search-sidebar shrink-0">
       <div className="ac-customer-search-screen-size">
         <span className="ac-customer-search-screen-size-label">Screen Size</span>
-        <AccessButton disabled className="ac-customer-search-screen-normal">
+        <AccessButton data-action-status="missing" disabled className="ac-customer-search-screen-normal">
           Normal
         </AccessButton>
         <div className="ac-customer-search-screen-grid">
           {[1, 2, 3, 4].map((n) => (
-            <AccessButton key={n} xs disabled className="ac-customer-search-screen-num">
+            <AccessButton data-action-status="missing" key={n} xs disabled className="ac-customer-search-screen-num">
               {n}
             </AccessButton>
           ))}
           {[1, 2, 3, 4].map((n) => (
-            <AccessButton key={`save-${n}`} xs disabled className="ac-customer-search-screen-save">
+            <AccessButton data-action-status="missing" key={`save-${n}`} xs disabled className="ac-customer-search-screen-save">
               Save
             </AccessButton>
           ))}
@@ -201,7 +201,7 @@ function JobSearchSidebar() {
             </div>
 
             <div className="ac-customer-search-side-search-col">
-              <AccessButton xs disabled className="ac-customer-search-side-search-btn">
+              <AccessButton data-action-status="missing" xs disabled className="ac-customer-search-side-search-btn">
                 Search
               </AccessButton>
               <div className="ac-customer-search-use-button">
@@ -220,7 +220,7 @@ function JobSearchSidebar() {
 
           <div className="ac-employee-search-side-footer ac-job-search-side-footer">
             <span className="ac-customer-search-action-label">Select:</span>
-            <AccessButton xs disabled>
+            <AccessButton data-action-status="missing" xs disabled>
               Text All #
             </AccessButton>
           </div>
@@ -235,40 +235,40 @@ function JobGridToolbar() {
     <div className="ac-employee-search-grid-toolbar ac-job-search-grid-toolbar shrink-0">
       <div className="ac-customer-search-action-group">
         <span className="ac-customer-search-action-label">Select:</span>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Clear
         </AccessButton>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           All
         </AccessButton>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Email
         </AccessButton>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Text
         </AccessButton>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Text All #
         </AccessButton>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Letter
         </AccessButton>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Postcard
         </AccessButton>
       </div>
       <input readOnly className="ac-input ac-employee-search-yellow-input" aria-label="Selection highlight" />
-      <AccessButton xs disabled>
+      <AccessButton data-action-status="missing" xs disabled>
         Update Column
       </AccessButton>
       <span className="ac-flabel">View:</span>
       <select disabled className="ac-select ac-customer-search-view-select-wide" defaultValue="01" aria-label="View">
         <option value="01">View 01</option>
       </select>
-      <AccessButton xs disabled>
+      <AccessButton data-action-status="missing" xs disabled>
         Save
       </AccessButton>
-      <AccessButton xs disabled>
+      <AccessButton data-action-status="missing" xs disabled>
         Delete
       </AccessButton>
       <label className="ac-employee-search-goto-field">
@@ -276,12 +276,12 @@ function JobGridToolbar() {
         <input readOnly className="ac-input" aria-label="Go To" />
       </label>
       <Link href="/jobs">
-        <AccessButton xs>Clear Filters</AccessButton>
+        <AccessButton data-action-status="linked" xs>Clear Filters</AccessButton>
       </Link>
-      <AccessButton xs disabled>
+      <AccessButton data-action-status="missing" xs disabled>
         Sort
       </AccessButton>
-      <AccessButton xs disabled className="ac-job-search-delete-job-btn">
+      <AccessButton data-action-status="missing" xs disabled className="ac-job-search-delete-job-btn">
         Delete Job
       </AccessButton>
     </div>
@@ -310,13 +310,13 @@ export function JobSearchScreen({
       <div className="ac-customer-search ac-employee-search ac-job-search ac-tracking--modern flex min-h-0 flex-1 flex-col">
         <div className="ac-customer-search-titlebar ac-employee-search-titlebar ac-job-search-titlebar shrink-0">
           <span className="ac-customer-search-title">Job Search</span>
-          <AccessButton xs disabled>
+          <AccessButton data-action-status="missing" xs disabled>
             New
           </AccessButton>
-          <AccessButton xs disabled>
+          <AccessButton data-action-status="missing" xs disabled>
             New Sub Job
           </AccessButton>
-          <AccessButton xs disabled className="ac-employee-search-cancel-btn">
+          <AccessButton data-action-status="missing" xs disabled className="ac-employee-search-cancel-btn">
             Cancel
           </AccessButton>
         </div>

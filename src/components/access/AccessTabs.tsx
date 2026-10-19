@@ -23,7 +23,7 @@ export function AccessTabs({ tabs, className = "", sticky = true, activeId, onTa
       className={`ac-tabs ${sticky ? "sticky top-0 z-20 shadow-sm" : ""} ${className}`.trim()}
     >
       {tabs.map((t) => (
-        <button
+        <button data-action-status="complete"
           key={t.id}
           type="button"
           className={`ac-tab ${activeId === t.id ? "ac-tab-active" : ""}`}

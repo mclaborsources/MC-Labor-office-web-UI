@@ -26,11 +26,11 @@ export function WebsiteAccessScreen({ rows, error }: { rows: WebsiteAccessRow[];
   function showReadOnlyNotice() { setMessage("Adding and deleting website accounts is not available in this view."); }
 
   return <section className="website-access-screen">
-    <header><h1>Website Access</h1><button aria-label="Help" title="Website login reference list">?</button></header>
+    <header><h1>Website Access</h1><button data-action-status="missing" aria-label="Help" title="Website login reference list">?</button></header>
     <div className="website-access-content">
       <aside className="website-access-actions" aria-label="Record actions">
-        <button onClick={showReadOnlyNotice} aria-label="Add website access record" title="Add website access record">+</button>
-        <button onClick={showReadOnlyNotice} aria-label="Delete website access record" title="Delete website access record">×</button>
+        <button data-action-status="partial" onClick={showReadOnlyNotice} aria-label="Add website access record" title="Add website access record">+</button>
+        <button data-action-status="partial" onClick={showReadOnlyNotice} aria-label="Delete website access record" title="Delete website access record">×</button>
       </aside>
       <div className="website-access-grid-wrap">
         <table className="website-access-grid">
@@ -43,8 +43,8 @@ export function WebsiteAccessScreen({ rows, error }: { rows: WebsiteAccessRow[];
               <td><input readOnly aria-label={`Company for ${row.websiteName}`} value={row.company}/></td>
               <td><input readOnly aria-label="Website name" value={row.websiteName}/></td>
               <td><div className="wa-address"><input readOnly aria-label="Website address" value={row.address}/>{href ? <a href={href} target="_blank" rel="noreferrer" aria-label={`Open ${row.websiteName}`} title="Open website">↗</a> : <span/>}</div></td>
-              <td><div className="wa-copy"><input readOnly aria-label="Website user" value={row.username}/><button onClick={()=>void copy(row.username,"Username")} aria-label="Copy username" title="Copy username"><Copy size={15} strokeWidth={1.8}/></button></div></td>
-              <td><div className="wa-copy"><input readOnly aria-label="Website password" value={row.password}/><button onClick={()=>void copy(row.password,"Password")} aria-label="Copy password" title="Copy password"><Copy size={15} strokeWidth={1.8}/></button></div></td>
+              <td><div className="wa-copy"><input readOnly aria-label="Website user" value={row.username}/><button data-action-status="complete" onClick={()=>void copy(row.username,"Username")} aria-label="Copy username" title="Copy username"><Copy size={15} strokeWidth={1.8}/></button></div></td>
+              <td><div className="wa-copy"><input readOnly aria-label="Website password" value={row.password}/><button data-action-status="complete" onClick={()=>void copy(row.password,"Password")} aria-label="Copy password" title="Copy password"><Copy size={15} strokeWidth={1.8}/></button></div></td>
               <td><input readOnly aria-label="Website notes" value={row.notes}/></td><td><input readOnly aria-label="Entry user" value={row.entryUser}/></td><td><input readOnly aria-label="Entry date" value={row.entryDate}/></td><td className="wa-check"><input type="checkbox" checked={row.active} readOnly aria-label={`Active ${row.websiteName}`}/></td><td><input readOnly aria-label="Sort order" value={row.sort}/></td>
             </tr>;
           })}{!rows.length&&<tr><td colSpan={11}>{error||"No website access records were found."}</td></tr>}</tbody>

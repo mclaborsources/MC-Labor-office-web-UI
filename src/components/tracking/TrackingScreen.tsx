@@ -1,4 +1,5 @@
 "use client";
+import { TRACKING_JOB_ACTION_ROUTES } from "@/lib/trackingJobActionRoutes";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -48,6 +49,7 @@ const TOOLBAR_ADMIN_ACTIONS = [
 ];
 
 const TRACKING_REPORT_OPTIONS = [
+  { label: "Reports", href: "/accounts-receivable" },
   { label: "Report Menu", href: "/reports" },
   { label: "Accounts Receivable Report", href: "/accounts-receivable" },
   { label: "Active Customers", href: "/active-customers" },
@@ -151,7 +153,7 @@ const JOB_INFO_TABS = [
   { id: "salesmen", label: "Salesmen" },
   { id: "bill-rates", label: "Bill Rates" },
   { id: "s-admin", label: "S Admin" },
-  { id: "admin", label: "Admin" },
+  { id: "admin", label: "Admin", status: "missing" as const },
   { id: "schedule", label: "Schedule/Timesheet" },
   { id: "verify-hours", label: "Verify Hours" },
   { id: "invoice", label: "Invoice" },
@@ -386,7 +388,7 @@ function JobInfoDocRow({
         readOnly
         aria-label={`${label} flag`}
       />
-      <AccessButton className="ac-tracking-job-doc-open" onClick={onOpen}>
+      <AccessButton data-action-status="complete" className="ac-tracking-job-doc-open" onClick={onOpen}>
         {openLabel}
       </AccessButton>
     </div>
@@ -425,7 +427,7 @@ function JobInfoTabPanel({
           <JobInfoDocRow label="WC x Date" value={jobInfo?.wcDate ?? ""} openLabel="Open WC" onOpen={() => onDocumentAction("WC")} />
           <JobInfoDocRow label="GL x Date" value={jobInfo?.glDate ?? ""} openLabel="Open GL" onOpen={() => onDocumentAction("GL")} />
           <div className="ac-tracking-job-doc-hyperlinks">
-            <AccessButton className="ac-tracking-hyperlinks-btn" onClick={() => onDocumentAction("Hyperlinks")}>
+            <AccessButton data-action-status="complete" className="ac-tracking-hyperlinks-btn" onClick={() => onDocumentAction("Hyperlinks")}>
               Hyperlinks
             </AccessButton>
           </div>
@@ -691,31 +693,7 @@ export function TrackingScreen({
     if (normalized === "Delete View") { localStorage.removeItem("tracking-job-view"); setReportMessage("Saved job-panel view deleted."); return; }
     if (normalized === "View Directions") { const address = jobInfo?.siteAddress; if (address) window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, "_blank", "noopener,noreferrer"); else setReportMessage("No site address is available for this job."); return; }
     if (normalized === "Print Directions") { window.print(); return; }
-    const routes: Record<string, string> = {
-      "Import Employees": "/employee-import",
-      "Import Employee Carriers": "/employee-import?variant=carriers",
-      "Import Employee New Addresses": "/employee-import?variant=addresses",
-      "Import Customers": "/customer-import",
-      "Import Customers - 2 Contacts": "/customer-import?variant=2-contacts",
-      "Import Customers - 3 Contacts": "/customer-import?variant=3-contacts",
-      "Import Customers - 3 Contacts [NR]": "/customer-import?variant=3-contacts-nr",
-      "MLS Job App Problems": "/job-app-problems", "Wcc Rates": "/wcc-rates",
-      "Edit Salesman Report": "/edit-salesman-report", "View Invoice": "/invoice-search",
-      "Invoice Report": "/invoices-by-week-report", "Verify Report": "/verify-hours-contact-report",
-      "View V Hours": "/verify-hours-contact-report", "Copy Forward": "/reports",
-      "Payroll Adjustments": "/reports", "Cust Contact Kickbacks": "/customer-contact-email-kickbacks",
-      "Employee Email Kickbacks": "/employee-contact-email-kickbacks", "Employee Text Kickbacks": "/employee-contact-text-kickbacks",
-      "Email/Text Templates": "/email-text-templates",
-      "View Future Calls": "/tracking-search",
-      "Schedule Report": "/current-jobs", "View Schedule": "/current-jobs",
-      "View Timesheet": "/employee-hours-by-week", "Email Schedule": "/current-jobs",
-      "Email Timesheet": "/employee-hours-by-week", "Rates and Invoice Total": "/check-weekly-rates",
-      "Vacation Hours": "/vacation-hours-report", "Sick Hours": "/sick-hours-report",
-      "Advance Report": "/employee-advance-report", "Health Insurance": "/health-ins",
-      "Job App Problems": "/job-app-problems", "Contracts": "/contract-report",
-      "Connection Status": "/admin/connection", "Office Staff": "/admin/office-staff",
-      "Health Ins": "/health-ins", "Deleted Employees": "/deleted-employees",
-    };
+    const routes = TRACKING_JOB_ACTION_ROUTES;
     if (routes[normalized]) { router.push(routes[normalized]); return; }
     if (normalized.includes("Email")) { composeEmail(`${normalized}: ${subject}`); return; }
     if (normalized.includes("Text") || normalized === "Send Directions") { composeText(`${subject}${jobInfo?.siteAddress ? ` — ${jobInfo.siteAddress}` : ""}`); return; }
@@ -818,10 +796,10 @@ export function TrackingScreen({
           onChange={(event) => { const value = event.target.value; if (value === "modal:copy-per-diem") { setReportMessage(""); setCopyPerDiemOpen(true); } else if (value.startsWith("pending:")) setReportMessage(`${value.slice(8)} is not connected yet.`); else { setReportMessage(""); navigateSearch(value); } event.target.value = ""; }}
         >
           <option value="">&lt;Reports&gt;</option>
-          {TRACKING_REPORT_OPTIONS.map(option => <option key={option.href} value={option.href}>{option.label}</option>)}
+          {TRACKING_REPORT_OPTIONS.map(option => <option key={option.label} value={option.href}>{option.label}</option>)}
         </select>
-        <AccessButton onClick={() => router.push("/employee-health-insurance-by-month")}>Health Ins</AccessButton>
-        <AccessButton className="ac-tracking-toolbar-alert" onClick={() => router.push("/employee-bonus-expense-report")}>Bonus Exp</AccessButton>
+        <AccessButton data-action-status="linked" onClick={() => router.push("/employee-health-insurance-by-month")}>Health Ins</AccessButton>
+        <AccessButton data-action-status="linked" className="ac-tracking-toolbar-alert" onClick={() => router.push("/employee-bonus-expense-report")}>Bonus Exp</AccessButton>
         <select
           className="ac-select"
           defaultValue=""
@@ -839,7 +817,7 @@ export function TrackingScreen({
           <option value="datapay">Datapay App</option>
         </select>
         {TOOLBAR_ALERT_ACTIONS.map((label) => (
-          <AccessButton
+          <AccessButton data-action-status="linked"
             key={label}
             className="ac-tracking-toolbar-alert"
             onClick={() => {
@@ -852,7 +830,7 @@ export function TrackingScreen({
           </AccessButton>
         ))}
         {TOOLBAR_ADMIN_ACTIONS.map((label) => (
-          <AccessButton
+          <AccessButton data-action-status="linked"
             key={label}
             onClick={() => {
               if (label === "Office Staff Notes") router.push("/office-staff-notes");
@@ -862,7 +840,7 @@ export function TrackingScreen({
             {label}
           </AccessButton>
         ))}
-        <AccessButton
+        <AccessButton data-action-status="linked"
           variant="go"
           className="shrink-0"
           onClick={() => window.open("/wcc-payroll", "_blank", "noopener,noreferrer")}
@@ -891,7 +869,7 @@ export function TrackingScreen({
                 <div className="ac-flabel">Week</div>
                 <div className="ac-readonly ac-tracking-field-box font-mono text-center">{week.assignWeek}</div>
               </div>
-              <AccessButton xs className="ac-tracking-top-empl" onClick={() => router.push("/employee-quick-search")}>
+              <AccessButton data-action-status="linked" xs className="ac-tracking-top-empl" onClick={() => router.push("/employee-quick-search")}>
                 Empl Quick Search
               </AccessButton>
             </div>
@@ -911,8 +889,8 @@ export function TrackingScreen({
                     </option>
                   ))}
                 </select>
-                <AccessButton xs aria-label="Open customers" onClick={() => router.push("/customers")}>+</AccessButton>
-                <AccessButton xs onClick={() => { setQuery(""); setEmployeeFilter(""); setSort(null); navigateFilter("", ""); }}>Reset</AccessButton>
+                <AccessButton data-action-status="linked" xs aria-label="Open customers" onClick={() => router.push("/customers")}>+</AccessButton>
+                <AccessButton data-action-status="linked" xs onClick={() => { setQuery(""); setEmployeeFilter(""); setSort(null); navigateFilter("", ""); }}>Reset</AccessButton>
       </div>
     </div>
 
@@ -935,7 +913,7 @@ export function TrackingScreen({
                     </option>
                   ))}
                 </select>
-                <AccessButton xs aria-label="Open jobs" onClick={() => router.push(selectedCustomerId ? `/jobs?customerId=${encodeURIComponent(selectedCustomerId)}` : "/jobs")}>+</AccessButton>
+                <AccessButton data-action-status="linked" xs aria-label="Open jobs" onClick={() => router.push(selectedCustomerId ? `/jobs?customerId=${encodeURIComponent(selectedCustomerId)}` : "/jobs")}>+</AccessButton>
                 <span className="ac-btn ac-btn-primary ac-btn-xs shrink-0 cursor-default">OnSite</span>
               </div>
             </div>
@@ -943,20 +921,20 @@ export function TrackingScreen({
             <div>
               <div className="ac-flabel">Assignment</div>
               <AccessButtonRow>
-                <AccessButton onClick={() => router.push("/employee-quick-search")}>New</AccessButton>
-                <AccessButton disabled={!selected} onClick={() => setReportMessage("Ending an assignment is unavailable until database writes are enabled.")}>End</AccessButton>
-                <AccessButton disabled={!selected} onClick={() => setReportMessage("Transferring an assignment is unavailable until database writes are enabled.")}>Transfer</AccessButton>
+                <AccessButton data-action-status="linked" onClick={() => router.push("/employee-quick-search")}>New</AccessButton>
+                <AccessButton data-action-status="complete" disabled={!selected} onClick={() => setReportMessage("Ending an assignment is unavailable until database writes are enabled.")}>End</AccessButton>
+                <AccessButton data-action-status="complete" disabled={!selected} onClick={() => setReportMessage("Transferring an assignment is unavailable until database writes are enabled.")}>Transfer</AccessButton>
               </AccessButtonRow>
               <AccessButtonRow>
-                <AccessButton xs className="ac-tracking-assign-cell" onClick={() => router.push("/phone-number-search")}>
+                <AccessButton data-action-status="linked" xs className="ac-tracking-assign-cell" onClick={() => router.push("/phone-number-search")}>
                   Cell # Search
                 </AccessButton>
               </AccessButtonRow>
             </div>
 
             <AccessButtonRow>
-              <AccessButton onClick={() => setTrackingTab("ts-history")}>T Sheets HL</AccessButton>
-              <AccessButton onClick={() => router.push("/invoice-search")}>View Invoice</AccessButton>
+              <AccessButton data-action-status="complete" onClick={() => setTrackingTab("ts-history")}>T Sheets HL</AccessButton>
+              <AccessButton data-action-status="linked" onClick={() => router.push("/invoice-search")}>View Invoice</AccessButton>
             </AccessButtonRow>
           </aside>
 
@@ -1028,7 +1006,7 @@ export function TrackingScreen({
               </table>
             </div>
 
-            <AccessButton className="self-start" onClick={() => setReportMessage("Clearing timesheet hyperlinks is unavailable until database writes are enabled.")}>
+            <AccessButton data-action-status="complete" className="self-start" onClick={() => setReportMessage("Clearing timesheet hyperlinks is unavailable until database writes are enabled.")}>
               Clear HL
             </AccessButton>
           </aside>
@@ -1044,20 +1022,20 @@ export function TrackingScreen({
             className="ac-tracking-action-tabs"
           />
           <AccessButtonRow className="ac-tracking-action-controls flex-1 justify-end">
-            <AccessButton disabled={!selected} onClick={() => composeText(`Hours/timesheet reminder for week ending ${week.weekEndingDate}.`)}>Hrs AutoText</AccessButton>
-            <AccessButton disabled={!selected} onClick={openEmployee}>Payroll Change</AccessButton>
+            <AccessButton data-action-status="linked" disabled={!selected} onClick={() => composeText(`Hours/timesheet reminder for week ending ${week.weekEndingDate}.`)}>Hrs AutoText</AccessButton>
+            <AccessButton data-action-status="linked" disabled={!selected} onClick={openEmployee}>Payroll Change</AccessButton>
             <AccessToolbarDivider />
             <span className="ac-tracking-refresh-label">Refresh</span>
-            <AccessButton onClick={() => { setQuery(""); setEmployeeFilter(""); navigateFilter("", ""); router.refresh(); }}>All</AccessButton>
-            <AccessButton onClick={() => { setQuery(""); setEmployeeFilter(""); router.refresh(); }}>Job</AccessButton>
-            <AccessButton disabled={!selected} onClick={() => { if (selected) setEmployeeFilter(selected.employeeId); router.refresh(); }}>Emp</AccessButton>
-            <AccessButton disabled={!selected} onClick={() => setReportMessage("Deleting an assignment is unavailable until database writes are enabled.")}>Delete</AccessButton>
+            <AccessButton data-action-status="linked" onClick={() => { setQuery(""); setEmployeeFilter(""); navigateFilter("", ""); router.refresh(); }}>All</AccessButton>
+            <AccessButton data-action-status="complete" onClick={() => { setQuery(""); setEmployeeFilter(""); router.refresh(); }}>Job</AccessButton>
+            <AccessButton data-action-status="complete" disabled={!selected} onClick={() => { if (selected) setEmployeeFilter(selected.employeeId); router.refresh(); }}>Emp</AccessButton>
+            <AccessButton data-action-status="complete" disabled={!selected} onClick={() => setReportMessage("Deleting an assignment is unavailable until database writes are enabled.")}>Delete</AccessButton>
             <AccessToolbarDivider />
             <div className="ac-tracking-record-nav">
-              <AccessButton xs aria-label="First record" disabled={!rows.length || position === 0} onClick={() => selectRecord(0)}>
+              <AccessButton data-action-status="complete" xs aria-label="First record" disabled={!rows.length || position === 0} onClick={() => selectRecord(0)}>
                 |◄
               </AccessButton>
-              <AccessButton xs aria-label="Previous record" disabled={!rows.length || position === 0} onClick={() => selectRecord(position-1)}>
+              <AccessButton data-action-status="complete" xs aria-label="Previous record" disabled={!rows.length || position === 0} onClick={() => selectRecord(position-1)}>
                 ◄
               </AccessButton>
               <input
@@ -1066,23 +1044,23 @@ export function TrackingScreen({
                 readOnly value={selected ? `${selected.firstName} ${selected.lastName}` : ""}
                 title="Current customer filter"
               />
-              <AccessButton xs aria-label="Next record" disabled={!rows.length || position >= rows.length-1} onClick={() => selectRecord(position+1)}>
+              <AccessButton data-action-status="complete" xs aria-label="Next record" disabled={!rows.length || position >= rows.length-1} onClick={() => selectRecord(position+1)}>
                 ►
               </AccessButton>
-              <AccessButton xs aria-label="Last record" disabled={!rows.length || position >= rows.length-1} onClick={() => selectRecord(rows.length-1)}>
+              <AccessButton data-action-status="complete" xs aria-label="Last record" disabled={!rows.length || position >= rows.length-1} onClick={() => selectRecord(rows.length-1)}>
                 ►|
               </AccessButton>
             </div>
             <Link href="/customer-menu">
-              <AccessButton>Customer Menu</AccessButton>
+              <AccessButton data-action-status="linked">Customer Menu</AccessButton>
             </Link>
             <span className="ac-swatches ac-tracking-status-swatches">
               {STATUS_SWATCHES.map((c) => (
                 <span key={c} className="ac-swatch" style={{ background: c }} title="Status color" />
               ))}
             </span>
-            <AccessButton onClick={() => setTrackingTab("ts-history")}>History Update</AccessButton>
-            <AccessButton disabled={!selected} onClick={openEmployee}>Browse</AccessButton><AccessButton disabled={!rows.length} onClick={exportRows}>Export CSV</AccessButton>
+            <AccessButton data-action-status="complete" onClick={() => setTrackingTab("ts-history")}>History Update</AccessButton>
+            <AccessButton data-action-status="linked" disabled={!selected} onClick={openEmployee}>Browse</AccessButton><AccessButton data-action-status="complete" disabled={!rows.length} onClick={exportRows}>Export CSV</AccessButton>
             <span className="ac-swatches ac-tracking-palette-swatches">
               {PALETTE_SWATCHES.map((c) => (
                 <span key={c} className="ac-swatch" style={{ background: c }} title="Palette" />
@@ -1104,7 +1082,7 @@ export function TrackingScreen({
                       className={col.kind === "spacer" ? "ac-grid-spacer" : undefined}
                       aria-sort={sort?.key === columnKey(col) ? (sort.direction === "asc" ? "ascending" : "descending") : undefined} style={col.kind === "day" ? { textAlign: "center" } : undefined}
                     >
-                      {columnKey(col) ? <button type="button" className="tracking-sort" onClick={() => toggleSort(columnKey(col)!)}>{headerLabel(col)}{sort?.key === columnKey(col) ? (sort.direction === "asc" ? " ▲" : " ▼") : ""}</button> : headerLabel(col)}
+                      {columnKey(col) ? <button data-action-status="complete" type="button" className="tracking-sort" onClick={() => toggleSort(columnKey(col)!)}>{headerLabel(col)}{sort?.key === columnKey(col) ? (sort.direction === "asc" ? " ▲" : " ▼") : ""}</button> : headerLabel(col)}
                     </th>
                   ))}
                 </tr>
@@ -1141,7 +1119,7 @@ export function TrackingScreen({
             </span>
             <span className="ml-auto flex items-center gap-1.5">
               <span className="text-slate-500">Search</span>
-              <input type="search" aria-label="Filter tracking rows" className="ac-input w-[130px]" placeholder="Filter rows…" value={query} onChange={event => setQuery(event.target.value)} />{(query || employeeFilter) && <AccessButton xs onClick={() => { setQuery(""); setEmployeeFilter(""); }}>Clear Filters</AccessButton>}
+              <input type="search" aria-label="Filter tracking rows" className="ac-input w-[130px]" placeholder="Filter rows…" value={query} onChange={event => setQuery(event.target.value)} />{(query || employeeFilter) && <AccessButton data-action-status="complete" xs onClick={() => { setQuery(""); setEmployeeFilter(""); }}>Clear Filters</AccessButton>}
             </span>
           </div>
           <p className="ac-tracking-status">
@@ -1164,7 +1142,7 @@ export function TrackingScreen({
                 [row.weekEnding,row.assignmentUser,row.assignmentTimestamp,row.hrsAutoTextUser,row.hrsAutoTextTimestamp,row.hlAutoTextUser,row.hlAutoTextTimestamp]).map((value,i) => <td key={i}>{value}</td>)}
             </tr>)}{!rows.length && <tr><td colSpan={11}>No assignments match the current week and filters.</td></tr>}</tbody></table>
           </div>
-          <div className="ac-recordbar"><span>{rows.length} records · {summaryHours.toFixed(2)} daily hours</span><input type="search" aria-label="Filter tracking rows" className="ac-input" value={query} placeholder="Filter rows…" onChange={e => setQuery(e.target.value)} /><AccessButton xs onClick={() => { setQuery(""); setEmployeeFilter(""); }}>Clear Filters</AccessButton></div>
+          <div className="ac-recordbar"><span>{rows.length} records · {summaryHours.toFixed(2)} daily hours</span><input type="search" aria-label="Filter tracking rows" className="ac-input" value={query} placeholder="Filter rows…" onChange={e => setQuery(e.target.value)} /><AccessButton data-action-status="complete" xs onClick={() => { setQuery(""); setEmployeeFilter(""); }}>Clear Filters</AccessButton></div>
           <p className="ac-tracking-status">{preview?.source ? `Live SQL · ${preview.source}` : "SQL unavailable"} · {trackingTab === "ts-history" ? "Assignment and message timestamps for the selected week." : "Values from the loaded tracking assignments."}</p>
         </div>
       )}
@@ -1178,16 +1156,16 @@ export function TrackingScreen({
       {healthPromptOpen && (
         <div className="health-date-prompt-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setHealthPromptOpen(false); }}>
           <section className="health-date-prompt" role="dialog" aria-modal="true" aria-labelledby="health-date-prompt-title" onKeyDown={(event) => { if (event.key === "Escape") setHealthPromptOpen(false); if (event.key === "Enter") openHealthInsurance(); }}>
-            <header><span id="health-date-prompt-title">Enter Parameter Value</span><button type="button" aria-label="Help">?</button><button type="button" aria-label="Close" onClick={() => setHealthPromptOpen(false)}>×</button></header>
+            <header><span id="health-date-prompt-title">Enter Parameter Value</span><button data-action-status="missing" type="button" aria-label="Help">?</button><button data-action-status="complete" type="button" aria-label="Close" onClick={() => setHealthPromptOpen(false)}>×</button></header>
             <main><label htmlFor="health-min-week-ending">MinWeekEndingDate</label><input ref={healthDateInput} id="health-min-week-ending" value={healthMinDate} onChange={(event) => { setHealthMinDate(event.target.value); setHealthDateError(""); }} aria-invalid={Boolean(healthDateError)} aria-describedby={healthDateError ? "health-date-error" : undefined} />{healthDateError && <p id="health-date-error" role="alert">{healthDateError}</p>}</main>
-            <footer><button type="button" className="primary" onClick={openHealthInsurance}>OK</button><button type="button" onClick={() => setHealthPromptOpen(false)}>Cancel</button></footer>
+            <footer><button data-action-status="linked" type="button" className="primary" onClick={openHealthInsurance}>OK</button><button data-action-status="complete" type="button" onClick={() => setHealthPromptOpen(false)}>Cancel</button></footer>
           </section>
         </div>
       )}
       {hyperlinksOpen && (
         <div className="health-date-prompt-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setHyperlinksOpen(false); }}>
           <section className="health-date-prompt" role="dialog" aria-modal="true" aria-labelledby="tracking-hyperlinks-title">
-            <header><span id="tracking-hyperlinks-title">Customer and Job Links</span><button type="button" aria-label="Close" onClick={() => setHyperlinksOpen(false)}>×</button></header>
+            <header><span id="tracking-hyperlinks-title">Customer and Job Links</span><button data-action-status="complete" type="button" aria-label="Close" onClick={() => setHyperlinksOpen(false)}>×</button></header>
             <main className="grid gap-2">
               {([
                 ["Contract", jobInfo?.documentLinks.contract],
@@ -1204,7 +1182,7 @@ export function TrackingScreen({
                 </div>;
               })}
             </main>
-            <footer><button type="button" onClick={() => setHyperlinksOpen(false)}>Close</button></footer>
+            <footer><button data-action-status="complete" type="button" onClick={() => setHyperlinksOpen(false)}>Close</button></footer>
           </section>
         </div>
       )}

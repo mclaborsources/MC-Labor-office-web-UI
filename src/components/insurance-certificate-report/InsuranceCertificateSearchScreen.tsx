@@ -85,19 +85,19 @@ export function InsuranceCertificateSearchScreen() {
       <h1>Insurance Certificate Request Search</h1>
       <div>
         <label htmlFor="cert-view">View:</label><select id="cert-view" value={view} onChange={event => setView(event.target.value)}>{["View 01", "View 02", "View 03", "View 04", "View 05", "View 06"].map(option => <option key={option}>{option}</option>)}</select>
-        <AccessButton>Save View</AccessButton><AccessButton>Delete View</AccessButton>
+        <AccessButton data-action-status="missing">Save View</AccessButton><AccessButton data-action-status="missing">Delete View</AccessButton>
         <label htmlFor="cert-go-to">Go To:</label><select id="cert-go-to" value={goTo} onChange={event => { setGoTo(event.target.value); setSearch(event.target.value); }}><option value="">Choose a customer</option>{customers.map(customer => <option key={customer} value={customer}>{customer}</option>)}</select>
-        <AccessButton onClick={applyRange} disabled={loading}>Refresh</AccessButton>
-        <AccessButton onClick={resetFilters}>Zero</AccessButton>
-        <AccessButton onClick={() => window.print()}>Export View</AccessButton>
+        <AccessButton data-action-status="complete" onClick={applyRange} disabled={loading}>Refresh</AccessButton>
+        <AccessButton data-action-status="complete" onClick={resetFilters}>Zero</AccessButton>
+        <AccessButton data-action-status="complete" onClick={() => window.print()}>Export View</AccessButton>
       </div>
-      <aside><AccessButton onClick={() => router.push("/tracking")}>Cancel</AccessButton><button aria-label="Help" title="Insurance Certificate Request Search">?</button></aside>
+      <aside><AccessButton data-action-status="linked" onClick={() => router.push("/tracking")}>Cancel</AccessButton><button data-action-status="missing" aria-label="Help" title="Insurance Certificate Request Search">?</button></aside>
     </header>
     <div className="cert-tools">
       <label>Search Customer:<input value={search} onChange={event => { setSearch(event.target.value); setGoTo(""); }} /></label>
-      <div className="cert-presets">{["Default", "View 02", "View 03", "View 04", "View 05", "View 06"].map(option => <AccessButton key={option} onClick={() => setView(option === "Default" ? "View 01" : option)}>{option}</AccessButton>)}</div>
-      <AccessButton onClick={() => { setSearch(""); setGoTo(""); }}>Clear Filters</AccessButton>
-      <fieldset>{rangeOptions.map(option => <label key={option.value}><input type="radio" name="request-range" checked={selectedRange === option.value} onChange={() => setSelectedRange(option.value)} />{option.label}</label>)}<AccessButton onClick={applyRange} disabled={loading}>Refresh</AccessButton></fieldset>
+      <div className="cert-presets">{["Default", "View 02", "View 03", "View 04", "View 05", "View 06"].map(option => <AccessButton data-action-status="complete" key={option} onClick={() => setView(option === "Default" ? "View 01" : option)}>{option}</AccessButton>)}</div>
+      <AccessButton data-action-status="complete" onClick={() => { setSearch(""); setGoTo(""); }}>Clear Filters</AccessButton>
+      <fieldset>{rangeOptions.map(option => <label key={option.value}><input type="radio" name="request-range" checked={selectedRange === option.value} onChange={() => setSelectedRange(option.value)} />{option.label}</label>)}<AccessButton data-action-status="complete" onClick={applyRange} disabled={loading}>Refresh</AccessButton></fieldset>
     </div>
     <div className="cert-grid-wrap">
       <table className="legacy-report-grid cert-grid">

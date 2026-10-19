@@ -39,15 +39,15 @@ export function WeekBanner({
       {showNav && (
         <div className="ml-auto flex flex-wrap gap-1">
           <Link href={`?weekOffset=-1`}>
-            <AccessButton xs>Last</AccessButton>
+            <AccessButton data-action-status="linked" xs>Last</AccessButton>
           </Link>
           <Link href={`?${q}`}>
-            <AccessButton xs variant="go">
+            <AccessButton data-action-status="linked" xs variant="go">
               This
             </AccessButton>
           </Link>
           <Link href={`?weekOffset=1`}>
-            <AccessButton xs>Next</AccessButton>
+            <AccessButton data-action-status="linked" xs>Next</AccessButton>
           </Link>
         </div>
       )}

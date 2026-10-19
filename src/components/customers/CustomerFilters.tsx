@@ -221,7 +221,7 @@ export function CustomerFilters({
 
       {compact ? (
         <>
-          <AccessButton
+          <AccessButton data-action-status="complete"
             type="submit"
             xs
             disabled={isPending}
@@ -230,18 +230,18 @@ export function CustomerFilters({
             aria-label="Search"
           />
           {hasFilters && (
-            <AccessButton type="button" xs onClick={clearAll}>
+            <AccessButton data-action-status="linked" type="button" xs onClick={clearAll}>
               Clear
             </AccessButton>
           )}
         </>
       ) : (
         <div className="flex shrink-0 items-center gap-1">
-          <AccessButton type="submit" variant="primary" disabled={isPending}>
+          <AccessButton data-action-status="complete" type="submit" variant="primary" disabled={isPending}>
             Search
           </AccessButton>
           {hasFilters && (
-            <AccessButton type="button" onClick={clearAll}>
+            <AccessButton data-action-status="linked" type="button" onClick={clearAll}>
               Clear
             </AccessButton>
           )}

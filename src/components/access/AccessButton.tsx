@@ -5,6 +5,7 @@ import { Icon } from "@/components/ui/Icon";
 type AccessButtonVariant = "default" | "warn" | "go" | "primary";
 
 interface AccessButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  "data-action-status"?: "missing" | "partial" | "linked" | "complete";
   variant?: AccessButtonVariant;
   icon?: LucideIcon;
   xs?: boolean;

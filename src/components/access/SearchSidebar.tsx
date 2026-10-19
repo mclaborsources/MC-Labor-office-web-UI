@@ -21,7 +21,7 @@ export function SearchViewTabs({ labels }: { labels: string[] }) {
   return (
     <div className="ac-tabs overflow-x-auto rounded-t border border-b-0 border-[#e2e8f0] bg-[#f8fafc]">
       {labels.slice(0, 6).map((label, i) => (
-        <button
+        <button data-action-status="missing"
           key={label}
           type="button"
           className={`ac-tab ${i === 0 ? "ac-tab-active" : ""}`}
@@ -39,7 +39,7 @@ export function SearchActionBar({ onClearHref }: { onClearHref: string }) {
   return (
     <div className="flex items-center justify-end gap-2 border border-t-0 border-[#e2e8f0] bg-[#f8fafc] px-3 py-1.5">
       <Link href={onClearHref}>
-        <AccessButton xs>Clear filters</AccessButton>
+        <AccessButton data-action-status="linked" xs>Clear filters</AccessButton>
       </Link>
     </div>
   );

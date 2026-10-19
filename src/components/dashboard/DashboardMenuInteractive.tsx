@@ -2,12 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { DashboardRichText } from "@/components/dashboard/DashboardRichText";
 import type { CompanyPolicyRow, DashboardSettings } from "@/lib/dashboard";
 import { PDF_MAP_RELATIVE_PATH, ZIP_CODE_1_URL, ZIP_CODE_2_URL } from "@/lib/dashboardConstants";
-import { DASHBOARD_VIEW_IDS, dashboardViewLabel, type DashboardViewId } from "@/lib/dashboardViews";
+import { DASHBOARD_VIEW_IDS, dashboardViewLabel, parseDashboardView, type DashboardViewId } from "@/lib/dashboardViews";
 import type { WeekContext } from "@/types/tracking";
 
 interface DashboardMenuInteractiveProps {
@@ -15,14 +16,17 @@ interface DashboardMenuInteractiveProps {
   activeView: DashboardViewId;
   settings: DashboardSettings;
   policies: CompanyPolicyRow[];
-  activePolicy: CompanyPolicyRow | null;
   canWrite: boolean;
 }
 
 type SettingsTab = "policies" | "notes";
 type SqlCheckState = { status: "idle" | "checking" | "connected" | "disconnected"; message: string };
 
-export function DashboardMenuInteractive({ week, activeView, settings, policies, activePolicy, canWrite }: DashboardMenuInteractiveProps) {
+export function DashboardMenuInteractive({ week, activeView: initialView, settings, policies, canWrite }: DashboardMenuInteractiveProps) {
+  const searchParams = useSearchParams();
+  const activeView = searchParams ? parseDashboardView(searchParams.get("view") ?? undefined) : initialView;
+  const activePolicy = policies.find((policy) => policy.companyPolicy === dashboardViewLabel(activeView)) ?? null;
+  const [pdfUnavailable, setPdfUnavailable] = useState(!settings.rootFolder.trim());
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogTab, setDialogTab] = useState<SettingsTab>("policies");
   const [sqlCheck, setSqlCheck] = useState<SqlCheckState>({ status: "idle", message: "Not checked" });
@@ -42,12 +46,15 @@ export function DashboardMenuInteractive({ week, activeView, settings, policies,
     try {
       const res = await fetch("/api/dashboard/pdf-map");
       if (!res.ok) {
+        setPdfUnavailable(true);
         const body = (await res.json().catch(() => null)) as { hint?: string } | null;
         window.alert(body?.hint ?? "Work Area PDF is not available on this server. Check SettingsBE RootFolder.");
         return;
       }
+      setPdfUnavailable(false);
       window.open("/api/dashboard/pdf-map", "_blank", "noopener,noreferrer");
     } catch {
+      setPdfUnavailable(true);
       window.alert("Could not open Work Area PDF.");
     }
   }, []);
@@ -70,15 +77,18 @@ export function DashboardMenuInteractive({ week, activeView, settings, policies,
 
   return (
     <div className="ac-main-menu ac-main-menu--modern">
+      <p className="ac-dashboard-action-legend"><span className="is-missing">Red: no action</span><span className="is-linked">Green: linked or partially implemented</span><span>Neutral: complete action</span></p>
       <div className="ac-main-menu-views" aria-label="Company policy views">
         {DASHBOARD_VIEW_IDS.map((id) => {
           const active = id === activeView;
           return (
-            <Link key={id} href={`/dashboard?view=${id}`} className="ac-main-menu-view-link" aria-current={active ? "page" : undefined}>
-              <AccessButton className={active ? "ac-main-menu-view-btn-active" : ""} variant={active ? "go" : "default"}>
+              <AccessButton data-action-status="complete" key={id} aria-current={active ? "page" : undefined} aria-pressed={active} className={active ? "ac-main-menu-view-btn-active" : ""} variant={active ? "go" : "default"} onClick={() => {
+                const url = new URL(window.location.href);
+                url.searchParams.set("view", id);
+                if (url.href !== window.location.href) window.history.pushState(null, "", url);
+              }}>
                 {dashboardViewLabel(id)}
               </AccessButton>
-            </Link>
           );
         })}
       </div>
@@ -87,7 +97,7 @@ export function DashboardMenuInteractive({ week, activeView, settings, policies,
         <section className="ac-main-menu-panel">
           <div className="ac-main-menu-panel-head">
             <span>Company Policy · {dashboardViewLabel(activeView)}</span>
-            <AccessButton xs type="button" onClick={openPolicies}>View Policies</AccessButton>
+            <AccessButton data-action-status="complete" xs type="button" onClick={openPolicies}>View Policies</AccessButton>
           </div>
           <div className="ac-main-menu-panel-body ac-main-menu-policy-scroll">
             <DashboardRichText html={activePolicy?.companyPolicyText ?? ""} emptyMessage={`No policy text configured for ${dashboardViewLabel(activeView)}.`} />
@@ -98,11 +108,11 @@ export function DashboardMenuInteractive({ week, activeView, settings, policies,
           <div className="ac-main-menu-panel-head"><span>Work Area</span></div>
           <div className="ac-main-menu-panel-body ac-main-menu-work">
             <div className="ac-main-menu-toolbar">
-              <AccessButton type="button" onClick={openPdfMap} title={PDF_MAP_RELATIVE_PATH}>PDF Map</AccessButton>
-              <AccessButton type="button" onClick={() => openZip(ZIP_CODE_1_URL)}>Zip Code 1</AccessButton>
-              <AccessButton type="button" onClick={() => openZip(ZIP_CODE_2_URL)}>Zip Code 2</AccessButton>
+              <AccessButton data-action-status={pdfUnavailable ? "partial" : "complete"} type="button" onClick={openPdfMap} title={`${pdfUnavailable ? "Unavailable — check PDF configuration. " : ""}${PDF_MAP_RELATIVE_PATH}`}>PDF Map</AccessButton>
+              <AccessButton data-action-status="linked" type="button" onClick={() => openZip(ZIP_CODE_1_URL)}>Zip Code 1</AccessButton>
+              <AccessButton data-action-status="linked" type="button" onClick={() => openZip(ZIP_CODE_2_URL)}>Zip Code 2</AccessButton>
               <div className={`ac-main-menu-sql-check is-${sqlCheck.status}`}>
-                <AccessButton type="button" onClick={checkSqlConnection} disabled={sqlCheck.status === "checking"} aria-label="Check SQL Server connection">
+                <AccessButton data-action-status="partial" type="button" onClick={checkSqlConnection} disabled={sqlCheck.status === "checking"} aria-label="Check SQL Server connection">
                   {sqlCheck.status === "checking" ? "Checking…" : "Check SQL Connection"}
                 </AccessButton>
                 <span role="status" aria-live="polite">{sqlCheck.message}</span>
@@ -119,9 +129,9 @@ export function DashboardMenuInteractive({ week, activeView, settings, policies,
             </div>
             <div className="ac-main-menu-bottom">
               <nav className="ac-main-menu-week-nav" aria-label="Tracking week">
-                <Link href="/tracking?weekOffset=-1" className="ac-main-menu-week-link"><AccessButton>Last Week</AccessButton></Link>
-                <Link href={trackingHref} className="ac-main-menu-week-link" aria-current="page"><AccessButton variant="go">This Week</AccessButton></Link>
-                <Link href="/tracking?weekOffset=1" className="ac-main-menu-week-link"><AccessButton>Next Week</AccessButton></Link>
+                <Link href="/tracking?weekOffset=-1" className="ac-main-menu-week-link"><AccessButton data-action-status="linked">Last Week</AccessButton></Link>
+                <Link href={trackingHref} className="ac-main-menu-week-link" aria-current="page"><AccessButton data-action-status="linked" variant="go">This Week</AccessButton></Link>
+                <Link href="/tracking?weekOffset=1" className="ac-main-menu-week-link"><AccessButton data-action-status="linked">Next Week</AccessButton></Link>
               </nav>
               <p className="ac-main-menu-server">Work Area</p>
             </div>
@@ -131,7 +141,7 @@ export function DashboardMenuInteractive({ week, activeView, settings, policies,
         <section className="ac-main-menu-panel">
           <div className="ac-main-menu-panel-head">
             <span>{settings.companyApplicationTitle}</span>
-            <AccessButton xs type="button" onClick={openNotes}>View Notes</AccessButton>
+            <AccessButton data-action-status="complete" xs type="button" onClick={openNotes}>View Notes</AccessButton>
           </div>
           <div className="ac-main-menu-panel-body ac-main-menu-policy-scroll">
             <DashboardRichText html={settings.companyHistoryNotes} emptyMessage="No company history notes in SettingsBE." />
@@ -144,11 +154,11 @@ export function DashboardMenuInteractive({ week, activeView, settings, policies,
           <div className="ac-dash-dialog" role="dialog" aria-modal="true" aria-labelledby="dash-settings-title" onClick={(event) => event.stopPropagation()}>
             <div className="ac-dash-dialog-head">
               <h2 id="dash-settings-title">Company Information</h2>
-              <button type="button" className="ac-dash-dialog-close" onClick={() => setDialogOpen(false)} aria-label="Close">×</button>
+              <button data-action-status="complete" type="button" className="ac-dash-dialog-close" onClick={() => setDialogOpen(false)} aria-label="Close">×</button>
             </div>
             <div className="ac-dash-dialog-tabs" role="tablist" aria-label="Company information">
-              <button type="button" role="tab" aria-selected={dialogTab === "policies"} className={dialogTab === "policies" ? "active" : ""} onClick={() => setDialogTab("policies")}>Company Policies</button>
-              <button type="button" role="tab" aria-selected={dialogTab === "notes"} className={dialogTab === "notes" ? "active" : ""} onClick={() => setDialogTab("notes")}>Company Notes</button>
+              <button data-action-status="complete" type="button" role="tab" aria-selected={dialogTab === "policies"} className={dialogTab === "policies" ? "active" : ""} onClick={() => setDialogTab("policies")}>Company Policies</button>
+              <button data-action-status="complete" type="button" role="tab" aria-selected={dialogTab === "notes"} className={dialogTab === "notes" ? "active" : ""} onClick={() => setDialogTab("notes")}>Company Notes</button>
             </div>
             {!canWrite && <p className="ac-dash-dialog-readonly">Read-only view. Editing is not available here.</p>}
             {dialogTab === "policies" ? (

@@ -46,22 +46,22 @@ export function CommissionsMainScreen({ initialWeekEnding, initialRows, initialE
   return <section className={`comm-main${salesmanView ? " comm-salesman-view" : ""}${clusterView ? " comm-cluster-view" : ""}${clusterSalesmanView ? " comm-cluster-salesman-view" : ""}`}>
     <header className="comm-main-toolbar">
       <h1>{salesmanView ? "Commissions for Salesman" : clusterSalesmanView ? "Cluster Commissions for Salesman" : clusterView ? "Cluster Commissions" : "Commissions"}</h1>
-      {!salesmanSpecificView && !clusterView && <button onClick={() => action("Commission reminders are not connected yet.")}>Reminders</button>}
-      {!clusterView && !clusterSalesmanView && <button className="comm-copy" aria-label="Copy week ending date" onClick={() => void navigator.clipboard?.writeText(weekEnding)}>▣</button>}
+      {!salesmanSpecificView && !clusterView && <button data-action-status="partial" onClick={() => action("Commission reminders are not connected yet.")}>Reminders</button>}
+      {!clusterView && !clusterSalesmanView && <button data-action-status="complete" className="comm-copy" aria-label="Copy week ending date" onClick={() => void navigator.clipboard?.writeText(weekEnding)}>▣</button>}
       <label>Week Ending:<input type="date" value={weekEnding} onChange={event => event.target.value && setWeekEnding(event.target.value)}/></label>
-      {salesmanSpecificView ? (salesmanView && <button className="comm-slim-button" aria-label="Week options" onClick={() => action("Choose a week ending date, then refresh.")}>|</button>) : !clusterView && <button aria-label="Previous week" onClick={() => { const date = shiftWeek(weekEnding,-7); void refresh(date); }}>‹</button>}
-      <button className="comm-refresh" onClick={() => void refresh()} disabled={loading}>{loading ? "Refreshing…" : "Refresh"}</button>
+      {salesmanSpecificView ? (salesmanView && <button data-action-status="complete" className="comm-slim-button" aria-label="Week options" onClick={() => action("Choose a week ending date, then refresh.")}>|</button>) : !clusterView && <button data-action-status="complete" aria-label="Previous week" onClick={() => { const date = shiftWeek(weekEnding,-7); void refresh(date); }}>‹</button>}
+      <button data-action-status="complete" className="comm-refresh" onClick={() => void refresh()} disabled={loading}>{loading ? "Refreshing…" : "Refresh"}</button>
       <span className="comm-spacer"/>
       {!salesmanSpecificView && <label className="comm-salesman"><select aria-label="Salesman filter" value={salesman} onChange={event => setSalesman(event.target.value)}><option value="">&lt;Salesman&gt;</option>{options.map(name => <option key={name}>{name}</option>)}</select></label>}
       <span className="comm-last-refresh">Last Refresh Week: <output>{lastRefresh || "—"}</output></span>
-      <button onClick={() => action("Refresh Week is not connected to the payroll refresh service yet.")}>RMV</button>
-      {!salesmanSpecificView && <button className="comm-refresh-week" onClick={() => action("Weekly commission refresh is not connected to the office refresh service yet.")}>Refresh Week</button>}
-      {clusterView && <><button className="comm-cluster-action" onClick={() => action("Commission reminders are not connected yet.")}>Reminders</button><button className="comm-cluster-action" onClick={() => router.push("/clusters")}>Tracking Clusters</button></>}
-      {!salesmanSpecificView && <button onClick={() => router.push("/weekly-customer-margin-report")}>Weekly P&amp;L</button>}
-      <button onClick={() => action("Commission history is not connected yet.")}>Commissions History</button>
-      <button className="comm-cancel" onClick={() => router.push("/reports")}>Cancel</button>
-      <button aria-label="Export commission rows" className="comm-export" onClick={exportRows}>▧</button>
-      <button className="comm-help" aria-label="Help" onClick={() => action("Sales after 20% shows customer invoice totals reduced by 20%. Base and Commissionable require the commission rules from the office database.")}>?</button>
+      <button data-action-status="partial" onClick={() => action("Refresh Week is not connected to the payroll refresh service yet.")}>RMV</button>
+      {!salesmanSpecificView && <button data-action-status="partial" className="comm-refresh-week" onClick={() => action("Weekly commission refresh is not connected to the office refresh service yet.")}>Refresh Week</button>}
+      {clusterView && <><button data-action-status="partial" className="comm-cluster-action" onClick={() => action("Commission reminders are not connected yet.")}>Reminders</button><button data-action-status="linked" className="comm-cluster-action" onClick={() => router.push("/clusters")}>Tracking Clusters</button></>}
+      {!salesmanSpecificView && <button data-action-status="linked" onClick={() => router.push("/weekly-customer-margin-report")}>Weekly P&amp;L</button>}
+      <button data-action-status="partial" onClick={() => action("Commission history is not connected yet.")}>Commissions History</button>
+      <button data-action-status="linked" className="comm-cancel" onClick={() => router.push("/reports")}>Cancel</button>
+      <button data-action-status="complete" aria-label="Export commission rows" className="comm-export" onClick={exportRows}>▧</button>
+      <button data-action-status="complete" className="comm-help" aria-label="Help" onClick={() => action("Sales after 20% shows customer invoice totals reduced by 20%. Base and Commissionable require the commission rules from the office database.")}>?</button>
     </header>
     {error && <p className="comm-message" role="alert">{error}</p>}{message && <p className="comm-message" role="status">{message}</p>}
     <div className="comm-workspace">
@@ -69,7 +69,7 @@ export function CommissionsMainScreen({ initialWeekEnding, initialRows, initialE
         <div className="comm-grid-scroll"><table className="comm-grid"><thead><tr><th>Week Ending</th><th>Salesman</th><th>Sales after 20%</th><th>Base</th><th>Commissionable</th></tr></thead>
           <tbody>{visibleRows.map(row => <tr key={row.id}><td>{shortDate(row.weekEnding)}</td><td>{row.salesman}</td><td>{money(Number(row.salesAfter20))}</td><td></td><td></td></tr>)}{!visibleRows.length && <tr className="comm-empty"><td colSpan={5}>{loading ? "Loading commissions…" : error ? "" : "No commission sales for this week."}</td></tr>}</tbody>
         </table></div>
-        <div className="comm-recordbar">Record: <button disabled>◀</button><button disabled>▶</button><span>{visibleRows.length ? `1 of ${visibleRows.length}` : "0 records"}</span><span>No Filter</span><button onClick={() => action("Use the salesman list above to filter the commission rows.")}>Search</button></div>
+        <div className="comm-recordbar">Record: <button data-action-status="missing" disabled>◀</button><button data-action-status="missing" disabled>▶</button><span>{visibleRows.length ? `1 of ${visibleRows.length}` : "0 records"}</span><span>No Filter</span><button data-action-status="complete" onClick={() => action("Use the salesman list above to filter the commission rows.")}>Search</button></div>
         <div className="comm-detail-pane" aria-label="Commission details"/>
       </div>
       <div className="comm-right-pane" aria-label="Commission detail grid"><div className="comm-detail-horizontal"><span>◀</span><div/></div></div>

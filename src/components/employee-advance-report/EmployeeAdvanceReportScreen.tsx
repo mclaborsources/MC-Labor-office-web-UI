@@ -56,12 +56,12 @@ export function EmployeeAdvanceReportScreen() {
   return <section className="ac-advance-report">
     <header>
       <h1>Employee Advance Report</h1>
-      <div><label htmlFor="advance-view">View:</label><select id="advance-view" value={view} onChange={event => setView(event.target.value)}>{["View 01", "View 02", "View 03", "View 04", "View 05", "View 06"].map(option => <option key={option}>{option}</option>)}</select><AccessButton>Save View</AccessButton><AccessButton>Delete View</AccessButton><AccessButton onClick={() => void refresh()} disabled={loading}>Refresh</AccessButton></div>
-      <aside><AccessButton onClick={() => router.push("/tracking")}>Cancel</AccessButton><button aria-label="Help" title="Employee Advance Report">?</button></aside>
+      <div><label htmlFor="advance-view">View:</label><select id="advance-view" value={view} onChange={event => setView(event.target.value)}>{["View 01", "View 02", "View 03", "View 04", "View 05", "View 06"].map(option => <option key={option}>{option}</option>)}</select><AccessButton data-action-status="missing">Save View</AccessButton><AccessButton data-action-status="missing">Delete View</AccessButton><AccessButton data-action-status="complete" onClick={() => void refresh()} disabled={loading}>Refresh</AccessButton></div>
+      <aside><AccessButton data-action-status="linked" onClick={() => router.push("/tracking")}>Cancel</AccessButton><button data-action-status="missing" aria-label="Help" title="Employee Advance Report">?</button></aside>
     </header>
     <div className="advance-tools">
       <label>Search in Name:<input value={name} onChange={event => setName(event.target.value)} /></label>
-      <div>{["Default", "View 02", "View 03", "View 04", "View 05", "View 06"].map(option => <AccessButton key={option} onClick={() => setView(option === "Default" ? "View 01" : option)}>{option}</AccessButton>)}</div>
+      <div>{["Default", "View 02", "View 03", "View 04", "View 05", "View 06"].map(option => <AccessButton data-action-status="complete" key={option} onClick={() => setView(option === "Default" ? "View 01" : option)}>{option}</AccessButton>)}</div>
     </div>
     <div className="advance-grid-wrap">
       <table className="legacy-report-grid advance-grid">

@@ -89,7 +89,7 @@ function PresetGrid({
       {grid.map((row, rowIndex) =>
         row.map((cell, colIndex) =>
           cell ? (
-            <AccessButton
+            <AccessButton data-action-status="missing"
               key={`${rowIndex}-${colIndex}-${cell.label}`}
               xs
               disabled
@@ -123,10 +123,10 @@ function Views1Tab({
         <select disabled className="ac-select ac-employee-search-row-select" defaultValue="" aria-label="Dates">
           <option value="">&lt;Dates&gt;</option>
         </select>
-        <AccessButton xs disabled className="ac-employee-search-date-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-employee-search-date-btn">
           Start Dt
         </AccessButton>
-        <button type="button" disabled className="ac-employee-search-entry-dt-link">
+        <button data-action-status="missing" type="button" disabled className="ac-employee-search-entry-dt-link">
           End Dt
         </button>
         <select disabled className="ac-select ac-employee-search-row-select" defaultValue="" aria-label="Week Ending">
@@ -181,20 +181,20 @@ function Views1Tab({
       </div>
 
       <div className="ac-employee-search-action-row">
-        <AccessButton xs disabled className="ac-employee-search-action-wide">
+        <AccessButton data-action-status="missing" xs disabled className="ac-employee-search-action-wide">
           Open Jobs
         </AccessButton>
-        <AccessButton xs disabled className="ac-employee-search-action-wide">
+        <AccessButton data-action-status="missing" xs disabled className="ac-employee-search-action-wide">
           Closed Jobs
         </AccessButton>
-        <AccessButton xs disabled className="ac-employee-search-lic-flag-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-employee-search-lic-flag-btn">
           Update Job Status | 022
         </AccessButton>
         <div className="ac-employee-search-action-row-right">
-          <AccessButton xs disabled>
+          <AccessButton data-action-status="missing" xs disabled>
             Map Site
           </AccessButton>
-          <AccessButton xs disabled className="ac-employee-search-lic-search-btn">
+          <AccessButton data-action-status="missing" xs disabled className="ac-employee-search-lic-search-btn">
             Open in Tracking
           </AccessButton>
         </div>
@@ -212,13 +212,13 @@ function Views1Tab({
             </label>
           ))}
         </fieldset>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Update Column | 036
         </AccessButton>
-        <AccessButton xs disabled className="ac-employee-search-v-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-employee-search-v-btn">
           V-Name
         </AccessButton>
-        <AccessButton xs disabled className="ac-employee-search-v-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-employee-search-v-btn">
           V-Number
         </AccessButton>
       </div>
@@ -241,7 +241,7 @@ function Views3Tab() {
         {JOB_VIEWS_3_BUTTON_GRID.map((row, rowIndex) =>
           row.map((cell, colIndex) =>
             cell ? (
-              <AccessButton
+              <AccessButton data-action-status="missing"
                 key={`${rowIndex}-${colIndex}-${cell.label}`}
                 xs
                 disabled
@@ -325,7 +325,7 @@ function Views4Tab() {
         {Array.from({ length: 10 }, (_, i) => (
           <div key={i} className="ac-customer-search-preset-empty ac-customer-search-spare-btn" aria-hidden />
         ))}
-        <AccessButton xs disabled className="ac-customer-search-reset-all-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-customer-search-reset-all-btn">
           Reset to All
         </AccessButton>
       </div>
@@ -342,18 +342,18 @@ function CopySectionTab({ variant }: { variant: "ma" | "nh" }) {
       <div className="ac-employee-copy-main">
         {JOB_MA_COPY_ROWS.map((row) => (
           <div key={row.label} className="ac-employee-copy-row">
-            <AccessButton xs disabled className="ac-employee-copy-primary-btn">
+            <AccessButton data-action-status="missing" xs disabled className="ac-employee-copy-primary-btn">
               {row.label}
             </AccessButton>
             {row.google ? (
-              <AccessButton xs disabled className="ac-employee-copy-side-btn">
+              <AccessButton data-action-status="missing" xs disabled className="ac-employee-copy-side-btn">
                 Google
               </AccessButton>
             ) : null}
             {"extraButtons" in row && row.extraButtons ? (
               <div className="ac-employee-copy-extra-btns">
                 {row.extraButtons.map((label) => (
-                  <AccessButton key={label} xs disabled>
+                  <AccessButton data-action-status="missing" key={label} xs disabled>
                     {label}
                   </AccessButton>
                 ))}
@@ -365,7 +365,7 @@ function CopySectionTab({ variant }: { variant: "ma" | "nh" }) {
       {variant === "nh" ? (
         <div className="ac-employee-nh-trades">
           {JOB_NH_TRADE_BUTTONS.map((label) => (
-            <AccessButton key={label} xs disabled className="ac-employee-nh-trade-btn">
+            <AccessButton data-action-status="missing" key={label} xs disabled className="ac-employee-nh-trade-btn">
               {label}
             </AccessButton>
           ))}
@@ -373,19 +373,19 @@ function CopySectionTab({ variant }: { variant: "ma" | "nh" }) {
       ) : null}
       <div className="ac-employee-copy-divider" aria-hidden />
       <div className="ac-employee-copy-contact">
-        <AccessButton xs disabled className="ac-employee-copy-wide-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-employee-copy-wide-btn">
           Email Address
         </AccessButton>
-        <AccessButton xs disabled className="ac-employee-copy-wide-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-employee-copy-wide-btn">
           Cell #
         </AccessButton>
       </div>
       <div className="ac-employee-copy-divider" aria-hidden />
       <div className="ac-employee-copy-datapay">
-        <AccessButton xs disabled className="ac-employee-copy-wide-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-employee-copy-wide-btn">
           Datapay-Get-Hired
         </AccessButton>
-        <AccessButton xs disabled className="ac-employee-copy-wide-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-employee-copy-wide-btn">
           Datapay Password
         </AccessButton>
       </div>
@@ -404,10 +404,10 @@ function UserSettingsTab() {
               <option value="" />
             </select>
             <div className="ac-customer-search-user-setting-btns">
-              <AccessButton xs disabled>
+              <AccessButton data-action-status="missing" xs disabled>
                 Set
               </AccessButton>
-              <AccessButton xs disabled>
+              <AccessButton data-action-status="missing" xs disabled>
                 Clear
               </AccessButton>
             </div>
@@ -422,40 +422,40 @@ function UtilitiesTab() {
   return (
     <div className="ac-customer-search-utilities-tab ac-employee-utilities-tab ac-search-views-tab-pane">
       <div className="ac-customer-search-utilities-section ac-employee-utilities-section--stack">
-        <AccessButton xs disabled className="ac-employee-utilities-black-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-employee-utilities-black-btn">
           Refresh Hyperlinks | 009
         </AccessButton>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           View/Print Mailing Labels
         </AccessButton>
       </div>
       <div className="ac-customer-search-utilities-section ac-employee-utilities-section--stack">
         <div className="ac-customer-search-utilities-btn-row">
-          <AccessButton xs disabled>
+          <AccessButton data-action-status="missing" xs disabled>
             Refresh
           </AccessButton>
-          <AccessButton xs disabled>
+          <AccessButton data-action-status="missing" xs disabled>
             Zero
           </AccessButton>
         </div>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Export View
         </AccessButton>
       </div>
       <div className="ac-customer-search-utilities-section ac-employee-utilities-spare" aria-hidden />
       <div className="ac-customer-search-utilities-section ac-employee-utilities-section--stack">
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Salesman Records - Emp | 010
         </AccessButton>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Last Contact | 011
         </AccessButton>
       </div>
       <div className="ac-customer-search-utilities-section ac-employee-utilities-section--stack">
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Compare Profiles (Update All)
         </AccessButton>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Compare Profiles (Update Selected)
         </AccessButton>
       </div>
@@ -487,10 +487,10 @@ function AdminUtilitiesTab() {
             <span>Cell #</span>
           </label>
         </fieldset>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Export View
         </AccessButton>
-        <AccessButton xs disabled className="ac-employee-admin-multifilter-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-employee-admin-multifilter-btn">
           Multi Filter Names and Selections
         </AccessButton>
       </div>
@@ -503,10 +503,10 @@ function RayTab() {
     <div className="ac-employee-ray-tab ac-search-views-tab-pane">
       <div className="ac-employee-ray-section">
         <div className="ac-employee-ray-heading">Auto-Merge Duplicates:</div>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Electrician | 006
         </AccessButton>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Plumber | 007
         </AccessButton>
       </div>
@@ -514,16 +514,16 @@ function RayTab() {
         <select disabled className="ac-select" defaultValue="" aria-label="License Board">
           <option value="">&lt;License Board&gt;</option>
         </select>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Build Licenses | 008
         </AccessButton>
       </div>
       <div className="ac-employee-ray-section ac-employee-ray-section--wide">
         <div className="ac-employee-ray-heading">Remove Apprentice from duplicates (Licensed / Apprentice) | 021</div>
-        <AccessButton xs disabled className="ac-employee-ray-wide-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-employee-ray-wide-btn">
           1) Select Licensed / Apprentice Duplicates
         </AccessButton>
-        <AccessButton xs disabled className="ac-employee-ray-wide-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-employee-ray-wide-btn">
           2) Delete Selected Apprentice Duplicates and Merge Cell #s
         </AccessButton>
       </div>
@@ -540,10 +540,10 @@ function RayTab() {
             <li>Process validation file from vendor.</li>
           </ol>
           <div className="ac-employee-ray-phone-btns">
-            <AccessButton xs disabled>
+            <AccessButton data-action-status="missing" xs disabled>
               Export Phone Numbers
             </AccessButton>
-            <AccessButton xs disabled>
+            <AccessButton data-action-status="missing" xs disabled>
               Process Phone Numbers
             </AccessButton>
           </div>
@@ -560,13 +560,13 @@ function Ray2Tab() {
         These will remove the value, user, and date from the profile, and the history | 027
       </p>
       <fieldset className="ac-employee-ray2-fieldset">
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Remove All Vax
         </AccessButton>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Remove All S1
         </AccessButton>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Remove All S2
         </AccessButton>
       </fieldset>
@@ -577,7 +577,7 @@ function Ray2Tab() {
 function ScheduleTab() {
   return (
     <div className="ac-employee-search-interview-tab ac-search-views-tab-pane">
-      <AccessButton xs disabled>
+      <AccessButton data-action-status="missing" xs disabled>
         Populate
       </AccessButton>
       <FilterRadioGroup
@@ -650,15 +650,15 @@ function CallLists2Tab() {
             <select disabled className="ac-select" defaultValue="" aria-label="View Map">
               <option value="">&lt;View Map&gt;</option>
             </select>
-            <AccessButton xs disabled>
+            <AccessButton data-action-status="missing" xs disabled>
               Edit
             </AccessButton>
           </div>
           <span className="ac-employee-calllists2-hint">(This is not a filter)</span>
-          <AccessButton xs disabled className="ac-employee-search-v-btn">
+          <AccessButton data-action-status="missing" xs disabled className="ac-employee-search-v-btn">
             V-Name
           </AccessButton>
-          <AccessButton xs disabled className="ac-employee-search-v-btn">
+          <AccessButton data-action-status="missing" xs disabled className="ac-employee-search-v-btn">
             V-Number
           </AccessButton>
         </div>
@@ -668,7 +668,7 @@ function CallLists2Tab() {
           <div key={i} className="ac-customer-search-preset-empty ac-employee-calllists2-spare" aria-hidden />
         ))}
         <span className="ac-employee-search-btn-warn ac-employee-calllists2-recruiter">Job Search Screen</span>
-        <AccessButton xs disabled className="ac-employee-search-btn-warn ac-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-employee-search-btn-warn ac-btn">
           JOB SEARCH
         </AccessButton>
       </div>
@@ -695,10 +695,10 @@ const TAB_CONTENT: readonly (() => ReactNode)[] = [
 export function JobSearchUtilityRail() {
   return (
     <div className="ac-customer-search-utility-rail ac-employee-search-utility-rail ac-job-search-utility-rail shrink-0">
-      <button type="button" className="ac-customer-search-rail-icon" disabled aria-label="Print">
+      <button data-action-status="missing" type="button" className="ac-customer-search-rail-icon" disabled aria-label="Print">
         <Icon icon={Printer} size="xs" />
       </button>
-      <button type="button" className="ac-customer-search-rail-icon ac-customer-search-rail-icon--help" disabled aria-label="Help">
+      <button data-action-status="missing" type="button" className="ac-customer-search-rail-icon ac-customer-search-rail-icon--help" disabled aria-label="Help">
         <Icon icon={HelpCircle} size="xs" />
       </button>
       <div className="ac-customer-search-size-mb">
@@ -716,7 +716,7 @@ export function JobSearchViewsPanel(props: JobSearchViewsPanelProps) {
     <div className="ac-customer-search-controls ac-employee-search-controls ac-job-search-controls min-w-0 flex-1">
       <div className="ac-tabs ac-customer-search-view-tabs ac-employee-search-view-tabs ac-job-search-view-tabs shrink-0 overflow-x-auto">
         {JOB_SEARCH_VIEW_TABS.map((label, i) => (
-          <button
+          <button data-action-status="complete"
             key={label}
             type="button"
             className={`ac-tab ${activeTab === i ? "ac-tab-active" : ""}`}

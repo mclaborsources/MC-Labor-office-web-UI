@@ -155,8 +155,8 @@ export function JobFilters({
       )}
 
       <div className="flex shrink-0 items-center gap-1">
-        <AccessButton type="submit" variant="primary" disabled={isPending}>Search</AccessButton>
-        {hasFilters && <AccessButton type="button" onClick={clearAll}>Clear</AccessButton>}
+        <AccessButton data-action-status="complete" type="submit" variant="primary" disabled={isPending}>Search</AccessButton>
+        {hasFilters && <AccessButton data-action-status="linked" type="button" onClick={clearAll}>Clear</AccessButton>}
       </div>
     </form>
   );

@@ -33,7 +33,7 @@ export function TrackingTabs({ activeTab, onTabChange }: TrackingTabsProps) {
       {TABS.map((tab) => {
         const isActive = activeTab === tab.id;
         return (
-          <button
+          <button data-action-status="complete"
             key={tab.id}
             type="button"
             role="tab"

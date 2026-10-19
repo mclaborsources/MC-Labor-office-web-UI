@@ -86,7 +86,7 @@ export function EmployeeSearchColumnHeader({
 
   return (
     <div ref={containerRef} className="ac-column-filter">
-      <button
+      <button data-action-status="complete"
         type="button"
         className="ac-column-filter-trigger"
         aria-label={`Filter ${label || "column"}`}
@@ -104,20 +104,20 @@ export function EmployeeSearchColumnHeader({
           className="ac-column-filter-menu"
           style={{ position: "fixed", left: menuPosition.left, top: menuPosition.top }}
         >
-          <button type="button" className="ac-column-filter-command">
+          <button data-action-status="missing" type="button" className="ac-column-filter-command">
             <span className="ac-column-filter-sort-icon">A↓<small>Z</small></span>
             <span>Sort A to Z</span>
           </button>
-          <button type="button" className="ac-column-filter-command">
+          <button data-action-status="missing" type="button" className="ac-column-filter-command">
             <span className="ac-column-filter-sort-icon">Z↓<small>A</small></span>
             <span>Sort Z to A</span>
           </button>
           <div className="ac-column-filter-separator" />
-          <button type="button" className="ac-column-filter-command ac-column-filter-clear" disabled>
+          <button data-action-status="missing" type="button" className="ac-column-filter-command ac-column-filter-clear" disabled>
             <span className="ac-column-filter-funnel">▽</span>
             <span>Clear filter from {label || "column"}</span>
           </button>
-          <button type="button" className="ac-column-filter-text-filters">
+          <button data-action-status="missing" type="button" className="ac-column-filter-text-filters">
             <span>Text Filters</span>
             <span>›</span>
           </button>
@@ -138,8 +138,8 @@ export function EmployeeSearchColumnHeader({
             ))}
           </div>
           <div className="ac-column-filter-actions">
-            <button type="button" onClick={() => setOpen(false)}>OK</button>
-            <button type="button" onClick={() => setOpen(false)}>Cancel</button>
+            <button data-action-status="complete" type="button" onClick={() => setOpen(false)}>OK</button>
+            <button data-action-status="complete" type="button" onClick={() => setOpen(false)}>Cancel</button>
           </div>
           <span className="ac-column-filter-resize" aria-hidden>⋰</span>
         </div>,

@@ -3,6 +3,7 @@
 interface TabItem {
   id: string;
   label: string;
+  status?: "missing" | "partial" | "linked" | "complete";
 }
 
 interface AccessTabStripProps {
@@ -17,7 +18,7 @@ export function AccessTabStrip({ tabs, active, onChange, className = "" }: Acces
   return (
     <div className={`ac-tabs ${className}`} role="tablist">
       {tabs.map((t) => (
-        <button
+        <button data-action-status={t.status ?? "complete"}
           key={t.id}
           type="button"
           role="tab"

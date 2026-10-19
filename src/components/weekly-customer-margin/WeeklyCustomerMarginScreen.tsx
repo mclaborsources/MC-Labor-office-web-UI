@@ -114,13 +114,13 @@ export function WeeklyCustomerMarginScreen({ rows: initialRows, error: initialEr
       <div className="margin-header-controls">
         <label htmlFor="margin-view">View:</label>
         <select id="margin-view" value={view} onChange={event => setView(event.target.value)}>{Array.from({ length: 5 }, (_, i) => <option key={i}>{i === 0 ? "View 01" : `View 0${i + 1}`}</option>)}</select>
-        <AccessButton onClick={saveView}>Save View</AccessButton>
-        <AccessButton onClick={deleteView}>Delete View</AccessButton>
-        <AccessButton onClick={() => void refresh()} disabled={loading}>{loading ? "Loading…" : "Refresh"}</AccessButton>
-        <AccessButton onClick={clearFilters}>Zero</AccessButton>
-        <AccessButton onClick={() => window.print()}>Export View</AccessButton>
+        <AccessButton data-action-status="complete" onClick={saveView}>Save View</AccessButton>
+        <AccessButton data-action-status="complete" onClick={deleteView}>Delete View</AccessButton>
+        <AccessButton data-action-status="complete" onClick={() => void refresh()} disabled={loading}>{loading ? "Loading…" : "Refresh"}</AccessButton>
+        <AccessButton data-action-status="complete" onClick={clearFilters}>Zero</AccessButton>
+        <AccessButton data-action-status="complete" onClick={() => window.print()}>Export View</AccessButton>
       </div>
-      <aside><AccessButton onClick={() => router.push("/tracking")}>Cancel</AccessButton><button type="button" aria-label="Help" title="Weekly Customer Margin Report">?</button></aside>
+      <aside><AccessButton data-action-status="linked" onClick={() => router.push("/tracking")}>Cancel</AccessButton><button data-action-status="missing" type="button" aria-label="Help" title="Weekly Customer Margin Report">?</button></aside>
     </header>
 
     <div className="margin-tools">
@@ -139,13 +139,13 @@ export function WeeklyCustomerMarginScreen({ rows: initialRows, error: initialEr
 
     <div className="margin-dates">
       <div className="margin-week-dates"><b>Week Ending Friday</b><i>(click date first)</i><label>Start <input type="date" value={startDate} onChange={event => setStartDate(event.target.value)} /></label><label>End <input type="date" value={endDate} onChange={event => setEndDate(event.target.value)} /></label></div>
-      <div className="date-arrows"><AccessButton aria-label="Previous week" onClick={() => shiftWeek(-1)}>◀</AccessButton><AccessButton aria-label="Choose week" onClick={() => { if (!endDate) shiftWeek(0); }}>▣</AccessButton><AccessButton aria-label="Next week" onClick={() => shiftWeek(1)}>▶</AccessButton></div>
+      <div className="date-arrows"><AccessButton data-action-status="complete" aria-label="Previous week" onClick={() => shiftWeek(-1)}>◀</AccessButton><AccessButton data-action-status="complete" aria-label="Choose week" onClick={() => { if (!endDate) shiftWeek(0); }}>▣</AccessButton><AccessButton data-action-status="complete" aria-label="Next week" onClick={() => shiftWeek(1)}>▶</AccessButton></div>
       <div className="margin-report-dates"><b>Start and End Days of Report</b><input type="date" value={startDate} onChange={event => setStartDate(event.target.value)} /><input type="date" value={endDate} onChange={event => setEndDate(event.target.value)} /></div>
       <div className="margin-payroll-dates" title="Payroll check date filtering is not mapped in the current SQL source."><b>Start and End Payroll Chk Days</b><input type="date" value={payrollStart} disabled /><input type="date" value={payrollEnd} disabled /></div>
     </div>
 
-    <div className="margin-presets">{["By Customer", "By Job", "By Week", "View 04", "View 05"].map((label, index) => <AccessButton key={label} disabled={index === 1} onClick={() => { if (index === 2) setGroupBy("Week"); else if (index === 0) setGroupBy("Customer"); else if (index > 2) setView(label); }}>{label}</AccessButton>)}<AccessButton className="margin-clear-filters" onClick={clearFilters}>Clear Filters</AccessButton></div>
-    <div className="margin-summary"><label>Overall Margin <input readOnly value={overallMargin} /></label><AccessButton onClick={() => setMessage("Overall margin recalculated from the visible rows.")}>Recalc</AccessButton><em>Your mouse is over:</em><i /><strong>See note in Help about Gross Payroll</strong></div>
+    <div className="margin-presets">{["By Customer", "By Job", "By Week", "View 04", "View 05"].map((label, index) => <AccessButton data-action-status="complete" key={label} disabled={index === 1} onClick={() => { if (index === 2) setGroupBy("Week"); else if (index === 0) setGroupBy("Customer"); else if (index > 2) setView(label); }}>{label}</AccessButton>)}<AccessButton data-action-status="complete" className="margin-clear-filters" onClick={clearFilters}>Clear Filters</AccessButton></div>
+    <div className="margin-summary"><label>Overall Margin <input readOnly value={overallMargin} /></label><AccessButton data-action-status="complete" onClick={() => setMessage("Overall margin recalculated from the visible rows.")}>Recalc</AccessButton><em>Your mouse is over:</em><i /><strong>See note in Help about Gross Payroll</strong></div>
 
     {(error || message) && <p className={error ? "margin-error" : "margin-message"} role={error ? "alert" : "status"}>{error || message}</p>}
     <div className="margin-grid-wrap"><table className="legacy-report-grid margin-grid"><thead><tr><th aria-label="Record selector" />{columns.map(column => <th key={column} title={["Per Diem", "SUB Sales", "Employee Sales", "Adj Total INV After 20%", "Total Referral Cost Paid to Agent"].includes(column) ? "Not available in the current SQL source" : undefined}>{column}</th>)}</tr></thead><tbody>

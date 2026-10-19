@@ -33,8 +33,8 @@ export function AlertsScreen({ rows, types, error: initialError }: { rows: Alert
     <header><h1>Alerts</h1></header>
     <div className="alerts-content">
       <aside className="alerts-actions" aria-label="Alert actions">
-        <button onClick={() => { setTypeId(String(types[0]?.id ?? "")); setAlertText(""); setAdding(true); }} aria-label="Add alert" title="Add alert">+</button>
-        <button onClick={removeSelected} aria-label="Delete selected alert" title="Delete selected alert">×</button>
+        <button data-action-status="complete" onClick={() => { setTypeId(String(types[0]?.id ?? "")); setAlertText(""); setAdding(true); }} aria-label="Add alert" title="Add alert">+</button>
+        <button data-action-status="complete" onClick={removeSelected} aria-label="Delete selected alert" title="Delete selected alert">×</button>
       </aside>
       <div className="alerts-grid-wrap">
         <table className="alerts-grid">
@@ -48,7 +48,7 @@ export function AlertsScreen({ rows, types, error: initialError }: { rows: Alert
               <td><input readOnly aria-label="Alert text" value={row.alert} title={row.alert}/></td>
               <td><input readOnly aria-label="Entry user" value={row.entryUser}/></td>
               <td><input readOnly aria-label="Entry date" value={row.entryDate}/></td>
-                <td><button className="alerts-complete" disabled={complete || busy} onClick={event => { event.stopPropagation(); setSelectedId(row.id); void save({ action: "complete", id: row.id }); }}>Completed</button></td>
+                <td><button data-action-status="complete" className="alerts-complete" disabled={complete || busy} onClick={event => { event.stopPropagation(); setSelectedId(row.id); void save({ action: "complete", id: row.id }); }}>Completed</button></td>
               <td><input readOnly aria-label="Completed user" value={row.completedUser}/></td>
               <td><input readOnly aria-label="Completed date" value={row.completedDate}/></td>
             </tr>;
@@ -61,7 +61,7 @@ export function AlertsScreen({ rows, types, error: initialError }: { rows: Alert
       <h2>New Alert</h2>
       <label>Type<select required value={typeId} onChange={event => setTypeId(event.target.value)}><option value="">Select type</option>{types.map(type => <option key={type.id} value={type.id}>{type.label}</option>)}</select></label>
       <label>Alert<input required maxLength={8000} value={alertText} onChange={event => setAlertText(event.target.value)}/></label>
-      <footer><button type="submit" disabled={busy}>Save</button><button type="button" onClick={() => setAdding(false)}>Cancel</button></footer>
+      <footer><button data-action-status="complete" type="submit" disabled={busy}>Save</button><button data-action-status="complete" type="button" onClick={() => setAdding(false)}>Cancel</button></footer>
     </form></div>}
   </section>;
 }

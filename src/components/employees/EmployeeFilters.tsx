@@ -219,7 +219,7 @@ export function EmployeeFilters({
       {compact ? (
         !hideSearch ? (
           <>
-            <AccessButton
+            <AccessButton data-action-status="complete"
               type="submit"
               xs
               disabled={isPending}
@@ -228,7 +228,7 @@ export function EmployeeFilters({
               aria-label="Search"
             />
             {hasFilters && (
-              <AccessButton type="button" xs onClick={clearAll}>
+              <AccessButton data-action-status="linked" type="button" xs onClick={clearAll}>
                 Clear
               </AccessButton>
             )}
@@ -236,11 +236,11 @@ export function EmployeeFilters({
         ) : null
       ) : (
         <div className="flex shrink-0 items-center gap-1">
-          <AccessButton type="submit" variant="primary" disabled={isPending}>
+          <AccessButton data-action-status="complete" type="submit" variant="primary" disabled={isPending}>
             Search
           </AccessButton>
           {hasFilters && (
-            <AccessButton type="button" onClick={clearAll}>
+            <AccessButton data-action-status="linked" type="button" onClick={clearAll}>
               Clear
             </AccessButton>
           )}

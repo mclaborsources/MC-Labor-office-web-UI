@@ -58,7 +58,7 @@ export function EmployeeHoursReportScreen({ mode, rows, year, error = "" }: { mo
   const yearOptions = Array.from({ length: 8 }, (_, i) => year - i);
 
   return <section className="ac-hours-report">
-    <div className="ac-hours-titlebar"><h1>Employee Hours By {isWeek ? "Week" : "Month"} Report</h1><AccessButton onClick={() => router.refresh()}>Refresh</AccessButton><AccessButton onClick={clear}>Zero</AccessButton><div className="ac-hours-close"><AccessButton onClick={() => router.push("/tracking")}>Cancel</AccessButton></div></div>
+    <div className="ac-hours-titlebar"><h1>Employee Hours By {isWeek ? "Week" : "Month"} Report</h1><AccessButton data-action-status="complete" onClick={() => router.refresh()}>Refresh</AccessButton><AccessButton data-action-status="complete" onClick={clear}>Zero</AccessButton><div className="ac-hours-close"><AccessButton data-action-status="linked" onClick={() => router.push("/tracking")}>Cancel</AccessButton></div></div>
     <div className="ac-hours-controls">
       <div className="ac-hours-control-row">
         <label className="numbered"><b>1)</b><select aria-label="Year" value={year} onChange={(event) => router.push(`${isWeek ? "/employee-hours-by-week" : "/employee-hours-by-month"}?year=${event.target.value}`)}>{yearOptions.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>

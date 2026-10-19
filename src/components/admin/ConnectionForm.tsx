@@ -27,7 +27,7 @@ export function ConnectionForm({ initial }: { initial: DatabaseSettings | null }
   const buttonClass = "min-w-20 border border-[#999] bg-gradient-to-b from-white to-[#dedede] px-4 py-1 text-sm text-black shadow-sm disabled:opacity-50";
   if (cancelled) return <div className="border border-[#89869f] bg-[#c4c2c4] p-8 text-center text-sm">
     <p>Connection setup cancelled. No changes were saved.</p>
-    <button type="button" className={`${buttonClass} mt-4`} onClick={() => setCancelled(false)}>Connect to SQL Server</button>
+    <button data-action-status="complete" type="button" className={`${buttonClass} mt-4`} onClick={() => setCancelled(false)}>Connect to SQL Server</button>
   </div>;
   return <div className="grid gap-3 md:grid-cols-2">
     <form onSubmit={(event) => { event.preventDefault(); void submit("save"); }} className="flex min-h-80 flex-col justify-center border border-[#77738c] bg-[#c4c2c4] p-3">
@@ -36,8 +36,8 @@ export function ConnectionForm({ initial }: { initial: DatabaseSettings | null }
           <input autoFocus={key === "server"} className={`${inputClass} ${key === "user" || key === "password" ? "max-w-44" : ""}`} type={key === "password" ? "password" : "text"} autoComplete="off" required={key !== "password"} value={settings[key]} placeholder={placeholder} onChange={(event) => update({ [key]: event.target.value })} />
         </label>)}
         <div className="flex justify-center gap-4 pt-4">
-          <button className={buttonClass} type="submit">{busy ? "Connecting…" : "OK"}</button>
-          <button className={buttonClass} type="button" onClick={() => { if (initial) window.location.assign("/admin/connection"); else setCancelled(true); }}>Cancel</button>
+          <button data-action-status="complete" className={buttonClass} type="submit">{busy ? "Connecting…" : "OK"}</button>
+          <button data-action-status="linked" className={buttonClass} type="button" onClick={() => { if (initial) window.location.assign("/admin/connection"); else setCancelled(true); }}>Cancel</button>
         </div>
         <details className="pt-4 text-xs text-[#333]">
           <summary className="cursor-pointer">Advanced connection settings</summary>
@@ -47,7 +47,7 @@ export function ConnectionForm({ initial }: { initial: DatabaseSettings | null }
             <p>Use either an instance name or a port.</p>
             <label className="flex items-center gap-2"><input type="checkbox" checked={settings.encrypt} onChange={(event) => update({ encrypt: event.target.checked })} />Encrypt connection</label>
             <label className="flex items-center gap-2"><input type="checkbox" checked={settings.trustServerCertificate} onChange={(event) => update({ trustServerCertificate: event.target.checked })} />Trust server certificate</label>
-            <button className={buttonClass} type="button" onClick={(event) => { if (event.currentTarget.form?.reportValidity()) void submit("test"); }}>Test connection</button>
+            <button data-action-status="linked" className={buttonClass} type="button" onClick={(event) => { if (event.currentTarget.form?.reportValidity()) void submit("test"); }}>Test connection</button>
           </div>
         </details>
       </fieldset>

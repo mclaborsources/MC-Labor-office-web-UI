@@ -103,11 +103,11 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
               <span>=</span>
             </label>
           </div>
-          <AccessButton xs icon={Search}>
+          <AccessButton data-action-status="missing" xs icon={Search}>
             Search
           </AccessButton>
           <Link href={`/jobs?customerId=${customer.customerId}`}>
-            <AccessButton xs className="ac-customer-profile-jobs-btn">
+            <AccessButton data-action-status="linked" xs className="ac-customer-profile-jobs-btn">
               Jobs
             </AccessButton>
           </Link>
@@ -115,10 +115,10 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
 
         <div className="ac-customer-profile-row-1-center">
           <div className="ac-customer-profile-mini-tabs">
-            <button type="button" className="ac-customer-profile-mini-tab ac-customer-profile-mini-tab--active">
+            <button data-action-status="missing" type="button" className="ac-customer-profile-mini-tab ac-customer-profile-mini-tab--active">
               Customer
             </button>
-            <button type="button" className="ac-customer-profile-mini-tab">
+            <button data-action-status="missing" type="button" className="ac-customer-profile-mini-tab">
               Credit History
             </button>
           </div>
@@ -132,7 +132,7 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
             <span className="ac-flabel">Library Card #</span>
             <div className="ac-customer-profile-library-box" aria-hidden />
           </div>
-          <AccessButton xs className="ac-customer-profile-research-btn">
+          <AccessButton data-action-status="missing" xs className="ac-customer-profile-research-btn">
             RE-SEARCH
           </AccessButton>
           <select size={3} className="ac-select ac-customer-profile-step-list" defaultValue="1">
@@ -141,22 +141,22 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
             <option value="3">Step 3: Google</option>
           </select>
           <div className="ac-customer-profile-step-nav">
-            <AccessButton xs className="ac-customer-profile-step-arrow">
+            <AccessButton data-action-status="missing" xs className="ac-customer-profile-step-arrow">
               ►
             </AccessButton>
-            <button type="button" className="ac-customer-profile-util-icon" aria-label="Document" />
-            <button type="button" className="ac-customer-profile-util-icon ac-customer-profile-util-icon--gear" aria-label="Settings" />
+            <button data-action-status="missing" type="button" className="ac-customer-profile-util-icon" aria-label="Document" />
+            <button data-action-status="missing" type="button" className="ac-customer-profile-util-icon ac-customer-profile-util-icon--gear" aria-label="Settings" />
           </div>
           <span className="ac-customer-profile-delete-link">Delete | 037</span>
         </div>
       </div>
 
       <div className="ac-customer-profile-row ac-customer-profile-row-2">
-        <AccessButton xs className="ac-customer-profile-spare-btn">
+        <AccessButton data-action-status="missing" xs className="ac-customer-profile-spare-btn">
           Spare 2
         </AccessButton>
         {CUSTOMER_PROFILE_TOOLBAR_BUTTONS.map((label) => (
-          <AccessButton key={label} xs className="ac-customer-profile-toolbar-btn">
+          <AccessButton data-action-status="missing" key={label} xs className="ac-customer-profile-toolbar-btn">
             {label}
           </AccessButton>
         ))}
@@ -164,11 +164,11 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
 
       <div className="ac-customer-profile-row ac-customer-profile-row-3">
         <ProfileField label="Customer" value={customer.customerName} className="ac-customer-profile-customer-name" />
-        <button type="button" className="ac-customer-profile-icon-btn ac-customer-profile-icon-btn--doc" aria-label="Copy" />
-        <button type="button" className="ac-customer-profile-icon-btn" aria-label="Home">
+        <button data-action-status="missing" type="button" className="ac-customer-profile-icon-btn ac-customer-profile-icon-btn--doc" aria-label="Copy" />
+        <button data-action-status="missing" type="button" className="ac-customer-profile-icon-btn" aria-label="Home">
           <Icon icon={Home} size="xs" />
         </button>
-        <button type="button" className="ac-customer-profile-icon-btn ac-customer-profile-icon-btn--g" aria-label="Google">
+        <button data-action-status="missing" type="button" className="ac-customer-profile-icon-btn ac-customer-profile-icon-btn--g" aria-label="Google">
           G
         </button>
         <ProfileField label="Status" value={customer.status} />
@@ -220,7 +220,7 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
             }
           />
         ))}
-        <AccessButton xs className="ac-customer-profile-save-btn">
+        <AccessButton data-action-status="missing" xs className="ac-customer-profile-save-btn">
           Save | 037
         </AccessButton>
       </div>
@@ -329,7 +329,7 @@ function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
               <div key={entity} className="ac-customer-profile-links-col">
                 <div className="ac-customer-profile-links-head">{entity}</div>
                 {CUSTOMER_PROFILE_LINK_ACTIONS.map((action) => (
-                  <AccessButton key={action} xs className="ac-customer-profile-link-btn">
+                  <AccessButton data-action-status="missing" key={action} xs className="ac-customer-profile-link-btn">
                     {action}
                   </AccessButton>
                 ))}
@@ -340,11 +340,11 @@ function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
       </div>
 
       <div className="ac-customer-profile-folder-row">
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Open Company Folder
         </AccessButton>
         <ProfileField label="Folder" value="" wide className="ac-customer-profile-folder-field" />
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Browse
         </AccessButton>
       </div>
@@ -436,10 +436,10 @@ function CustomerBillRatesTab({ customer }: { customer: CustomerDetail }) {
   return (
     <section id="03-billrates" className="ac-customer-bill-rates">
       <div className="ac-customer-bill-rate-actions" aria-label="Bill rate row actions">
-        <button type="button" onClick={() => moveSelected(-1)} disabled={!selectedId} aria-label="Move selected rate up">↑</button>
-        <button type="button" onClick={() => moveSelected(1)} disabled={!selectedId} aria-label="Move selected rate down">↓</button>
-        <button type="button" onClick={deleteSelected} disabled={!selectedId} aria-label="Delete selected rate">×</button>
-        <button type="button" onClick={addRow} className="ac-customer-bill-rate-add">+ Add Rate</button>
+        <button data-action-status="complete" type="button" onClick={() => moveSelected(-1)} disabled={!selectedId} aria-label="Move selected rate up">↑</button>
+        <button data-action-status="complete" type="button" onClick={() => moveSelected(1)} disabled={!selectedId} aria-label="Move selected rate down">↓</button>
+        <button data-action-status="complete" type="button" onClick={deleteSelected} disabled={!selectedId} aria-label="Delete selected rate">×</button>
+        <button data-action-status="complete" type="button" onClick={addRow} className="ac-customer-bill-rate-add">+ Add Rate</button>
       </div>
 
       <div className="ac-customer-bill-rate-grid-wrap">
@@ -586,7 +586,7 @@ function CustomerSalesFolderPanel({ future = false }: { future?: boolean }) {
         <span>Folder</span>
         <textarea defaultValue="" aria-label={`${future ? "Future sales" : "Companies"} folder`} />
       </label>
-      <AccessButton
+      <AccessButton data-action-status="missing"
         xs
         className={`ac-customer-sales-transfer ${future ? "ac-customer-sales-transfer--future" : ""}`}
       >
@@ -596,10 +596,10 @@ function CustomerSalesFolderPanel({ future = false }: { future?: boolean }) {
         <br />
         {future ? "Future Sales to COMPANIES" : "Companies to FUTURE SALES"}
       </AccessButton>
-      <AccessButton xs className="ac-customer-sales-folder-action">
+      <AccessButton data-action-status="missing" xs className="ac-customer-sales-folder-action">
         Create Company Folder in 00 Companies{future ? " - Future Sales" : ""}
       </AccessButton>
-      <AccessButton xs className="ac-customer-sales-folder-action ac-customer-sales-folder-open">
+      <AccessButton data-action-status="missing" xs className="ac-customer-sales-folder-action ac-customer-sales-folder-open">
         Open Company Folder
       </AccessButton>
     </section>
@@ -614,7 +614,7 @@ function CustomerSalesTab() {
           <SalesSelect label="Contract With" options={CUSTOMER_SALES_COMPANIES} />
           <div className="ac-customer-sales-history-row">
             <SalesSelect label="Contract Salesman" options={CUSTOMER_SALES_PEOPLE} />
-            <AccessButton xs>History</AccessButton>
+            <AccessButton data-action-status="missing" xs>History</AccessButton>
           </div>
           <label className="ac-customer-sales-date-field">
             <span>Date on Contract</span>
@@ -625,7 +625,7 @@ function CustomerSalesTab() {
         <div className="ac-customer-sales-contract-right">
           <div className="ac-customer-sales-history-row">
             <SalesSelect label="Salesman (Admin)" options={CUSTOMER_SALES_PEOPLE} />
-            <AccessButton xs>History</AccessButton>
+            <AccessButton data-action-status="missing" xs>History</AccessButton>
           </div>
           <SalesSelect
             label="Extra Verbiage on Contract"
@@ -666,8 +666,8 @@ function CustomerSalesTab() {
           defaultValue="Industrial Power Group, Inc."
         />
         <div className="ac-customer-sales-contract-actions">
-          <AccessButton xs>Copy IPG Sales Contract</AccessButton>
-          <AccessButton xs>Populate IPG Sales Contract</AccessButton>
+          <AccessButton data-action-status="missing" xs>Copy IPG Sales Contract</AccessButton>
+          <AccessButton data-action-status="missing" xs>Populate IPG Sales Contract</AccessButton>
         </div>
         <label className="ac-customer-sales-small-field">
           <span>User</span>
@@ -724,7 +724,7 @@ function CustomerCollectionsTab() {
     <section id="06-collections" className="ac-customer-collections">
       <div className="ac-customer-collections-title">Collections Notes</div>
       <div className="ac-customer-collections-workspace">
-        <button
+        <button data-action-status="complete"
           type="button"
           className="ac-customer-collections-delete"
           onClick={deleteSelectedCollection}
@@ -750,7 +750,7 @@ function CustomerCollectionsTab() {
               {visibleRows.map((row) => (
                 <tr key={row.id} className={selectedId === row.id ? "is-selected" : ""}>
                   <td>
-                    <button type="button" onClick={() => setSelectedId(row.id)} aria-label="Select collection note">
+                    <button data-action-status="complete" type="button" onClick={() => setSelectedId(row.id)} aria-label="Select collection note">
                       {selectedId === row.id ? "*" : ""}
                     </button>
                   </td>
@@ -792,7 +792,7 @@ function CustomerCollectionsTab() {
         </fieldset>
       </div>
 
-      <AccessButton xs className="ac-customer-collections-folder-btn">
+      <AccessButton data-action-status="missing" xs className="ac-customer-collections-folder-btn">
         Create Folders for Bad Debt and Small Claims
       </AccessButton>
     </section>
@@ -844,7 +844,7 @@ function CustomerWccTab() {
     <section id="07-wcc" className="ac-customer-collections ac-customer-wcc">
       <div className="ac-customer-collections-title">Customer WC Codes</div>
       <div className="ac-customer-collections-workspace">
-        <button
+        <button data-action-status="complete"
           type="button"
           className="ac-customer-collections-delete"
           onClick={deleteSelectedWcc}
@@ -870,7 +870,7 @@ function CustomerWccTab() {
               {visibleRows.map((row) => (
                 <tr key={row.id} className={selectedId === row.id ? "is-selected" : ""}>
                   <td>
-                    <button type="button" onClick={() => setSelectedId(row.id)} aria-label="Select customer WC code">
+                    <button data-action-status="complete" type="button" onClick={() => setSelectedId(row.id)} aria-label="Select customer WC code">
                       {selectedId === row.id ? "*" : ""}
                     </button>
                   </td>
@@ -962,7 +962,7 @@ function CustomerInsuranceCertRequestsTab() {
     <section id="08-inscert" className="ac-customer-inscert">
       <div className="ac-customer-inscert-heading">
         <span>Insurance Certificate Requests for this Customer:</span>
-        <AccessButton xs onClick={addInsuranceCertRequest}>New Insurance Cert Req</AccessButton>
+        <AccessButton data-action-status="complete" xs onClick={addInsuranceCertRequest}>New Insurance Cert Req</AccessButton>
       </div>
 
       <div className="ac-customer-inscert-grid-wrap">
@@ -1073,7 +1073,7 @@ function CustomerOptionsTab() {
             <OptionCheck label="Show Customer in Tracking" />
             <div className="ac-customer-options-history-line">
               <OptionCheck label="Cannot Make Assignments" />
-              <AccessButton xs>History</AccessButton>
+              <AccessButton data-action-status="missing" xs>History</AccessButton>
               <span className="ac-customer-options-arrow">◄</span>
             </div>
           </div>
@@ -1086,7 +1086,7 @@ function CustomerOptionsTab() {
         </div>
 
         <div className="ac-customer-options-right">
-          <AccessButton xs className="ac-customer-options-associations">
+          <AccessButton data-action-status="missing" xs className="ac-customer-options-associations">
             Edit &quot;Contract With&quot; and &quot;Payroll Company On Site&quot; Associations
           </AccessButton>
 
@@ -1122,11 +1122,11 @@ function CustomerOptionsTab() {
               <OptionCheck label="Customer is Set Up" />
               <label><span>Hunter</span><select defaultValue=""><option value="">Select…</option>{CUSTOMER_SALES_PEOPLE.map((person) => <option key={person}>{person}</option>)}</select></label>
               <label><span>Credit History</span><select defaultValue=""><option value="">Select…</option><option>Excellent</option><option>Good</option><option>Fair</option><option>Hold</option></select></label>
-              <AccessButton xs>History</AccessButton>
+              <AccessButton data-action-status="missing" xs>History</AccessButton>
               <label><span>Term Limit</span><select defaultValue=""><option value="">Select…</option><option>15</option><option>30</option><option>45</option><option>60</option><option>90</option></select><em>(Days)</em></label>
-              <AccessButton xs>History</AccessButton>
+              <AccessButton data-action-status="missing" xs>History</AccessButton>
               <label><span>Legal Status</span><select defaultValue="Non Legal"><option>Non Legal</option><option>Attorney Review</option><option>Collections</option><option>Judgment</option><option>Resolved</option></select></label>
-              <AccessButton xs>History</AccessButton>
+              <AccessButton data-action-status="missing" xs>History</AccessButton>
             </div>
           </div>
         </div>
@@ -1199,19 +1199,19 @@ function CustomerJobsTab({ customer }: { customer: CustomerDetail }) {
           <fieldset className="ac-customer-jobs-status-filter">
             <legend>Job Status</legend>
             {(["All", "Active", "Inactive", "Closed"] as const).map((status) => (
-              <button key={status} type="button" className={statusFilter === status ? "is-active" : ""} onClick={() => setStatusFilter(status)}>{status}</button>
+              <button data-action-status="complete" key={status} type="button" className={statusFilter === status ? "is-active" : ""} onClick={() => setStatusFilter(status)}>{status}</button>
             ))}
           </fieldset>
           <div className="ac-customer-jobs-actions">
-            <AccessButton xs>New Job</AccessButton>
-            <div><AccessButton xs>Copy Job</AccessButton><em>Select one job first</em></div>
-            <div><AccessButton xs>Change Status</AccessButton><em>Select one or more jobs first</em></div>
+            <AccessButton data-action-status="missing" xs>New Job</AccessButton>
+            <div><AccessButton data-action-status="missing" xs>Copy Job</AccessButton><em>Select one job first</em></div>
+            <div><AccessButton data-action-status="missing" xs>Change Status</AccessButton><em>Select one or more jobs first</em></div>
           </div>
         </div>
         <div className="ac-customer-jobs-select-row">
           <span>Select:</span>
-          <AccessButton xs onClick={() => setAllJobs(false)}>Clear</AccessButton>
-          <AccessButton xs onClick={() => setAllJobs(true)}>All</AccessButton>
+          <AccessButton data-action-status="complete" xs onClick={() => setAllJobs(false)}>Clear</AccessButton>
+          <AccessButton data-action-status="complete" xs onClick={() => setAllJobs(true)}>All</AccessButton>
           <label><span>Change Job Status to:</span><select value={changeStatus} onChange={(event) => setChangeStatus(event.target.value)}><option value="">Select…</option>{CUSTOMER_JOB_STATUS_OPTIONS.map((status) => <option key={status}>{status}</option>)}</select></label>
         </div>
         <div className="ac-customer-jobs-grid-wrap">
@@ -1292,7 +1292,7 @@ function CustomerSalesHistoryTab({ customer }: { customer: CustomerDetail }) {
 
       <div className="ac-customer-sales-history-rowblock">
         <div className="ac-customer-sales-vertical">CONTACTS</div>
-        <div className="ac-customer-sales-side-actions"><button>↑</button><button>↓</button><button>×</button></div>
+        <div className="ac-customer-sales-side-actions"><button data-action-status="missing">↑</button><button data-action-status="missing">↓</button><button data-action-status="missing">×</button></div>
         <div className="ac-customer-sales-history-table-wrap">
           <table><thead><tr><th /><th>FName</th><th>LName</th><th>Title</th><th>Email</th><th>Cell</th><th>Carrier</th><th>Text Msg Addr</th><th>Office Phone</th><th>LinkedIn Profile</th><th>Notes</th><th>Sort</th><th>User</th><th>Date</th><th>Select</th></tr></thead>
           <tbody>{customer.contacts.map((contact, index) => <tr key={contact.contactId}><td>{index ? "" : "*"}</td><td>{contact.firstName}</td><td>{contact.lastName}</td><td>{contact.title}</td><td>{contact.email}</td><td>{contact.cellPhone}</td><td /><td /><td>{contact.officePhone}</td><td /><td>{contact.notes}</td><td>{index + 1}</td><td>RMV</td><td>2/20/2026</td><td><input type="checkbox" /></td></tr>)}
@@ -1304,9 +1304,9 @@ function CustomerSalesHistoryTab({ customer }: { customer: CustomerDetail }) {
 
       <div className="ac-customer-sales-history-rowblock">
         <div className="ac-customer-sales-vertical">HISTORY</div>
-        <div className="ac-customer-sales-side-actions"><button>Add</button><button>×</button></div>
+        <div className="ac-customer-sales-side-actions"><button data-action-status="missing">Add</button><button data-action-status="missing">×</button></div>
         <div className="ac-customer-sales-history-center">
-          <div className="ac-customer-sales-history-filters"><span>Filter:</span>{[...SALES_HISTORY_ACTIONS, "All"].map((action) => <button key={action} className={actionFilter === action ? "is-active" : ""} onClick={() => setActionFilter(action)}>{action}</button>)}</div>
+          <div className="ac-customer-sales-history-filters"><span>Filter:</span>{[...SALES_HISTORY_ACTIONS, "All"].map((action) => <button data-action-status="complete" key={action} className={actionFilter === action ? "is-active" : ""} onClick={() => setActionFilter(action)}>{action}</button>)}</div>
           <div className="ac-customer-sales-history-table-wrap ac-customer-sales-action-table"><table><thead><tr><th /><th>Action Type</th><th>User</th><th>Date</th><th /><th>To</th><th>Notes</th><th>Response HL</th><th>User</th><th>Date</th></tr></thead><tbody>{historyRows.map((row, i) => <tr key={`${row[0]}-${row[2]}`}><td>{i ? "" : "*"}</td><td>[{row[0]}]</td><td>{row[1]}</td><td>{row[2]}</td><td><a>View</a></td><td /><td>{row[3]}</td><td /><td /><td /></tr>)}</tbody></table><div className="ac-customer-sales-history-recordbar">Record:　|◄　◄　1 of {historyRows.length}　►　►|　 No Filter　<input placeholder="Search" /></div></div>
         </div>
         <aside className="ac-customer-sales-history-status">
@@ -1315,16 +1315,16 @@ function CustomerSalesHistoryTab({ customer }: { customer: CustomerDetail }) {
           <label><span>Fast Action</span><select><option value="">Select…</option>{SALES_HISTORY_ACTIONS.map((x) => <option key={x}>{x}</option>)}</select></label>
           <OptionCheck label="Sales Package Sent" />
           <label><span>Future Call:</span><input /></label>
-          <AccessButton xs>Clear</AccessButton><AccessButton xs>History</AccessButton>
+          <AccessButton data-action-status="missing" xs>Clear</AccessButton><AccessButton data-action-status="missing" xs>History</AccessButton>
         </aside>
       </div>
 
       <div className="ac-customer-sales-research">
         <div className="ac-customer-sales-vertical">SEARCH</div>
         <div className="ac-customer-sales-search-terms"><strong>Search Terms</strong><div>{customer.customerName}<br />{customer.customerName}, {customer.street}, {cityState}<br />{customer.contacts[0]?.firstName} {customer.contacts[0]?.lastName}, {customer.street}, {cityState}</div></div>
-        <div className="ac-customer-sales-search-buttons">{["All", "Customer", "Contact", "City, State", "USA", "Card #", "True P", "Google", "LinkedIn", "Blue B", "Facebook", "BBB", "Corp Lk"].map((x) => <AccessButton key={x} xs>{x}</AccessButton>)}</div>
+        <div className="ac-customer-sales-search-buttons">{["All", "Customer", "Contact", "City, State", "USA", "Card #", "True P", "Google", "LinkedIn", "Blue B", "Facebook", "BBB", "Corp Lk"].map((x) => <AccessButton data-action-status="missing" key={x} xs>{x}</AccessButton>)}</div>
         <label className="ac-customer-sales-research-notes"><span>Customer Research Notes</span><textarea /></label>
-        <AccessButton xs>Record</AccessButton><AccessButton xs>Customer Research History</AccessButton>
+        <AccessButton data-action-status="missing" xs>Record</AccessButton><AccessButton data-action-status="missing" xs>Customer Research History</AccessButton>
       </div>
     </section>
   );
@@ -1343,7 +1343,7 @@ function CustomerContactsTab({ customer }: { customer: CustomerDetail }) {
   return (
     <section id="02-contacts" className="ac-customer-contacts-tab">
       <div className="ac-customer-contacts-grid-row">
-        <div className="ac-customer-contacts-side-buttons"><button>↑</button><button>↓</button><button>×</button><button className="ac-customer-copy-icon">▧</button></div>
+        <div className="ac-customer-contacts-side-buttons"><button data-action-status="missing">↑</button><button data-action-status="missing">↓</button><button data-action-status="missing">×</button><button data-action-status="missing" className="ac-customer-copy-icon">▧</button></div>
         <div className="ac-customer-contacts-table-wrap">
           <table className="ac-customer-contacts-table"><thead><tr><th /><th>FName</th><th>LName</th><th>Title</th><th>Email</th><th>Cell</th><th>Carrier</th><th>Text Msg Addr</th><th>Office Phone</th><th>LinkedIn Profile</th><th>Notes</th><th>Sort</th><th>User</th><th>Date</th><th aria-hidden /></tr></thead>
           <tbody>
@@ -1357,11 +1357,11 @@ function CustomerContactsTab({ customer }: { customer: CustomerDetail }) {
       <div className="ac-customer-contacts-guidance">
         <strong>For all Info emails, please select &quot;Info&quot; for the contact&apos;s Title value.</strong>
         <p>To use one of these buttons, highlight one contact row first by clicking the gray bar at the left side of the row.</p>
-        <div><AccessButton xs>▧　Copy Contact Email Address</AccessButton><AccessButton xs>▣　Send Email to Contact</AccessButton></div>
+        <div><AccessButton data-action-status="missing" xs>▧　Copy Contact Email Address</AccessButton><AccessButton data-action-status="missing" xs>▣　Send Email to Contact</AccessButton></div>
       </div>
 
       <div className="ac-customer-permits">
-        <div className="ac-customer-permits-heading"><h2>Permits</h2><AccessButton xs>▧　Copy Street</AccessButton><span>Double-click on City, State to select the state and city.</span></div>
+        <div className="ac-customer-permits-heading"><h2>Permits</h2><AccessButton data-action-status="missing" xs>▧　Copy Street</AccessButton><span>Double-click on City, State to select the state and city.</span></div>
         <div className="ac-customer-permits-table-wrap">
           <table className="ac-customer-permits-table"><thead><tr><th /><th>Permit Date</th><th>Street</th><th>City, State</th><th>Fee</th><th>Value</th><th>Timestamp</th><th>Permit Search Link</th><th>Link</th><th aria-hidden /><th aria-hidden /></tr></thead>
           <tbody><tr className="is-selected"><td>*</td><td><input type="date" aria-label="Permit date" /></td><td><input defaultValue={customer.street} aria-label="Permit street" /></td><td><input defaultValue={[customer.city, customer.state].filter(Boolean).join(", ")} aria-label="Permit city and state" /></td><td><input aria-label="Permit fee" /></td><td><input aria-label="Permit value" /></td><td /><td /><td /><td /><td /></tr>

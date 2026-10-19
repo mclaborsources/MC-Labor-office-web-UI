@@ -27,12 +27,12 @@ export function ReportWeekControls({ date, onChange, onRefresh }: { date: string
       onChange(`${selected.getFullYear()}-${String(selected.getMonth() + 1).padStart(2, "0")}-${String(selected.getDate()).padStart(2, "0")}`);
     }} /></label>
     <div className="report-week-nav"><i>(click date first)</i><div>
-      <button type="button" aria-label="Previous week" onClick={() => move(-7)}>←</button>
-      <button type="button" aria-label="Current week" onClick={() => onChange(initialReportDate())}>▣</button>
-      <button type="button" aria-label="Next week" onClick={() => move(7)}>→</button>
+      <button data-action-status="complete" type="button" aria-label="Previous week" onClick={() => move(-7)}>←</button>
+      <button data-action-status="complete" type="button" aria-label="Current week" onClick={() => onChange(initialReportDate())}>▣</button>
+      <button data-action-status="complete" type="button" aria-label="Next week" onClick={() => move(7)}>→</button>
     </div></div>
     <label>Start and End Days of Report<output>{long(start)}</output><output>{long(ending)}</output></label>
     <label>Payroll Chk Day<output>{long(payday)}</output></label>
-    {onRefresh && <AccessButton onClick={onRefresh}>Refresh</AccessButton>}
+    {onRefresh && <AccessButton data-action-status="complete" onClick={onRefresh}>Refresh</AccessButton>}
   </div>;
 }

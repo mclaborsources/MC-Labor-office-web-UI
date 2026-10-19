@@ -52,9 +52,9 @@ export function WccRatesReportScreen() {
     <header className="wcc-print-toolbar">
       <h1>WCC Rates Report</h1>
       <span>{loading ? "Loading report..." : `${rows.length.toLocaleString()} rows`}</span>
-      <AccessButton onClick={downloadExcel} disabled={!rows.length}>Download Excel</AccessButton>
-      <AccessButton onClick={() => window.print()} disabled={!rows.length}>Print / Save PDF</AccessButton>
-      <AccessButton onClick={() => router.push("/reports")}>Close</AccessButton>
+      <AccessButton data-action-status="complete" onClick={downloadExcel} disabled={!rows.length}>Download Excel</AccessButton>
+      <AccessButton data-action-status="complete" onClick={() => window.print()} disabled={!rows.length}>Print / Save PDF</AccessButton>
+      <AccessButton data-action-status="linked" onClick={() => router.push("/reports")}>Close</AccessButton>
     </header>
     {error && <p role="alert" className="wcc-print-error">{error}</p>}
     <div className="wcc-print-page-wrap">

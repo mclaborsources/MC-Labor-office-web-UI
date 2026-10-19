@@ -10,7 +10,7 @@ export function EmployeeRatesScreen({ employee, employeeOptions, referralAgencyO
   const fields = employee.accessFields;
   const value = (...keys: string[]) => keys.map(key => fields[key]).find(item => item !== undefined && item !== "") ?? "";
   const select = (label: string, key: string, current: string, options: string[]) => <label key={key}>{label}<select aria-label={label} value={values[key] ?? current} onChange={event => setValues(state => ({ ...state, [key]: event.target.value }))}><option value="" />{current && !options.includes(current) && <option value={current}>{current}</option>}{options.filter(Boolean).map(option => <option key={option} value={option}>{option}</option>)}</select></label>;
-  const rateField = (label: string, keys: string[], history = true) => <div className="er-rate-line" key={label}><label>{label}<input readOnly value={value(...keys)} /></label>{history && <button disabled title="Rate history is read-only">History</button>}</div>;
+  const rateField = (label: string, keys: string[], history = true) => <div className="er-rate-line" key={label}><label>{label}<input readOnly value={value(...keys)} /></label>{history && <button data-action-status="missing" disabled title="Rate history is read-only">History</button>}</div>;
   const agencies = referralAgencyOptions;
   const people = employeeOptions.map(option => option.fullName).filter(Boolean);
   const bonusStatus = value("EmployeeBonusExpenseStatus", "BonusExpenseStatus");
@@ -27,9 +27,9 @@ export function EmployeeRatesScreen({ employee, employeeOptions, referralAgencyO
           {rateField("Vacation Start Date", ["VacationHoursStartDate", "VacationStartDate"], false)}
           {rateField("Hrs Vac", ["VacationHours", "HoursVacation"], false)}
           <label className="er-rate-long">Work Hours Needed to Accrue 1 Hour of Vacation<input readOnly value={value("VacationHoursBlock", "WorkHoursNeededToAccrueVacation")} /></label>
-          <button className="er-rate-margin" disabled>Margin<br />Calculator</button>
-          <button className="er-rate-clear" disabled>Clear<br />Vacation</button>
-          <div className="er-rate-line er-rate-agency"><label>Agency Referral Rate<input className="er-red-rate" readOnly value={value("AgencyReferralRate", "EmployeeReferralAgencyRate")} /></label><button disabled>History</button></div>
+          <button data-action-status="missing" className="er-rate-margin" disabled>Margin<br />Calculator</button>
+          <button data-action-status="missing" className="er-rate-clear" disabled>Clear<br />Vacation</button>
+          <div className="er-rate-line er-rate-agency"><label>Agency Referral Rate<input className="er-red-rate" readOnly value={value("AgencyReferralRate", "EmployeeReferralAgencyRate")} /></label><button data-action-status="missing" disabled>History</button></div>
           {select("Referral Agency", "agency", value("ReferralAgencyName", "EmployeeReferralAgency", "PullDownReferralAgencyName"), agencies)}
           {rateField("Employee Referral Rate", ["EmployeeReferralRate"], false)}
           {select("Referred by Employee", "referredBy", value("ReferredByEmployee", "EmReferredBy"), people)}

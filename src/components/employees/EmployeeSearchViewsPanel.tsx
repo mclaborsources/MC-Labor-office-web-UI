@@ -129,7 +129,7 @@ function PresetGrid({
       {grid.map((row, rowIndex) =>
         row.map((cell, colIndex) =>
           cell ? (
-            <AccessButton
+            <AccessButton data-action-status="missing"
               key={`${rowIndex}-${colIndex}-${cell.label}`}
               xs
               className={employeeSearchPresetBtnClass(cell.style)}
@@ -153,10 +153,10 @@ function Views1Tab({ trades, currentTradeId }: Pick<EmployeeSearchViewsPanelProp
           <option value="">&lt;Dates&gt;</option>
           <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.dates} />
         </select>
-        <AccessButton xs className="ac-employee-search-date-btn">
+        <AccessButton data-action-status="missing" xs className="ac-employee-search-date-btn">
           Wk End Dt
         </AccessButton>
-        <button type="button" className="ac-employee-search-entry-dt-link">
+        <button data-action-status="missing" type="button" className="ac-employee-search-entry-dt-link">
           Entry Dt
         </button>
         <select className="ac-select ac-employee-search-row-select" defaultValue="" aria-label="In Tracking">
@@ -198,20 +198,20 @@ function Views1Tab({ trades, currentTradeId }: Pick<EmployeeSearchViewsPanelProp
       </div>
 
       <div className="ac-employee-search-action-row">
-        <AccessButton xs className="ac-employee-search-action-wide">
+        <AccessButton data-action-status="missing" xs className="ac-employee-search-action-wide">
           Available Manpower
         </AccessButton>
-        <AccessButton xs className="ac-employee-search-action-wide">
+        <AccessButton data-action-status="missing" xs className="ac-employee-search-action-wide">
           UI
         </AccessButton>
-        <AccessButton xs className="ac-employee-search-lic-flag-btn">
+        <AccessButton data-action-status="missing" xs className="ac-employee-search-lic-flag-btn">
           Lic Exp Date Flag - Update All | 022
         </AccessButton>
         <div className="ac-employee-search-action-row-right">
-          <AccessButton xs>
+          <AccessButton data-action-status="missing" xs>
             True People
           </AccessButton>
-          <AccessButton xs className="ac-employee-search-lic-search-btn">
+          <AccessButton data-action-status="missing" xs className="ac-employee-search-lic-search-btn">
             Lic Search for Maine - Electrician
           </AccessButton>
         </div>
@@ -229,13 +229,13 @@ function Views1Tab({ trades, currentTradeId }: Pick<EmployeeSearchViewsPanelProp
             </label>
           ))}
         </fieldset>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Update Column | 036
         </AccessButton>
-        <AccessButton xs className="ac-employee-search-v-btn">
+        <AccessButton data-action-status="missing" xs className="ac-employee-search-v-btn">
           V-Name
         </AccessButton>
-        <AccessButton xs className="ac-employee-search-v-btn">
+        <AccessButton data-action-status="missing" xs className="ac-employee-search-v-btn">
           V-Number
         </AccessButton>
       </div>
@@ -258,7 +258,7 @@ function Views3Tab() {
         {EMPLOYEE_VIEWS_3_BUTTON_GRID.map((row, rowIndex) =>
           row.map((cell, colIndex) =>
             cell ? (
-              <AccessButton
+              <AccessButton data-action-status="missing"
                 key={`${rowIndex}-${colIndex}-${cell.label}`}
                 xs
                 className={employeeViews3BtnClass(cell.style)}
@@ -343,7 +343,7 @@ function Views4Tab() {
         {Array.from({ length: 10 }, (_, i) => (
           <div key={i} className="ac-customer-search-preset-empty ac-customer-search-spare-btn" aria-hidden />
         ))}
-        <AccessButton xs className="ac-customer-search-reset-all-btn">
+        <AccessButton data-action-status="missing" xs className="ac-customer-search-reset-all-btn">
           Reset to All
         </AccessButton>
       </div>
@@ -360,18 +360,18 @@ function CopySectionTab({ variant }: { variant: "ma" | "nh" }) {
       <div className="ac-employee-copy-main">
         {EMPLOYEE_MA_COPY_ROWS.map((row) => (
           <div key={row.label} className="ac-employee-copy-row">
-            <AccessButton xs className="ac-employee-copy-primary-btn">
+            <AccessButton data-action-status="missing" xs className="ac-employee-copy-primary-btn">
               {row.label}
             </AccessButton>
             {row.google ? (
-              <AccessButton xs className="ac-employee-copy-side-btn">
+              <AccessButton data-action-status="missing" xs className="ac-employee-copy-side-btn">
                 Google
               </AccessButton>
             ) : null}
             {"extraButtons" in row && row.extraButtons ? (
               <div className="ac-employee-copy-extra-btns">
                 {(variant === "nh" ? row.extraButtons.slice(0, 1) : row.extraButtons).map((label) => (
-                  <AccessButton key={label} xs>
+                  <AccessButton data-action-status="missing" key={label} xs>
                     {label}
                   </AccessButton>
                 ))}
@@ -383,7 +383,7 @@ function CopySectionTab({ variant }: { variant: "ma" | "nh" }) {
       {variant === "nh" ? (
         <div className="ac-employee-nh-trades">
           {EMPLOYEE_NH_TRADE_BUTTONS.map((label) => (
-            <AccessButton key={label} xs className="ac-employee-nh-trade-btn">
+            <AccessButton data-action-status="missing" key={label} xs className="ac-employee-nh-trade-btn">
               {label}
             </AccessButton>
           ))}
@@ -391,19 +391,19 @@ function CopySectionTab({ variant }: { variant: "ma" | "nh" }) {
       ) : null}
       <div className="ac-employee-copy-divider" aria-hidden />
       <div className="ac-employee-copy-contact">
-        <AccessButton xs className="ac-employee-copy-wide-btn">
+        <AccessButton data-action-status="missing" xs className="ac-employee-copy-wide-btn">
           Email Address
         </AccessButton>
-        <AccessButton xs className="ac-employee-copy-wide-btn">
+        <AccessButton data-action-status="missing" xs className="ac-employee-copy-wide-btn">
           Cell #
         </AccessButton>
       </div>
       <div className="ac-employee-copy-divider" aria-hidden />
       <div className="ac-employee-copy-datapay">
-        <AccessButton xs className="ac-employee-copy-wide-btn">
+        <AccessButton data-action-status="missing" xs className="ac-employee-copy-wide-btn">
           Datapay-Get-Hired
         </AccessButton>
-        <AccessButton xs className="ac-employee-copy-wide-btn">
+        <AccessButton data-action-status="missing" xs className="ac-employee-copy-wide-btn">
           Datapay Password
         </AccessButton>
       </div>
@@ -425,10 +425,10 @@ function UserSettingsTab() {
               <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.userSettings} />
             </select>
             <div className="ac-customer-search-user-setting-btns">
-              <AccessButton xs>
+              <AccessButton data-action-status="missing" xs>
                 Set
               </AccessButton>
-              <AccessButton xs>
+              <AccessButton data-action-status="missing" xs>
                 Clear
               </AccessButton>
             </div>
@@ -443,24 +443,24 @@ function UtilitiesTab() {
   return (
     <div className="ac-customer-search-utilities-tab ac-employee-utilities-tab ac-search-views-tab-pane">
       <div className="ac-customer-search-utilities-section ac-employee-utilities-section--stack">
-        <AccessButton xs>Clear Future Call</AccessButton>
-        <AccessButton xs className="ac-employee-utilities-black-btn">
+        <AccessButton data-action-status="missing" xs>Clear Future Call</AccessButton>
+        <AccessButton data-action-status="missing" xs className="ac-employee-utilities-black-btn">
           Refresh Hyperlinks | 009
         </AccessButton>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           View/Print Mailing Labels
         </AccessButton>
       </div>
       <div className="ac-customer-search-utilities-section ac-employee-utilities-section--stack">
         <div className="ac-customer-search-utilities-btn-row">
-          <AccessButton xs>
+          <AccessButton data-action-status="missing" xs>
             Refresh
           </AccessButton>
-          <AccessButton xs>
+          <AccessButton data-action-status="missing" xs>
             Zero
           </AccessButton>
         </div>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Export View
         </AccessButton>
       </div>
@@ -475,10 +475,10 @@ function UtilitiesTab() {
         </select>
       </div>
       <div className="ac-customer-search-utilities-section ac-employee-utilities-section--stack">
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Salesman Records - Emp | 010
         </AccessButton>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Last Contact | 011
         </AccessButton>
       </div>
@@ -487,10 +487,10 @@ function UtilitiesTab() {
           <option value="">&lt;Find Duplicates&gt;</option>
           <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.duplicateModes} />
         </select>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Compare Profiles (Update All)
         </AccessButton>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Compare Profiles (Update Selected)
         </AccessButton>
       </div>
@@ -516,7 +516,7 @@ function AdminUtilitiesTab() {
     <div className="ac-employee-admin-tab ac-search-views-tab-pane">
       <div className="ac-employee-admin-transfer-grid">
         {transferProfiles.map(([label, className]) => (
-          <AccessButton key={label} className={className}>
+          <AccessButton data-action-status="missing" key={label} className={className}>
             Transfer to
             <br />
             {label}
@@ -543,10 +543,10 @@ function AdminUtilitiesTab() {
             <span>Cell #</span>
           </label>
         </fieldset>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Export View
         </AccessButton>
-        <AccessButton xs className="ac-employee-admin-multifilter-btn">
+        <AccessButton data-action-status="missing" xs className="ac-employee-admin-multifilter-btn">
           Multi Filter Names and Selections
         </AccessButton>
       </div>
@@ -559,10 +559,10 @@ function RayTab() {
     <div className="ac-employee-ray-tab ac-search-views-tab-pane">
       <div className="ac-employee-ray-section">
         <div className="ac-employee-ray-heading">Auto-Merge Duplicates:</div>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Electrician | 006
         </AccessButton>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Plumber | 007
         </AccessButton>
       </div>
@@ -571,16 +571,16 @@ function RayTab() {
           <option value="">&lt;License Board&gt;</option>
           <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.licenseBoards} />
         </select>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Build Licenses | 008
         </AccessButton>
       </div>
       <div className="ac-employee-ray-section ac-employee-ray-section--wide">
         <div className="ac-employee-ray-heading">Remove Apprentice from duplicates (Licensed / Apprentice) | 021</div>
-        <AccessButton xs className="ac-employee-ray-wide-btn">
+        <AccessButton data-action-status="missing" xs className="ac-employee-ray-wide-btn">
           1) Select Licensed / Apprentice Duplicates
         </AccessButton>
-        <AccessButton xs className="ac-employee-ray-wide-btn">
+        <AccessButton data-action-status="missing" xs className="ac-employee-ray-wide-btn">
           2) Delete Selected Apprentice Duplicates and Merge Cell #s
         </AccessButton>
       </div>
@@ -597,10 +597,10 @@ function RayTab() {
             <li>Process validation file from vendor.</li>
           </ol>
           <div className="ac-employee-ray-phone-btns">
-            <AccessButton xs>
+            <AccessButton data-action-status="missing" xs>
               Export Phone Numbers
             </AccessButton>
-            <AccessButton xs>
+            <AccessButton data-action-status="missing" xs>
               Process Phone Numbers
             </AccessButton>
           </div>
@@ -617,13 +617,13 @@ function Ray2Tab() {
         These will remove the value, user, and date from the profile, and the history | 027
       </p>
       <fieldset className="ac-employee-ray2-fieldset">
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Remove All Vax
         </AccessButton>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Remove All S1
         </AccessButton>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Remove All S2
         </AccessButton>
       </fieldset>
@@ -634,7 +634,7 @@ function Ray2Tab() {
 function InterviewTab() {
   return (
     <div className="ac-employee-interview-tab ac-search-views-tab-pane">
-      <AccessButton xs>
+      <AccessButton data-action-status="missing" xs>
         Populate
       </AccessButton>
       <FilterRadioGroup
@@ -709,15 +709,15 @@ function CallLists2Tab() {
               <option value="">&lt;View Map&gt;</option>
               <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.viewMaps} />
             </select>
-            <AccessButton xs>
+            <AccessButton data-action-status="missing" xs>
               Edit
             </AccessButton>
           </div>
           <span className="ac-employee-calllists2-hint">(This is not a filter)</span>
-          <AccessButton xs className="ac-employee-search-v-btn">
+          <AccessButton data-action-status="missing" xs className="ac-employee-search-v-btn">
             V-Name
           </AccessButton>
-          <AccessButton xs className="ac-employee-search-v-btn">
+          <AccessButton data-action-status="missing" xs className="ac-employee-search-v-btn">
             V-Number
           </AccessButton>
         </div>
@@ -727,7 +727,7 @@ function CallLists2Tab() {
           <div key={i} className="ac-customer-search-preset-empty ac-employee-calllists2-spare" aria-hidden />
         ))}
         <span className="ac-employee-search-btn-warn ac-employee-calllists2-recruiter">Recruiter. M Screen</span>
-        <AccessButton xs className="ac-employee-search-btn-warn ac-btn">
+        <AccessButton data-action-status="missing" xs className="ac-employee-search-btn-warn ac-btn">
           EE SEARCH
         </AccessButton>
       </div>
@@ -754,10 +754,10 @@ const TAB_CONTENT: readonly (() => ReactNode)[] = [
 export function EmployeeSearchUtilityRail() {
   return (
     <div className="ac-customer-search-utility-rail ac-employee-search-utility-rail shrink-0">
-      <button type="button" className="ac-customer-search-rail-icon" aria-label="Print">
+      <button data-action-status="missing" type="button" className="ac-customer-search-rail-icon" aria-label="Print">
         <Icon icon={Printer} size="xs" />
       </button>
-      <button type="button" className="ac-customer-search-rail-icon ac-customer-search-rail-icon--help" aria-label="Help">
+      <button data-action-status="missing" type="button" className="ac-customer-search-rail-icon ac-customer-search-rail-icon--help" aria-label="Help">
         <Icon icon={HelpCircle} size="xs" />
       </button>
       <div className="ac-customer-search-size-mb">
@@ -775,7 +775,7 @@ export function EmployeeSearchViewsPanel(props: EmployeeSearchViewsPanelProps) {
     <div className="ac-customer-search-controls ac-employee-search-controls min-w-0 flex-1">
       <div className="ac-tabs ac-customer-search-view-tabs ac-employee-search-view-tabs shrink-0 overflow-x-auto">
         {EMPLOYEE_SEARCH_VIEW_TABS.map((label, i) => (
-          <button
+          <button data-action-status="complete"
             key={label}
             type="button"
             className={`ac-tab ${activeTab === i ? "ac-tab-active" : ""}`}

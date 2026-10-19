@@ -87,29 +87,29 @@ export function YearlyRevenueScreen({ report, search: initialSearch, inactiveYea
   return <section className="ac-yearly ac-yearly-access">
     <header className="yearly-header"><h1>Yearly Revenue</h1>
       <div className="yearly-toolbar"><label>View: <select aria-label="Revenue view" value={view} onChange={event=>chooseView(event.target.value)}>{viewNames.map(name=><option key={name}>{name}</option>)}</select></label>
-        <AccessButton onClick={saveView}>Save View</AccessButton><AccessButton onClick={deleteView}>Delete View</AccessButton>
+        <AccessButton data-action-status="complete" onClick={saveView}>Save View</AccessButton><AccessButton data-action-status="complete" onClick={deleteView}>Delete View</AccessButton>
         <label>Go To: <select aria-label="Go to revenue year" value={goTo} onChange={event=>{setGoTo(event.target.value);setFirstYear(event.target.value?Number(event.target.value):latestYear-15)}}><option value=""/>{report.years.map(year=><option key={year}>{year}</option>)}</select></label>
-        <AccessButton onClick={()=>router.refresh()}>Refresh</AccessButton><AccessButton onClick={reset}>Zero</AccessButton><AccessButton onClick={exportView}>Export View</AccessButton>
-      </div><aside><AccessButton onClick={()=>router.push("/tracking")}>Cancel</AccessButton><button type="button" className="yearly-help" aria-label="Help" onClick={()=>setMessage("Search by customer name. Years of No Business includes customers with no invoices or whose last recorded week is older than the selected number of years. Go To selects the first year column shown.")}>?</button></aside>
+        <AccessButton data-action-status="complete" onClick={()=>router.refresh()}>Refresh</AccessButton><AccessButton data-action-status="linked" onClick={reset}>Zero</AccessButton><AccessButton data-action-status="complete" onClick={exportView}>Export View</AccessButton>
+      </div><aside><AccessButton data-action-status="linked" onClick={()=>router.push("/tracking")}>Cancel</AccessButton><button data-action-status="complete" type="button" className="yearly-help" aria-label="Help" onClick={()=>setMessage("Search by customer name. Years of No Business includes customers with no invoices or whose last recorded week is older than the selected number of years. Go To selects the first year column shown.")}>?</button></aside>
     </header>
     <div className="yearly-tools">
       <form className="yearly-search" onSubmit={event=>{event.preventDefault();navigate({search})}}>
         <div className="search"><strong>SEARCH</strong><label>Name:<input aria-label="Customer name" value={search} onChange={event=>setSearch(event.target.value)}/></label></div>
-        <AccessButton type="submit">Search</AccessButton>
+        <AccessButton data-action-status="complete" type="submit">Search</AccessButton>
         <fieldset className="yearly-use"><legend>Use<br/>Button</legend><label><input type="radio" name="yearly-use" checked={useButton} onChange={()=>setUseButton(true)}/>Yes</label><label><input type="radio" name="yearly-use" checked={!useButton} onChange={()=>setUseButton(false)}/>No</label></fieldset>
       </form>
-      <div className="presets"><div className="yearly-view-buttons">{viewNames.map((name,index)=><AccessButton key={name} onClick={()=>{if(index===0){setView("View 01");reset()}else chooseView(name)}}>{index===0?"Default":name}</AccessButton>)}</div>
+      <div className="presets"><div className="yearly-view-buttons">{viewNames.map((name,index)=><AccessButton data-action-status="linked" key={name} onClick={()=>{if(index===0){setView("View 01");reset()}else chooseView(name)}}>{index===0?"Default":name}</AccessButton>)}</div>
         <fieldset className="yearly-inactive"><legend>Years of No Business:</legend><label><input type="radio" name="yearly-inactive" checked={inactiveYears===0} onChange={()=>navigate({inactiveYears:0})}/>No Filter</label>{Array.from({length:9},(_,i)=>i+2).map(value=><label key={value}><input type="radio" name="yearly-inactive" checked={inactiveYears===value} onChange={()=>navigate({inactiveYears:value})}/>{value}</label>)}</fieldset>
       </div>
-      <AccessButton className="clear" onClick={reset}>Clear Filters</AccessButton>
+      <AccessButton data-action-status="linked" className="clear" onClick={reset}>Clear Filters</AccessButton>
     </div>
     {error && <p role="alert" className="report-data-error">{error}</p>}{message && <p role="status" className="yearly-message">{message}</p>}
     <div className="yearly-grid-wrap"><table className="legacy-report-grid yearly-grid" style={{width:1411+years.length*111}}>
       <colgroup><col style={{width:20}}/>{[350,203,101,60,95,198,96,96,96,96].map((width,index)=><col key={index} style={{width}}/>)}{years.map(year=><col key={year} style={{width:111}}/>)}</colgroup>
-      <thead><tr><th aria-label="Record selector"/>{columns.map(column=><th key={column} aria-sort={sort===column?(direction==="asc"?"ascending":"descending"):"none"}><button onClick={()=>navigate({sort:column,direction:sort===column&&direction==="asc"?"desc":"asc"})}>{column==="Customer"?"CustBusName":column}<span aria-hidden="true">{sort===column?(direction==="asc"?"▴":"▾"):"▾"}</span></button></th>)}</tr></thead>
+      <thead><tr><th aria-label="Record selector"/>{columns.map(column=><th key={column} aria-sort={sort===column?(direction==="asc"?"ascending":"descending"):"none"}><button data-action-status="linked" onClick={()=>navigate({sort:column,direction:sort===column&&direction==="asc"?"desc":"asc"})}>{column==="Customer"?"CustBusName":column}<span aria-hidden="true">{sort===column?(direction==="asc"?"▴":"▾"):"▾"}</span></button></th>)}</tr></thead>
       <tbody>{report.rows.map((row,index)=><tr key={String(row.id)} className={(selectedId?selectedId===String(row.id):index===0)?"is-current":undefined} onClick={()=>setSelectedId(String(row.id))}><td className="yearly-row-selector"/>{columns.map(column=><td key={column} className={/^\d{4}$/.test(column)?"yearly-revenue-value":undefined} title={display(row[column],column)}>{display(row[column],column)}</td>)}</tr>)}
         {!report.rows.length && <tr><td colSpan={columns.length+1}>{error?"Revenue data is unavailable.":"No customers match these filters."}</td></tr>}
       </tbody></table></div>
-    <footer className="yearly-record"><AccessButton disabled={report.page<=1} onClick={()=>navigate({page:report.page-1})}>Previous</AccessButton><span>Page {report.page} · {report.rows.length} of {report.total.toLocaleString("en-US")} customers</span><AccessButton disabled={report.page*200>=report.total} onClick={()=>navigate({page:report.page+1})}>Next</AccessButton></footer>
+    <footer className="yearly-record"><AccessButton data-action-status="linked" disabled={report.page<=1} onClick={()=>navigate({page:report.page-1})}>Previous</AccessButton><span>Page {report.page} · {report.rows.length} of {report.total.toLocaleString("en-US")} customers</span><AccessButton data-action-status="linked" disabled={report.page*200>=report.total} onClick={()=>navigate({page:report.page+1})}>Next</AccessButton></footer>
   </section>;
 }

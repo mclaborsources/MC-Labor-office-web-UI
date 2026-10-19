@@ -3,6 +3,7 @@ import type { ButtonHTMLAttributes } from "react";
 type ButtonVariant = "primary" | "secondary" | "danger" | "toolbar" | "ghost";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  "data-action-status"?: "missing" | "partial" | "linked" | "complete";
   variant?: ButtonVariant;
 }
 

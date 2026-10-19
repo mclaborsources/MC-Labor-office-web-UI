@@ -71,25 +71,25 @@ export function RatesInvoiceTotalScreen({ initialWeekEnding, initialRows, initia
   return <section className="regular-payroll-screen rates-invoice-screen">
     <header className="rpr-toolbar"><h1>Rates and Invoice Total Report</h1>
       <label>View:<select value={view} onChange={(event) => changeView(event.target.value)}>{views.map((item) => <option key={item}>{item}</option>)}</select></label>
-      <AccessButton onClick={saveView}>Save View</AccessButton>
-      <AccessButton onClick={() => { localStorage.removeItem(`rates-invoice-total-${view}`); setMessage(`${view} deleted.`); }}>Delete View</AccessButton>
-      <AccessButton onClick={() => void refresh()} disabled={loading}>{loading ? "Loading…" : "Refresh"}</AccessButton>
-      <button className="rpr-cancel" onClick={() => router.push("/reports")}>Cancel</button>
-      <button className="rpr-help" aria-label="Help" onClick={() => setMessage("Use the problem buttons to find missing rates and customer invoice totals that differ from calculated billing.")}>?</button>
+      <AccessButton data-action-status="complete" onClick={saveView}>Save View</AccessButton>
+      <AccessButton data-action-status="complete" onClick={() => { localStorage.removeItem(`rates-invoice-total-${view}`); setMessage(`${view} deleted.`); }}>Delete View</AccessButton>
+      <AccessButton data-action-status="complete" onClick={() => void refresh()} disabled={loading}>{loading ? "Loading…" : "Refresh"}</AccessButton>
+      <button data-action-status="linked" className="rpr-cancel" onClick={() => router.push("/reports")}>Cancel</button>
+      <button data-action-status="complete" className="rpr-help" aria-label="Help" onClick={() => setMessage("Use the problem buttons to find missing rates and customer invoice totals that differ from calculated billing.")}>?</button>
     </header>
     <div className="rit-filter-area">
       <div className="rit-top-filters"><label>Search in Name:<input value={search} onChange={(event) => setSearch(event.target.value)} /></label>
         <div className="rit-week"><ReportWeekControls date={weekEnding} onChange={(date) => { setWeekEnding(date); void refresh(date); }} /></div>
       </div>
-      <div className="rit-views-and-problems"><div className="rit-view-buttons">{views.map((item) => <button key={item} className={view === item ? "is-active" : ""} onClick={() => changeView(item)}>{item}</button>)}</div>
-        <div className="rit-problems"><strong>Problems:</strong>{problemOptions.map(([key, label]) => <button key={key} className={problem === key ? "is-active" : ""} onClick={() => setProblem(key)}>{label}</button>)}</div>
+      <div className="rit-views-and-problems"><div className="rit-view-buttons">{views.map((item) => <button data-action-status="complete" key={item} className={view === item ? "is-active" : ""} onClick={() => changeView(item)}>{item}</button>)}</div>
+        <div className="rit-problems"><strong>Problems:</strong>{problemOptions.map(([key, label]) => <button data-action-status="complete" key={key} className={problem === key ? "is-active" : ""} onClick={() => setProblem(key)}>{label}</button>)}</div>
       </div>
     </div>
     {error && <p className="rpr-error" role="alert">{error}</p>}{message && <p className="rpr-message" role="status">{message}</p>}
-    <div className="rpr-grid-wrap rit-grid-wrap"><table className="rpr-grid rit-grid"><thead><tr>{columns.map(([key, label]) => <th key={key}><button onClick={() => setSort((current) => ({ key, desc: current.key === key ? !current.desc : false }))}>{label}<span>{sort.key === key ? sort.desc ? "▼" : "▲" : "⌄"}</span></button></th>)}</tr></thead>
+    <div className="rpr-grid-wrap rit-grid-wrap"><table className="rpr-grid rit-grid"><thead><tr>{columns.map(([key, label]) => <th key={key}><button data-action-status="complete" onClick={() => setSort((current) => ({ key, desc: current.key === key ? !current.desc : false }))}>{label}<span>{sort.key === key ? sort.desc ? "▼" : "▲" : "⌄"}</span></button></th>)}</tr></thead>
       <tbody>{visible.map((row) => <tr key={row.id}>{columns.map(([key]) => <td key={key} className={Object.values(problemFor).includes(key) && Boolean(row[key]) ? "rit-problem-cell" : ""}>{key === "payRate" || key === "otPayRate" || key === "billRate" || key === "otBillRate" || key === "invoiceTotal" || key === "calcInvoiceTotal" ? money(row[key] as number | null) : String(row[key] ?? "")}</td>)}</tr>)}
         {Array.from({ length: Math.max(0, 16 - Math.min(visible.length, 16)) }, (_, index) => <tr className="rpr-empty-row" key={`empty-${index}`}>{columns.map(([key]) => <td key={key} />)}</tr>)}
       </tbody></table></div>
-    <footer className="rpr-footer"><span>Record: {visible.length ? `1 of ${visible.length}` : "0"}</span><span>{search || problem !== "all" ? "Filtered" : "No Filter"}</span><input aria-label="Search report rows" placeholder="Search" value={search} onChange={(event) => setSearch(event.target.value)} /><span>{visible.length} records</span><AccessButton onClick={exportView} disabled={!visible.length}>Export View</AccessButton></footer>
+    <footer className="rpr-footer"><span>Record: {visible.length ? `1 of ${visible.length}` : "0"}</span><span>{search || problem !== "all" ? "Filtered" : "No Filter"}</span><input aria-label="Search report rows" placeholder="Search" value={search} onChange={(event) => setSearch(event.target.value)} /><span>{visible.length} records</span><AccessButton data-action-status="complete" onClick={exportView} disabled={!visible.length}>Export View</AccessButton></footer>
   </section>;
 }

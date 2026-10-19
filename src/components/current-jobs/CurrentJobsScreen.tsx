@@ -119,21 +119,21 @@ export function CurrentJobsScreen({ initialPage, kind = "current" }: { initialPa
       <header className="ac-current-jobs-header">
         <h1>{title}</h1>
         <div className="ac-current-jobs-viewbar">
-          {kind !== "employees" && <Link href="/jobs"><AccessButton className="ac-current-jobs-post">Post a Job</AccessButton></Link>}
+          {kind !== "employees" && <Link href="/jobs"><AccessButton data-action-status="linked" className="ac-current-jobs-post">Post a Job</AccessButton></Link>}
           <label htmlFor="current-jobs-view">View:</label><select id="current-jobs-view" value={selectedView} onChange={(event) => setSelectedView(event.target.value)}>{views.map((view) => <option key={view}>{view}</option>)}</select>
-          <AccessButton onClick={saveView}>Save View</AccessButton><AccessButton onClick={deleteView} disabled={views.length < 2}>Delete View</AccessButton>
+          <AccessButton data-action-status="complete" onClick={saveView}>Save View</AccessButton><AccessButton data-action-status="complete" onClick={deleteView} disabled={views.length < 2}>Delete View</AccessButton>
           <label htmlFor="current-jobs-go-to">Go To:</label><select id="current-jobs-go-to" defaultValue=""><option value="" />{columns.map((column) => <option key={column.key}>{column.label}</option>)}</select>
-          <AccessButton onClick={runSearch}>Refresh</AccessButton><AccessButton onClick={clearFilters}>Zero</AccessButton><AccessButton onClick={() => window.print()}>Export View</AccessButton>
+          <AccessButton data-action-status="complete" onClick={runSearch}>Refresh</AccessButton><AccessButton data-action-status="complete" onClick={clearFilters}>Zero</AccessButton><AccessButton data-action-status="complete" onClick={() => window.print()}>Export View</AccessButton>
         </div>
-        <div className="ac-current-jobs-closebar"><AccessButton onClick={() => router.push("/reports")}>Cancel</AccessButton><button className="ac-job-app-help" type="button" title="Help" aria-label="Help">?</button></div>
+        <div className="ac-current-jobs-closebar"><AccessButton data-action-status="linked" onClick={() => router.push("/reports")}>Cancel</AccessButton><button data-action-status="missing" className="ac-job-app-help" type="button" title="Help" aria-label="Help">?</button></div>
       </header>
       <div className="ac-current-jobs-tools">
         <form className="ac-current-jobs-search" onSubmit={(event) => { event.preventDefault(); runSearch(); }}>
           <strong>SEARCH</strong><label htmlFor="current-customer">Customer:</label><input id="current-customer" value={customer} onChange={(event) => setCustomer(event.target.value)} />
           <label htmlFor="current-job">Job:</label><input id="current-job" value={job} onChange={(event) => setJob(event.target.value)} />
         </form>
-        <AccessButton onClick={clearFilters}>Clear Filters</AccessButton><em>Click in the Select column for one job</em>
-        {kind === "rate" && <AccessButton onClick={browseRateReport}>Browse for Rate Report</AccessButton>}
+        <AccessButton data-action-status="complete" onClick={clearFilters}>Clear Filters</AccessButton><em>Click in the Select column for one job</em>
+        {kind === "rate" && <AccessButton data-action-status="linked" onClick={browseRateReport}>Browse for Rate Report</AccessButton>}
       </div>
       {notice && <p role="status" className="ac-job-listing-error">{notice}</p>}
       {error && <p role="alert" className="ac-job-listing-error">{error}</p>}
@@ -141,7 +141,7 @@ export function CurrentJobsScreen({ initialPage, kind = "current" }: { initialPa
         <table className="ac-current-jobs-grid">
           <thead><tr>{columns.map((column) => <th key={column.key}>{column.label}<i /></th>)}</tr></thead>
           <tbody>{result.rows.map((row, index) => <tr key={row.id} className={index === 0 ? "is-current" : undefined}>
-            <td>{kind === "rate" ? <button type="button" title="Select this job" aria-label={`Select ${row.customer} - ${row.job}`} onClick={() => { setSelectedRowId(row.id); setNotice(""); }}>{selectedRowId === row.id ? "●" : "○"}</button> : null}</td>{columns.filter((column) => column.key !== "select").map(({ key }) => <td key={key}>
+            <td>{kind === "rate" ? <button data-action-status="complete" type="button" title="Select this job" aria-label={`Select ${row.customer} - ${row.job}`} onClick={() => { setSelectedRowId(row.id); setNotice(""); }}>{selectedRowId === row.id ? "●" : "○"}</button> : null}</td>{columns.filter((column) => column.key !== "select").map(({ key }) => <td key={key}>
               {key === "ocipJob" ? <input type="checkbox" checked={row.ocipJob} readOnly aria-label="OCIP job" />
                 : key === "rateJob" ? <input type="checkbox" checked={row.rateJob} readOnly aria-label="Rate job" />
                 : key === "shiftDifferential" ? <input type="checkbox" checked={row.shiftDifferential} readOnly aria-label="Shift differential job" />
@@ -152,8 +152,8 @@ export function CurrentJobsScreen({ initialPage, kind = "current" }: { initialPa
         {loading && <div className="ac-job-listing-loading">Loading {title.toLowerCase()}…</div>}
       </div>
       <footer className="ac-current-jobs-recordbar">
-        <span>Record:</span><button onClick={() => void load(1)} disabled={result.page <= 1 || loading}>|◀</button><button onClick={() => void load(result.page - 1)} disabled={result.page <= 1 || loading}>◀</button>
-        <span>{firstRecord}–{lastRecord}</span><button onClick={() => void load(result.page + 1)} disabled={result.page >= pageCount || loading}>▶</button><button onClick={() => void load(pageCount)} disabled={result.page >= pageCount || loading}>▶|</button>
+        <span>Record:</span><button data-action-status="complete" onClick={() => void load(1)} disabled={result.page <= 1 || loading}>|◀</button><button data-action-status="complete" onClick={() => void load(result.page - 1)} disabled={result.page <= 1 || loading}>◀</button>
+        <span>{firstRecord}–{lastRecord}</span><button data-action-status="complete" onClick={() => void load(result.page + 1)} disabled={result.page >= pageCount || loading}>▶</button><button data-action-status="complete" onClick={() => void load(pageCount)} disabled={result.page >= pageCount || loading}>▶|</button>
         <span>of {result.total.toLocaleString()}</span><span className="filter">▽ {applied.customer || applied.job ? "Filtered" : "Unfiltered"}</span><span className="status">Page {result.page} of {pageCount}</span><div />
       </footer>
     </section>

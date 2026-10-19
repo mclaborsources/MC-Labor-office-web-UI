@@ -69,23 +69,23 @@ export function CustomerPermitsScreen() {
         <h1>Customer Permits Search</h1>
         <div className="ac-permits-view-controls">
           <label htmlFor="permit-view">View:</label><select id="permit-view" className="ac-select" value={viewName} onChange={(event) => setViewName(event.target.value as ViewName)}>{(Object.keys(VIEW_LABELS) as ViewName[]).map((key) => <option key={key} value={key}>{VIEW_LABELS[key]}</option>)}</select>
-          <AccessButton>Save View</AccessButton><AccessButton>Delete View</AccessButton><AccessButton>Refresh</AccessButton><AccessButton>Zero</AccessButton><AccessButton>Export View</AccessButton>
+          <AccessButton data-action-status="missing">Save View</AccessButton><AccessButton data-action-status="missing">Delete View</AccessButton><AccessButton data-action-status="missing">Refresh</AccessButton><AccessButton data-action-status="missing">Zero</AccessButton><AccessButton data-action-status="missing">Export View</AccessButton>
         </div>
-        <AccessButton className="ac-permits-cancel">Cancel</AccessButton>
-        <button type="button" className="ac-permits-help" aria-label="Help"><Icon icon={HelpCircle} size="sm" /></button>
+        <AccessButton data-action-status="missing" className="ac-permits-cancel">Cancel</AccessButton>
+        <button data-action-status="missing" type="button" className="ac-permits-help" aria-label="Help"><Icon icon={HelpCircle} size="sm" /></button>
       </header>
 
       <div className="ac-permits-tools">
         <div className="ac-permits-search-panel">
           <strong>SEARCH</strong>
           <label>Customer:</label><input className="ac-input" value={search} onChange={(event) => setSearch(event.target.value)} />
-          <AccessButton>Search</AccessButton>
+          <AccessButton data-action-status="missing">Search</AccessButton>
           <fieldset><legend>Use<br />Button</legend><label><input type="radio" name="permit-use" defaultChecked /> Yes</label><label><input type="radio" name="permit-use" /> No</label></fieldset>
-          <span>Select:</span><AccessButton>Clear</AccessButton><AccessButton>All</AccessButton>
+          <span>Select:</span><AccessButton data-action-status="missing">Clear</AccessButton><AccessButton data-action-status="missing">All</AccessButton>
         </div>
         <div className="ac-permits-main-tools">
-          <div className="ac-permits-view-buttons">{(["Default", "Site Visit Info", "View 03", "View 04", "View 05"] as const).map((label, index) => { const key = `0${index + 1}` as ViewName; return <AccessButton key={key} onClick={() => setViewName(key)} aria-pressed={viewName === key}>{label}</AccessButton>; })}</div>
-          <div className="ac-permits-actions"><input readOnly className="ac-input" /><AccessButton icon={Copy}>Copy Street</AccessButton><AccessButton className="ac-permits-delete">Delete Permits</AccessButton><AccessButton>Clear Filters</AccessButton></div>
+          <div className="ac-permits-view-buttons">{(["Default", "Site Visit Info", "View 03", "View 04", "View 05"] as const).map((label, index) => { const key = `0${index + 1}` as ViewName; return <AccessButton data-action-status="complete" key={key} onClick={() => setViewName(key)} aria-pressed={viewName === key}>{label}</AccessButton>; })}</div>
+          <div className="ac-permits-actions"><input readOnly className="ac-input" /><AccessButton data-action-status="missing" icon={Copy}>Copy Street</AccessButton><AccessButton data-action-status="missing" className="ac-permits-delete">Delete Permits</AccessButton><AccessButton data-action-status="missing">Clear Filters</AccessButton></div>
         </div>
       </div>
 
@@ -103,7 +103,7 @@ export function CustomerPermitsScreen() {
           </tbody>
         </table>
       </div>
-      <footer className="ac-permits-recordbar"><span>Record:</span><button>◀</button><span>1 of 33474</span><button>▶</button><span>Unfiltered</span><span>Search</span><span className="ml-auto">Max 300 per page</span></footer>
+      <footer className="ac-permits-recordbar"><span>Record:</span><button data-action-status="missing">◀</button><span>1 of 33474</span><button data-action-status="missing">▶</button><span>Unfiltered</span><span>Search</span><span className="ml-auto">Max 300 per page</span></footer>
     </section>
   );
 }

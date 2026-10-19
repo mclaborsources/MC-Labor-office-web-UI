@@ -32,11 +32,11 @@ export function AccountsReceivableReportScreen({rows,error}:{rows:OpenInvoiceRow
 
   return <section className="ar-report-preview">
     <div className="ar-report-preview-toolbar">
-      <button onClick={()=>window.print()}>Print / Save PDF</button>
-      <button onClick={download} disabled={!visible.length}>Download CSV</button>
-      <button onClick={()=>router.refresh()}>Refresh</button>
+      <button data-action-status="complete" onClick={()=>window.print()}>Print / Save PDF</button>
+      <button data-action-status="complete" onClick={download} disabled={!visible.length}>Download CSV</button>
+      <button data-action-status="complete" onClick={()=>router.refresh()}>Refresh</button>
       <label><input type="checkbox" checked={includeTerminated} onChange={e=>setIncludeTerminated(e.target.checked)}/> Include Terminated</label>
-      <button onClick={()=>router.push("/reports")}>Close Preview</button>
+      <button data-action-status="linked" onClick={()=>router.push("/reports")}>Close Preview</button>
     </div>
     {error&&<p className="ar-report-error" role="alert">{error}</p>}
     <div className="ar-report-preview-scroll"><article className="ar-report-paper" aria-label="Open Invoices Report">

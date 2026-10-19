@@ -156,7 +156,7 @@ export default function LoginPage() {
                 </div>
               )}
 
-              <Button
+              <Button data-action-status="complete"
                 type="submit"
                 variant="primary"
                 disabled={loading}

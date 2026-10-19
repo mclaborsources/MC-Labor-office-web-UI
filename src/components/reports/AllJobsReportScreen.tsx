@@ -89,19 +89,19 @@ export function AllJobsReportScreen({ rows: initialRows, total: initialTotal, er
   return <section className="ac-all-jobs">
     <header className="ac-all-jobs-toolbar">
       <h1>All Jobs</h1>
-      <button className="ac-all-jobs-post" onClick={() => router.push("/jobs")}>Post a Job</button>
+      <button data-action-status="linked" className="ac-all-jobs-post" onClick={() => router.push("/jobs")}>Post a Job</button>
       <label>View:<select value={view} onChange={(event) => setView(event.target.value)}>{views.map((item) => <option key={item}>{item}</option>)}</select></label>
-      <button onClick={saveView}>Save View</button><button onClick={deleteView} disabled={views.length < 2}>Delete View</button>
+      <button data-action-status="complete" onClick={saveView}>Save View</button><button data-action-status="complete" onClick={deleteView} disabled={views.length < 2}>Delete View</button>
       <label>Go To:<select aria-label="Go to column" value={goTo} onChange={(event) => { setGoTo(event.target.value); document.getElementById(`all-jobs-${event.target.value}`)?.scrollIntoView({ block: "nearest", inline: "center" }); }}><option value="" />{columns.map((column) => <option key={column.key} value={column.key}>{column.label}</option>)}</select></label>
-      <button onClick={refresh} disabled={loading}>Refresh</button><button onClick={zero} disabled={loading}>Zero</button><button onClick={exportView}>Export View</button>
-      <button className="ac-all-jobs-cancel" onClick={() => router.push("/reports")}>Cancel</button>
+      <button data-action-status="complete" onClick={refresh} disabled={loading}>Refresh</button><button data-action-status="complete" onClick={zero} disabled={loading}>Zero</button><button data-action-status="complete" onClick={exportView}>Export View</button>
+      <button data-action-status="linked" className="ac-all-jobs-cancel" onClick={() => router.push("/reports")}>Cancel</button>
     </header>
     <div className="ac-all-jobs-filters">
       <form onSubmit={(event) => { event.preventDefault(); refresh(); }}>
         <strong>SEARCH</strong><label>Customer:<input value={customer} onChange={(event) => setCustomer(event.target.value)} /></label>
         <label>Job:<input value={job} onChange={(event) => setJob(event.target.value)} /></label>
       </form>
-      <button onClick={zero} disabled={loading}>Clear Filters</button>
+      <button data-action-status="complete" onClick={zero} disabled={loading}>Clear Filters</button>
       <em>Click in the Select column for one job</em>
     </div>
     {error && <p className="ac-all-jobs-error" role="alert">{error}</p>}
@@ -113,6 +113,6 @@ export function AllJobsReportScreen({ rows: initialRows, total: initialTotal, er
         <td><input type="radio" name="all-jobs-select" aria-label={`Select ${row.job}`} checked={selected === row.projectId} onChange={() => setSelected(row.projectId)} /></td>
       </tr>)}{!rows.length && <tr><td colSpan={columns.length + 2} className="ac-all-jobs-empty">{loading ? "Loading jobs…" : error ? "" : "No jobs match these filters."}</td></tr>}</tbody>
     </table></div>
-    <footer className="ac-all-jobs-recordbar"><span>Record:</span><button onClick={() => void loadPage(1)} disabled={loading || currentPage <= 1}>◀◀</button><button onClick={() => void loadPage(currentPage - 1)} disabled={loading || currentPage <= 1}>◀</button><input readOnly value={total ? (currentPage - 1) * pageSize + 1 : 0} aria-label="Current record" /><span>of {total.toLocaleString()}</span><button onClick={() => void loadPage(currentPage + 1)} disabled={loading || currentPage * pageSize >= total}>▶</button><button onClick={() => void loadPage(Math.max(1, Math.ceil(total / pageSize)))} disabled={loading || currentPage * pageSize >= total}>▶▶</button><span className="ac-all-jobs-filter-status">{appliedCustomer || appliedJob ? "Filtered" : "Unfiltered"}{loading ? " · Loading" : ""}</span><span>{rows.length ? `${(currentPage - 1) * pageSize + 1}–${Math.min(currentPage * pageSize, total)}` : "0"}</span><input placeholder="Search" aria-label="Search all job columns" /></footer>
+    <footer className="ac-all-jobs-recordbar"><span>Record:</span><button data-action-status="complete" onClick={() => void loadPage(1)} disabled={loading || currentPage <= 1}>◀◀</button><button data-action-status="complete" onClick={() => void loadPage(currentPage - 1)} disabled={loading || currentPage <= 1}>◀</button><input readOnly value={total ? (currentPage - 1) * pageSize + 1 : 0} aria-label="Current record" /><span>of {total.toLocaleString()}</span><button data-action-status="complete" onClick={() => void loadPage(currentPage + 1)} disabled={loading || currentPage * pageSize >= total}>▶</button><button data-action-status="complete" onClick={() => void loadPage(Math.max(1, Math.ceil(total / pageSize)))} disabled={loading || currentPage * pageSize >= total}>▶▶</button><span className="ac-all-jobs-filter-status">{appliedCustomer || appliedJob ? "Filtered" : "Unfiltered"}{loading ? " · Loading" : ""}</span><span>{rows.length ? `${(currentPage - 1) * pageSize + 1}–${Math.min(currentPage * pageSize, total)}` : "0"}</span><input placeholder="Search" aria-label="Search all job columns" /></footer>
   </section>;
 }

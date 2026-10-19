@@ -172,17 +172,17 @@ function EmployeeSearchSidebar() {
     <aside className="ac-customer-search-sidebar ac-employee-search-sidebar shrink-0">
       <div className="ac-customer-search-screen-size">
         <span className="ac-customer-search-screen-size-label">Screen Size</span>
-        <AccessButton className="ac-customer-search-screen-normal">
+        <AccessButton data-action-status="missing" className="ac-customer-search-screen-normal">
           Normal
         </AccessButton>
         <div className="ac-customer-search-screen-grid">
           {[1, 2, 3, 4].map((n) => (
-            <AccessButton key={n} xs className="ac-customer-search-screen-num">
+            <AccessButton data-action-status="missing" key={n} xs className="ac-customer-search-screen-num">
               {n}
             </AccessButton>
           ))}
           {[1, 2, 3, 4].map((n) => (
-            <AccessButton key={`save-${n}`} xs className="ac-customer-search-screen-save">
+            <AccessButton data-action-status="missing" key={`save-${n}`} xs className="ac-customer-search-screen-save">
               Save
             </AccessButton>
           ))}
@@ -228,7 +228,7 @@ function EmployeeSearchSidebar() {
             </div>
 
             <div className="ac-customer-search-side-search-col">
-              <AccessButton xs className="ac-customer-search-side-search-btn">
+              <AccessButton data-action-status="missing" xs className="ac-customer-search-side-search-btn">
                 Search
               </AccessButton>
               <div className="ac-customer-search-use-button">
@@ -247,7 +247,7 @@ function EmployeeSearchSidebar() {
 
           <div className="ac-employee-search-side-footer">
             <span className="ac-customer-search-action-label">Select:</span>
-            <AccessButton xs>
+            <AccessButton data-action-status="missing" xs>
               Text All #
             </AccessButton>
           </div>
@@ -262,30 +262,30 @@ function EmployeeGridToolbar() {
     <div className="ac-employee-search-grid-toolbar shrink-0">
       <div className="ac-customer-search-action-group">
         <span className="ac-customer-search-action-label">Select:</span>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Clear
         </AccessButton>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           All
         </AccessButton>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Email
         </AccessButton>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Text
         </AccessButton>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Text All #
         </AccessButton>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Letter
         </AccessButton>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Postcard
         </AccessButton>
       </div>
       <input readOnly className="ac-input ac-employee-search-yellow-input" aria-label="Selection highlight" />
-      <AccessButton xs>
+      <AccessButton data-action-status="missing" xs>
         Update Column
       </AccessButton>
       <span className="ac-flabel">View:</span>
@@ -299,10 +299,10 @@ function EmployeeGridToolbar() {
           );
         })}
       </select>
-      <AccessButton xs>
+      <AccessButton data-action-status="missing" xs>
         Save
       </AccessButton>
-      <AccessButton xs>
+      <AccessButton data-action-status="missing" xs>
         Delete
       </AccessButton>
       <label className="ac-employee-search-goto-field">
@@ -310,12 +310,12 @@ function EmployeeGridToolbar() {
         <input readOnly className="ac-input" aria-label="Go To" />
       </label>
       <Link href="/employees">
-        <AccessButton xs>Clear Filters</AccessButton>
+        <AccessButton data-action-status="linked" xs>Clear Filters</AccessButton>
       </Link>
-      <AccessButton xs>
+      <AccessButton data-action-status="missing" xs>
         Sort
       </AccessButton>
-      <AccessButton xs className="ac-employee-search-delete-employee-btn">
+      <AccessButton data-action-status="missing" xs className="ac-employee-search-delete-employee-btn">
         Delete Employee
       </AccessButton>
     </div>
@@ -342,13 +342,13 @@ export function EmployeeSearchScreen({
       <div className="ac-customer-search ac-employee-search ac-tracking--modern flex min-h-0 flex-1 flex-col">
         <div className="ac-customer-search-titlebar ac-employee-search-titlebar shrink-0">
           <span className="ac-customer-search-title">Employee Search 3</span>
-          <AccessButton xs>
+          <AccessButton data-action-status="missing" xs>
             New
           </AccessButton>
-          <AccessButton xs>
+          <AccessButton data-action-status="missing" xs>
             New SUB
           </AccessButton>
-          <AccessButton xs className="ac-employee-search-cancel-btn">
+          <AccessButton data-action-status="missing" xs className="ac-employee-search-cancel-btn">
             Cancel
           </AccessButton>
         </div>

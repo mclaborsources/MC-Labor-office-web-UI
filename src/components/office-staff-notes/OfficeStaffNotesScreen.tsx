@@ -19,9 +19,9 @@ function MarginCalculator({ number }: { number: number }) {
     <section className="ac-margin-calc">
       <div className="ac-margin-calc-title">
         <h2>Margin Calculator {number}</h2>
-        <AccessButton>Clear</AccessButton>
-        <AccessButton className="ac-margin-adjust">+</AccessButton>
-        <AccessButton className="ac-margin-adjust">-</AccessButton>
+        <AccessButton data-action-status="missing">Clear</AccessButton>
+        <AccessButton data-action-status="missing" className="ac-margin-adjust">+</AccessButton>
+        <AccessButton data-action-status="missing" className="ac-margin-adjust">-</AccessButton>
       </div>
       <div className="ac-margin-calc-grid">
         {CALCULATOR_FIELDS.map((field) => (
@@ -51,7 +51,7 @@ export function OfficeStaffNotesScreen({ notes, loadError }: { notes: OfficeStaf
 
   return (
     <main className="ac-office-notes-page">
-      <AccessButton
+      <AccessButton data-action-status="linked"
         className="ac-office-notes-close"
         aria-label="Close Office Staff Notes"
         onClick={() => router.push("/tracking")}
@@ -72,7 +72,7 @@ export function OfficeStaffNotesScreen({ notes, loadError }: { notes: OfficeStaf
             <label key={value}><input type="radio" name="note-filter" checked={filter === value} onChange={() => setFilter(value)} /> {value[0].toUpperCase() + value.slice(1)}</label>
           ))}
         </fieldset>
-        <AccessButton onClick={() => window.location.reload()}>Refresh</AccessButton>
+        <AccessButton data-action-status="complete" onClick={() => window.location.reload()}>Refresh</AccessButton>
       </header>
 
       {loadError && <div className="ac-office-notes-error">Database error: {loadError}</div>}

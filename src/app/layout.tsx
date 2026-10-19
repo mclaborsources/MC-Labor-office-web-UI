@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { RouteLoadingIndicator } from "@/components/layout/RouteLoadingIndicator";
 import "./globals.css";
 import { CustomerCellNavigation } from "@/components/customers/CustomerCellNavigation";
@@ -23,7 +24,7 @@ export default function RootLayout({
         {children}
         <CustomerCellNavigation />
         <UnhandledRejectionDiagnostics />
-        <RouteLoadingIndicator />
+        <Suspense fallback={null}><RouteLoadingIndicator /></Suspense>
       </body>
     </html>
   );

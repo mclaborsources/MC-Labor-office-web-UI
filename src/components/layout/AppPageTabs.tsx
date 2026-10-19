@@ -41,7 +41,9 @@ export function AppPageTabs() {
       const saved = Array.isArray(parsed) ? parsed.filter((tab) => tab && typeof tab.href === "string" && typeof tab.label === "string") : null;
       const merged = [...defaultTabs];
       for (const tab of saved ?? []) {
-        if (!merged.some((item) => item.href === tab.href)) merged.push(tab);
+        const existingIndex = merged.findIndex((item) => item.href.split("?")[0] === tab.href.split("?")[0]);
+        if (existingIndex >= 0) merged[existingIndex] = tab;
+        else merged.push(tab);
       }
       setTabs(merged);
     } catch { setTabs([]); }
@@ -51,10 +53,13 @@ export function AppPageTabs() {
     if (!pathname || pathname === "/login") return;
     setTabs((current) => {
       const href = activeHref;
-      const existingIndex = current.findIndex((tab) => tab.href.split("?")[0] === pathname);
+      // Older saved sessions can contain multiple query variants of one page.
+      const unique = current.filter((tab, index, all) =>
+        all.findIndex((item) => item.href.split("?")[0] === tab.href.split("?")[0]) === index);
+      const existingIndex = unique.findIndex((tab) => tab.href.split("?")[0] === pathname);
       const next = existingIndex >= 0
-        ? current.map((tab, index) => index === existingIndex ? { ...tab, href } : tab)
-        : [...current, { href, label: labelFor(pathname) }];
+        ? unique.map((tab, index) => index === existingIndex ? { ...tab, href } : tab)
+        : [...unique, { href, label: labelFor(pathname) }];
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch { /* browser storage may be disabled */ }
       return next;
     });
@@ -73,9 +78,9 @@ export function AppPageTabs() {
   return <div className="app-page-tabs" role="tablist" aria-label="Open pages">
     {tabs.map((tab) => {
       const active = pathname === tab.href.split("?")[0];
-      return <div key={tab.href} className={`app-page-tab ${active ? "is-active" : ""}`} role="presentation">
+      return <div key={tab.href.split("?")[0]} className={`app-page-tab ${active ? "is-active" : ""}`} role="presentation">
         <Link href={tab.href} role="tab" aria-selected={active}>{tab.label}</Link>
-        <button type="button" aria-label={`Close ${tab.label}`} title={`Close ${tab.label}`} onClick={() => closeTab(tab.href)}>×</button>
+        <button data-action-status="linked" type="button" aria-label={`Close ${tab.label}`} title={`Close ${tab.label}`} onClick={() => closeTab(tab.href)}>×</button>
       </div>;
     })}
   </div>;

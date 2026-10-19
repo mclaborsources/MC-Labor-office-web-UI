@@ -105,8 +105,8 @@ function ClusterMultiSelect() {
       <div className="ac-customer-cluster-popup">
         <p>You can click on more than one.</p>
         <div className="ac-customer-cluster-actions">
-          <button type="button" onClick={() => setSelected([...CUSTOMER_CLUSTER_OPTIONS])}>All</button>
-          <button type="button" onClick={() => setSelected([])}>Clear</button>
+          <button data-action-status="complete" type="button" onClick={() => setSelected([...CUSTOMER_CLUSTER_OPTIONS])}>All</button>
+          <button data-action-status="complete" type="button" onClick={() => setSelected([])}>Clear</button>
           <span aria-label="Help">?</span>
         </div>
         <label className="ac-customer-cluster-filter">
@@ -115,7 +115,7 @@ function ClusterMultiSelect() {
         </label>
         <div className="ac-customer-cluster-list" role="listbox" aria-multiselectable="true">
           {visibleOptions.map((option) => (
-            <button
+            <button data-action-status="complete"
               key={option}
               type="button"
               role="option"
@@ -128,8 +128,8 @@ function ClusterMultiSelect() {
           ))}
         </div>
         <div className="ac-customer-cluster-footer">
-          <button type="button" onClick={(event) => event.currentTarget.closest("details")?.removeAttribute("open")}>OK</button>
-          <button type="button" onClick={(event) => event.currentTarget.closest("details")?.removeAttribute("open")}>Cancel</button>
+          <button data-action-status="complete" type="button" onClick={(event) => event.currentTarget.closest("details")?.removeAttribute("open")}>OK</button>
+          <button data-action-status="complete" type="button" onClick={(event) => event.currentTarget.closest("details")?.removeAttribute("open")}>Cancel</button>
         </div>
       </div>
     </details>
@@ -255,7 +255,7 @@ function DuplicatesPanel() {
     <aside className="ac-customer-search-duplicates-panel">
       <div className="ac-customer-search-duplicates-head">
         <span>Duplicate Group Filters</span>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Reset
         </AccessButton>
       </div>
@@ -297,7 +297,7 @@ function DuplicatesPanel() {
       <div className="ac-customer-search-merge-row">
         <span>Merge Duplicate Groups | 029 #</span>
         <input className="ac-input ac-customer-search-merge-input" aria-label="Merge group number" />
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Merge
         </AccessButton>
       </div>
@@ -326,7 +326,7 @@ function PresetGrid({
           const cell = grid[rowIndex]?.[colIndex];
           if (cell && typeof cell === "object" && "label" in cell) {
             return (
-              <AccessButton
+              <AccessButton data-action-status="complete"
                 key={`${rowIndex}-${colIndex}-${cell.label}`}
                 xs
                 aria-pressed={selectedPreset === cell.label}
@@ -379,10 +379,10 @@ function ViewsTab() {
         <div className="ac-customer-search-view-controls">
           <div className="ac-customer-search-view-controls-group">
             <span className="ac-customer-search-compare-label">Compare Profiles | 028</span>
-            <AccessButton xs disabled>
+            <AccessButton data-action-status="missing" xs disabled>
               Update All
             </AccessButton>
-            <AccessButton xs disabled>
+            <AccessButton data-action-status="missing" xs disabled>
               Update Selected
             </AccessButton>
           </div>
@@ -393,10 +393,10 @@ function ViewsTab() {
                 <option key={viewName} value={viewName}>{viewName}</option>
               ))}
             </select>
-            <AccessButton xs disabled>
+            <AccessButton data-action-status="missing" xs disabled>
               Save View
             </AccessButton>
-            <AccessButton xs disabled>
+            <AccessButton data-action-status="missing" xs disabled>
               Delete View
             </AccessButton>
           </div>
@@ -414,10 +414,10 @@ function Views2Tab() {
         <div className="ac-customer-search-view-controls">
           <div className="ac-customer-search-view-controls-group">
             <span className="ac-customer-search-compare-label">Compare Profiles | 028</span>
-            <AccessButton xs disabled>
+            <AccessButton data-action-status="missing" xs disabled>
               Update All
             </AccessButton>
-            <AccessButton xs disabled>
+            <AccessButton data-action-status="missing" xs disabled>
               Update Selected
             </AccessButton>
           </div>
@@ -478,7 +478,7 @@ function Views3Tab() {
         {Array.from({ length: 10 }, (_, i) => (
           <div key={i} className="ac-customer-search-preset-empty ac-customer-search-spare-btn" aria-hidden />
         ))}
-        <AccessButton xs disabled className="ac-customer-search-reset-all-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-customer-search-reset-all-btn">
           Reset to All
         </AccessButton>
       </div>
@@ -498,10 +498,10 @@ function InternetSearchTab() {
         </select>
       </div>
       <div className="ac-customer-search-internet-actions">
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           USA
         </AccessButton>
-        <AccessButton xs disabled className="ac-customer-search-card-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-customer-search-card-btn">
           Card #
         </AccessButton>
       </div>
@@ -542,10 +542,10 @@ function UserSettingsTab({ customerUserFlagOptions, lastActionUsers }: UserSetti
                 ))}
               </select>
               <div className="ac-customer-search-user-setting-btns">
-                <AccessButton xs disabled>
+                <AccessButton data-action-status="missing" xs disabled>
                   Set
                 </AccessButton>
-                <AccessButton xs disabled>
+                <AccessButton data-action-status="missing" xs disabled>
                   Clear
                 </AccessButton>
               </div>
@@ -591,10 +591,10 @@ function UtilitiesTab() {
   return (
     <div className="ac-customer-search-utilities-tab ac-search-views-tab-pane">
       <div className="ac-customer-search-utilities-section ac-customer-search-utilities-section--mail">
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Letter
         </AccessButton>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Postcard
         </AccessButton>
       </div>
@@ -608,7 +608,7 @@ function UtilitiesTab() {
             ))}
           </select>
         </label>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Export View
         </AccessButton>
       </div>
@@ -622,25 +622,25 @@ function UtilitiesTab() {
             ))}
           </select>
         </label>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Clear Future Call
         </AccessButton>
       </div>
       <div className="ac-customer-search-utilities-section ac-customer-search-utilities-section--stack">
         <div className="ac-customer-search-utilities-btn-row">
-          <AccessButton xs disabled>
+          <AccessButton data-action-status="missing" xs disabled>
             Refresh
           </AccessButton>
-          <AccessButton xs disabled>
+          <AccessButton data-action-status="missing" xs disabled>
             Zero
           </AccessButton>
         </div>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Cancel
         </AccessButton>
       </div>
       <div className="ac-customer-search-utilities-section">
-        <AccessButton xs disabled className="ac-customer-search-multifilter-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-customer-search-multifilter-btn">
           Multi Filter
           <br />
           Names and
@@ -661,7 +661,7 @@ function AdminUtilitiesTab() {
           {CUSTOMER_ADMIN_TRANSFER_BUTTONS.flatMap((row, rowIndex) =>
             row.map((cell, colIndex) =>
               cell ? (
-                <AccessButton
+                <AccessButton data-action-status="missing"
                   key={`${rowIndex}-${colIndex}-${cell.label}`}
                   xs
                   disabled
@@ -732,27 +732,27 @@ function RayTab() {
             ))}
           </select>
         </label>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Change Titles | 003
         </AccessButton>
-        <AccessButton xs disabled className="ac-customer-search-ray-bottom-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-customer-search-ray-bottom-btn">
           Salesman Records - Cust | 004
         </AccessButton>
       </div>
       <div className="ac-customer-search-ray-section">
-        <AccessButton xs disabled className="ac-customer-search-ray-large-btn">
+        <AccessButton data-action-status="missing" xs disabled className="ac-customer-search-ray-large-btn">
           Set User Flag 4 to &apos;Do Not Email&apos; for Street + City Duplicates w/ Last Week Ending + Specific Salesman in the Group 002
         </AccessButton>
       </div>
       <div className="ac-customer-search-ray-section ac-customer-search-ray-section--stack">
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Select Lesser ISR for Transfer to Deleted 001
         </AccessButton>
         <div className="ac-customer-search-ray-btn-row">
-          <AccessButton xs disabled>
+          <AccessButton data-action-status="missing" xs disabled>
             Counts
           </AccessButton>
-          <AccessButton xs disabled>
+          <AccessButton data-action-status="missing" xs disabled>
             Fix Zip | 012
           </AccessButton>
         </div>
@@ -768,23 +768,23 @@ function RayTab() {
             ))}
           </select>
         </label>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Change Cust Type | 013
         </AccessButton>
         <div className="ac-customer-search-ray-delete-row">
           <span className="ac-customer-search-ray-label">Select customers</span>
-          <AccessButton xs disabled className="ac-customer-search-ray-delete-btn">
+          <AccessButton data-action-status="missing" xs disabled className="ac-customer-search-ray-delete-btn">
             Delete Customer
           </AccessButton>
         </div>
       </div>
       <div className="ac-customer-search-ray-section ac-customer-search-ray-section--stack">
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Populate Primary Contacts | 034
         </AccessButton>
         <div className="ac-customer-search-ray-delete-row">
           <span className="ac-customer-search-ray-label">Select customers</span>
-          <AccessButton xs disabled className="ac-customer-search-ray-delete-btn">
+          <AccessButton data-action-status="missing" xs disabled className="ac-customer-search-ray-delete-btn">
             Delete Contacts | 035
           </AccessButton>
         </div>
@@ -832,7 +832,7 @@ export function CustomerSearchViewsPanel(props: CustomerSearchViewsPanelProps) {
     <div className="ac-customer-search-controls min-w-0 flex-1">
       <div className="ac-tabs ac-customer-search-view-tabs shrink-0 overflow-x-auto">
         {CUSTOMER_SEARCH_VIEW_TABS.map((label, i) => (
-          <button
+          <button data-action-status="complete"
             key={label}
             type="button"
             className={`ac-tab ${activeTab === i ? "ac-tab-active" : ""}`}

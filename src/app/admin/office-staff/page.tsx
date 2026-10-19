@@ -21,20 +21,20 @@ export default async function OfficeStaffPage({ searchParams }: PageProps) {
       <div className="ac-panel mb-2">
         <div className="flex flex-wrap items-center gap-2 border-b border-[#bcbcbc] bg-[#2a2a2a] px-2 py-1 text-[11px] font-bold text-white">
           <span>Edit Office Staff</span>
-          <AccessButton xs disabled className="ml-auto">
+          <AccessButton data-action-status="missing" xs disabled className="ml-auto">
             Close
           </AccessButton>
         </div>
         <div className="flex flex-wrap gap-2 border-b border-[#bcbcbc] bg-[#ececec] p-2">
-          <AccessButton disabled>New</AccessButton>
-          <AccessButton disabled>Save</AccessButton>
-          <AccessButton disabled>Modify Permissions</AccessButton>
-          <AccessButton disabled>Cancel</AccessButton>
-          <AccessButton disabled variant="warn">
+          <AccessButton data-action-status="missing" disabled>New</AccessButton>
+          <AccessButton data-action-status="missing" disabled>Save</AccessButton>
+          <AccessButton data-action-status="missing" disabled>Modify Permissions</AccessButton>
+          <AccessButton data-action-status="missing" disabled>Cancel</AccessButton>
+          <AccessButton data-action-status="missing" disabled variant="warn">
             Delete
           </AccessButton>
-          <AccessButton disabled>Clear Sort</AccessButton>
-          <AccessButton disabled>Modify Permissions by Feature</AccessButton>
+          <AccessButton data-action-status="missing" disabled>Clear Sort</AccessButton>
+          <AccessButton data-action-status="missing" disabled>Modify Permissions by Feature</AccessButton>
         </div>
 
         <div className="grid grid-cols-1 gap-2 p-2 lg:grid-cols-12">

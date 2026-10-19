@@ -41,7 +41,7 @@ export function CustomerSearchPagination({
   }
 
   const nav = (label: string, targetPage: number, disabled: boolean, title: string) => (
-    <button
+    <button data-action-status="linked"
       type="button"
       className="ac-customer-search-page-nav"
       disabled={disabled || isPending}

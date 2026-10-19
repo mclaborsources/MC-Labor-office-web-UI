@@ -14,8 +14,8 @@ export default function AppError({ error, reset }: { error: Error & { digest?: s
         <p>Your work on other pages is still available. Try loading this page again.</p>
         {process.env.NODE_ENV === "development" && <pre style={{ overflowWrap: "anywhere", whiteSpace: "pre-wrap", color: "#a00" }}>{error.message}</pre>}
         {error.digest && <p>Reference: {error.digest}</p>}
-        <button onClick={reset} style={{ padding: "6px 12px" }}>Try again</button>
-        <button onClick={() => window.location.assign("/")} style={{ padding: "6px 12px", marginLeft: 8 }}>Go to main menu</button>
+        <button data-action-status="complete" onClick={reset} style={{ padding: "6px 12px" }}>Try again</button>
+        <button data-action-status="linked" onClick={() => window.location.assign("/")} style={{ padding: "6px 12px", marginLeft: 8 }}>Go to main menu</button>
       </section>
     </main>
   );

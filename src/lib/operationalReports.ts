@@ -4,6 +4,41 @@ export type ReportValue = string | number | null;
 export type OperationalReportRow = Record<string, ReportValue>;
 
 export function getNoticeOfContractRows() {
+  return queryReadOnly<OperationalReportRow>(`WITH ownerCounts AS (
+      SELECT ProjectID,COUNT(*) AS OwnerCount FROM tblProjectOwners WITH (NOLOCK) GROUP BY ProjectID
+    ), contractorCounts AS (
+      SELECT ProjectID,COUNT(*) AS ContractorCount FROM tblProjectGeneralContractors WITH (NOLOCK) GROUP BY ProjectID
+    )
+    SELECT
+    CAST(p.ProjectID AS NVARCHAR(20)) AS id,
+    ISNULL(c.CustBusName,'') AS Customer,
+    ISNULL(p.NoticeOfContractContractWith,'') AS [Payroll Contract],
+    ISNULL(p.SiteName,'') AS Job,
+    ISNULL(gc.PullDownGeneralContractorName,'') AS GC,
+    ISNULL(gcc.ContractorCount,0) AS [Count of GCs],
+    ISNULL(po.ProjectOwnerName,'') AS Owner,
+    ISNULL(oc.OwnerCount,0) AS [Count of Owners],
+    CONVERT(VARCHAR(10),p.DateNotarized,101) AS [Date Notarized],
+    ISNULL(noc.PullDownStatusOfNOC,'') AS [Status of NOC],
+    ISNULL(p.ContractAmount,0) AS [Contract Amount],
+    ISNULL(p.ContractTotalPayments,0) AS [Total Payments],
+    ISNULL(p.ContractBalanceOwed,0) AS [Balance Owed],
+    ISNULL(mail.PullDownRegMailResponse,'') AS [Customer Reg Mail Response]
+  FROM tblProject p WITH (NOLOCK)
+  JOIN tblCustomer c WITH (NOLOCK) ON c.CustomerID=p.CustomerID
+  LEFT JOIN tblPullDownStatusOfNOC noc WITH (NOLOCK) ON noc.PullDownStatusOfNOCID=p.StatusOfNOCID
+  LEFT JOIN tblPullDownRegMailResponses mail WITH (NOLOCK) ON mail.PullDownRegMailResponseID=p.CustomerRegMailResponseID
+  LEFT JOIN tblProjectOwners po WITH (NOLOCK) ON po.ProjectOwnerID=p.ProjectOwnerID
+  LEFT JOIN ownerCounts oc ON oc.ProjectID=p.ProjectID
+  LEFT JOIN tblProjectGeneralContractors pgc WITH (NOLOCK) ON pgc.ProjectGeneralContractorID=p.ProjectGeneralContractorID
+  LEFT JOIN tblPullDownGeneralContractors gc WITH (NOLOCK) ON gc.PullDownGeneralContractorID=pgc.GeneralContractorID
+  LEFT JOIN contractorCounts gcc ON gcc.ProjectID=p.ProjectID
+  WHERE p.StatusOfNOCID IS NOT NULL AND p.StatusOfNOCID<>4
+  ORDER BY c.CustBusName,p.SiteName`);
+}
+
+/** The older generic job-orders extract is separate from Access's NOC search record source. */
+export function getJobOrdersRows() {
   return queryReadOnly<OperationalReportRow>(`SELECT TOP (500)
     CAST(p.ProjectID AS NVARCHAR(20)) AS id,
     ISNULL(c.CustBusName,'') AS Customer,
@@ -27,27 +62,95 @@ export function getNoticeOfContractRows() {
 }
 
 export function getNoticeOfIdentificationRows() {
-  return queryReadOnly<OperationalReportRow>(`SELECT TOP (750)
-    CONCAT(CAST(t.CustomerID AS NVARCHAR(20)),'-',CAST(t.ProjectID AS NVARCHAR(20))) AS id,
-    CONVERT(VARCHAR(10),MAX(t.WeekEndingDate),101) AS [Last Week],
-    MAX(ISNULL(t.CustomerBusName,'')) AS Customer,
-    MAX(ISNULL(t.SiteState,'')) AS State,
-    CONVERT(VARCHAR(10),MIN(t.WeekEndingDate),101) AS [Customer Since],
-    MAX(ISNULL(t.PayrollCoOnSiteInitials,'')) AS Co,
-    MAX(ISNULL(t.SiteName,'')) AS Job,
-    MAX(ISNULL(t.SiteState,'')) AS [Job State],
-    MAX(ISNULL(inv.TotalOpen,0)) AS [Job Unpaid],
-    DATEDIFF(DAY,MIN(t.WeekEndingDate),GETDATE()) AS [Age of Job (days)],
-    MAX(ISNULL(inv.TotalOpen,0)) AS [Total Open],
-    DATEDIFF(DAY,MAX(inv.OldestInvoice),GETDATE()) AS [Oldest Invoice],
-    MAX(ISNULL(t.AssignmentUserName,'')) AS [User],
-    MAX(ISNULL(t.HoursNote,'')) AS Notes
-  FROM tblTracking t WITH (NOLOCK)
-  OUTER APPLY (SELECT SUM(ISNULL(cw.OpenBalance,0)) AS TotalOpen, MIN(CASE WHEN ISNULL(cw.OpenBalance,0)>0 THEN cw.WeekEndingDate END) AS OldestInvoice FROM tblCustomerWeeks cw WITH (NOLOCK) WHERE cw.CustomerID=t.CustomerID) inv
-  WHERE t.CustomerID IS NOT NULL AND t.ProjectID IS NOT NULL
-  GROUP BY t.CustomerID,t.ProjectID
-  HAVING MAX(ISNULL(inv.TotalOpen,0))>0
-  ORDER BY [Oldest Invoice] DESC`);
+  // The Access append query uses qryTracking_ProjectID, but that saved query's
+  // definition is absent from the export. Its observed result is a recent-work
+  // project set, so keep the app's equivalent scoped to the same 30-day window.
+  return queryReadOnly<OperationalReportRow>(`WITH trackedProjects AS (
+      SELECT CustomerID,ProjectID,MAX(WeekEndingDate) AS LastWeek,
+        MAX(PayrollCoOnSiteInitials) AS PayrollCompany,MAX(AssignmentUserName) AS AssignmentUserName,
+        MAX(HoursNote) AS Notes
+      FROM tblTracking WITH (NOLOCK)
+      WHERE CustomerID IS NOT NULL AND ProjectID IS NOT NULL
+      GROUP BY CustomerID,ProjectID
+    ), customerSince AS (
+      SELECT CustomerID,MIN(WeekEndingDate) AS CustomerSince
+      FROM tblCustomerWeeks WITH (NOLOCK) GROUP BY CustomerID
+    ), invoiceTotals AS (
+      SELECT CustomerID,SUM(ISNULL(OpenBalance,0)) AS TotalOpen,MAX(Aging) AS OldestInvoice
+      FROM tblQBOpenInvoices WITH (NOLOCK)
+      WHERE CustomerID IS NOT NULL AND TotalDesc IS NOT NULL AND TotalDesc<>'TOTAL'
+      GROUP BY CustomerID
+    ), weekRevenue AS (
+      SELECT CustomerID,SUM(ISNULL(InvoiceAmount,0)) AS Revenue
+      FROM tblTracking WITH (NOLOCK)
+      WHERE WeekEndingDate=DATEADD(day,-((DATEDIFF(day,'19000105',CAST(GETDATE() AS date))%7+7)%7),CAST(GETDATE() AS date))
+      GROUP BY CustomerID
+    ), customerTrackingThisWeek AS (
+      SELECT DISTINCT CustomerID FROM tblCustomerWeeks WITH (NOLOCK)
+      WHERE WeekEndingDate=DATEADD(day,-((DATEDIFF(day,'19000105',CAST(GETDATE() AS date))%7+7)%7),CAST(GETDATE() AS date))
+    ), has01Invoice AS (
+      SELECT DISTINCT CustomerID FROM tblQBOpenInvoices WITH (NOLOCK)
+      WHERE TRY_CONVERT(INT,InvoiceNum)=1 AND CustomerID IS NOT NULL
+    ), jobUnpaid AS (
+      SELECT t.ProjectID,SUM(ISNULL(t.InvoiceAmount,0)) AS JobUnpaid
+      FROM tblTracking t WITH (NOLOCK)
+      INNER JOIN tblCustomerWeeks cw WITH (NOLOCK) ON cw.CustomerID=t.CustomerID AND cw.AssignYear=t.AssignYear AND cw.AssignWeek=t.AssignWeek
+      INNER JOIN tblQBOpenInvoices q WITH (NOLOCK) ON q.CustomerID=cw.CustomerID AND q.InvoiceYear=cw.InvoiceYear AND q.InvoiceNum=cw.InvoiceNum
+      WHERE q.TotalDesc IS NOT NULL AND q.TotalDesc<>'TOTAL'
+      GROUP BY t.ProjectID
+    )
+    SELECT CAST(p.ProjectID AS NVARCHAR(20)) AS id,
+      CONVERT(VARCHAR(10),tp.LastWeek,101) AS [Last Week],
+      ISNULL(c.CustBusName,'') AS Customer,
+      ISNULL(c.State,'') AS State,
+      CONVERT(VARCHAR(10),cs.CustomerSince,101) AS [Customer Since],
+      ISNULL(cps.PullDownCustPaymentStatus,'') AS [Credit History],
+      ISNULL(pc.PullDownContractWith_PayrollCoInitials,'') AS Co,
+      ISNULL(p.NOIFlagID,'') AS [NOI Flag],
+      ISNULL(c.CustomerNOIColor,0) AS [Customer Color],
+      LTRIM(RTRIM(CONCAT(ISNULL(sm.PullDownSalesmanFName,''),' ',ISNULL(sm.PullDownSalesmanLName,'')))) AS Salesman,
+      ISNULL(p.SiteName,'') AS Job,
+      ISNULL(siteState.PullDownState,'') AS [Job State],
+      ISNULL(ls.PullDownLegalStatus,'') AS [Legal Status],
+      ISNULL(ju.JobUnpaid,0) AS [Job Unpaid],
+      DATEDIFF(DAY,firstWork.FirstWeek,GETDATE()) AS [Age of Job (days)],
+      ISNULL(inv.TotalOpen,0) AS [Total Open],
+      ISNULL(inv.OldestInvoice,0) AS [Oldest Invoice],
+      ISNULL(wr.Revenue,0) AS [Last Week Revenue],
+      CASE WHEN ctw.CustomerID IS NULL THEN 'No' ELSE 'Yes' END AS [In Tracking This Week],
+      CASE WHEN h01.CustomerID IS NULL THEN 'No' ELSE 'Yes' END AS [Has 01 Invoice],
+      CASE WHEN ISNULL(p.NOIFlagID,0)<>0 THEN 'NOI Flag History' ELSE '' END AS History,
+      ISNULL(tp.AssignmentUserName,'') AS [User],
+      CONVERT(VARCHAR(10),p.StatusOfNOIIDTimestamp,101) AS [Sent on Date],
+      CASE WHEN NULLIF(LTRIM(RTRIM(p.NOICustomerDocHLink)),'') IS NULL THEN 'No' ELSE 'Yes' END AS [NOI Sent],
+      CASE WHEN NULLIF(LTRIM(RTRIM(p.NOICustomerDocCMTrackerHLink)),'') IS NULL THEN 'No' ELSE 'Yes' END AS [NOI CMT Back],
+      CASE WHEN NULLIF(LTRIM(RTRIM(p.NOCCustomerDocHLink)),'') IS NULL THEN 'No' ELSE 'Yes' END AS [NOC Sent],
+      CASE WHEN NULLIF(LTRIM(RTRIM(p.NOCCustomerDocCMTrackerHLink)),'') IS NULL THEN 'No' ELSE 'Yes' END AS [NOC CMT Back],
+      CASE WHEN p.NOIGCDocHLink IS NOT NULL AND p.NOIGCDocHLink<>'' THEN 'X' ELSE '' END AS [GC-NOI],
+      CASE WHEN p.NOCGCDocHLink IS NOT NULL AND p.NOCGCDocHLink<>'' THEN 'X' ELSE '' END AS [GC-NOC],
+      CASE WHEN p.NOIOwnerDocHLink IS NOT NULL AND p.NOIOwnerDocHLink<>'' THEN 'X' ELSE '' END AS [OW-NOI],
+      CASE WHEN p.NOCOwnerDocHLink IS NOT NULL AND p.NOCOwnerDocHLink<>'' THEN 'X' ELSE '' END AS [OW-NOC],
+      ISNULL(p.NOINotes,'') AS Notes
+    FROM trackedProjects tp
+    INNER JOIN tblProject p WITH (NOLOCK) ON p.ProjectID=tp.ProjectID AND p.CustomerID=tp.CustomerID
+    INNER JOIN tblCustomer c WITH (NOLOCK) ON c.CustomerID=p.CustomerID
+    LEFT JOIN tblPullDownStateCities siteCity WITH (NOLOCK) ON siteCity.PullDownStateCityID=p.SiteStateCityID
+    LEFT JOIN tblPullDownStates siteState WITH (NOLOCK) ON siteState.PullDownStateID=siteCity.StateID
+    LEFT JOIN tblPullDownCustPaymentStatus cps WITH (NOLOCK) ON cps.PullDownCustPaymentStatusID=c.CustPaymentStatusID
+    LEFT JOIN tblPullDownLegalStatus ls WITH (NOLOCK) ON ls.PullDownLegalStatusID=c.LegalStatusID
+    LEFT JOIN tblPullDownContractWith_PayrollCo pc WITH (NOLOCK) ON pc.PullDownContractWith_PayrollCoID=c.CustContractWith_PayrollCoID
+    LEFT JOIN tblPullDownSalesman sm WITH (NOLOCK) ON sm.PullDownSalesmanID=c.SalesmanID
+    LEFT JOIN customerSince cs ON cs.CustomerID=c.CustomerID
+    LEFT JOIN invoiceTotals inv ON inv.CustomerID=c.CustomerID
+    LEFT JOIN weekRevenue wr ON wr.CustomerID=c.CustomerID
+    LEFT JOIN customerTrackingThisWeek ctw ON ctw.CustomerID=c.CustomerID
+    LEFT JOIN has01Invoice h01 ON h01.CustomerID=c.CustomerID
+    LEFT JOIN jobUnpaid ju ON ju.ProjectID=p.ProjectID
+    OUTER APPLY (SELECT MIN(t2.WeekEndingDate) AS FirstWeek FROM tblTracking t2 WITH (NOLOCK) WHERE t2.ProjectID=p.ProjectID) firstWork
+    WHERE (c.CustPaymentStatusID<>18 OR c.CustPaymentStatusID IS NULL)
+      AND ISNULL(p.StatusOfNOIID,0)<>4
+      AND tp.LastWeek>=DATEADD(day,-30,CAST(GETDATE() AS date))
+    ORDER BY c.CustBusName,p.SiteName`);
 }
 
 export function getWeeklyRateRows(week: number, year: number, payrollCompany = "") {
@@ -148,40 +251,121 @@ export function getInvoicesByWeekRows(){return queryReadOnly<OperationalReportRo
 
 export interface OpenInvoiceRow {
   id: string; customerId: string; customer: string; creditHistory: string;
-  customerSince: string; contractWith: string; salesman: string; collectionsNote: string;
-  invoiceDate: string; invoiceNumber: string; age: number; openBalance: number;
+  customerSince: string; contractWith: string; contractWithId: string; salesman: string; salesmanFilter: string; collectionsNote: string;
+  invoiceDate: string; invoiceNumber: string; age: number; agingFilter: string; openBalance: number;
   invoiceNote: string;
+}
+
+export interface OpenInvoiceFilterOptions {
+  contracts: { id: string; label: string }[];
+  salesmen: string[];
+  aging: string[];
+}
+
+/** Dropdown sources mirror the Access combo-box row sources. */
+export async function getOpenInvoiceFilterOptions(): Promise<OpenInvoiceFilterOptions> {
+  const [contracts, salesmen, aging] = await Promise.all([
+    queryReadOnly<{ id: string; label: string }>(`SELECT CAST(PullDownContractWith_PayrollCoID AS NVARCHAR(20)) AS id, PullDownContractWith_PayrollCoInitials AS label
+      FROM tblPullDownContractWith_PayrollCo WITH (NOLOCK) ORDER BY PullDownContractWith_PayrollCoInitials`),
+    queryReadOnly<{ value: string }>(`SELECT DISTINCT Salesman AS value FROM tblQBOpenInvoices WITH (NOLOCK)
+      WHERE Salesman IS NOT NULL ORDER BY Salesman`),
+    queryReadOnly<{ value: string }>(`SELECT q.AgingFilter AS value FROM tblQBOpenInvoices q WITH (NOLOCK)
+      INNER JOIN tblPullDownAging a WITH (NOLOCK) ON a.PullDownAging=q.AgingFilter
+      WHERE q.AgingFilter IS NOT NULL GROUP BY q.AgingFilter ORDER BY MIN(a.PullDownAgingSort),q.AgingFilter`),
+  ]);
+  return { contracts, salesmen: salesmen.map(row => row.value), aging: aging.map(row => row.value) };
 }
 
 /** Current unpaid invoice records, with customer-level AR fields from the office database. */
 export function getOpenInvoiceRows(): Promise<OpenInvoiceRow[]> {
-  return queryReadOnly<OpenInvoiceRow>(`WITH customer_since AS (
-    SELECT CustomerID, MIN(WeekEndingDate) AS CustomerSince
-    FROM tblCustomerWeeks WITH (NOLOCK) GROUP BY CustomerID
+  return queryReadOnly<OpenInvoiceRow>(`WITH customer_aging AS (
+    SELECT CustomerID, MAX(AgingFilter) AS agingFilter
+    FROM tblQBOpenInvoices WITH (NOLOCK)
+    GROUP BY CustomerID
   )
   SELECT CAST(q.QBOpenInvoicesID AS NVARCHAR(20)) AS id,
     CAST(q.CustomerID AS NVARCHAR(20)) AS customerId,
-    ISNULL(c.CustBusName,ISNULL(q.QBCustomerName,'')) AS customer,
+    CASE WHEN ISNULL(q.NoQBMatch,0)=1
+      THEN COALESCE(NULLIF(q.QBCustomerName,''),NULLIF(q.CustBusName,''),ISNULL(c.CustBusName,''))
+      ELSE COALESCE(NULLIF(c.CustBusName,''),NULLIF(q.CustBusName,''),ISNULL(q.QBCustomerName,'')) END AS customer,
     ISNULL(ps.PullDownCustPaymentStatus,'') AS creditHistory,
-    CONVERT(VARCHAR(10),COALESCE(q.CustomerSince,cs.CustomerSince),101) AS customerSince,
-    ISNULL(pcw.PullDownContractWith_PayrollCoInitials,ISNULL(pc.PullDownContractWith_PayrollCoInitials,'')) AS contractWith,
-    ISNULL(NULLIF(q.Salesman,''),ISNULL(q.SalesmanFilter,'')) AS salesman,
+    ISNULL(CONVERT(VARCHAR(10),q.CustomerSince,101),'') AS customerSince,
+    ISNULL(pcw.PullDownContractWith_PayrollCoInitials,'') AS contractWith,
+    CAST(ISNULL(cw.CustomerWeekContractWith_PayrollCoID,999) AS NVARCHAR(20)) AS contractWithId,
+    ISNULL(q.Salesman,'') AS salesman,
+    ISNULL(q.SalesmanFilter,'') AS salesmanFilter,
     COALESCE(NULLIF(q.CollectionsNote,''),NULLIF(hdr.CollectionsNote,''),ISNULL(c.CollectionsNote,'')) AS collectionsNote,
     CONVERT(VARCHAR(10),q.InvoiceDate,101) AS invoiceDate,
     ISNULL(NULLIF(q.RefNumber,''),LTRIM(RTRIM(ISNULL(CAST(q.InvoiceYear AS NVARCHAR(8))+' ','')+ISNULL(q.InvoiceNum,'')))) AS invoiceNumber,
     ISNULL(q.Aging,DATEDIFF(DAY,q.InvoiceDate,GETDATE())) AS age,
+    ISNULL(ca.agingFilter,'') AS agingFilter,
     CAST(ISNULL(q.OpenBalance,0) AS DECIMAL(18,2)) AS openBalance,
     COALESCE(NULLIF(q.InvoiceNote,''),NULLIF(c.LastInvoiceNote,''),ISNULL(c.InvoiceNote,'')) AS invoiceNote
   FROM tblQBOpenInvoices q WITH (NOLOCK)
-  LEFT JOIN tblCustomer c WITH (NOLOCK) ON c.CustomerID=q.CustomerID
-  LEFT JOIN customer_since cs ON cs.CustomerID=q.CustomerID
+  INNER JOIN tblCustomer c WITH (NOLOCK) ON c.CustomerID=q.CustomerID
+  INNER JOIN customer_aging ca ON ca.CustomerID=q.CustomerID
   LEFT JOIN tblPullDownCustPaymentStatus ps WITH (NOLOCK) ON ps.PullDownCustPaymentStatusID=c.CustPaymentStatusID
-  LEFT JOIN tblPullDownContractWith_PayrollCo pc WITH (NOLOCK) ON pc.PullDownContractWith_PayrollCoID=c.CustContractWith_PayrollCoID
   LEFT JOIN tblCustomerWeeks cw WITH (NOLOCK) ON cw.CustomerID=q.CustomerID AND cw.InvoiceYear=q.InvoiceYear AND cw.InvoiceNum=q.InvoiceNum
   LEFT JOIN tblPullDownContractWith_PayrollCo pcw WITH (NOLOCK) ON pcw.PullDownContractWith_PayrollCoID=cw.CustomerWeekContractWith_PayrollCoID
   OUTER APPLY (SELECT TOP (1) h.CollectionsNote FROM tblQBOpenInvoices h WITH (NOLOCK) WHERE h.CustomerID=q.CustomerID AND h.InvoiceDate IS NULL ORDER BY h.QBOpenInvoicesID) hdr
   WHERE q.InvoiceDate IS NOT NULL AND ISNULL(q.OpenBalance,0)>0
+    AND ISNULL(c.LegalStatusID,0)<>3
   ORDER BY ISNULL(c.CustBusName,q.QBCustomerName),q.InvoiceDate,q.QBOpenInvoicesID`);
+}
+
+export interface SeamusLienSummaryRow {
+  id: string; job: string; customer: string;
+  customerNoiS: string; customerNoiB: string; customerNocS: string; customerNocB: string;
+  gcName: string; gcAddress: string;
+  gcNoiS: string; gcNoiB: string; gcNocS: string; gcNocB: string;
+  ownerName: string; ownerAddress: string;
+  ownerNoiS: string; ownerNoiB: string; ownerNocS: string; ownerNocB: string;
+}
+
+/** Mirrors qrySeamusLienSummaryReport_Append, UpdateMisc, and DeleteNoActivity in Access. */
+export function getSeamusLienSummaryRows(): Promise<SeamusLienSummaryRow[]> {
+  const address = (street: string, city: string, state: string, zip: string) => `LTRIM(RTRIM(CONCAT(
+    ISNULL(NULLIF(${street},''),''),
+    CASE WHEN NULLIF(${street},'') IS NOT NULL AND (NULLIF(${city},'') IS NOT NULL OR NULLIF(${state},'') IS NOT NULL OR NULLIF(${zip},'') IS NOT NULL) THEN ', ' ELSE '' END,
+    ISNULL(NULLIF(${city},''),''),
+    CASE WHEN NULLIF(${city},'') IS NOT NULL AND (NULLIF(${state},'') IS NOT NULL OR NULLIF(${zip},'') IS NOT NULL) THEN ', '
+         WHEN NULLIF(${city},'') IS NULL AND NULLIF(${street},'') IS NOT NULL AND NULLIF(${state},'') IS NOT NULL THEN ', ' ELSE '' END,
+    ISNULL(NULLIF(${state},''),''),
+    CASE WHEN NULLIF(${zip},'') IS NOT NULL AND NULLIF(${state},'') IS NOT NULL THEN ' '
+         WHEN NULLIF(${zip},'') IS NOT NULL AND (NULLIF(${city},'') IS NOT NULL OR NULLIF(${street},'') IS NOT NULL) THEN ', ' ELSE '' END,
+    ISNULL(NULLIF(${zip},''),''))))`;
+  const mark = (field: string) => `CASE WHEN p.${field} IS NULL THEN '' ELSE 'X' END`;
+  const links = [
+    "NOICustomerDocHLink","NOICustomerDocCMTrackerHLink","NOCCustomerDocHLink","NOCCustomerDocCMTrackerHLink",
+    "NOIGCDocHLink","NOIGCDocCMTrackerHLink","NOCGCDocHLink","NOCGCDocCMTrackerHLink",
+    "NOIOwnerDocHLink","NOIOwnerDocCMTrackerHLink","NOCOwnerDocHLink","NOCOwnerDocCMTrackerHLink",
+  ];
+  // Access joined every tracking row then used DISTINCT to collapse them back
+  // to one project row. EXISTS preserves that logic without the large fan-out
+  // and sort over all report columns.
+  const query = `SELECT CAST(p.ProjectID AS NVARCHAR(20)) AS id,
+    ISNULL(p.SiteName,'') AS job, ISNULL(c.CustBusName,'') AS customer,
+    ${mark(links[0])} AS customerNoiS, ${mark(links[1])} AS customerNoiB,
+    ${mark(links[2])} AS customerNocS, ${mark(links[3])} AS customerNocB,
+    ISNULL(gc.PullDownGeneralContractorName,'') AS gcName,
+    ${address("gc.PullDownGeneralContractorStreet","gcCity.City","gcState.PullDownState","gc.PullDownGeneralContractorZip")} AS gcAddress,
+    ${mark(links[4])} AS gcNoiS, ${mark(links[5])} AS gcNoiB, ${mark(links[6])} AS gcNocS, ${mark(links[7])} AS gcNocB,
+    ISNULL(po.ProjectOwnerName,'') AS ownerName,
+    ${address("po.ProjectOwnerStreet","ownerCity.City","ownerState.PullDownState","po.ProjectOwnerZip")} AS ownerAddress,
+    ${mark(links[8])} AS ownerNoiS, ${mark(links[9])} AS ownerNoiB, ${mark(links[10])} AS ownerNocS, ${mark(links[11])} AS ownerNocB
+  FROM tblProject p WITH (NOLOCK)
+  INNER JOIN tblCustomer c WITH (NOLOCK) ON c.CustomerID=p.CustomerID
+  LEFT JOIN tblProjectGeneralContractors pgc WITH (NOLOCK) ON pgc.ProjectGeneralContractorID=p.ProjectGeneralContractorID
+  LEFT JOIN tblPullDownGeneralContractors gc WITH (NOLOCK) ON gc.PullDownGeneralContractorID=pgc.GeneralContractorID
+  LEFT JOIN tblPullDownStateCities gcCity WITH (NOLOCK) ON gcCity.PullDownStateCityID=gc.PullDownGeneralContractorStateCityID
+  LEFT JOIN tblPullDownStates gcState WITH (NOLOCK) ON gcState.PullDownStateID=gcCity.StateID
+  LEFT JOIN tblProjectOwners po WITH (NOLOCK) ON po.ProjectOwnerID=p.ProjectOwnerID
+  LEFT JOIN tblPullDownStateCities ownerCity WITH (NOLOCK) ON ownerCity.PullDownStateCityID=po.ProjectOwnerStateCityID
+  LEFT JOIN tblPullDownStates ownerState WITH (NOLOCK) ON ownerState.PullDownStateID=ownerCity.StateID
+  WHERE EXISTS (SELECT 1 FROM tblTracking t WITH (NOLOCK) WHERE t.ProjectID=p.ProjectID)
+    AND (${links.map(field=>`p.${field} IS NOT NULL`).join(" OR ")})
+  ORDER BY job,id`;
+  return queryReadOnly<SeamusLienSummaryRow>(query);
 }
 
 export function getMarginByWeekRows(startDate = "", endDate = ""){return queryReadOnly<OperationalReportRow>(`WITH recent AS (

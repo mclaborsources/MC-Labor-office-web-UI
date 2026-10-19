@@ -42,6 +42,14 @@ if errorlevel 1 goto failed
 echo Dependencies installed successfully. Starting MC Labor...
 
 :run_app
+echo Checking for an existing MC Labor server on port 3000...
+powershell -NoProfile -Command "$listenerPids = @(Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique); foreach ($listenerPid in $listenerPids) { Write-Host ('Stopping existing server process ' + $listenerPid); & taskkill.exe /PID $listenerPid /T /F > $null 2>&1 }; Start-Sleep -Milliseconds 500; if (Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue) { exit 1 }"
+if errorlevel 1 (
+  echo Could not clear port 3000. Close the existing server or run this launcher with permission to stop it.
+  pause
+  exit /b 1
+)
+
 set "MC_LABOR_LOCAL_MODE=1"
 set "WRITES_ENABLED=true"
 echo Keep this window open while using MC Labor. Press Ctrl+C to stop.

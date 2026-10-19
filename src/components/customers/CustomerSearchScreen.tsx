@@ -192,12 +192,12 @@ function CustomerSearchTable({
                         <>
                           <div className="ac-customer-column-filter-divider" />
                           <div className="ac-customer-column-filter-actions">
-                            <button type="button" onClick={() => {
+                            <button data-action-status="complete" type="button" onClick={() => {
                               const next = { ...columnFilters };
                               delete next[col.key];
                               onColumnFiltersChange(next);
                             }}>Select All</button>
-                            <button type="button" onClick={() => onColumnFiltersChange({ ...columnFilters, [col.key]: [] })}>Clear</button>
+                            <button data-action-status="complete" type="button" onClick={() => onColumnFiltersChange({ ...columnFilters, [col.key]: [] })}>Clear</button>
                           </div>
                           <div className="ac-customer-column-filter-values">
                             {(columnOptions[col.key] ?? []).map((value) => (
@@ -317,7 +317,7 @@ function CustomerSearchSidebar({
     <aside className="ac-customer-search-sidebar shrink-0">
       <div className="ac-customer-search-screen-size">
         <span className="ac-customer-search-screen-size-label">Screen Size</span>
-        <AccessButton
+        <AccessButton data-action-status="complete"
           aria-pressed={activeScreenSize === "normal"}
           onClick={() => setActiveScreenSize("normal")}
           className={`ac-customer-search-screen-normal ${
@@ -328,7 +328,7 @@ function CustomerSearchSidebar({
         </AccessButton>
         <div className="ac-customer-search-screen-grid">
           {[1, 2, 3, 4].map((n) => (
-            <AccessButton
+            <AccessButton data-action-status="complete"
               key={n}
               xs
               aria-pressed={activeScreenSize === String(n)}
@@ -341,7 +341,7 @@ function CustomerSearchSidebar({
             </AccessButton>
           ))}
           {[1, 2, 3, 4].map((n) => (
-            <AccessButton key={`save-${n}`} xs disabled className="ac-customer-search-screen-save">
+            <AccessButton data-action-status="missing" key={`save-${n}`} xs disabled className="ac-customer-search-screen-save">
               Save
             </AccessButton>
           ))}
@@ -395,7 +395,7 @@ function CustomerSearchSidebar({
             </div>
 
             <div className="ac-customer-search-side-search-col">
-              <AccessButton xs type="submit" className="ac-customer-search-side-search-btn">
+              <AccessButton data-action-status="complete" xs type="submit" className="ac-customer-search-side-search-btn">
                 Search
               </AccessButton>
               <div className="ac-customer-search-use-button">
@@ -412,7 +412,7 @@ function CustomerSearchSidebar({
             </div>
           </div>
 
-          <AccessButton xs disabled className="ac-customer-search-deselect-btn">
+          <AccessButton data-action-status="missing" xs disabled className="ac-customer-search-deselect-btn">
             Deselect Duplicate Email
           </AccessButton>
         </form>
@@ -426,16 +426,16 @@ function CustomerSearchActionBar({ hoveredColumn, onClearFilters }: { hoveredCol
     <div className="ac-customer-search-action-bar shrink-0">
       <div className="ac-customer-search-action-group">
         <span className="ac-customer-search-action-label">Select:</span>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Clear
         </AccessButton>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           All
         </AccessButton>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Email
         </AccessButton>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Text
         </AccessButton>
       </div>
@@ -444,20 +444,20 @@ function CustomerSearchActionBar({ hoveredColumn, onClearFilters }: { hoveredCol
       </span>
       <div className="ac-customer-search-action-group">
         <span className="ac-customer-search-action-hint">Click in column first</span>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Update Column
         </AccessButton>
       </div>
       <div className="ac-customer-search-action-group">
         <span className="ac-customer-search-action-hint">All columns - takes time</span>
-        <AccessButton xs disabled>
+        <AccessButton data-action-status="missing" xs disabled>
           Update All
         </AccessButton>
       </div>
-      <AccessButton xs disabled className="ac-customer-search-btn-transfer">
+      <AccessButton data-action-status="missing" xs disabled className="ac-customer-search-btn-transfer">
         Transfer to Deleted
       </AccessButton>
-      <AccessButton xs onClick={onClearFilters}>Clear Filters</AccessButton>
+      <AccessButton data-action-status="complete" xs onClick={onClearFilters}>Clear Filters</AccessButton>
     </div>
   );
 }
@@ -465,10 +465,10 @@ function CustomerSearchActionBar({ hoveredColumn, onClearFilters }: { hoveredCol
 function CustomerSearchUtilityRail() {
   return (
     <div className="ac-customer-search-utility-rail shrink-0">
-      <button type="button" className="ac-customer-search-rail-icon ac-customer-search-rail-icon--grid" disabled aria-label="Grid view">
+      <button data-action-status="missing" type="button" className="ac-customer-search-rail-icon ac-customer-search-rail-icon--grid" disabled aria-label="Grid view">
         <Icon icon={Table2} size="xs" />
       </button>
-      <button type="button" className="ac-customer-search-rail-icon ac-customer-search-rail-icon--help" disabled aria-label="Help">
+      <button data-action-status="missing" type="button" className="ac-customer-search-rail-icon ac-customer-search-rail-icon--help" disabled aria-label="Help">
         <Icon icon={HelpCircle} size="xs" />
       </button>
       <div className="ac-customer-search-size-mb">
@@ -534,7 +534,7 @@ export function CustomerSearchScreen({
       <div className="ac-customer-search ac-tracking--modern flex min-h-0 flex-1 flex-col">
         <div className="ac-customer-search-titlebar shrink-0">
           <span className="ac-customer-search-title">Customer Search</span>
-          <AccessButton xs disabled>
+          <AccessButton data-action-status="missing" xs disabled>
             New
           </AccessButton>
         </div>

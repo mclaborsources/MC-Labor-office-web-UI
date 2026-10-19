@@ -1,9 +1,21 @@
 import type { TrackingJobContact, TrackingJobInfo, TrackingReferralAgency } from "@/types/tracking";
-import { AccessButton } from "@/components/access/AccessButton";
+import type { ComponentProps } from "react";
+import { AccessButton as BaseAccessButton } from "@/components/access/AccessButton";
+import { TRACKING_JOB_ACTION_ROUTES } from "@/lib/trackingJobActionRoutes";
 import { AccessButtonRow } from "@/components/access/AccessToolbar";
 
 const SUBFORM_ROWS_COMPACT = 5;
 const SUBFORM_ROWS_FULL = 8;
+
+// These controls dispatch through TrackingScreen's enclosing click handler.
+// Their own JSX does not need an onClick to have a working destination.
+function AccessButton({ children, ...props }: ComponentProps<typeof BaseAccessButton>) {
+  const label = typeof children === "string" ? children.replace(/\s+/g, " ").trim() : "";
+  const status = TRACKING_JOB_ACTION_ROUTES[label] ? "linked"
+    : ["Update Unassigned to Available", "Copy Forward History", "Import to Update Hunter"].includes(label) ? "partial"
+    : props["data-action-status"];
+  return <BaseAccessButton {...props} data-action-status={status}>{children}</BaseAccessButton>;
+}
 
 function padRows<T>(rows: T[], empty: () => T, minRows = SUBFORM_ROWS_COMPACT): T[] {
   const out = [...rows];
@@ -210,29 +222,29 @@ export function EmployeesTabPanel() {
     <div className="ac-tracking-job-tab ac-tracking-job-tab--employees">
       <div className="ac-tracking-job-tab-col ac-tracking-job-tab-col--actions ac-tracking-job-tab-col--employees">
         <div className="ac-tracking-btn-grid ac-tracking-btn-grid--2">
-          <AccessButton xs>
+          <AccessButton data-action-status="missing" xs>
             All &quot;Y&quot;
           </AccessButton>
-          <AccessButton xs>
+          <AccessButton data-action-status="missing" xs>
             Clear &quot;Y&quot;
           </AccessButton>
         </div>
-        <AccessButton className="ac-tracking-job-tab-btn-wide">
+        <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-wide">
           Select
         </AccessButton>
-        <AccessButton className="ac-tracking-job-tab-btn-wide ac-tracking-job-tab-btn-bottom">
+        <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-wide ac-tracking-job-tab-btn-bottom">
           Text Verify on Job
         </AccessButton>
       </div>
 
       <div className="ac-tracking-job-tab-col ac-tracking-job-tab-col--actions ac-tracking-job-tab-col--employees">
-        <AccessButton className="ac-tracking-job-tab-btn-wide">
+        <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-wide">
           View Directions
         </AccessButton>
-        <AccessButton className="ac-tracking-job-tab-btn-wide">
+        <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-wide">
           Print Directions
         </AccessButton>
-        <AccessButton className="ac-tracking-job-tab-btn-wide">
+        <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-wide">
           Send Directions
         </AccessButton>
       </div>
@@ -240,7 +252,7 @@ export function EmployeesTabPanel() {
       <div className="ac-tracking-message-pane ac-tracking-message-pane--employees">
         <div className="ac-flabel ac-tracking-message-label">Message</div>
         <textarea className="ac-tracking-notes-area ac-tracking-notes-area--fill" aria-label="Message" />
-        <AccessButton className="ac-tracking-job-tab-btn-center">
+        <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-center">
           Send as Text
         </AccessButton>
       </div>
@@ -251,7 +263,7 @@ export function EmployeesTabPanel() {
           className="ac-tracking-notes-area ac-tracking-notes-area--fill"
           aria-label="Hours timesheet text"
         />
-        <AccessButton className="ac-tracking-job-tab-btn-center">
+        <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-center">
           Send Hours/Timesheet Text
         </AccessButton>
       </div>
@@ -270,20 +282,20 @@ export function SalesmenTabPanel({
     <div className="ac-tracking-job-tab ac-tracking-job-tab--salesmen">
       <div className="ac-tracking-salesmen-left-pane">
         <div className="ac-tracking-btn-grid ac-tracking-btn-grid--2">
-          <AccessButton xs>
+          <AccessButton data-action-status="missing" xs>
             All &quot;Y&quot;
           </AccessButton>
-          <AccessButton xs>
+          <AccessButton data-action-status="missing" xs>
             Email Directions
           </AccessButton>
-          <AccessButton xs>
+          <AccessButton data-action-status="missing" xs>
             Clear &quot;Y&quot;
           </AccessButton>
-          <AccessButton xs>
+          <AccessButton data-action-status="missing" xs>
             Text Directions
           </AccessButton>
         </div>
-        <AccessButton className="ac-tracking-job-tab-btn-center ac-tracking-salesmen-send-btn">
+        <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-center ac-tracking-salesmen-send-btn">
           Send as Text
         </AccessButton>
       </div>
@@ -324,16 +336,16 @@ export function SalesmenTabPanel({
 
       <div className="ac-tracking-salesmen-right-pane">
         <div className="ac-tracking-btn-grid ac-tracking-btn-grid--2 ac-tracking-salesmen-side-grid">
-          <AccessButton className="ac-tracking-job-tab-btn-wide">
+          <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-wide">
             Select All
           </AccessButton>
-          <AccessButton className="ac-tracking-job-tab-btn-wide">
+          <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-wide">
             View Future Calls
           </AccessButton>
-          <AccessButton className="ac-tracking-job-tab-btn-wide">
+          <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-wide">
             Clear All
           </AccessButton>
-          <AccessButton className="ac-tracking-job-tab-btn-wide">
+          <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-wide">
             Email Future Calls
           </AccessButton>
         </div>
@@ -385,10 +397,10 @@ export function SAdminTabPanel() {
           <option value="04">04 Sales</option>
           <option value="05">05 Administration</option>
         </select>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Save View
         </AccessButton>
-        <AccessButton xs>
+        <AccessButton data-action-status="missing" xs>
           Delete View
         </AccessButton>
       </div>
@@ -397,7 +409,7 @@ export function SAdminTabPanel() {
           <div key={ci} className="ac-tracking-s-admin-col">
             {col.map((btn, bi) =>
               btn ? (
-                <AccessButton
+                <AccessButton data-action-status="missing"
                   key={btn.label}
                   className={btn.warn ? "ac-tracking-s-admin-btn-warn" : undefined}
                 >
@@ -429,7 +441,7 @@ function ScheduleActionGroup({
     <div className="ac-tracking-schedule-group">
       <div className="ac-tracking-schedule-group-title">{title}</div>
       {buttons.map((label) => (
-        <AccessButton key={label} className="ac-tracking-job-tab-btn-wide">
+        <AccessButton data-action-status="missing" key={label} className="ac-tracking-job-tab-btn-wide">
           {label}
         </AccessButton>
       ))}
@@ -440,7 +452,7 @@ function ScheduleActionGroup({
         </label>
       ))}
       {reportLabel && (
-        <AccessButton className="ac-tracking-report-btn ac-tracking-schedule-report-btn">
+        <AccessButton data-action-status="missing" className="ac-tracking-report-btn ac-tracking-schedule-report-btn">
           {reportLabel}
         </AccessButton>
       )}
@@ -485,7 +497,7 @@ export function ScheduleTimesheetTabPanel({ contacts }: { contacts: TrackingJobC
         </div>
         <div className="ac-tracking-schedule-notes-header">
           <span className="ac-flabel ac-tracking-schedule-notes-label">Additional Notes:</span>
-          <AccessButton xs>
+          <AccessButton data-action-status="missing" xs>
             Select Employees
           </AccessButton>
         </div>
@@ -499,16 +511,16 @@ export function VerifyHoursTabPanel({ contacts }: { contacts: TrackingJobContact
   return (
     <div className="ac-tracking-job-tab ac-tracking-job-tab--verify">
       <div className="ac-tracking-job-tab-col ac-tracking-job-tab-col--narrow">
-        <AccessButton className="ac-tracking-job-tab-btn-wide">
+        <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-wide">
           View V Hours
         </AccessButton>
-        <AccessButton className="ac-tracking-job-tab-btn-wide">
+        <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-wide">
           Select
         </AccessButton>
-        <AccessButton className="ac-tracking-job-tab-btn-wide">
+        <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-wide">
           Email V Hours
         </AccessButton>
-        <AccessButton className="ac-tracking-report-btn ac-tracking-job-tab-btn-wide">
+        <AccessButton data-action-status="missing" className="ac-tracking-report-btn ac-tracking-job-tab-btn-wide">
           Verify Report
         </AccessButton>
       </div>
@@ -524,13 +536,13 @@ export function InvoiceTabPanel({ contacts }: { contacts: TrackingJobContact[] }
   return (
     <div className="ac-tracking-job-tab ac-tracking-job-tab--invoice">
       <div className="ac-tracking-job-tab-col ac-tracking-job-tab-col--narrow">
-        <AccessButton className="ac-tracking-job-tab-btn-wide">
+        <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-wide">
           View Invoice
         </AccessButton>
-        <AccessButton className="ac-tracking-job-tab-btn-wide">
+        <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-wide">
           Email Invoice
         </AccessButton>
-        <AccessButton className="ac-tracking-report-btn ac-tracking-job-tab-btn-wide">
+        <AccessButton data-action-status="missing" className="ac-tracking-report-btn ac-tracking-job-tab-btn-wide">
           Invoice Report
         </AccessButton>
         <label className="ac-tracking-check-row">
@@ -557,8 +569,8 @@ export function SeamusTabPanel() {
   return (
     <div className="ac-tracking-job-tab ac-tracking-job-tab--seamus">
       <AccessButtonRow>
-        <AccessButton>Copy Forward</AccessButton>
-        <AccessButton>Payroll Adjustments</AccessButton>
+        <AccessButton data-action-status="missing">Copy Forward</AccessButton>
+        <AccessButton data-action-status="missing">Payroll Adjustments</AccessButton>
       </AccessButtonRow>
     </div>
   );
@@ -618,17 +630,17 @@ export function ReferralAgenciesTabPanel({
   return (
     <div className="ac-tracking-job-tab ac-tracking-job-tab--referral">
       <div className="ac-tracking-referral-left-pane">
-        <AccessButton className="ac-tracking-report-btn ac-tracking-job-tab-btn-wide">
+        <AccessButton data-action-status="missing" className="ac-tracking-report-btn ac-tracking-job-tab-btn-wide">
           Invoice Report
         </AccessButton>
-        <AccessButton className="ac-tracking-job-tab-btn-wide">
+        <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-wide">
           Text Directions
         </AccessButton>
       </div>
 
       <div className="ac-tracking-referral-message-pane">
         <textarea className="ac-tracking-notes-area ac-tracking-notes-area--fill" aria-label="Message" />
-        <AccessButton className="ac-tracking-referral-send-btn">
+        <AccessButton data-action-status="missing" className="ac-tracking-referral-send-btn">
           Send as Text
         </AccessButton>
       </div>
@@ -637,10 +649,10 @@ export function ReferralAgenciesTabPanel({
 
       <div className="ac-tracking-referral-right-pane">
         <div className="ac-tracking-btn-grid ac-tracking-referral-side-grid">
-          <AccessButton className="ac-tracking-job-tab-btn-wide">
+          <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-wide">
             Select All
           </AccessButton>
-          <AccessButton className="ac-tracking-job-tab-btn-wide">
+          <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-wide">
             Clear All
           </AccessButton>
         </div>
@@ -653,10 +665,10 @@ export function SimpleJobTabPlaceholder({ label }: { label: string }) {
   return (
     <div className="ac-tracking-job-tab ac-tracking-job-tab--placeholder">
       <span className="text-[10px] text-slate-500">{label} tools:</span>
-      <AccessButton>Connection Status</AccessButton>
-      <AccessButton>Office Staff</AccessButton>
-      <AccessButton>Health Ins</AccessButton>
-      <AccessButton>Deleted Employees</AccessButton>
+      <AccessButton data-action-status="missing">Connection Status</AccessButton>
+      <AccessButton data-action-status="missing">Office Staff</AccessButton>
+      <AccessButton data-action-status="missing">Health Ins</AccessButton>
+      <AccessButton data-action-status="missing">Deleted Employees</AccessButton>
     </div>
   );
 }

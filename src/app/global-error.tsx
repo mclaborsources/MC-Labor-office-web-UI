@@ -15,8 +15,8 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
           <p>Try loading the application again.</p>
           {process.env.NODE_ENV === "development" && <pre style={{ overflowWrap: "anywhere", whiteSpace: "pre-wrap", color: "#a00" }}>{error.message}</pre>}
           {error.digest && <p>Reference: {error.digest}</p>}
-          <button onClick={reset} style={{ padding: "6px 12px" }}>Try again</button>
-          <button onClick={() => window.location.reload()} style={{ padding: "6px 12px", marginLeft: 8 }}>Reload application</button>
+          <button data-action-status="complete" onClick={reset} style={{ padding: "6px 12px" }}>Try again</button>
+          <button data-action-status="complete" onClick={() => window.location.reload()} style={{ padding: "6px 12px", marginLeft: 8 }}>Reload application</button>
         </main>
       </body>
     </html>
