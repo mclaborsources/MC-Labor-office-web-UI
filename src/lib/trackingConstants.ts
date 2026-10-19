@@ -10,9 +10,9 @@ export const PAYROLL_CO_COLORS: Record<string, string> = {
 
 /** Sat–Fri status flag background (Access SatStatusFlagID etc.). */
 export const DAY_FLAG_BG: Record<string, string> = {
-  "2": "#4a90e2",
-  "7": "#4a90e2",
-  "9": "#4a90e2",
+  "2": "#4daec2",
+  "7": "#4daec2",
+  "9": "#4daec2",
   "3": "#f4c20d",
   "4": "#e8553e",
 };

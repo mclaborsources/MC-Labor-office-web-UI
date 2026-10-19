@@ -14,6 +14,7 @@ import type {
 interface GetTrackingPreviewArgs {
   week?: number;
   year?: number;
+  weekEndingDate?: string;
   customerId?: string;
   projectId?: string;
 }
@@ -23,10 +24,10 @@ function str(v: unknown): string {
   return String(v).trim();
 }
 
-function money(v: unknown): string {
+function money(v: unknown, includeZero = false): string {
   if (v === null || v === undefined || v === "") return "";
   const n = Number(v);
-  if (!Number.isFinite(n) || n === 0) return "";
+  if (!Number.isFinite(n) || (n === 0 && !includeZero)) return "";
   return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
@@ -115,6 +116,9 @@ interface TrackingRow {
   AutoTextUserName2: string | null;
   AutoTextTimestamp2: string | Date | null;
   CoExpParkingPerHr: number | null;
+  SickTime: number | null;
+  CoExpSchoolingPerHr: number | null;
+  CoExpToolsPerHr: number | null;
   CustomerBusName: string | null;
   WeekEndingDate: string | Date | null;
   Placeholder: boolean | null;
@@ -140,7 +144,8 @@ const SELECT_COLUMNS = `
   PayRate, BillRate, BillRateOT, HoursNote, AssignmentUserName, AssignmentTimestamp,
   HLinkTimesheetCV, HLinkTimesheetColorCV, SendLiveCheckColor,
   AutoTextUserName1, AutoTextTimestamp1, AutoTextUserName2, AutoTextTimestamp2,
-  CoExpParkingPerHr, CustomerBusName, WeekEndingDate, Placeholder`;
+  CoExpParkingPerHr, SickTime, CoExpSchoolingPerHr, CoExpToolsPerHr,
+  CustomerBusName, WeekEndingDate, Placeholder`;
 
 function mapRow(r: TrackingRow): TrackingPreviewRow {
   const payrollCo = str(r.PayrollCoOnSiteInitials);
@@ -193,6 +198,9 @@ function mapRow(r: TrackingRow): TrackingPreviewRow {
     hlAutoTextUser: str(r.AutoTextUserName2),
     hlAutoTextTimestamp: ts(r.AutoTextTimestamp2),
     parkingPerHr: money(r.CoExpParkingPerHr),
+    sickTime: money(r.SickTime, true),
+    schoolingPerHr: money(r.CoExpSchoolingPerHr),
+    toolsPerHr: money(r.CoExpToolsPerHr),
     customer: str(r.CustomerBusName),
     totalHours: hours(r.TotalHours),
     weekEnding: we,
@@ -213,22 +221,32 @@ export async function getTrackingPreview(
   args: GetTrackingPreviewArgs = {},
 ): Promise<TrackingPreview> {
   const top = 300;
-  const hasWeek = typeof args.week === "number" && typeof args.year === "number";
+  // Access loads the tracking form by the selected Friday's WeekEndingDate.
+  // AssignWeek/AssignYear can be stale on older records, so filtering only by
+  // those calculated fields can repeat the same rows across multiple weeks.
+  const hasWeek = Boolean(args.weekEndingDate) ||
+    (typeof args.week === "number" && typeof args.year === "number");
   const customerId = args.customerId?.trim() || null;
   const projectId = args.projectId?.trim() || null;
 
   const filterSql = `
-    ${hasWeek ? "AND AssignWeek = @week AND AssignYear = @year" : ""}
+    ${args.weekEndingDate
+      ? "AND WeekEndingDate >= CAST(@weekEndingDate AS DATE) AND WeekEndingDate < DATEADD(DAY, 1, CAST(@weekEndingDate AS DATE))"
+      : hasWeek
+        ? "AND AssignWeek = @week AND AssignYear = @year"
+        : ""}
     ${customerId ? "AND CAST(CustomerID AS NVARCHAR(20)) = @customerId" : ""}
     ${projectId ? "AND CAST(ProjectID AS NVARCHAR(20)) = @projectId" : ""}`;
 
   const params = [
-    ...(hasWeek
-      ? [
-          { name: "week", value: args.week },
-          { name: "year", value: args.year },
-        ]
-      : []),
+    ...(args.weekEndingDate
+      ? [{ name: "weekEndingDate", value: args.weekEndingDate }]
+      : hasWeek
+        ? [
+            { name: "week", value: args.week },
+            { name: "year", value: args.year },
+          ]
+        : []),
     ...(customerId ? [{ name: "customerId", value: customerId }] : []),
     ...(projectId ? [{ name: "projectId", value: projectId }] : []),
   ];
@@ -263,6 +281,7 @@ export async function getTrackingPreview(
 export async function getTrackingCustomerOptions(
   week: number,
   year: number,
+  weekEndingDate?: string,
 ): Promise<TrackingCustomerOption[]> {
   try {
     const rows = await queryReadOnly<{
@@ -276,13 +295,15 @@ export async function getTrackingCustomerOptions(
        FROM tblCustomer c WITH (NOLOCK)
        INNER JOIN tblTracking t WITH (NOLOCK)
          ON t.CustomerID = c.CustomerID
-        AND t.AssignWeek = @week
-        AND t.AssignYear = @year
+        AND ${weekEndingDate
+          ? "t.WeekEndingDate >= CAST(@weekEndingDate AS DATE) AND t.WeekEndingDate < DATEADD(DAY, 1, CAST(@weekEndingDate AS DATE))"
+          : "t.AssignWeek = @week AND t.AssignYear = @year"}
        GROUP BY c.CustomerID, c.CustBusName
        ORDER BY ISNULL(c.CustBusName, ''), c.CustomerID`,
       [
-        { name: "week", value: week },
-        { name: "year", value: year },
+        ...(weekEndingDate
+          ? [{ name: "weekEndingDate", value: weekEndingDate }]
+          : [{ name: "week", value: week }, { name: "year", value: year }]),
       ],
     );
     return rows.map((r) => ({
@@ -299,6 +320,7 @@ export async function getTrackingJobOptions(
   week: number,
   year: number,
   customerId?: string,
+  weekEndingDate?: string,
 ): Promise<TrackingJobOption[]> {
   try {
     const rows = await queryReadOnly<{
@@ -315,14 +337,16 @@ export async function getTrackingJobOptions(
        INNER JOIN tblTracking t WITH (NOLOCK)
          ON t.ProjectID = p.ProjectID
         AND t.CustomerID = p.CustomerID
-        AND t.AssignWeek = @week
-        AND t.AssignYear = @year
+        AND ${weekEndingDate
+          ? "t.WeekEndingDate >= CAST(@weekEndingDate AS DATE) AND t.WeekEndingDate < DATEADD(DAY, 1, CAST(@weekEndingDate AS DATE))"
+          : "t.AssignWeek = @week AND t.AssignYear = @year"}
        WHERE (@customerId = '' OR CAST(p.CustomerID AS NVARCHAR(20)) = @customerId)
        GROUP BY p.ProjectID, p.CustomerID, c.CustBusName, p.SiteName
        ORDER BY ISNULL(c.CustBusName, ''), ISNULL(p.SiteName, ''), p.ProjectID`,
       [
-        { name: "week", value: week },
-        { name: "year", value: year },
+        ...(weekEndingDate
+          ? [{ name: "weekEndingDate", value: weekEndingDate }]
+          : [{ name: "week", value: week }, { name: "year", value: year }]),
         { name: "customerId", value: customerId ?? "" },
       ],
     );
@@ -343,6 +367,7 @@ export async function getTrackingJobInfo(
   projectId?: string,
   week?: number,
   year?: number,
+  weekEndingDate?: string,
 ): Promise<TrackingJobInfo | null> {
   try {
     const suffixByPayrollCode: Record<string, string> = {
@@ -356,52 +381,34 @@ export async function getTrackingJobInfo(
          LEFT JOIN tblPullDownPayrollCoOnSite pc WITH (NOLOCK)
            ON pc.PullDownPayrollCoOnSiteID = t.PayrollCoOnSiteID
          WHERE t.CustomerID = @customerId AND t.ProjectID = @projectId
-           AND t.AssignWeek = @week AND t.AssignYear = @year
+           AND ${weekEndingDate
+             ? "t.WeekEndingDate >= CAST(@weekEndingDate AS DATE) AND t.WeekEndingDate < DATEADD(DAY, 1, CAST(@weekEndingDate AS DATE))"
+             : "t.AssignWeek = @week AND t.AssignYear = @year"}
          ORDER BY t.AssignmentTimestamp DESC, t.TrackingID DESC`,
         [
           { name: "customerId", value: Number(customerId) },
           { name: "projectId", value: Number(projectId) },
-          { name: "week", value: week },
-          { name: "year", value: year },
+          ...(weekEndingDate
+            ? [{ name: "weekEndingDate", value: weekEndingDate }]
+            : [{ name: "week", value: week }, { name: "year", value: year }]),
         ],
       ).catch(() => []);
       const code = str(payrollRows[0]?.PayrollCode).trim().toUpperCase();
       documentSuffix = suffixByPayrollCode[code] ?? "";
     }
-    const suffixField = (base: string) => documentSuffix ? `c.[${base}${documentSuffix}]` : "NULL";
-    const contractLink = `COALESCE(NULLIF(${suffixField("HLinkSalesContract")}, ''), c.HLinkSalesContract, '')`;
-    const w9Link = `COALESCE(NULLIF(${suffixField("HLinkW9")}, ''), c.HLinkW9, '')`;
-    const wcLink = `COALESCE(NULLIF(${suffixField("HLinkWCxDate")}, ''), c.HLinkWCxDate, '')`;
-    const glLink = `COALESCE(NULLIF(${suffixField("HLinkGLxDate")}, ''), c.HLinkGLxDate, '')`;
-    const wcDate = `COALESCE(${suffixField("WCxDate")}, c.WCxDate)`;
-    const glDate = `COALESCE(${suffixField("GLxDate")}, c.GLxDate)`;
     const rows = await queryReadOnly<{
       CustBusName: string;
-      ContractDate: string | Date | null;
       SalesmanID: number | null;
       ContractWithName: string | null;
       CreditLimit: number | null;
       SalesmanName: string | null;
       OldestInvoice: string | Date | null;
       TotalOwed: number | null;
-      ContractLink: string | null;
-      W9Link: string | null;
-      WCLink: string | null;
-      GLLink: string | null;
-      WCDate: string | Date | null;
-      GLDate: string | Date | null;
     }>(
       `SELECT TOP (1)
          ISNULL(c.CustBusName, '') AS CustBusName,
-         c.ContractDate,
          c.SalesmanID,
          ISNULL(p.PullDownContractWith_PayrollCoName, '') AS ContractWithName,
-         ${wcDate} AS WCDate,
-         ${glDate} AS GLDate,
-         ${contractLink} AS ContractLink,
-         ${w9Link} AS W9Link,
-         ${wcLink} AS WCLink,
-         ${glLink} AS GLLink,
          c.CreditLimit,
          inv.OldestInvoice,
          inv.TotalOwed,
@@ -422,6 +429,35 @@ export async function getTrackingJobInfo(
     );
     const c = rows[0];
     if (!c) return null;
+
+    // Keep optional document fields out of the core customer lookup. Access
+    // stores these links in payroll-company-specific columns; a missing legacy
+    // column must not blank the customer summary fields above.
+    const suffixField = (base: string) => documentSuffix ? `c.[${base}${documentSuffix}]` : "NULL";
+    const contractLink = `COALESCE(NULLIF(${suffixField("HLinkSalesContract")}, ''), c.HLinkSalesContract, '')`;
+    const w9Link = `COALESCE(NULLIF(${suffixField("HLinkW9")}, ''), c.HLinkW9, '')`;
+    const wcLink = `COALESCE(NULLIF(${suffixField("HLinkWCxDate")}, ''), c.HLinkWCxDate, '')`;
+    const glLink = `COALESCE(NULLIF(${suffixField("HLinkGLxDate")}, ''), c.HLinkGLxDate, '')`;
+    const wcDate = `COALESCE(${suffixField("WCxDate")}, c.WCxDate)`;
+    const glDate = `COALESCE(${suffixField("GLxDate")}, c.GLxDate)`;
+    const customerDocumentRows = await queryReadOnly<{
+      ContractDate: string | Date | null;
+      ContractLink: string | null;
+      W9Link: string | null;
+      WCLink: string | null;
+      GLLink: string | null;
+      WCDate: string | Date | null;
+      GLDate: string | Date | null;
+    }>(
+      `SELECT TOP (1) c.ContractDate,
+              ${wcDate} AS WCDate, ${glDate} AS GLDate,
+              ${contractLink} AS ContractLink, ${w9Link} AS W9Link,
+              ${wcLink} AS WCLink, ${glLink} AS GLLink
+       FROM tblCustomer c WITH (NOLOCK)
+       WHERE CAST(c.CustomerID AS NVARCHAR(20)) = @customerId`,
+      [{ name: "customerId", value: customerId }],
+    ).catch(() => []);
+    const docs = customerDocumentRows[0];
 
     const rates = await queryReadOnly<{ BillRateGrade: string; BillRate: number }>(
       `SELECT TOP (8)
@@ -544,19 +580,19 @@ export async function getTrackingJobInfo(
       ].filter(Boolean).join(" "),
       projectNotes: str(project?.ProjNote),
       contractWith: str(c.ContractWithName),
-      contractDate: fmtDate(c.ContractDate),
+      contractDate: fmtDate(docs?.ContractDate ?? null),
       salesman: str(c.SalesmanName) || str(c.SalesmanID),
       creditHistory: c.CreditLimit ? money(c.CreditLimit) : "",
       oldestInvoice: fmtDate(c.OldestInvoice),
       totalOwed: c.TotalOwed ? money(c.TotalOwed) : "",
-      w9OnFile: str(c.W9Link) ? "On file" : "Not on file",
-      wcDate: fmtDate(c.WCDate),
-      glDate: fmtDate(c.GLDate),
+      w9OnFile: str(docs?.W9Link) ? "On file" : "Not on file",
+      wcDate: fmtDate(docs?.WCDate ?? null),
+      glDate: fmtDate(docs?.GLDate ?? null),
       documentLinks: {
-        contract: str(c.ContractLink),
-        w9: str(c.W9Link),
-        wc: str(c.WCLink),
-        gl: str(c.GLLink),
+        contract: str(docs?.ContractLink),
+        w9: str(docs?.W9Link),
+        wc: str(docs?.WCLink),
+        gl: str(docs?.GLLink),
         site: str(project?.SiteHyperlink),
       },
       tia: "",

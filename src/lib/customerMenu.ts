@@ -15,6 +15,7 @@ export interface CustomerMenuResult {
   tiles: CustomerMenuTile[];
   assignWeek: number;
   assignYear: number;
+  weekEndingDate?: string;
   fallback?: boolean;
   requestedWeek?: number;
   requestedYear?: number;
@@ -37,17 +38,19 @@ function str(v: unknown): string {
 export async function getCustomerMenuTiles(
   week: number,
   year: number,
-): Promise<CustomerMenuTile[]> {
+): Promise<{ tiles: CustomerMenuTile[]; weekEndingDate?: string }> {
   try {
     const rows = await queryReadOnly<{
       CustomerID: number;
       CustomerBusName: string;
       PayrollCoOnSiteInitials: string | null;
       AssignmentCount: number;
+      WeekEndingDate: string | null;
     }>(
       `SELECT CustomerID,
               MAX(CustomerBusName) AS CustomerBusName,
               MAX(PayrollCoOnSiteInitials) AS PayrollCoOnSiteInitials,
+              CONVERT(VARCHAR(10), MAX(WeekEndingDate), 23) AS WeekEndingDate,
               COUNT(*) AS AssignmentCount
        FROM tblTracking WITH (NOLOCK)
        WHERE AssignWeek = @week AND AssignYear = @year
@@ -60,9 +63,12 @@ export async function getCustomerMenuTiles(
       ],
     );
 
-    return rows.map(mapTile);
+    return {
+      tiles: rows.map(mapTile),
+      weekEndingDate: rows[0]?.WeekEndingDate ?? undefined,
+    };
   } catch {
-    return [];
+    return { tiles: [] };
   }
 }
 
@@ -90,9 +96,9 @@ export async function getCustomerMenuWithFallback(
   const requestedWeek = week;
   const requestedYear = year;
 
-  let tiles = await getCustomerMenuTiles(week, year);
-  if (tiles.length > 0) {
-    return { tiles, assignWeek: week, assignYear: year };
+  let menu = await getCustomerMenuTiles(week, year);
+  if (menu.tiles.length > 0) {
+    return { ...menu, assignWeek: week, assignYear: year };
   }
 
   const latest = await getLatestTrackingWeek();
@@ -100,10 +106,10 @@ export async function getCustomerMenuWithFallback(
     latest &&
     (latest.assignWeek !== week || latest.assignYear !== year)
   ) {
-    tiles = await getCustomerMenuTiles(latest.assignWeek, latest.assignYear);
-    if (tiles.length > 0) {
+    menu = await getCustomerMenuTiles(latest.assignWeek, latest.assignYear);
+    if (menu.tiles.length > 0) {
       return {
-        tiles,
+        ...menu,
         assignWeek: latest.assignWeek,
         assignYear: latest.assignYear,
         fallback: true,

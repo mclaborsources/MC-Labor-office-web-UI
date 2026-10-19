@@ -20,7 +20,12 @@ export function CustomerMenuScreen({
   ipgCount,
   isgCount,
 }: CustomerMenuScreenProps) {
-  const weekQuery = `week=${menu.assignWeek}&year=${menu.assignYear}`;
+  // Selecting a customer in Access switches Tracking to that customer's
+  // assignments for the menu's week. The load flag is required because the
+  // plain Tracking page now intentionally opens with an empty grid.
+  const weekQuery = menu.weekEndingDate
+    ? `date=${menu.weekEndingDate}&load=1`
+    : `week=${menu.assignWeek}&year=${menu.assignYear}&load=1`;
   const columns = splitCustomerMenuColumns(menu.tiles, CUSTOMER_MENU_COLUMN_COUNT);
 
   return (

@@ -239,11 +239,11 @@ function dateInputValue(usDate: string): string {
 function dayCell(hours: string, flag: string) {
   const bg = flag && DAY_FLAG_BG[flag] ? DAY_FLAG_BG[flag] : undefined;
   return (
-    <td className="ac-grid-day">
+    <td className="ac-grid-day" style={bg ? { background: bg, color: "#fff" } : undefined}>
       <span
         className="ac-tracking-day-flag"
         style={{
-          background: bg ?? "transparent",
+          background: "transparent",
           color: bg ? "#fff" : "#94a3b8",
         }}
       >
@@ -315,7 +315,7 @@ function renderCell(col: GridCol, row: TrackingPreviewRow) {
   return (
     <td
       style={{ textAlign: col.align ?? "left" }}
-      className={col.mono ? "font-mono text-[10px] text-slate-600" : undefined}
+      className={`ac-tracking-field ac-tracking-field-${col.key}${col.mono ? " font-mono text-[10px] text-slate-600" : ""}`}
     >
       {display}
     </td>
@@ -705,7 +705,7 @@ export function TrackingScreen({
 
   function navigateFilter(customerId: string, projectId: string) {
     setSelectedIndex(null);
-    const q = new URLSearchParams({ week: String(week.assignWeek), year: String(week.assignYear) });
+    const q = new URLSearchParams({ date: dateInputValue(week.weekEndingDate), load: "1" });
     if (customerId) q.set("customerId", customerId);
     if (projectId) q.set("projectId", projectId);
     router.push(`/tracking?${q.toString()}`);
@@ -746,7 +746,7 @@ export function TrackingScreen({
   }
 
   function navigateWorkWeek(date: string) {
-    if (date) router.push(`/tracking?date=${encodeURIComponent(date)}`);
+    if (date) router.push(`/tracking?date=${encodeURIComponent(date)}&load=1`);
   }
 
   const selectedJobLabel =
@@ -1091,20 +1091,26 @@ export function TrackingScreen({
                 {rows.length === 0 ? (
                   <tr>
                     <td colSpan={COL_COUNT} className="ac-tracking-empty">
-                      {query || employeeFilter ? "No assignments match your filters." : `No assignments for week ${week.assignWeek}/${week.assignYear}.`}
+                      {preview === undefined
+                        ? "No assignments loaded. Select a customer or use Refresh → All to load this week."
+                        : query || employeeFilter
+                          ? "No assignments match your filters."
+                          : `No assignments for week ${week.assignWeek}/${week.assignYear}.`}
                       {selectedCustomerId ? " Try clearing the customer filter." : ""}
                     </td>
                   </tr>
                 ) : (
                   rows.map((r, i) => (
+                    <Fragment key={`${r.employeeId}-${i}`}>
                     <tr
-                      key={`${r.employeeId}-${i}`}
                       id={`tracking-row-${visible[i].index}`} aria-selected={selectedSourceIndex === visible[i].index} tabIndex={0} onClick={() => setSelectedIndex(visible[i].index)} onDoubleClick={() => router.push(`/employees/${encodeURIComponent(r.employeeId)}`)} onKeyDown={event => { if(event.key === "ArrowDown" || event.key === "ArrowUp") { event.preventDefault(); selectRecord(i + (event.key === "ArrowDown" ? 1 : -1)); } if(event.key === "Enter") router.push(`/employees/${encodeURIComponent(r.employeeId)}`); }} className={`${r.placeholder ? "ac-tracking-row-placeholder" : ""} ${selectedSourceIndex === visible[i].index ? "tracking-selected-row" : ""}`}
                     >
                       {GRID_COLUMNS.map((col, ci) => (
                         <Fragment key={ci}>{renderCell(col, r)}</Fragment>
                       ))}
                     </tr>
+                    {i < rows.length - 1 && <tr className="ac-tracking-row-gap" aria-hidden="true"><td colSpan={COL_COUNT} /></tr>}
+                    </Fragment>
                   ))
                 )}
               </tbody>
@@ -1123,27 +1129,40 @@ export function TrackingScreen({
             </span>
           </div>
           <p className="ac-tracking-status">
-            {preview?.source ? `Database records · ${preview.source}` : "Database unavailable · no records shown"}
+            {preview === undefined
+              ? "Waiting for a customer selection or refresh · no tracking rows loaded"
+              : preview.source
+                ? `Database records · ${preview.source}`
+                : "Database unavailable · no records shown"}
             {preview?.rows.length ? ` · ${preview.rows.length} loaded` : " · 0 loaded"}
           </p>
         </div>
       ) : (
         <div className="ac-tracking-grid-shell flex min-h-0 flex-1 flex-col">
-          <div className="ac-grid ac-grid-tracking min-h-0 flex-1 overflow-auto">
-            <table><thead><tr><th>Employee</th><th>Job</th>
-              {trackingTab === "hours" ? <>{["Sat","Sun","Mon","Tue","Wed","Thu","Fri"].map(day => <th key={day}>{day}</th>)}<th>Daily Total</th><th>Notes</th></> :
-                trackingTab === "hours2" ? <><th>Daily Total</th><th>Recorded Total</th><th>Pay Rate</th><th>Bill Rate</th><th>Bill Rate OT</th><th>Margin</th><th>Notes</th></> :
-                trackingTab === "benefits" ? <><th>Health</th><th>Per Diem</th><th>WCC State</th><th>WCC</th><th>Parking / Hr</th><th>Payroll Co</th></> :
-                <><th>Week Ending</th><th>Assignment User</th><th>Assignment Timestamp</th><th>Hours AutoText User</th><th>Hours AutoText Timestamp</th><th>HL AutoText User</th><th>HL AutoText Timestamp</th></>}
-            </tr></thead><tbody>{visible.map(({row,index}) => <tr key={index} id={`tracking-row-${index}`} className={selectedSourceIndex === index ? "tracking-selected-row" : ""} onClick={() => setSelectedIndex(index)} onDoubleClick={() => router.push(`/employees/${encodeURIComponent(row.employeeId)}`)}><td><Link href={`/employees/${encodeURIComponent(row.employeeId)}`}>{row.firstName} {row.lastName}</Link></td><td>{row.jobSite}</td>
-              {(trackingTab === "hours" ? [...trackingDays.map(key => row[key]),dailyTotal(row).toFixed(2),row.hoursNote] :
-                trackingTab === "hours2" ? [dailyTotal(row).toFixed(2),row.totalHours,row.payRate,row.billRate,row.billRateOT,row.trackMargin,row.hoursNote] :
-                trackingTab === "benefits" ? [row.health,row.perDiem,row.wccState,row.wcc,row.parkingPerHr,row.payrollCo] :
-                [row.weekEnding,row.assignmentUser,row.assignmentTimestamp,row.hrsAutoTextUser,row.hrsAutoTextTimestamp,row.hlAutoTextUser,row.hlAutoTextTimestamp]).map((value,i) => <td key={i}>{value}</td>)}
-            </tr>)}{!rows.length && <tr><td colSpan={11}>No assignments match the current week and filters.</td></tr>}</tbody></table>
+          <div className={`ac-grid ac-grid-tracking ac-grid-tracking-detail ac-grid-tracking-${trackingTab} min-h-0 flex-1 overflow-auto`}>
+            <table><thead><tr>{trackingTab === "hours" ? <><th>T</th><th>Payroll Co</th><th>S1</th><th>First</th><th>MI</th><th>Last</th><th>Cell #</th><th>City</th><th>State</th><th>WCC</th>{["Sat","Sun","Mon","Tue","Wed","Thu","Fri"].map(day => <th key={day}>{day}</th>)}<th>TH</th><th>RH</th><th>OT</th><th>Pay Rate</th><th>Bill Rate</th><th>Bill Rate C</th><th>Invoice #</th><th>Hours Note</th><th>Time Text Sum</th></> : trackingTab === "hours2" ? <><th>T</th><th>Payroll Co</th><th>S1</th><th>First</th><th>MI</th><th>Last</th><th>Cell #</th><th>City</th><th>State</th><th>WCC</th>{["Sat","Sun","Mon","Tue","Wed","Thu","Fri"].map(day => <th key={day}>{day}</th>)}<th>TH</th><th>RH</th><th>OT</th><th>S</th><th>Select</th><th>HL</th><th>HL CV</th><th>Hrs AutoText</th><th>Hrs AutoText</th><th>HL AutoText</th><th>HL AutoText</th><th>Hours Note</th></> : trackingTab === "benefits" ? <><th>Payroll Co</th><th>OSHA</th><th>S P</th><th>First</th><th>Last</th><th>City</th><th>Cell #</th><th>Grade</th><th>State</th><th>WCC</th><th>%</th><th>$</th><th>Pay Rate</th><th>Bill Rate</th><th>Health Ins</th><th>Travel/Hr</th><th>Vac/Hr</th><th>Sick Time</th><th>Schooling Per Hr</th><th>Tools Per Hr</th><th>Bonus Exp Rate</th><th>Bonus Exp Start Date</th><th>Bonus Exp to Employee</th><th>Em Referral/Hr</th></> : <><th>Employee</th><th>Job</th><th>Week Ending</th><th>Assignment User</th><th>Assignment Timestamp</th><th>Hours AutoText User</th><th>Hours AutoText Timestamp</th><th>HL AutoText User</th><th>HL AutoText Timestamp</th></>}
+            </tr></thead><tbody>{visible.map(({row,index}, rowIndex) => <Fragment key={index}><tr id={`tracking-row-${index}`} className={`${selectedSourceIndex === index ? "tracking-selected-row" : ""} ${row.placeholder ? "ac-tracking-row-placeholder" : ""}`} onClick={() => setSelectedIndex(index)} onDoubleClick={() => router.push(`/employees/${encodeURIComponent(row.employeeId)}`)}>{!(["hours", "hours2", "benefits"] as string[]).includes(trackingTab) && <><td className="ac-detail-employee"><Link href={`/employees/${encodeURIComponent(row.employeeId)}`}>{row.firstName} {row.lastName}</Link></td><td className="ac-detail-job">{row.jobSite || "—"}</td></>}
+              {trackingTab === "hours" ? <>
+                <td className="ac-hours-check">{row.directionsText || "—"}</td><td className="ac-detail-payroll"><span className="ac-tracking-payroll-badge" style={{ background: row.payrollCoColor }}>{row.payrollCo || "—"}</span></td><td className="ac-hours-sent">{row.infoSent || "—"}</td><td className="ac-hours-person">{row.firstName || "—"}</td><td className="ac-hours-person">{row.middleInitial || "—"}</td><td className="ac-hours-person">{row.lastName || "—"}</td><td className="ac-hours-contact">{row.cell || "—"}</td><td className="ac-hours-location">{row.city || "—"}</td><td className="ac-hours-location">{row.wccState || "—"}</td><td className="ac-hours-wcc">{row.wcc || "—"}</td>
+                {trackingDays.map((key, dayIndex) => {
+                  const flag = row.dayFlags[dayIndex] ?? "";
+                  const color = flag ? DAY_FLAG_BG[flag] : undefined;
+                  return <td key={key} className="ac-detail-day" style={color ? { backgroundColor: color, color: "#111" } : undefined}>{row[key] || ""}</td>;
+                })}
+                <td className="ac-detail-total">{dailyTotal(row).toFixed(0)}</td><td className="ac-detail-total">{Math.min(dailyTotal(row), 40).toFixed(0)}</td><td className="ac-detail-total">{Math.max(dailyTotal(row) - 40, 0).toFixed(0)}</td><td className="ac-detail-rate">{row.payRate || ""}</td><td className="ac-detail-bill">{row.billRate || ""}</td><td className="ac-detail-bill">{row.billRateOT || ""}</td><td className="ac-hours-unavailable" title="Invoice number is not included in the tracking source query" /><td className="ac-detail-notes" title={row.hoursNote}>{row.hoursNote || ""}</td><td className="ac-hours-unavailable" title="Time Text Sum is not included in the tracking source query" />
+              </> : trackingTab === "hours2" ? <>
+                <td className="ac-hours-check">{row.directionsText || "—"}</td><td className="ac-detail-payroll"><span className="ac-tracking-payroll-badge" style={{ background: row.payrollCoColor }}>{row.payrollCo || "—"}</span></td><td className="ac-hours-sent">{row.infoSent || "—"}</td><td className="ac-hours-person">{row.firstName || "—"}</td><td className="ac-hours-person">{row.middleInitial || "—"}</td><td className="ac-hours-person">{row.lastName || "—"}</td><td className="ac-hours-contact">{row.cell || "—"}</td><td className="ac-hours-location">{row.city || "—"}</td><td className="ac-hours-location">{row.wccState || "—"}</td><td className="ac-hours-wcc">{row.wcc || "—"}</td>
+                {trackingDays.map((key, dayIndex) => { const flag = row.dayFlags[dayIndex] ?? ""; const color = flag ? DAY_FLAG_BG[flag] : undefined; return <td key={key} className="ac-detail-day" style={color ? { backgroundColor: color, color: "#111" } : undefined}>{row[key] || ""}</td>; })}
+                <td className="ac-detail-total">{dailyTotal(row).toFixed(0)}</td><td className="ac-detail-total">{Math.min(dailyTotal(row),40).toFixed(0)}</td><td className="ac-detail-total">{Math.max(dailyTotal(row)-40,0).toFixed(0)}</td><td className="ac-hours-send-color" style={{ background: row.sendAutoText && HL_CV_COLORS[row.sendAutoText] ? HL_CV_COLORS[row.sendAutoText] : "#ff9800" }}>{row.sendAutoText && !HL_CV_COLORS[row.sendAutoText] ? row.sendAutoText : ""}</td><td className="ac-hours-select" /><td className="ac-hours-unavailable" title="HL link is not included in the tracking source query" /><td className="ac-detail-hl-cell" style={{ background: row.hlCvColor ? HL_CV_COLORS[row.hlCvColor] : "#ffff66" }}>{row.hlCv || ""}</td><td className="ac-detail-history-user">{row.hrsAutoTextUser || ""}</td><td className="ac-detail-timestamp">{row.hrsAutoTextTimestamp || ""}</td><td className="ac-detail-history-user">{row.hlAutoTextUser || ""}</td><td className="ac-detail-timestamp">{row.hlAutoTextTimestamp || ""}</td><td className="ac-detail-notes" title={row.hoursNote}>{row.hoursNote || ""}</td>
+              </> : trackingTab === "benefits" ? <>
+                <td className="ac-detail-payroll"><span className="ac-tracking-payroll-badge" style={{ background: row.payrollCoColor }}>{row.payrollCo || ""}</span></td><td className="ac-benefits-osha">{row.osha}</td><td className="ac-hours-sent">{row.semus}</td><td className="ac-hours-person">{row.firstName}</td><td className="ac-hours-person">{row.lastName}</td><td className="ac-hours-location">{row.city}</td><td className="ac-hours-contact">{row.cell}</td><td className="ac-benefits-grade">{row.gradeChange}</td><td className="ac-hours-location">{row.wccState}</td><td className="ac-hours-wcc">{row.wcc}</td><td className="ac-detail-margin">{row.trackMargin}</td><td className="ac-benefits-dollar">{row.billRate && row.trackMargin ? `$${((Number(row.billRate.replace(/[^0-9.-]/g,"")) * Number(row.trackMargin.replace(/[^0-9.-]/g,""))) / 100).toFixed(2)}` : ""}</td><td className="ac-detail-rate">{row.payRate}</td><td className="ac-detail-bill">{row.billRate}</td><td className="ac-benefits-health">{row.health}</td><td className="ac-benefits-travel">{row.parkingPerHr}</td><td className="ac-benefits-vac">{row.perDiem}</td><td className="ac-benefits-sick">{row.sickTime ? `$${row.sickTime}` : ""}</td><td className="ac-benefits-school">{row.schoolingPerHr}</td><td className="ac-benefits-tools">{row.toolsPerHr}</td><td className="ac-benefits-bonus" /><td className="ac-benefits-bonus-date" /><td className="ac-benefits-bonus" /><td className="ac-benefits-bonus" />
+              </> : <>
+                <td className="ac-detail-date">{row.weekEnding || "—"}</td><td className="ac-detail-history-user">{row.assignmentUser || "—"}</td><td className="ac-detail-timestamp">{row.assignmentTimestamp || "—"}</td><td className="ac-detail-history-user">{row.hrsAutoTextUser || "—"}</td><td className="ac-detail-timestamp">{row.hrsAutoTextTimestamp || "—"}</td><td className="ac-detail-history-user">{row.hlAutoTextUser || "—"}</td><td className="ac-detail-timestamp">{row.hlAutoTextTimestamp || "—"}</td>
+              </>}
+            </tr>{rowIndex < visible.length - 1 && <tr className="ac-tracking-row-gap" aria-hidden="true"><td colSpan={trackingTab === "hours" ? 26 : trackingTab === "hours2" ? 29 : trackingTab === "benefits" ? 24 : 9} /></tr>}</Fragment>)}{!rows.length && <tr><td colSpan={trackingTab === "hours" ? 26 : trackingTab === "hours2" ? 29 : trackingTab === "benefits" ? 24 : 11}>{preview === undefined ? "No assignments loaded. Select a customer or use Refresh → All to load this week." : "No assignments match the current week and filters."}</td></tr>}</tbody></table>
           </div>
           <div className="ac-recordbar"><span>{rows.length} records · {summaryHours.toFixed(2)} daily hours</span><input type="search" aria-label="Filter tracking rows" className="ac-input" value={query} placeholder="Filter rows…" onChange={e => setQuery(e.target.value)} /><AccessButton data-action-status="complete" xs onClick={() => { setQuery(""); setEmployeeFilter(""); }}>Clear Filters</AccessButton></div>
-          <p className="ac-tracking-status">{preview?.source ? `Live SQL · ${preview.source}` : "SQL unavailable"} · {trackingTab === "ts-history" ? "Assignment and message timestamps for the selected week." : "Values from the loaded tracking assignments."}</p>
+          <p className="ac-tracking-status">{preview === undefined ? "Waiting for a customer selection or refresh · no tracking rows loaded" : preview.source ? `Live SQL · ${preview.source}` : "SQL unavailable"} · {trackingTab === "ts-history" ? "Assignment and message timestamps for the selected week." : "Values from the loaded tracking assignments."}</p>
         </div>
       )}
       <NewJobApplicationModal

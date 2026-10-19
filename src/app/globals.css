@@ -2641,6 +2641,20 @@ body {
 .ac-tracking--modern .ac-grid-tracking tbody tr:hover td {
   background: #f0f9ff;
 }
+.ac-grid-tracking tbody tr.ac-tracking-row-gap,
+.ac-grid-tracking tbody tr.ac-tracking-row-gap:hover {
+  height: 14px;
+  cursor: default;
+}
+.ac-grid-tracking tbody tr.ac-tracking-row-gap td,
+.ac-grid-tracking tbody tr.ac-tracking-row-gap:hover td {
+  height: 14px !important;
+  min-height: 14px;
+  padding: 0 !important;
+  border: 0 !important;
+  background: #dfe3e8 !important;
+  line-height: 0;
+}
 .ac-tracking--modern .ac-grid-tracking .ac-grid-spacer {
   background: #f1f5f9 !important;
   border-color: #e2e8f0;
@@ -2688,6 +2702,33 @@ body {
   color: #2563eb;
   font-weight: 500;
   cursor: default;
+}
+
+/* Match the Access datasheet's column-level treatment in the main Tracking view. */
+.ac-tracking--modern .ac-grid-tracking:not(.ac-grid-tracking-detail) td.ac-grid-day {
+  padding: 1px 2px;
+  text-align: center;
+}
+.ac-tracking--modern .ac-grid-tracking:not(.ac-grid-tracking-detail) td.ac-tracking-field-billRate,
+.ac-tracking--modern .ac-grid-tracking:not(.ac-grid-tracking-detail) td.ac-tracking-field-billRateOT {
+  background: #e5e7eb;
+}
+.ac-tracking--modern .ac-grid-tracking:not(.ac-grid-tracking-detail) td.ac-tracking-field-assignmentTimestamp,
+.ac-tracking--modern .ac-grid-tracking:not(.ac-grid-tracking-detail) td.ac-tracking-field-hrsAutoTextTimestamp,
+.ac-tracking--modern .ac-grid-tracking:not(.ac-grid-tracking-detail) td.ac-tracking-field-hlAutoTextTimestamp {
+  background: #fff9b8;
+}
+.ac-tracking--modern .ac-grid-tracking:not(.ac-grid-tracking-detail) td.ac-tracking-field-hoursNote {
+  color: #c00000;
+  text-decoration: underline;
+}
+.ac-tracking--modern .ac-grid-tracking:not(.ac-grid-tracking-detail) td.ac-tracking-field-gradeChange {
+  background: #fff6a5;
+  font-weight: 600;
+}
+.ac-tracking--modern .ac-grid-tracking:not(.ac-grid-tracking-detail) td.ac-tracking-field-wccState,
+.ac-tracking--modern .ac-grid-tracking:not(.ac-grid-tracking-detail) td.ac-tracking-field-wcc {
+  background: #edf4fa;
 }
 .ac-tracking-note:hover {
   text-decoration: underline;
@@ -9490,6 +9531,101 @@ body {
   color: #111;
   font-size: 11px;
 }
+
+/* Access-style secondary tracking sheets (Hours, Hours 2, Benefits, TS History). */
+.ac-tracking--modern .ac-grid-tracking-detail table { width: max-content; min-width: 100%; table-layout: auto; }
+.ac-tracking--modern .ac-grid-tracking-detail th {
+  height: 30px;
+  background: #e7edf3;
+  color: #10253d;
+  border: 1px solid #b9c3cc;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.ac-tracking--modern .ac-grid-tracking-detail td {
+  height: 28px;
+  border: 1px solid #d4dee8;
+  padding: 3px 8px;
+  color: #12365d;
+  white-space: nowrap;
+}
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-employee,
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-job { min-width: 150px; }
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-employee a { color: #0756a2; }
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-day { min-width: 54px; text-align: center; font-weight: 600; }
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-total,
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-recorded { background: #dceaf7 !important; text-align: right; font-variant-numeric: tabular-nums; }
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-rate { background: #eef1f5 !important; text-align: right; font-variant-numeric: tabular-nums; }
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-bill { background: #f5dfc9 !important; text-align: right; font-variant-numeric: tabular-nums; }
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-margin { background: #d9ead3 !important; text-align: right; font-variant-numeric: tabular-nums; }
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-notes { min-width: 180px; max-width: 320px; white-space: pre-wrap; }
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-benefit { background: #dff1dc !important; text-align: center; }
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-per-diem { background: #fff3b0 !important; }
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-state,
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-wcc { background: #dceaf7 !important; text-align: center; }
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-payroll { background: #fff !important; text-align: center; }
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-date { background: #fff3b0 !important; }
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-history-user { background: #dceaf7 !important; }
+.ac-tracking--modern .ac-grid-tracking-detail td.ac-detail-timestamp { background: #eef1f5 !important; font-variant-numeric: tabular-nums; }
+.ac-tracking--modern .ac-grid-tracking-detail tbody tr:hover td:not(.ac-detail-day):not(.ac-detail-total):not(.ac-detail-recorded):not(.ac-detail-rate):not(.ac-detail-bill):not(.ac-detail-margin):not(.ac-detail-benefit):not(.ac-detail-per-diem):not(.ac-detail-state):not(.ac-detail-wcc):not(.ac-detail-date):not(.ac-detail-history-user):not(.ac-detail-timestamp):not(.ac-detail-payroll) { background-color: #eef7ff; }
+.ac-tracking--modern .ac-grid-tracking-hours table { min-width: max-content; }
+.ac-tracking--modern .ac-grid-tracking-hours th { min-width: 42px; padding: 3px 5px; }
+.ac-tracking--modern .ac-grid-tracking-hours th:nth-child(4),
+.ac-tracking--modern .ac-grid-tracking-hours th:nth-child(6),
+.ac-tracking--modern .ac-grid-tracking-hours th:nth-child(7) { min-width: 82px; }
+.ac-tracking--modern .ac-grid-tracking-hours th:nth-child(25) { min-width: 150px; }
+.ac-tracking--modern .ac-grid-tracking-hours th:nth-child(26) { min-width: 100px; }
+.ac-tracking--modern .ac-grid-tracking-hours th:nth-child(11),
+.ac-tracking--modern .ac-grid-tracking-hours th:nth-child(12),
+.ac-tracking--modern .ac-grid-tracking-hours th:nth-child(13),
+.ac-tracking--modern .ac-grid-tracking-hours th:nth-child(14),
+.ac-tracking--modern .ac-grid-tracking-hours th:nth-child(15),
+.ac-tracking--modern .ac-grid-tracking-hours th:nth-child(16),
+.ac-tracking--modern .ac-grid-tracking-hours th:nth-child(17) { min-width: 48px; text-align: center; }
+.ac-tracking--modern .ac-grid-tracking-hours td.ac-hours-check,
+.ac-tracking--modern .ac-grid-tracking-hours td.ac-hours-sent { text-align: center; color: #c00000; font-weight: 600; }
+.ac-tracking--modern .ac-grid-tracking-hours td.ac-detail-payroll { background: #fff !important; text-align: center; }
+.ac-tracking--modern .ac-grid-tracking-hours .ac-tracking-payroll-badge { min-width: 48px; border-radius: 0; box-shadow: none; }
+.ac-tracking--modern .ac-grid-tracking-hours td.ac-hours-person,
+.ac-tracking--modern .ac-grid-tracking-hours td.ac-hours-contact { color: #0756a2; }
+.ac-tracking--modern .ac-grid-tracking-hours td.ac-hours-location { background: #e7f0fa; text-align: center; }
+.ac-tracking--modern .ac-grid-tracking-hours td.ac-hours-wcc { background: #fff37a; }
+.ac-tracking--modern .ac-grid-tracking-hours td.ac-detail-day { min-width: 48px; text-align: center; color: #111; font-variant-numeric: tabular-nums; }
+.ac-tracking--modern .ac-grid-tracking-hours td.ac-detail-total { background: #fff !important; text-align: center; font-weight: 600; }
+.ac-tracking--modern .ac-grid-tracking-hours td.ac-detail-rate { background: #fff !important; }
+.ac-tracking--modern .ac-grid-tracking-hours td.ac-detail-bill { background: #e5e7eb !important; }
+.ac-tracking--modern .ac-grid-tracking-hours td.ac-hours-unavailable { color: #94a3b8; text-align: center; }
+.ac-tracking--modern .ac-grid-tracking-hours td.ac-detail-notes { min-width: 150px; }
+.ac-tracking--modern .ac-grid-tracking-hours2 table,
+.ac-tracking--modern .ac-grid-tracking-benefits table { width: max-content; min-width: 100%; }
+.ac-tracking--modern .ac-grid-tracking-hours2 th,
+.ac-tracking--modern .ac-grid-tracking-benefits th { padding: 3px 5px; }
+.ac-tracking--modern .ac-grid-tracking-hours2 th:nth-child(4),
+.ac-tracking--modern .ac-grid-tracking-hours2 th:nth-child(6),
+.ac-tracking--modern .ac-grid-tracking-hours2 th:nth-child(7),
+.ac-tracking--modern .ac-grid-tracking-hours2 th:nth-child(29) { min-width: 82px; }
+.ac-tracking--modern .ac-grid-tracking-hours2 th:nth-child(n+11):nth-child(-n+17) { min-width: 48px; text-align: center; }
+.ac-tracking--modern .ac-grid-tracking-hours2 td.ac-detail-day { min-width: 48px; text-align: center; font-variant-numeric: tabular-nums; }
+.ac-tracking--modern .ac-grid-tracking-hours2 td.ac-detail-total { background: #fff !important; text-align: center; font-weight: 600; }
+.ac-tracking--modern .ac-grid-tracking-hours2 td.ac-hours-send-color { min-width: 24px; padding: 2px !important; text-align: center; }
+.ac-tracking--modern .ac-grid-tracking-hours2 td.ac-hours-select { text-align: center; }
+.ac-tracking--modern .ac-grid-tracking-hours2 td.ac-hours-select input { width: 13px; height: 13px; accent-color: #0984c7; }
+.ac-tracking--modern .ac-grid-tracking-hours2 td.ac-detail-hl-cell { color: #111; }
+.ac-tracking--modern .ac-grid-tracking-hours2 td.ac-detail-history-user,
+.ac-tracking--modern .ac-grid-tracking-hours2 td.ac-detail-timestamp { min-width: 92px; }
+.ac-tracking--modern .ac-grid-tracking-hours2 td.ac-detail-notes { min-width: 150px; }
+.ac-tracking--modern .ac-grid-tracking-benefits th { white-space: nowrap; }
+.ac-tracking--modern .ac-grid-tracking-benefits td.ac-benefits-osha { color: #c00000; }
+.ac-tracking--modern .ac-grid-tracking-benefits td.ac-benefits-grade { background: #fff5a6; text-align: center; }
+.ac-tracking--modern .ac-grid-tracking-benefits td.ac-benefits-health { min-width: 78px; background: #ffef00 !important; }
+.ac-tracking--modern .ac-grid-tracking-benefits td.ac-benefits-travel { min-width: 78px; background: #a5d94f !important; }
+.ac-tracking--modern .ac-grid-tracking-benefits td.ac-benefits-vac { min-width: 78px; background: #91e3f2 !important; }
+.ac-tracking--modern .ac-grid-tracking-benefits td.ac-benefits-sick { min-width: 78px; background: #f8bd8e !important; text-align: right; }
+.ac-tracking--modern .ac-grid-tracking-benefits td.ac-benefits-school,
+.ac-tracking--modern .ac-grid-tracking-benefits td.ac-benefits-tools { background: #dceaf7 !important; }
+.ac-tracking--modern .ac-grid-tracking-benefits td.ac-benefits-bonus { min-width: 78px; background: #c4b4d3 !important; }
+.ac-tracking--modern .ac-grid-tracking-benefits td.ac-benefits-bonus-date { min-width: 132px; background: #e8e8e8 !important; }
+.ac-tracking--modern .ac-grid-tracking-benefits td.ac-benefits-dollar { background: #dceaf7 !important; text-align: right; }
 
 .ac-tracking--modern .ac-recordbar {
   min-height: 24px;

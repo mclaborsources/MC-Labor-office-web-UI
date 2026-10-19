@@ -16,7 +16,7 @@ export function WeekBanner({
   fallbackMessage,
   showNav = true,
 }: WeekBannerProps) {
-  const q = `week=${week.assignWeek}&year=${week.assignYear}`;
+  const q = `week=${week.assignWeek}&year=${week.assignYear}&load=1`;
   const warn = fallback || fallbackMessage;
 
   return (
@@ -38,7 +38,7 @@ export function WeekBanner({
       )}
       {showNav && (
         <div className="ml-auto flex flex-wrap gap-1">
-          <Link href={`?weekOffset=-1`}>
+          <Link href={`?weekOffset=-1&load=1`}>
             <AccessButton data-action-status="linked" xs>Last</AccessButton>
           </Link>
           <Link href={`?${q}`}>
@@ -46,7 +46,7 @@ export function WeekBanner({
               This
             </AccessButton>
           </Link>
-          <Link href={`?weekOffset=1`}>
+          <Link href={`?weekOffset=1&load=1`}>
             <AccessButton data-action-status="linked" xs>Next</AccessButton>
           </Link>
         </div>

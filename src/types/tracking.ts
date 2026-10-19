@@ -69,6 +69,9 @@ export interface TrackingPreviewRow {
   hlAutoTextUser: string;
   hlAutoTextTimestamp: string;
   parkingPerHr: string;
+  sickTime: string;
+  schoolingPerHr: string;
+  toolsPerHr: string;
   customer: string;
   totalHours: string;
   weekEnding: string;

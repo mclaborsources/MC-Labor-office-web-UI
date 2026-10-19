@@ -108,17 +108,21 @@ export async function resolveTrackingWeek(
 
   const requestedWeek = assignWeek;
   const requestedYear = assignYear;
+  let matchedRequestedFriday = false;
 
   if (options.explicitWeek === undefined && options.alignFromSql !== false) {
     const friday = parseDateUS(base.weekEndingDate);
     const sqlWeek = await alignWeekFromSql(friday);
     if (sqlWeek) {
+      matchedRequestedFriday = true;
       assignWeek = sqlWeek.assignWeek;
       assignYear = sqlWeek.assignYear;
     }
   }
 
-  const dates = datesForAssignWeek(assignWeek, assignYear);
+  const dates = matchedRequestedFriday
+    ? { weekStartDate: base.weekStartDate, weekEndingDate: base.weekEndingDate }
+    : datesForAssignWeek(assignWeek, assignYear);
   const ctx: WeekContext = {
     ...base,
     ...dates,

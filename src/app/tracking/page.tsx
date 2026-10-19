@@ -43,18 +43,24 @@ export default async function TrackingPage({ searchParams }: PageProps) {
 
   const customerId = params.customerId?.trim() ?? "";
   const projectId = params.projectId?.trim() ?? "";
+  // The Access tracking form opens with an empty assignment grid. URL filters
+  // can be restored by browser tabs, so only the explicit Load action fetches rows.
+  const shouldLoadPreview = params.load === "1";
+  const [month, day, year] = week.weekEndingDate.split("/").map(Number);
+  const weekEndingDate = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
   const [preview, customers, jobs, jobInfo, perDiemDestinations] = await Promise.all([
-    getTrackingPreview({
+    shouldLoadPreview ? getTrackingPreview({
       week: week.assignWeek,
       year: week.assignYear,
+      weekEndingDate,
       customerId: customerId || undefined,
       projectId: projectId || undefined,
-    }),
-    getTrackingCustomerOptions(week.assignWeek, week.assignYear),
-    getTrackingJobOptions(week.assignWeek, week.assignYear, customerId || undefined),
+    }) : Promise.resolve(undefined),
+    getTrackingCustomerOptions(week.assignWeek, week.assignYear, weekEndingDate),
+    getTrackingJobOptions(week.assignWeek, week.assignYear, customerId || undefined, weekEndingDate),
     customerId
-      ? getTrackingJobInfo(customerId, projectId || undefined, week.assignWeek, week.assignYear)
+      ? getTrackingJobInfo(customerId, projectId || undefined, week.assignWeek, week.assignYear, weekEndingDate)
       : Promise.resolve(null),
     getPerDiemDestinations(week.assignWeek, week.assignYear).catch(() => []),
   ]);
