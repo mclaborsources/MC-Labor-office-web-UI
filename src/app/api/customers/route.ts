@@ -20,6 +20,8 @@ export async function GET(request: Request): Promise<NextResponse<ApiListRespons
     const state = searchParams.get("state") ?? undefined;
     const requestedPage = Number(searchParams.get("page") ?? "1");
     const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+    const requestedPageSize = Number(searchParams.get("pageSize") ?? "1000");
+    const pageSize = Number.isSafeInteger(requestedPageSize) ? Math.max(1, Math.min(1_000, requestedPageSize)) : 1_000;
 
     const result = await getCustomers({
       search,
@@ -35,7 +37,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiListRespons
       city,
       state,
       page,
-      pageSize: 300,
+      pageSize,
     });
 
     return NextResponse.json({
@@ -50,7 +52,7 @@ export async function GET(request: Request): Promise<NextResponse<ApiListRespons
     const message = err instanceof Error ? err.message : "Failed to load customers.";
     console.error("[api/customers]", err);
     return NextResponse.json(
-      { ok: false, data: [], total: 0, page: 1, pageSize: 200, hasMore: false, error: message },
+      { ok: false, data: [], total: 0, page: 1, pageSize: 1_000, hasMore: false, error: message },
       { status: 500 },
     );
   }

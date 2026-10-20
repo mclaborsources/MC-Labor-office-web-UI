@@ -4,6 +4,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { OperationalReportRow } from "@/lib/operationalReports";
 import { trackingCsv } from "@/lib/trackingGrid";
+import { employeeBonusViewFilters, EMPLOYEE_BONUS_VIEW_DESCRIPTIONS } from "@/lib/employeeBonusViews";
 
 const PAYROLL_COMPANIES = ["GS", "HSG", "IPG", "ISG", "MLS", "T&R", "AMP"];
 
@@ -60,7 +61,7 @@ export function OperationalReportScreen({
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [view, setView] = useState("View 01");
-  const [viewFilters, setViewFilters] = useState<Record<string, string>>({});
+  const [viewFilters, setViewFilters] = useState<Record<string, string>>(() => variant === "bonus" ? employeeBonusViewFilters("View 01") : {});
   const [noiJobSearch, setNoiJobSearch] = useState("");
   const [noiAgeFilter, setNoiAgeFilter] = useState("all");
   const [noiRevenueFilter, setNoiRevenueFilter] = useState("all");
@@ -92,16 +93,22 @@ export function OperationalReportScreen({
   }, [initialRows, initialError]);
 
   useEffect(() => {
-    if (variant !== "noc") return;
+    if (variant !== "noc" && variant !== "bonus") return;
     const saved = localStorage.getItem(`${variant}-report-view-${view}`);
-    if (!saved) return;
+    if (!saved) {
+      if (variant === "bonus") {
+        setQuery("");
+        setViewFilters(employeeBonusViewFilters(view));
+      }
+      return;
+    }
     try {
       const parsed = JSON.parse(saved) as { query?: string; filters?: Record<string, string> };
       setQuery(parsed.query ?? "");
       setViewFilters(parsed.filters ?? {});
     } catch {
       setQuery("");
-      setViewFilters({});
+      setViewFilters(variant === "bonus" ? employeeBonusViewFilters(view) : {});
     }
   }, [variant, view]);
 
@@ -171,15 +178,15 @@ export function OperationalReportScreen({
       return true;
     }
     if (query) {
-      const haystack = variant === "rates" ? String(row.Customer ?? "") : Object.values(row).join(" ");
+      const haystack = variant === "rates" ? String(row.Customer ?? "") : variant === "bonus" ? [row.EmFullName, row["Bonus Exp to Employee"]].join(" ") : Object.values(row).join(" ");
       if (!haystack.toLowerCase().includes(query.toLowerCase())) return false;
     }
-    return Object.entries(viewFilters).every(([column, value]) => !value || String(row[column] ?? "") === (value === "__blank__" ? "" : value));
+    return Object.entries(viewFilters).every(([column, value]) => !value || (value === "__unpaid_or_late__" ? ["Unpaid", "Late Starter"].includes(String(row[column])) : value === "__positive__" ? Number(row[column]) > 0 : String(row[column] ?? "") === (value === "__blank__" ? "" : value)));
   }), [rows, query, variant, viewFilters, noiJobSearch, noiAgeFilter, noiRevenueFilter, noiTrackingFilter, noiHas01Filter, noiLegalFilter, noiAdvancedFilters, noiFilterNumber]);
   const [page, setPage] = useState(1);
   const pageSize = 250;
   const pageCount = Math.max(1, Math.ceil(visible.length / pageSize));
-  const shown = visible.slice((page - 1) * pageSize, page * pageSize);
+  const shown = variant === "bonus" ? visible : visible.slice((page - 1) * pageSize, page * pageSize);
 
   useEffect(() => setPage(1), [query, rows, viewFilters, noiJobSearch, noiAgeFilter, noiRevenueFilter, noiTrackingFilter, noiHas01Filter, noiLegalFilter, noiAdvancedFilters, noiFilterNumber]);
 
@@ -201,7 +208,7 @@ export function OperationalReportScreen({
   }
 
   function save() {
-    if (variant === "noc") localStorage.setItem(`${variant}-report-view-${view}`, JSON.stringify({ query, filters: viewFilters }));
+    if (variant === "noc" || variant === "bonus") localStorage.setItem(`${variant}-report-view-${view}`, JSON.stringify({ query, filters: viewFilters }));
     else localStorage.setItem(`${variant}-report-view`, JSON.stringify({ view, query }));
     setMessage("View saved on this computer.");
   }
@@ -209,11 +216,11 @@ export function OperationalReportScreen({
   function openView(nextView: string) {
     setView(nextView);
     setMessage("");
-    if (variant !== "noc") return;
+    if (variant !== "noc" && variant !== "bonus") return;
     const saved = localStorage.getItem(`${variant}-report-view-${nextView}`);
     if (!saved) {
       setQuery("");
-      setViewFilters({});
+      setViewFilters(variant === "bonus" ? employeeBonusViewFilters(nextView) : {});
       return;
     }
     try {
@@ -223,16 +230,17 @@ export function OperationalReportScreen({
     } catch {
       setQuery("");
       setViewFilters({});
-      setMessage("That saved view could not be read. Its filters were cleared.");
+      if (variant === "bonus") setViewFilters(employeeBonusViewFilters(nextView));
+      setMessage(variant === "bonus" ? "That saved view could not be read. Its preset filters were restored." : "That saved view could not be read. Its filters were cleared.");
     }
   }
 
   function deleteView() {
-    if (variant === "noc") {
+    if (variant === "noc" || variant === "bonus") {
       localStorage.removeItem(`${variant}-report-view-${view}`);
       setQuery("");
-      setViewFilters({});
-      setMessage(`${view} filters deleted.`);
+      setViewFilters(variant === "bonus" ? employeeBonusViewFilters(view) : {});
+      setMessage(variant === "bonus" ? `${view} restored to its preset filters.` : `${view} filters deleted.`);
       return;
     }
     localStorage.removeItem(`${variant}-report-view`);
@@ -311,7 +319,7 @@ export function OperationalReportScreen({
         <button data-action-status="linked" onClick={() => router.push("/tracking")}>Cancel</button>
       </>}
       {variant !== "rates" && variant !== "noi" && <>
-        <label>View: <select value={view} onChange={(event) => variant === "noc" ? openView(event.target.value) : setView(event.target.value)}>{Array.from({ length: variant === "noc" ? 17 : 8 }, (_, index) => {
+        <label>View: <select value={view} onChange={(event) => variant === "noc" || variant === "bonus" ? openView(event.target.value) : setView(event.target.value)}>{Array.from({ length: variant === "noc" ? 17 : variant === "bonus" ? 5 : 8 }, (_, index) => {
           const option = `View ${String(index + 1).padStart(2, "0")}`;
           return <option key={option} value={option}>{index === 0 ? "01 Default" : option}</option>;
         })}</select></label>
@@ -383,31 +391,34 @@ export function OperationalReportScreen({
       <label>{variant === "bonus" ? "Name:" : "Search in Name:"}<input value={query} onChange={(event) => setQuery(event.target.value)} /></label>
       <div>{Array.from({ length: variant === "noc" ? 17 : 5 }, (_, index) => {
         const slot = `View ${String(index + 1).padStart(2, "0")}`;
-        return <button data-action-status="complete" key={slot} className={view === slot ? "is-active" : undefined} aria-pressed={view === slot} onClick={() => variant === "noc" ? openView(slot) : setView(slot)}>{index === 0 ? "Default" : slot}</button>;
+        return <button data-action-status="complete" key={slot} title={variant === "bonus" ? EMPLOYEE_BONUS_VIEW_DESCRIPTIONS[slot] : undefined} className={view === slot ? "is-active" : undefined} aria-pressed={view === slot} onClick={() => variant === "noc" || variant === "bonus" ? openView(slot) : setView(slot)}>{index === 0 ? "Default" : slot}</button>;
       })}</div>
-      <button data-action-status="complete" onClick={() => { setQuery(""); if (variant === "noc") setViewFilters({}); }}>Clear Filters</button>
+      <button data-action-status="complete" onClick={() => { setQuery(""); if (variant === "noc" || variant === "bonus") setViewFilters({}); }}>Clear Filters</button>
     </div>}
 
     {variant === "rates" && <p className="operational-note">Showing {payrollCompany === "all" ? "all payroll companies" : payrollCompany} for week ending {weekEnding ? new Date(`${weekEnding}T12:00:00`).toLocaleDateString("en-US") : "—"}.</p>}
-    {variant === "bonus" && <p className="operational-note">Bonus totals use the current $1-per-tracked-hour rule shown in the Access report. Referral-specific fields require their source column to be confirmed.</p>}
+    {variant === "bonus" && <p className="operational-note">Regular hours are counted for assignment weeks ending after the bonus start date. Default shows Unpaid and Late Starter records.</p>}
+    {variant === "bonus" && <p className="operational-note">Bonus Exp to Employee = the employee who referred the new employee and receives the bonus. {Object.keys(viewFilters).length || query ? "Filters applied." : "Showing all bonus records."} Save View keeps these filters on this computer; Delete View restores the preset.</p>}
     {(error || message) && <p className="report-data-error" role={error ? "alert" : "status"}>{error || message}</p>}
 
     <div className="operational-grid"><table><thead><tr><th />{variant === "noi" && Array.from({ length: noiSpacerCount }, (_, index) => <th className="operational-noi-spacer" key={`spacer-${index}`} />)}{columns.map((column) => {
-      const values = variant === "noc" ? Array.from(new Set(rows.map((row) => String(row[column] ?? "")))) : [];
+      const values = variant === "noc" || variant === "bonus" ? Array.from(new Set(rows.map((row) => String(row[column] ?? "")))) : [];
       const hasBlank = values.includes("");
-      return <th key={column}>{column}{variant === "noc" && <select aria-label={`Filter ${column}`} value={viewFilters[column] ?? ""} onChange={(event) => setViewFilters((current) => ({ ...current, [column]: event.target.value }))}>
+      return <th key={column}>{column}{(variant === "noc" || variant === "bonus") && <select aria-label={`Filter ${column}`} value={viewFilters[column] ?? ""} onChange={(event) => setViewFilters((current) => ({ ...current, [column]: event.target.value }))}>
         <option value="">All</option>
+        {variant === "bonus" && column === "Bonus Exp Status" && <option value="__unpaid_or_late__">Unpaid or Late Starter</option>}
+        {variant === "bonus" && column === "Hrs Worked" && <option value="__positive__">Greater than 0</option>}
         {hasBlank && <option value="__blank__">[Blank]</option>}
         {values.filter(Boolean).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" })).map((value) => <option key={value} value={value}>{value}</option>)}
       </select>}</th>;
     })}</tr></thead><tbody>
-      {shown.map((row, index) => <tr key={String(row.id ?? index)} className={index === 0 ? "is-current" : undefined} onDoubleClick={() => variant === "bonus" && router.push(`/employees/${row.id}`)}>
+      {shown.map((row, index) => <tr key={variant === "bonus" ? JSON.stringify([row.id,row["First Name"],row.MI,row["Last Name"]]) : String(row.id ?? index)} className={index === 0 ? "is-current" : undefined} onDoubleClick={() => variant === "bonus" && router.push(`/employees/${row.id}`)}>
         <td>{variant === "noi" && <input aria-label={`Select ${row.Customer ?? row.id}`} type="checkbox" checked={noiSelectedRows.has(String(row.id ?? ""))} onChange={(event) => setNoiSelectedRows((current) => { const next = new Set(current); if (event.target.checked) next.add(String(row.id ?? "")); else next.delete(String(row.id ?? "")); return next; })} />}</td>
         {variant === "noi" && Array.from({ length: noiSpacerCount }, (_, spacerIndex) => <td className="operational-noi-spacer" key={`spacer-${spacerIndex}`} />)}
         {columns.map((column) => <td key={column} className={variant === "noi" ? `noi-cell--${({ "Customer Since": "customer-since", "Credit History": "credit-history", Co: "company", "NOI Flag": "noi-flag", "Job Unpaid": "job-unpaid", "Age of Job (days)": "age-job", "Total Open": "total-open", "Oldest Invoice": "oldest-invoice", "Last Week Revenue": "revenue", History: "history", "Sent on Date": "sent-date", "GC-NOI": "gc-flag", "GC-NOC": "gc-flag", "OW-NOI": "owner-flag", "OW-NOC": "owner-flag" } as Record<string, string>)[column] ?? "plain"}` : undefined}>{typeof row[column] === "number" && (column.includes("Amount") || column.includes("Payment") || column.includes("Balance") || column.includes("Rate") || column.includes("Owed") || column.includes("Bonus") || column === "Margin $") ? Number(row[column]).toLocaleString("en-US", { style: "currency", currency: "USD" }) : row[column]}</td>)}
       </tr>)}
       {!visible.length && <tr><td colSpan={columns.length + 1}>No records match the current filters.</td></tr>}
     </tbody></table></div>
-    <footer>Records {visible.length ? (page - 1) * pageSize + 1 : 0}–{Math.min(page * pageSize, visible.length)} of {visible.length}<span className="operational-page-controls"><button data-action-status="complete" disabled={page === 1} onClick={() => setPage((current) => Math.max(1, current - 1))}>Previous</button><span>Page {page} of {pageCount}</span><button data-action-status="complete" disabled={page === pageCount} onClick={() => setPage((current) => Math.min(pageCount, current + 1))}>Next</button></span></footer>
+    <footer>Records {visible.length ? (variant === "bonus" ? 1 : (page - 1) * pageSize + 1) : 0}–{variant === "bonus" ? visible.length : Math.min(page * pageSize, visible.length)} of {visible.length}{variant !== "bonus" && <span className="operational-page-controls"><button data-action-status="complete" disabled={page === 1} onClick={() => setPage((current) => Math.max(1, current - 1))}>Previous</button><span>Page {page} of {pageCount}</span><button data-action-status="complete" disabled={page === pageCount} onClick={() => setPage((current) => Math.min(pageCount, current + 1))}>Next</button></span>}</footer>
   </section>;
 }

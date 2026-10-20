@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { HelpCircle, Table2 } from "lucide-react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { CustomerSearchViewsPanel } from "@/components/customers/CustomerSearchViewsPanel";
@@ -45,6 +45,7 @@ interface CustomerSearchScreenProps {
   pageSize: number;
   total: number;
   hasMore: boolean;
+  loadTimeMs: number;
 }
 
 function cellValue(row: CustomerSearchRow, key: CustomerSearchColumnKey): string {
@@ -76,6 +77,7 @@ function CustomerSearchTable({
   pageSize,
   total,
   hasMore,
+  loadTimeMs,
   query,
   initialSortKey,
   initialSortDirection,
@@ -88,6 +90,7 @@ function CustomerSearchTable({
   pageSize: number;
   total: number;
   hasMore: boolean;
+  loadTimeMs: number;
   query: Record<string, string>;
   initialSortKey: string;
   initialSortDirection: "asc" | "desc";
@@ -95,6 +98,9 @@ function CustomerSearchTable({
   onColumnFiltersChange: (filters: Partial<Record<CustomerSearchColumnKey, string[]>>) => void;
   onHoverColumn: (label: string) => void;
 }) {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [scrollTop, setScrollTop] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(900);
   const [sortKey, setSortKey] = useState<CustomerSearchColumnKey | "">(
     CUSTOMER_SEARCH_COLUMNS.some((column) => column.key === initialSortKey) ? initialSortKey as CustomerSearchColumnKey : "",
   );
@@ -121,6 +127,23 @@ function CustomerSearchTable({
     });
   }, [columnFilters, customers, sortDirection, sortKey]);
 
+  useEffect(() => {
+    const viewport = gridRef.current;
+    if (!viewport) return;
+    const updateHeight = () => setViewportHeight(viewport.clientHeight || 900);
+    updateHeight();
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(viewport);
+    return () => observer.disconnect();
+  }, []);
+
+  const rowHeight = 22;
+  const virtualize = displayedCustomers.length > 500;
+  const firstVisible = virtualize ? Math.max(0, Math.floor(scrollTop / rowHeight) - 12) : 0;
+  const visibleCount = virtualize ? Math.ceil(viewportHeight / rowHeight) + 24 : displayedCustomers.length;
+  const lastVisible = Math.min(displayedCustomers.length, firstVisible + visibleCount);
+  const renderedCustomers = displayedCustomers.slice(firstVisible, lastVisible);
+
   function applySort(key: CustomerSearchColumnKey, direction: "asc" | "desc") {
     setSortKey(key);
     setSortDirection(direction);
@@ -138,7 +161,7 @@ function CustomerSearchTable({
 
   return (
     <div className="ac-customer-search-grid-wrap">
-      <div className="ac-grid ac-grid-tracking ac-customer-search-grid mc-scroll-smooth">
+      <div ref={gridRef} onScroll={(event) => setScrollTop(event.currentTarget.scrollTop)} className="ac-grid ac-grid-tracking ac-customer-search-grid mc-scroll-smooth">
         <table>
           <thead>
             <tr>
@@ -220,6 +243,7 @@ function CustomerSearchTable({
             </tr>
           </thead>
           <tbody>
+            {virtualize && firstVisible > 0 && <tr aria-hidden="true" className="ac-customer-search-virtual-spacer"><td colSpan={CUSTOMER_SEARCH_COLUMNS.length} style={{ height: firstVisible * rowHeight }} /></tr>}
             {displayedCustomers.length === 0 ? (
               <tr>
                 <td
@@ -230,7 +254,7 @@ function CustomerSearchTable({
                 </td>
               </tr>
             ) : (
-              displayedCustomers.map((row) => (
+              renderedCustomers.map((row) => (
                 <tr key={row.customerId}>
                   {CUSTOMER_SEARCH_COLUMNS.map((col) => {
                     if (col.key === "select") {
@@ -280,6 +304,7 @@ function CustomerSearchTable({
                 </tr>
               ))
             )}
+            {virtualize && lastVisible < displayedCustomers.length && <tr aria-hidden="true" className="ac-customer-search-virtual-spacer"><td colSpan={CUSTOMER_SEARCH_COLUMNS.length} style={{ height: (displayedCustomers.length - lastVisible) * rowHeight }} /></tr>}
           </tbody>
         </table>
       </div>
@@ -290,6 +315,7 @@ function CustomerSearchTable({
           total={Object.keys(columnFilters).length ? displayedCustomers.length : total}
           rowCount={displayedCustomers.length}
           hasMore={hasMore}
+          loadTimeMs={loadTimeMs}
           query={query}
         />
       </div>
@@ -507,6 +533,7 @@ export function CustomerSearchScreen({
   pageSize,
   total,
   hasMore,
+  loadTimeMs,
 }: CustomerSearchScreenProps) {
   const [hoveredColumn, setHoveredColumn] = useState("");
   const [columnFilters, setColumnFilters] = useState<Partial<Record<CustomerSearchColumnKey, string[]>>>({});
@@ -524,6 +551,7 @@ export function CustomerSearchScreen({
       contactPhone: currentContactPhone,
       contactEmail: currentContactEmail,
       contactText: currentContactText,
+      pageSize: String(pageSize),
       sortKey: currentSortKey,
       sortDirection: currentSortKey ? currentSortDirection : "",
     }).filter(([, value]) => Boolean(value)),
@@ -603,6 +631,7 @@ export function CustomerSearchScreen({
                   pageSize={pageSize}
                   total={total}
                   hasMore={hasMore}
+                  loadTimeMs={loadTimeMs}
                   query={paginationQuery}
                   initialSortKey={currentSortKey}
                   initialSortDirection={currentSortDirection}

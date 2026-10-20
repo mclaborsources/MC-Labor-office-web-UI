@@ -10,7 +10,7 @@ interface PageProps { searchParams: Promise<Record<string, string | undefined>> 
 export default async function CustomersPage({ searchParams }: PageProps) {
   const [session, params] = await Promise.all([getSessionOrDefault(), searchParams]);
   const page = Math.max(1, Number(params.page) || 1);
-  const pageSize = Math.max(1, Math.min(200, Number(params.pageSize) || 200));
+  const pageSize = Math.max(1, Math.min(1_000, Number(params.pageSize) || 1_000));
   const filters = {
     search: params.search ?? "", salesmanId: params.salesmanId ?? "",
     customerTypeId: params.customerTypeId ?? "", statusId: params.statusId ?? "",
@@ -24,17 +24,19 @@ export default async function CustomersPage({ searchParams }: PageProps) {
   let customers: Awaited<ReturnType<typeof getCustomerSearchRows>>["data"] = [];
   let total = 0;
   let loadError = "";
-  const [filterOptions, officeStaff] = await Promise.all([
+  const loadStartedAt = performance.now();
+  const [filterOptions, officeStaff, customerResult] = await Promise.all([
     getCustomerFilterOptions().catch(() => ({ salesmen: [], customerTypes: [], statuses: [], cities: [], states: [] })),
     getOfficeStaffList().catch(() => []),
+    getCustomerSearchRows(filters).then((result) => ({ result, error: "" })).catch(() => ({ result: null, error: "Customer records could not be loaded from SQL Server. Check the database connection and refresh." })),
   ]);
+  const loadTimeMs = Math.round(performance.now() - loadStartedAt);
   const customerUserFlagOptions = Array.from({ length: 8 }, () => [] as FilterOption[]);
-  try {
-    const result = await getCustomerSearchRows(filters);
-    customers = result.data;
-    total = result.total;
-  } catch {
-    loadError = "Customer records could not be loaded from SQL Server. Check the database connection and refresh.";
+  if (customerResult.result) {
+    customers = customerResult.result.data;
+    total = customerResult.result.total;
+  } else {
+    loadError = customerResult.error;
   }
   const lastActionUsers: FilterOption[] = officeStaff.filter((staff) => staff.initials).map((staff) => ({
     value: staff.initials,
@@ -54,7 +56,7 @@ export default async function CustomersPage({ searchParams }: PageProps) {
       currentContactName={filters.contactName} currentContactPhone={filters.contactPhone}
       currentContactEmail={filters.contactEmail} currentContactText={filters.contactText}
       currentSortDirection={filters.sortDirection} page={page} pageSize={pageSize}
-      total={total} hasMore={page * pageSize < total}
+      total={total} hasMore={page * pageSize < total} loadTimeMs={loadTimeMs}
     />
   </AppShell>;
 }

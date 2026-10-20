@@ -10,6 +10,7 @@ interface CustomerSearchPaginationProps {
   total: number;
   rowCount: number;
   hasMore: boolean;
+  loadTimeMs: number;
   query: Record<string, string>;
 }
 
@@ -19,6 +20,7 @@ export function CustomerSearchPagination({
   total,
   rowCount,
   hasMore,
+  loadTimeMs,
   query,
 }: CustomerSearchPaginationProps) {
   const router = useRouter();
@@ -63,6 +65,7 @@ export function CustomerSearchPagination({
         {nav("▶|", totalPages, page >= totalPages || total === 0, "Last page")}
       </span>
       <span className="text-[#7a7a7a]">Page {page} of {totalPages}</span>
+      <span className="text-[#7a7a7a]">Load {loadTimeMs < 1000 ? `${loadTimeMs} ms` : `${(loadTimeMs / 1000).toFixed(1)} s`}</span>
       <span className="ml-auto text-[#7a7a7a]">{pageSize} per page</span>
       {isPending && <CustomerSearchLoadingOverlay />}
     </>

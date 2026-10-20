@@ -26,7 +26,8 @@ export function LogoutButton() {
       type="button"
       className="flex items-center gap-1.5 rounded border border-white/40 bg-white/10 px-2.5 py-1 text-xs text-white hover:bg-white/20"
       onClick={async () => {
-        await fetch("/api/auth/logout", { method: "POST" });
+        const response = await fetch("/api/auth/logout", { method: "POST" });
+        if (!response.ok) { window.alert("Logout could not be completed. Please retry."); return; }
         window.location.href = "/login";
       }}
     >

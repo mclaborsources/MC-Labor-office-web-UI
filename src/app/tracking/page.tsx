@@ -78,6 +78,7 @@ export default async function TrackingPage({ searchParams }: PageProps) {
           selectedCustomerId={customerId}
           selectedProjectId={projectId}
           userDisplayName={session.user?.displayName}
+          officeStaffSession={!!session.user?.officeStaffId}
           perDiemDestinations={perDiemDestinations}
         />
       </div>

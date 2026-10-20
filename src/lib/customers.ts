@@ -128,6 +128,7 @@ WITH FilteredCustomers AS (
     AND (@statusId       IS NULL OR c.CustStatusID   = @statusId)
     AND (@city  IS NULL OR c.City  = @city)
     AND (@state IS NULL OR c.State = @state)
+    __CUSTOMER_ID_FILTER__
     AND LEN(LTRIM(RTRIM(ISNULL(c.CustBusName, '')))) > 1
     AND c.CustBusName NOT IN ('-', '--', '---')
 )
@@ -253,13 +254,16 @@ const CUSTOMER_SEARCH_SORT_COLUMNS: Record<string, string> = {
   contactCount: "ContactCount",
 };
 
-function customerSearchSql(sortKey?: string, sortDirection?: string, includeTotal = true): string {
+function customerSearchSql(sortKey?: string, sortDirection?: string, includeTotal = true, customerIds?: number[]): string {
   const column = CUSTOMER_SEARCH_SORT_COLUMNS[sortKey ?? ""] ?? "c.CustBusName";
   const direction = sortDirection === "desc" ? "DESC" : "ASC";
   const order = `${column} ${direction}`;
   let sqlText = CUSTOMER_SEARCH_LIST_SQL
     .replace("__CUSTOMER_SORT__", order)
-    .replace("__CUSTOMER_SOURCE__", column.startsWith("c.") ? "CandidateCustomers" : "FilteredCustomers");
+    .replace("__CUSTOMER_SOURCE__", column.startsWith("c.") ? "CandidateCustomers" : "FilteredCustomers")
+    .replace("__CUSTOMER_ID_FILTER__", customerIds?.length
+      ? `AND c.CustomerID IN (${customerIds.join(",")})`
+      : "");
 
   if (!includeTotal) {
     sqlText = sqlText.replace("COUNT_BIG(*) OVER () AS TotalCount", "CAST(0 AS BIGINT) AS TotalCount");
@@ -638,6 +642,7 @@ export interface GetCustomersParams {
   statusId?: string;
   city?: string;
   state?: string;
+  customerIds?: string[];
   page?: number;
   pageSize?: number;
   sortKey?: string;
@@ -655,6 +660,36 @@ export async function getCustomers(
     page: result.page,
     pageSize: result.pageSize,
     hasMore: result.hasMore,
+  };
+}
+
+export interface CustomerNameSearchResult {
+  data: Array<{ customerId: string; customerName: string }>;
+}
+
+/** Lightweight name-only search. It returns all matches, never full customer rows. */
+export async function searchCustomerNames(searchTerm: string, includeAll = false): Promise<CustomerNameSearchResult> {
+  const namePattern = likePrefix(searchTerm);
+  if (!namePattern && !includeAll) return { data: [] };
+
+  const rows = await queryReadOnly<{ CustomerID: unknown; CustomerName: string | null }>(
+    `SELECT
+       c.CustomerID,
+       ISNULL(c.CustBusName, '') AS CustomerName
+     FROM tblCustomer c WITH (NOLOCK)
+     WHERE ${namePattern ? "c.CustBusName LIKE @namePattern ESCAPE '~' AND" : ""}
+       LEN(LTRIM(RTRIM(ISNULL(c.CustBusName, '')))) > 1
+       AND c.CustBusName NOT IN ('-', '--', '---')
+     ORDER BY c.CustBusName, c.CustomerID
+     OPTION (RECOMPILE)`,
+    namePattern ? [{ name: "namePattern", value: namePattern }] : undefined,
+  );
+
+  return {
+    data: rows.map((row) => ({
+      customerId: safeStr(row.CustomerID),
+      customerName: safeStr(row.CustomerName),
+    })),
   };
 }
 
@@ -678,12 +713,19 @@ export async function getCustomerSearchRows(
   const statusId = numericId(params.statusId);
   const city = params.city || null;
   const state = params.state || null;
-  const pageSize = Math.max(1, Math.min(300, Math.floor(params.pageSize ?? 300)));
+  const customerIds = params.customerIds?.map(numericId).filter((id): id is number => id !== null);
+  // Keep each page below the web response limit while loading substantially
+  // more data than the previous 200-row window. The grid virtualizes its DOM.
+  const pageSize = Math.max(1, Math.min(1_000, Math.floor(params.pageSize ?? 1_000)));
   const page = Math.max(1, Math.floor(params.page ?? 1));
   const offset = (page - 1) * pageSize;
 
+  if (params.customerIds && customerIds?.length === 0) {
+    return { data: [], total: 0, page, pageSize, hasMore: false };
+  }
+
   const [rows, typeMap, salesmanMap, statusMap] = await Promise.all([
-    queryReadOnly<CustomerSearchListRow>(customerSearchSql(params.sortKey, params.sortDirection, params.includeTotal), [
+    queryReadOnly<CustomerSearchListRow>(customerSearchSql(params.sortKey, params.sortDirection, params.includeTotal, customerIds), [
       { name: "searchPat", value: searchPat },
       { name: "searchId", value: searchId },
       { name: "customerNamePat", value: customerNamePat },

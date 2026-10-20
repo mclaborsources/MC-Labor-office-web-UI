@@ -1,5 +1,17 @@
 import type { TrackingPreviewRow } from "@/types/tracking";
 export const trackingDays = ["satHours", "sunHours", "monHours", "tueHours", "wedHours", "thuHours", "friHours"] as const;
+export function trackingJobKey(row: TrackingPreviewRow): string {
+  return JSON.stringify([row.customerId || row.customer, row.projectId || row.jobSite]);
+}
+export function groupTrackingRows<T extends { row: TrackingPreviewRow }>(rows: T[]): T[] {
+  const jobs = new Map<string, T[]>();
+  for (const entry of rows) {
+    const key = trackingJobKey(entry.row);
+    if (!jobs.has(key)) jobs.set(key, []);
+    jobs.get(key)!.push(entry);
+  }
+  return Array.from(jobs.values()).flat();
+}
 const numericFields = new Set<keyof TrackingPreviewRow>([...trackingDays,"payRate","billRate","billRateOT","totalHours","trackMargin","perDiem","parkingPerHr","oh"]);
 export function trackingNumber(value: string): number | null { const cleaned=value.replace(/[$,%\s]/g,""); if(!cleaned)return null; const result=Number(cleaned); return Number.isFinite(result)?result:null; }
 export function dailyTotal(row: TrackingPreviewRow) { return trackingDays.reduce((sum,key)=>sum+(trackingNumber(row[key])??0),0); }

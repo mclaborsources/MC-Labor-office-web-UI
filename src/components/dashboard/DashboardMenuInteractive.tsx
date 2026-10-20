@@ -108,6 +108,7 @@ export function DashboardMenuInteractive({ week, activeView: initialView, settin
           <div className="ac-main-menu-panel-head"><span>Work Area</span></div>
           <div className="ac-main-menu-panel-body ac-main-menu-work">
             <div className="ac-main-menu-toolbar">
+              <Link href="/customers/name-search"><AccessButton data-action-status="linked" type="button">Customer Name Search</AccessButton></Link>
               <AccessButton data-action-status={pdfUnavailable ? "partial" : "complete"} type="button" onClick={openPdfMap} title={`${pdfUnavailable ? "Unavailable — check PDF configuration. " : ""}${PDF_MAP_RELATIVE_PATH}`}>PDF Map</AccessButton>
               <AccessButton data-action-status="linked" type="button" onClick={() => openZip(ZIP_CODE_1_URL)}>Zip Code 1</AccessButton>
               <AccessButton data-action-status="linked" type="button" onClick={() => openZip(ZIP_CODE_2_URL)}>Zip Code 2</AccessButton>

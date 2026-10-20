@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   AlertCircle,
@@ -14,16 +14,37 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
 import { Icon } from "@/components/ui/Icon";
+import { ChangePasswordDialog } from "@/components/ChangePasswordDialog";
 
-export default function LoginPage() {
+export default function LoginPage({ officeStaff, initialError = "" }: { officeStaff?: { id: number; name: string }[]; initialError?: string }) {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(initialError);
   const [loading, setLoading] = useState(false);
+  const submitting = useRef(false);
+  const [checkingChange, setCheckingChange] = useState(false);
+  const [changeAccount, setChangeAccount] = useState<{ id: number; name: string; currentPassword: string } | null>(null);
+  const [message, setMessage] = useState("");
+
+  async function openPasswordChange() {
+    if (submitting.current) return;
+    const account = officeStaff?.find(staff => staff.id === Number(username));
+    if (!account || !password) { setError("Select your account and enter your current password first."); return; }
+    submitting.current = true; setCheckingChange(true); setError(""); setMessage("");
+    try {
+      const response = await fetch("/api/auth/change-password", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "check", officeStaffId: account.id, currentPassword: password }) });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "Password change is unavailable.");
+      setChangeAccount({ ...account, currentPassword: password });
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Unable to reach server."); }
+    finally { submitting.current = false; setCheckingChange(false); }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (submitting.current) return;
+    submitting.current = true;
     setError("");
     setLoading(true);
 
@@ -31,21 +52,24 @@ export default function LoginPage() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, officeStaffId: officeStaff ? Number(username) : undefined, password }),
       });
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         setError(data.error ?? "Login failed.");
+        submitting.current = false;
+        setLoading(false);
         return;
       }
 
       const data = await res.json();
-      router.push(data.needsSetup ? "/setup" : "/tracking");
+      window.dispatchEvent(new Event("mc-office-session-changed"));
+      router.push(data.needsSetup ? "/setup" : data.nextPath ?? "/tracking");
       router.refresh();
     } catch {
       setError("Unable to reach server.");
-    } finally {
+      submitting.current = false;
       setLoading(false);
     }
   }
@@ -72,7 +96,7 @@ export default function LoginPage() {
           <div className="mt-10 flex flex-col gap-3 text-sm text-slate-400">
             <div className="flex items-center gap-2">
               <Icon icon={Monitor} size="sm" className="text-blue-400" />
-              Read-only Phase 1
+              Office staff access
             </div>
             <div className="flex items-center gap-2">
               <Icon icon={Building2} size="sm" className="text-blue-400" />
@@ -106,14 +130,17 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="mc-label" htmlFor="username">Username</label>
+                <label className="mc-label" htmlFor="username">{officeStaff ? "Office staff" : "Username"}</label>
                 <div className="relative">
                   <Icon
                     icon={User}
                     size="sm"
                     className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
                   />
-                  <input
+                  {officeStaff ? <select id="username" value={username} onChange={e => setUsername(e.target.value)} className="mc-login-input mc-login-input-icon-left w-full" required disabled={loading || checkingChange || !officeStaff.length}>
+                    <option value="">Select your name</option>
+                    {officeStaff.map(staff => <option key={staff.id} value={staff.id}>{staff.name}</option>)}
+                  </select> : <input
                     id="username"
                     type="text"
                     value={username}
@@ -122,12 +149,12 @@ export default function LoginPage() {
                     placeholder="Enter username"
                     autoComplete="username"
                     required
-                  />
+                  />}
                 </div>
               </div>
               <div>
                 <label className="mc-label" htmlFor="password">Password</label>
-                <div className="relative">
+                <div className="flex items-center gap-2"><div className="relative min-w-0 flex-1">
                   <Icon
                     icon={Lock}
                     size="sm"
@@ -143,7 +170,7 @@ export default function LoginPage() {
                     autoComplete="current-password"
                     required
                   />
-                </div>
+                </div>{officeStaff && <button type="button" className="shrink-0 rounded border border-slate-300 bg-white px-3 py-3 text-sm font-medium" disabled={loading || checkingChange} onClick={() => void openPasswordChange()}>{checkingChange ? "Checking…" : "Change"}</button>}</div>
               </div>
 
               {error && (
@@ -159,16 +186,17 @@ export default function LoginPage() {
               <Button data-action-status="complete"
                 type="submit"
                 variant="primary"
-                disabled={loading}
+                disabled={loading || checkingChange}
+                aria-busy={loading}
                 className="w-full py-3 text-base font-semibold rounded-xl"
               >
                 {loading ? (
-                  <span className="flex items-center justify-center gap-2">
+                  <span role="status" className="flex items-center justify-center gap-2">
                     <span
                       className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin"
                       aria-hidden
                     />
-                    Signing in…
+                    Logging in…
                   </span>
                 ) : (
                   <>
@@ -179,10 +207,12 @@ export default function LoginPage() {
                 )}
               </Button>
             </form>
+            {message && <p role="status" className="mt-4 text-sm text-green-800">{message}</p>}
+            {changeAccount && <ChangePasswordDialog account={changeAccount} onClose={() => setChangeAccount(null)} onSaved={newPassword => { setPassword(newPassword); setChangeAccount(null); setError(""); setMessage("Password changed. Sign in with your new password."); }} />}
           </div>
 
           <p className="mt-8 text-center text-xs text-slate-500 lg:hidden mc-animate-in mc-animate-in-delay-2">
-            Read-only Phase 1 · Side-by-side with Access
+            Office staff access · Connected to your office database
           </p>
         </div>
       </div>

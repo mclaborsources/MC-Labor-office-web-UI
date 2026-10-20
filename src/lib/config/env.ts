@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { existsSync, readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { randomBytes } from "node:crypto";
-import { isLocalMode } from "../auth/mode";
+import { isLocalMode, isOfficeStaffMode } from "../auth/mode";
 import path from "node:path";
 
 export const localAccountFile = path.join(process.cwd(), ".local-config", "account.json");
@@ -66,7 +66,7 @@ export function getEnv(): Env {
 
   const local = existsSync(localAccountFile) ? JSON.parse(readFileSync(localAccountFile, "utf8")) : {};
   const input = { ...process.env, ...local };
-  if (isLocalMode() && !input.SESSION_SECRET) {
+  if ((isLocalMode() || isOfficeStaffMode()) && !input.SESSION_SECRET) {
     const secretFile = path.join(process.cwd(), ".local-config", "session-secret");
     mkdirSync(path.dirname(secretFile), { recursive: true, mode: 0o700 });
     try {
@@ -76,7 +76,7 @@ export function getEnv(): Env {
     }
     input.SESSION_SECRET = readFileSync(secretFile, "utf8");
   }
-  const schema = isLocalMode() ? envSchema.extend({
+  const schema = isLocalMode() || isOfficeStaffMode() ? envSchema.extend({
     DEV_LOGIN_USERNAME: z.string().default("local"),
     DEV_LOGIN_PASSWORD_HASH: z.string().default(""),
   }) : envSchema;
@@ -95,6 +95,7 @@ export function getEnv(): Env {
 }
 
 export function needsAccountSetup() {
+  if (isOfficeStaffMode()) return false;
   if (isLocalMode()) return false;
   if (existsSync(localAccountFile)) return false;
   return !envSchema.safeParse(process.env).success;

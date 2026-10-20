@@ -1,6 +1,11 @@
 export type Role = "admin" | "user" | "read_only";
 
 export interface SessionUser {
+  officeStaffId?: number;
+  initials?: string;
+  title?: string;
+  email?: string;
+  canDelete?: boolean;
   userId: string;
   username: string;
   displayName: string;
@@ -19,6 +24,10 @@ export interface User {
 }
 
 export interface SessionData {
+  loginNoteDate?: string;
+  loginRemindersPending?: boolean;
+  needsLoginPrompts?: boolean;
+  officeStaffLoginId?: number;
   user?: SessionUser;
   isLoggedIn: boolean;
 }

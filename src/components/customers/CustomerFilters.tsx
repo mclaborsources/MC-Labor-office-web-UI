@@ -40,7 +40,6 @@ export function CustomerFilters({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
-
   const hasFilters =
     currentSearch ||
     currentSalesmanId ||

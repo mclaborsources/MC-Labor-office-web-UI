@@ -1,4 +1,4 @@
-import { queryReadOnly } from "@/lib/db/sql";
+import { queryReadOnly, queryReadOnlyUncached } from "@/lib/db/sql";
 
 export type ReportValue = string | number | null;
 export type OperationalReportRow = Record<string, ReportValue>;
@@ -202,22 +202,53 @@ export function getWeeklyRateRowsForDate(weekEnding: string, payrollCompany: str
 }
 
 export function getEmployeeBonusRows() {
-  return queryReadOnly<OperationalReportRow>(`SELECT TOP (500)
-    CAST(EmployeeID AS NVARCHAR(20)) AS id,
-    MAX(ISNULL(EmFirstName,'')) AS [First Name], MAX(ISNULL(EmMiddle,'')) AS MI, MAX(ISNULL(EmLastName,'')) AS [Last Name],
-    CAST(1.00 AS DECIMAL(10,2)) AS [Rate / Hr], CONVERT(VARCHAR(10),MIN(WeekEndingDate),101) AS [Start Date],
-    MAX(ISNULL(GradeChange,'')) AS [Trade of Bonus Exp to Employee],
-    '' AS [Bonus Exp to Employee], SUM(ISNULL(TotalHours,0)) AS [Hrs Worked],
-    SUM(ISNULL(TotalHours,0)) AS [Total Bonus], CAST(0 AS DECIMAL(10,2)) AS [Total Used],
-    SUM(ISNULL(TotalHours,0)) AS Balance,
-    LTRIM(RTRIM(MAX(ISNULL(EmFirstName,''))+' '+MAX(ISNULL(EmMiddle,''))+' '+MAX(ISNULL(EmLastName,'')))) AS EmFullName,
-    'Work History' AS [Work History], CONVERT(VARCHAR(10),MIN(WeekEndingDate),101) AS [First Date Assigned],
-    CONVERT(VARCHAR(10),MAX(WeekEndingDate),101) AS [Last Week Assigned], 'Unpaid' AS [Bonus Exp Status],
-    MAX(ISNULL(CustomerBusName,'')) AS [Last Customer Assigned]
-  FROM tblTracking WITH (NOLOCK)
-  WHERE EmployeeID IS NOT NULL
-  GROUP BY EmployeeID
-  ORDER BY [Hrs Worked],[Last Name],[First Name]`);
+  // Match qryAccumulatedReferralSearchHolding_Append: regular hours, a strict
+  // DateFromWeek(year, week, 6) cutoff, and names captured on assignments.
+  return queryReadOnlyUncached<OperationalReportRow>(`WITH bonusEmployees AS (
+    SELECT * FROM tblEmployee WITH (NOLOCK)
+    WHERE AccumulatedReferralStartDate IS NOT NULL
+  ), work AS (
+    SELECT t.EmployeeID,t.EmFirstName,t.EmMiddle,t.EmLastName,
+      MIN(t.WeekEndingDate) AS FirstWeek, MAX(t.WeekEndingDate) AS LastWeek,
+      SUM(ISNULL(t.RegularHours,0)) AS HoursWorked
+    FROM tblTracking t WITH (NOLOCK)
+    INNER JOIN bonusEmployees e ON e.EmployeeID=t.EmployeeID
+    CROSS APPLY (SELECT DATEFROMPARTS(t.AssignYear,1,1) AS Jan1) calendarYear
+    WHERE DATEADD(day,((4-DATEDIFF(day,'19000101',calendarYear.Jan1)%7+7)%7)
+      +7*(t.AssignWeek-1),calendarYear.Jan1)>e.AccumulatedReferralStartDate
+    GROUP BY t.EmployeeID,t.EmFirstName,t.EmMiddle,t.EmLastName
+  ), payments AS (
+    SELECT EmployeeID,EmployeeReferredID, SUM(ISNULL(PayrollAdjustmentAmount,0)) AS TotalUsed
+    FROM tblPayrollAdjustments WITH (NOLOCK)
+    WHERE EmployeeReferredID IS NOT NULL
+    GROUP BY EmployeeID,EmployeeReferredID
+  )
+  SELECT CAST(e.EmployeeID AS NVARCHAR(20)) AS id,
+    ISNULL(w.EmFirstName,'') AS [First Name], ISNULL(w.EmMiddle,'') AS MI, ISNULL(w.EmLastName,'') AS [Last Name],
+    ISNULL(e.AccumulatedReferral,0) AS [Rate / Hr],
+    CONVERT(VARCHAR(10),e.AccumulatedReferralStartDate,101) AS [Start Date],
+    ISNULL(tr.PullDownTrade,'') AS [Trade of Bonus Exp to Employee],
+    LTRIM(RTRIM(CONCAT(recipient.EmFirstName,' ',NULLIF(recipient.EmMiddle,'')+' ',recipient.EmLastName))) AS [Bonus Exp to Employee],
+    ISNULL(w.HoursWorked,0) AS [Hrs Worked],
+    ISNULL(w.HoursWorked,0)*ISNULL(e.AccumulatedReferral,0) AS [Total Bonus],
+    ISNULL(p.TotalUsed,0) AS [Total Used],
+    ISNULL(w.HoursWorked,0)*ISNULL(e.AccumulatedReferral,0)-ISNULL(p.TotalUsed,0) AS Balance,
+    LTRIM(RTRIM(CONCAT(w.EmFirstName,' ',NULLIF(w.EmMiddle,'')+' ',w.EmLastName))) AS EmFullName,
+    'Work History' AS [Work History], CONVERT(VARCHAR(10),w.FirstWeek,101) AS [First Date Assigned],
+    CONVERT(VARCHAR(10),w.LastWeek,101) AS [Last Week Assigned],
+    ISNULL(s.PullDownAccRefStatus,'') AS [Bonus Exp Status],
+    ISNULL(lastWork.CustomerBusName,'') AS [Last Customer Assigned]
+  FROM bonusEmployees e
+  INNER JOIN work w ON w.EmployeeID=e.EmployeeID
+  LEFT JOIN payments p ON p.EmployeeReferredID=e.EmployeeID AND p.EmployeeID=e.AccumulatedReferralEmployeeID
+  LEFT JOIN tblEmployee recipient WITH (NOLOCK) ON recipient.EmployeeID=e.AccumulatedReferralEmployeeID
+  LEFT JOIN tblPullDownTrade tr WITH (NOLOCK) ON tr.PullDownTradeID=recipient.EmTradeID
+  LEFT JOIN tblPullDownAccRefStatus s WITH (NOLOCK) ON s.PullDownAccRefStatusID=e.AccRefStatusID
+  OUTER APPLY (
+    SELECT TOP (1) t.CustomerBusName FROM tblTracking t WITH (NOLOCK)
+    WHERE t.EmployeeID=e.EmployeeID ORDER BY t.WeekEndingDate DESC,t.TrackingID DESC
+  ) lastWork
+  ORDER BY [Hrs Worked],e.AccumulatedReferralStartDate DESC,[First Name],[Last Name],MI,e.EmployeeID`);
 }
 
 export function getSickHoursRows(year: number) {

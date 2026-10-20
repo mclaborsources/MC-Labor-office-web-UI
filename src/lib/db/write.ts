@@ -2,6 +2,19 @@ import sql from "mssql";
 import { getPool } from "@/lib/db/sql";
 import { getEnv } from "@/lib/config/env";
 import type { QueryParam } from "@/types/db";
+import { isOfficeStaffMode } from "@/lib/auth/mode";
+import { queryReadOnlyUncached } from "@/lib/db/sql";
+import { employeeQuickSearchCache } from "@/lib/boundedQueryCache";
+
+async function assertOfficeDeleteAllowed(query: string) {
+  if (!isOfficeStaffMode() || !/\bDELETE\b/i.test(query)) return;
+  const { requireSession } = await import("@/lib/auth/session");
+  const session = await requireSession();
+  const rows = await queryReadOnlyUncached(`SELECT OfficeStaffID FROM tblOfficeStaff
+    WHERE OfficeStaffID=@id AND OfficeStaffActive=1 AND OfficeStaffCanDelete=1`,
+  [{ name: "id", value: session.user?.officeStaffId ?? -1 }]);
+  if (!rows.length) throw new Error("You do not have permission to delete data.");
+}
 
 // ---------------------------------------------------------------------------
 // WRITE INFRASTRUCTURE.
@@ -53,10 +66,12 @@ function applyParams(request: sql.Request, params?: QueryParam[]): void {
  */
 export async function queryWrite(query: string, params?: QueryParam[]): Promise<number> {
   assertWritesEnabled();
+  await assertOfficeDeleteAllowed(query);
   const pool = await getPool();
   const request = pool.request();
   applyParams(request, params);
   const result = await request.query(query);
+  employeeQuickSearchCache.clear();
   return result.rowsAffected.reduce((a, b) => a + b, 0);
 }
 
@@ -73,13 +88,15 @@ export async function withTransaction<T>(
   const transaction = new sql.Transaction(pool);
   await transaction.begin();
   try {
-    const run = (query: string, params?: QueryParam[]) => {
+    const run = async (query: string, params?: QueryParam[]) => {
+      await assertOfficeDeleteAllowed(query);
       const request = new sql.Request(transaction);
       applyParams(request, params);
       return request.query(query);
     };
     const result = await work(run);
     await transaction.commit();
+    employeeQuickSearchCache.clear();
     return result;
   } catch (err) {
     try {

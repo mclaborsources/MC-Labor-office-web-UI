@@ -26,3 +26,21 @@ export const HL_CV_COLORS: Record<string, string> = {
   Blue: "#53b9ff",
   Red: "#f68a8f",
 };
+
+/** Access OLE colors from frmTrackingEditHolding's conditional formatting. */
+export const PAYROLL_COLOR_IDS: Record<number, string> = {
+  11: "#ffa500", 2: "#800080", 1: "#ff00ff", 3: "#0000ff",
+  13: "#800000", 8: "#008000", 6: "#008080", 4: "#000080", 12: "#ff0000",
+};
+
+export function trackingGradeColor(grade: string): string | undefined {
+  const initial = grade.trim().toUpperCase().charAt(0);
+  return initial === "A" ? "#ff0000" : initial === "B" ? "#0000ff" : undefined;
+}
+
+export function trackingDayColor(flag: string, dayIndex: number): string {
+  if (flag === "5") return "#ed1c24";
+  if (["2", "7", "9"].includes(flag)) return "#f9cdaa";
+  if (flag === "8") return "#ffc20e";
+  return dayIndex === 1 ? "#fff200" : "#4bacc6";
+}

@@ -1,5 +1,5 @@
 import { queryReadOnly } from "@/lib/db/sql";
-import { PAYROLL_CO_COLORS } from "@/lib/trackingConstants";
+import { PAYROLL_CO_COLORS, PAYROLL_COLOR_IDS } from "@/lib/trackingConstants";
 import type {
   TrackingPreview,
   TrackingPreviewRow,
@@ -62,6 +62,7 @@ function ts(v: unknown): string {
 }
 
 function payrollColor(initials: string, colorId: unknown): string {
+  if (PAYROLL_COLOR_IDS[Number(colorId)]) return PAYROLL_COLOR_IDS[Number(colorId)];
   const code = initials.slice(0, 3).toUpperCase();
   if (code && PAYROLL_CO_COLORS[code]) return PAYROLL_CO_COLORS[code];
   const id = Number(colorId);
@@ -71,6 +72,10 @@ function payrollColor(initials: string, colorId: unknown): string {
 }
 
 interface TrackingRow {
+  InvoiceAmount: number | null;
+  WccTrackingProfit: number | null;
+  Grade: string | null;
+  PayrollChangeColor: string | null;
   EmployeeID: number | null;
   PayrollCoOnSiteInitials: string | null;
   PayrollCoOnSiteColorID: number | null;
@@ -116,6 +121,14 @@ interface TrackingRow {
   AutoTextUserName2: string | null;
   AutoTextTimestamp2: string | Date | null;
   CoExpParkingPerHr: number | null;
+  CoExpHealthInsPerHr: number | null;
+  CoExpTravelPerHr: number | null;
+  CoExpVacationPerHr: number | null;
+  AccumulatedReferral: number | null;
+  AccumulatedReferralStartDate: string | Date | null;
+  BonusExpenseRecipient: string | null;
+  EmployeeReferralRatePerHr: number | null;
+  TrackMarginCostPerHr: number | null;
   SickTime: number | null;
   CoExpSchoolingPerHr: number | null;
   CoExpToolsPerHr: number | null;
@@ -134,7 +147,7 @@ interface TrackingRow {
 }
 
 const SELECT_COLUMNS = `
-  TrackingID, EmployeeID, CustomerID, ProjectID,
+  TrackingID, EmployeeID, CustomerID, ProjectID, Grade, PayrollChangeColor, InvoiceAmount, WccTrackingProfit,
   PayrollCoOnSiteInitials, PayrollCoOnSiteColorID, SiteName, PayrollInfoSent, Semus,
   JobApplicationStatusDesc, OSHA10StatusDesc, HealthInsuranceDesc,
   EmFirstName, EmMiddle, EmLastName, EmCity, EmMobilePhone, GradeChange, SiteState, WCC,
@@ -145,6 +158,11 @@ const SELECT_COLUMNS = `
   HLinkTimesheetCV, HLinkTimesheetColorCV, SendLiveCheckColor,
   AutoTextUserName1, AutoTextTimestamp1, AutoTextUserName2, AutoTextTimestamp2,
   CoExpParkingPerHr, SickTime, CoExpSchoolingPerHr, CoExpToolsPerHr,
+  CoExpHealthInsPerHr, CoExpTravelPerHr, CoExpVacationPerHr,
+  AccumulatedReferral, AccumulatedReferralStartDate, EmployeeReferralRatePerHr, TrackMarginCostPerHr,
+  (SELECT LTRIM(RTRIM(CONCAT(bonusRecipient.EmFirstName,' ',NULLIF(bonusRecipient.EmMiddle,'')+' ',bonusRecipient.EmLastName)))
+   FROM tblEmployee bonusRecipient WITH (NOLOCK)
+   WHERE bonusRecipient.EmployeeID=tblTracking.AccumulatedReferralEmployeeID) AS BonusExpenseRecipient,
   CustomerBusName, WeekEndingDate, Placeholder`;
 
 function mapRow(r: TrackingRow): TrackingPreviewRow {
@@ -155,6 +173,12 @@ function mapRow(r: TrackingRow): TrackingPreviewRow {
 
   return {
     employeeId: str(r.EmployeeID),
+    invoiceAmount: Number(r.InvoiceAmount ?? 0),
+    trackingProfitAmount: Number(r.WccTrackingProfit ?? 0),
+    grade: str(r.Grade),
+    payrollChangePending: r.PayrollChangeColor !== null && r.PayrollChangeColor !== undefined,
+    customerId: str(r.CustomerID),
+    projectId: str(r.ProjectID),
     payrollCo,
     payrollCoColor: payrollColor(payrollCo, r.PayrollCoOnSiteColorID),
     jobSite: str(r.SiteName),
@@ -198,6 +222,15 @@ function mapRow(r: TrackingRow): TrackingPreviewRow {
     hlAutoTextUser: str(r.AutoTextUserName2),
     hlAutoTextTimestamp: ts(r.AutoTextTimestamp2),
     parkingPerHr: money(r.CoExpParkingPerHr),
+    healthInsPerHr: money(r.CoExpHealthInsPerHr),
+    travelPerHr: money(r.CoExpTravelPerHr),
+    vacationPerHr: money(r.CoExpVacationPerHr),
+    bonusExpenseRate: money(r.AccumulatedReferral),
+    bonusExpenseStartDate: r.AccumulatedReferralStartDate
+      ? new Date(r.AccumulatedReferralStartDate).toLocaleDateString("en-US", { timeZone: "UTC" }) : "",
+    bonusExpenseRecipient: str(r.BonusExpenseRecipient),
+    employeeReferralPerHr: money(r.EmployeeReferralRatePerHr),
+    marginCostPerHr: money(r.TrackMarginCostPerHr),
     sickTime: money(r.SickTime, true),
     schoolingPerHr: money(r.CoExpSchoolingPerHr),
     toolsPerHr: money(r.CoExpToolsPerHr),
@@ -398,6 +431,7 @@ export async function getTrackingJobInfo(
     }
     const rows = await queryReadOnly<{
       CustBusName: string;
+      CustomerNote: string | null;
       SalesmanID: number | null;
       ContractWithName: string | null;
       CreditLimit: number | null;
@@ -407,6 +441,7 @@ export async function getTrackingJobInfo(
     }>(
       `SELECT TOP (1)
          ISNULL(c.CustBusName, '') AS CustBusName,
+         c.CustomerNote,
          c.SalesmanID,
          ISNULL(p.PullDownContractWith_PayrollCoName, '') AS ContractWithName,
          c.CreditLimit,
@@ -433,7 +468,11 @@ export async function getTrackingJobInfo(
     // Keep optional document fields out of the core customer lookup. Access
     // stores these links in payroll-company-specific columns; a missing legacy
     // column must not blank the customer summary fields above.
-    const suffixField = (base: string) => documentSuffix ? `c.[${base}${documentSuffix}]` : "NULL";
+    // NULLIF requires a typed first argument, even when no company is selected.
+    // An untyped NULL makes SQL reject the entire document lookup.
+    const suffixField = (base: string) => documentSuffix
+      ? `c.[${base}${documentSuffix}]`
+      : base.startsWith("HLink") ? "CAST(NULL AS NVARCHAR(MAX))" : "CAST(NULL AS DATETIME2)";
     const contractLink = `COALESCE(NULLIF(${suffixField("HLinkSalesContract")}, ''), c.HLinkSalesContract, '')`;
     const w9Link = `COALESCE(NULLIF(${suffixField("HLinkW9")}, ''), c.HLinkW9, '')`;
     const wcLink = `COALESCE(NULLIF(${suffixField("HLinkWCxDate")}, ''), c.HLinkWCxDate, '')`;
@@ -458,6 +497,29 @@ export async function getTrackingJobInfo(
       [{ name: "customerId", value: customerId }],
     ).catch(() => []);
     const docs = customerDocumentRows[0];
+
+    const summaryParams = [
+      { name: "customerId", value: Number(customerId) },
+      { name: "projectId", value: projectId ? Number(projectId) : null },
+      { name: "weekEndingDate", value: weekEndingDate ?? null },
+      { name: "week", value: week ?? null },
+      { name: "year", value: year ?? null },
+    ];
+    const [summaryRows, marginHistory] = await Promise.all([
+      queryReadOnly<{ Total: number | null; Profit: number | null }>(`SELECT
+        SUM(ISNULL(InvoiceAmount,0)) AS Total, SUM(ISNULL(WccTrackingProfit,0)) AS Profit
+        FROM tblTracking WITH (NOLOCK)
+        WHERE CustomerID=@customerId AND (@projectId IS NULL OR ProjectID=@projectId)
+          AND ((@weekEndingDate IS NOT NULL AND WeekEndingDate>=CAST(@weekEndingDate AS DATE)
+            AND WeekEndingDate<DATEADD(day,1,CAST(@weekEndingDate AS DATE)))
+          OR (@weekEndingDate IS NULL AND AssignWeek=@week AND AssignYear=@year))`, summaryParams),
+      queryReadOnly<{ Total: number | null; Profit: number | null; WeekEnding: string }>(`SELECT
+        CONVERT(VARCHAR(10),WeekEndingDate,101) AS WeekEnding,
+        SUM(ISNULL(InvoiceAmount,0)) AS Total, SUM(ISNULL(WccTrackingProfit,0)) AS Profit
+        FROM tblTracking WITH (NOLOCK) WHERE CustomerID=@customerId
+        GROUP BY WeekEndingDate ORDER BY WeekEndingDate`, [{ name: "customerId", value: Number(customerId) }]),
+    ]);
+    const summary = summaryRows[0];
 
     const rates = await queryReadOnly<{ BillRateGrade: string; BillRate: number }>(
       `SELECT TOP (8)
@@ -572,6 +634,7 @@ export async function getTrackingJobInfo(
 
     return {
       customerName: str(c.CustBusName),
+      customerNote: str(c.CustomerNote),
       projectName: str(project?.SiteName),
       siteAddress: [
         str(project?.SiteStreet),
@@ -595,14 +658,15 @@ export async function getTrackingJobInfo(
         gl: str(docs?.GLLink),
         site: str(project?.SiteHyperlink),
       },
-      tia: "",
-      cpm: "",
+      tia: `$${money(summary?.Total ?? 0, true)}`,
+      trackingProfit: `$${money(summary?.Profit ?? 0, true)}`,
+      cpm: summary?.Total ? `${((summary.Profit ?? 0) / summary.Total * 100).toFixed(2)}%` : "",
       estimatedInvoice: "",
       billRates: rates.map((r) => ({
         grade: str(r.BillRateGrade),
         rate: money(r.BillRate),
       })),
-      marginRows: Array.from({ length: 5 }, () => ({ total: "", margin: "" })),
+      marginRows: marginHistory.map(row => ({ total: `$${money(row.Total ?? 0, true)}`, margin: row.Total ? `${((row.Profit ?? 0) / row.Total * 100).toFixed(2)}%` : "", weekEnding: row.WeekEnding })),
       contacts,
       salesmen,
       referralAgencies,

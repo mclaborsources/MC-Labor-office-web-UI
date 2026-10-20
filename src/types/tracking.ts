@@ -25,6 +25,12 @@ export interface AssignedContextPlaceholder {
  * Columns map to `tblTracking` (Access frmTrackingEditHolding datasheet).
  */
 export interface TrackingPreviewRow {
+  customerId?: string;
+  projectId?: string;
+  grade?: string;
+  payrollChangePending?: boolean;
+  invoiceAmount?: number;
+  trackingProfitAmount?: number;
   employeeId: string;
   payrollCo: string;
   payrollCoColor: string;
@@ -69,6 +75,14 @@ export interface TrackingPreviewRow {
   hlAutoTextUser: string;
   hlAutoTextTimestamp: string;
   parkingPerHr: string;
+  healthInsPerHr?: string;
+  travelPerHr?: string;
+  vacationPerHr?: string;
+  bonusExpenseRate?: string;
+  bonusExpenseStartDate?: string;
+  bonusExpenseRecipient?: string;
+  employeeReferralPerHr?: string;
+  marginCostPerHr?: string;
   sickTime: string;
   schoolingPerHr: string;
   toolsPerHr: string;
@@ -134,10 +148,12 @@ export interface TrackingJobInfo {
     site: string;
   };
   tia: string;
+  trackingProfit?: string;
+  customerNote?: string;
   cpm: string;
   estimatedInvoice: string;
   billRates: { grade: string; rate: string }[];
-  marginRows: { total: string; margin: string }[];
+  marginRows: { total: string; margin: string; weekEnding?: string }[];
   contacts: TrackingJobContact[];
   salesmen: TrackingSalesmanOption[];
   referralAgencies: TrackingReferralAgency[];

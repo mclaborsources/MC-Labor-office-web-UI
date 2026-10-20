@@ -15,7 +15,8 @@ export function getSessionOptions(): SessionOptions {
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       sameSite: "lax",
-      maxAge: 60 * 60 * 8, // 8 hours
+      // Explicit undefined makes iron-session emit a browser-session cookie.
+      maxAge: undefined,
       path: "/",
     },
   };

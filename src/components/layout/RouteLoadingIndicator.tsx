@@ -10,6 +10,11 @@ export function RouteLoadingIndicator() {
   const searchParams = useSearchParams();
   const query = searchParams.toString();
   const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    if (loading) document.documentElement.classList.add("mc-route-busy");
+    else document.documentElement.classList.remove("mc-route-busy");
+    return () => document.documentElement.classList.remove("mc-route-busy");
+  }, [loading]);
 
   useEffect(() => { setLoading(false); }, [pathname, query]);
 
