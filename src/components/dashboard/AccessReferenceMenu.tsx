@@ -54,10 +54,10 @@ export function AccessReferenceMenu({ activeView, policy, notes, trackingHref, t
       <div className="ac-access-menu-document"><DashboardRichText html={notes} emptyMessage="No company history notes configured." /></div>
     </section>
     <section className="ac-access-menu-shortcuts" aria-label="Search and utilities">
-      <button type="button" className="ac-access-menu-button ac-access-menu-exit ac-access-menu-logout" disabled={loggingOut} onClick={() => {
+      <button type="button" className="ac-access-menu-button ac-access-menu-exit" disabled={loggingOut} onClick={() => {
         setLogoutError("");
         logoutDialog.current?.showModal();
-      }}>Logout</button>
+      }}>Exit Database</button>
       <Link href="/customers" className="ac-access-menu-button">Customer Search</Link><Link href="/employees" className="ac-access-menu-button">Employee Search</Link>
       <Link href="/customer-search-1" className="ac-access-menu-button">Customer Search 1</Link><Link href="/customers/name-search" className="ac-access-menu-button">Customer Name Search</Link>
       <Link href="/employee-licenses" className="ac-access-menu-button">Licensed Employee Search</Link>
