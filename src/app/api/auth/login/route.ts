@@ -10,6 +10,7 @@ import { isOfficeStaffMode } from "@/lib/auth/mode";
 import { authenticateOfficeStaff, startOfficeLogin, endOfficeLogin } from "@/lib/auth/office-staff";
 import { hasSameOrigin } from "@/lib/auth/origin";
 import { prepareLoginPrompts } from "@/lib/auth/login-prompts";
+import { currentSessionGeneration } from "@/lib/auth/session-generation";
 
 export async function POST(request: Request) {
   if (!hasSameOrigin(request)) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
@@ -30,6 +31,7 @@ export async function POST(request: Request) {
       try {
         if (session.officeStaffLoginId && session.user?.officeStaffId) await endOfficeLogin(session.officeStaffLoginId, session.user.officeStaffId);
         session.user = user;
+        session.loginGeneration = currentSessionGeneration();
         session.officeStaffLoginId = loginId;
         const prompts = await prepareLoginPrompts(user);
         session.loginNoteDate = prompts.noteDate;

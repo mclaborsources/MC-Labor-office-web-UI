@@ -50,8 +50,14 @@ if errorlevel 1 (
   exit /b 1
 )
 
-set "MC_LABOR_LOCAL_MODE=1"
+set "MC_LABOR_LOCAL_MODE=0"
+set "MC_LABOR_AUTH_ENABLED=1"
+set "MC_LABOR_AUTH_PROVIDER=office-staff"
+set "MC_LABOR_SESSION_GENERATION="
+for /f %%G in ('node -e "console.log(require('node:crypto').randomUUID())"') do set "MC_LABOR_SESSION_GENERATION=%%G"
+if not defined MC_LABOR_SESSION_GENERATION goto failed
 set "WRITES_ENABLED=true"
+echo Office login is required. Previous server sessions will require a fresh login.
 echo Keep this window open while using MC Labor. Press Ctrl+C to stop.
 echo Opening http://localhost:3000 when the server is ready...
 start "" /b node "%MC_LABOR_ROOT%scripts\open-local-browser.cjs"

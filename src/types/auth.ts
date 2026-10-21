@@ -24,6 +24,7 @@ export interface User {
 }
 
 export interface SessionData {
+  loginGeneration?: string;
   loginNoteDate?: string;
   loginRemindersPending?: boolean;
   needsLoginPrompts?: boolean;

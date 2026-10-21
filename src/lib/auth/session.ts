@@ -9,6 +9,7 @@ import { needsAccountSetup } from "@/lib/config/env";
 import { isLocalMode, isOfficeStaffMode } from "@/lib/auth/mode";
 import { officeStaffActive } from "@/lib/auth/office-staff";
 import { queryReadOnlyUncached } from "@/lib/db/sql";
+import { sessionGenerationMatches } from "@/lib/auth/session-generation";
 
 export async function getSession() {
   if (needsAccountSetup()) redirect("/welcome");
@@ -22,6 +23,11 @@ export async function getSession() {
     session.isLoggedIn = true;
   }
   if (isOfficeStaffMode() && session.isLoggedIn) {
+    if (!sessionGenerationMatches(session.loginGeneration)) {
+      session.isLoggedIn = false;
+      session.user = undefined;
+      return session;
+    }
     const staffId = session.user?.officeStaffId;
     const validLogin = staffId && session.officeStaffLoginId ? await queryReadOnlyUncached(`SELECT OfficeStaffLoginID FROM tblOfficeStaffLogin
       WHERE OfficeStaffLoginID=@login AND OfficeStaffID=@staff AND OfficeStaffLogoutTimestamp IS NULL
