@@ -1,4 +1,5 @@
 ﻿import { queryReadOnly } from "@/lib/db/sql";
+import { loadEmployeeDefaultFields } from "@/lib/employeeSearchDefaultFields";
 import type {
   EmployeeSummary,
   EmployeeDetail,
@@ -243,24 +244,6 @@ WHERE l.EmployeeID = @employeeId
 ORDER BY l.EmployeeLicenseExpDate DESC
 `;
 
-// Latest assignment per employee, bounded to the displayed employee IDs.
-const CURRENT_ASSIGNMENT_SQL = `
-WITH ranked AS (
-  SELECT
-    EmployeeID,
-    ISNULL(CustomerBusName, '') AS CustomerBusName,
-    ISNULL(SiteName, '')        AS SiteName,
-    ISNULL(PayRate, 0)          AS PayRate,
-    WeekEndingDate,
-    ISNULL(PayrollCoOnSiteInitials, '') AS PayrollCoOnSiteInitials,
-    ROW_NUMBER() OVER (PARTITION BY EmployeeID ORDER BY AssignmentTimestamp DESC) AS rn
-  FROM tblTracking WITH (NOLOCK)
-  WHERE EmployeeID IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@ids, ','))
-)
-SELECT EmployeeID, CustomerBusName, SiteName, PayRate, WeekEndingDate, PayrollCoOnSiteInitials
-FROM ranked WHERE rn = 1
-`;
-
 // ---------------------------------------------------------------------------
 // Lookup maps (id -> label), each crash-safe
 // ---------------------------------------------------------------------------
@@ -283,47 +266,6 @@ async function loadLicenseTypeMap(): Promise<Map<string, string>> {
       "SELECT PullDownLicenseTypeID, ISNULL(PullDownLicenseType, '') AS PullDownLicenseType FROM tblPullDownLicenseTypes WITH (NOLOCK)",
     );
     for (const r of rows) if (r.PullDownLicenseTypeID != null) map.set(String(r.PullDownLicenseTypeID), r.PullDownLicenseType ?? "");
-  } catch { /* ignore */ }
-  return map;
-}
-
-interface CurrentAssignmentSummary {
-  assignment: string;
-  weekEnding: string;
-  payRate: string;
-  payrollCompany: string;
-}
-
-async function loadCurrentAssignments(ids: string[]): Promise<Map<string, CurrentAssignmentSummary>> {
-  const map = new Map<string, CurrentAssignmentSummary>();
-  const cleanIds = ids.filter((id) => /^\d+$/.test(id));
-  if (cleanIds.length === 0) return map;
-  try {
-    const rows = await queryReadOnly<{
-      EmployeeID: unknown;
-      CustomerBusName: string | null;
-      SiteName: string | null;
-      PayRate: number | string | null;
-      WeekEndingDate: string | Date | null;
-      PayrollCoOnSiteInitials: string | null;
-    }>(
-      CURRENT_ASSIGNMENT_SQL,
-      [{ name: "ids", value: cleanIds.join(",") }],
-    );
-    for (const r of rows) {
-      if (r.EmployeeID == null) continue;
-      const parts = [safeStr(r.CustomerBusName), safeStr(r.SiteName)].filter(Boolean);
-      const weekEnding = r.WeekEndingDate
-        ? new Date(r.WeekEndingDate).toLocaleDateString("en-US")
-        : "";
-      const payRate = money(r.PayRate);
-      map.set(String(r.EmployeeID), {
-        assignment: parts.join(" · "),
-        weekEnding,
-        payRate: payRate ? `$${payRate}` : "",
-        payrollCompany: safeStr(r.PayrollCoOnSiteInitials),
-      });
-    }
   } catch { /* ignore */ }
   return map;
 }
@@ -438,7 +380,9 @@ export interface GetEmployeesParams {
 export async function getEmployees(
   params: GetEmployeesParams = {},
 ): Promise<PaginatedResult<EmployeeSummary>> {
-  const { rows, index } = await loadEmployeeSearchIndex();
+  const [{ rows, index }, defaultFields] = await Promise.all([
+    loadEmployeeSearchIndex(), loadEmployeeDefaultFields(),
+  ]);
   const filteredRows = searchTextIndex(index, params.search ?? "")
     .map((rowIndex) => rows[rowIndex])
     .filter((row) =>
@@ -448,22 +392,26 @@ export async function getEmployees(
       && (!params.city || safeStr(row.EmCity) === params.city)
       && (!params.state || safeStr(row.EmState) === params.state));
   const total = filteredRows.length;
-  const data = filteredRows.slice(0, 200).map(toEmployeeSummary);
-  const employeeIds = data.map((e) => e.employeeId);
-  const [assignmentMap, holdingMap] = await Promise.all([
-    loadCurrentAssignments(employeeIds),
-    loadEmployeeSearchHoldingFields(employeeIds),
-  ]);
+  const data = filteredRows.map(toEmployeeSummary);
   for (const e of data) {
-    const assignment = assignmentMap.get(e.employeeId);
-    e.currentAssignment = assignment?.assignment ?? "";
-    e.weekEnding = assignment?.weekEnding ?? "";
-    e.payRate = assignment?.payRate ?? "";
-    e.payrollCompany = assignment?.payrollCompany ?? "";
-    e.accessFields = holdingMap.get(e.employeeId) ?? {};
+    const fields = defaultFields.get(e.employeeId) ?? {};
+    e.accessFields = fields;
+    e.userFlag5 = fields.EmployeeUserFlag5 ?? "";
+    e.s1 = fields.S1 ?? "";
+    e.profileType = fields.EmployeeProfileType ?? "";
+    e.howReferred = fields.EmHowReferred ?? "";
+    e.qualification = fields.EmQualification ?? "";
+    e.averageInterview = fields.AvgHrsWorked ?? "";
+    e.fda = fields.FirstDateOnJob ?? "";
+    e.thw = fields.TotalHoursWorked ?? "";
+    e.licenseExpiration = fields.LicenseExpDateFlag ?? "";
+    e.currentAssignment = [fields.CustomerBusName, fields.SiteName].filter(Boolean).join(" · ");
+    e.weekEnding = fields.WeekEndingDate ?? "";
+    e.payRate = fields.PayRate ?? "";
+    e.payrollCompany = fields.PayrollCoOnSiteInitials ?? "";
   }
 
-  return { data, total, page: 1, pageSize: 200, hasMore: total > data.length };
+  return { data, total, page: 1, pageSize: data.length, hasMore: false };
 }
 
 export async function getEmployeeQuickSearchOptions(): Promise<Array<Pick<EmployeeSummary, "employeeId" | "fullName">>> {

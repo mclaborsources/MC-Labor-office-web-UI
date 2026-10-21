@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState, type ComponentType } from "react";
+import { Suspense, useEffect, useState, type ComponentType, type ReactNode } from "react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { CustomerFilters } from "@/components/customers/CustomerFilters";
 import {
@@ -24,6 +24,7 @@ import {
 import type { FilterOption } from "@/types/search";
 
 interface CustomerSearchViewsPanelProps {
+  filterRow?: ReactNode;
   salesmen: FilterOption[];
   customerTypes: FilterOption[];
   statuses: FilterOption[];
@@ -845,7 +846,7 @@ export function CustomerSearchViewsPanel(props: CustomerSearchViewsPanelProps) {
 
       <div className="ac-customer-search-control-panel min-h-0 flex-1">
         <div className="ac-customer-search-views-tab">
-          {showCompactFilter ? <CompactFilterRow {...props} /> : null}
+          {showCompactFilter ? props.filterRow ?? <CompactFilterRow {...props} /> : null}
 
           <div className={`ac-customer-search-views-body ${showDuplicates ? "" : "ac-customer-search-views-body--full"}`}>
             <div className="ac-customer-search-views-left">

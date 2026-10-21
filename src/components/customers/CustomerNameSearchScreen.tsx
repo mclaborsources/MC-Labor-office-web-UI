@@ -1,14 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { CustomerNameColumnHeader } from "./CustomerNameColumnHeader";
 import { Search, X } from "lucide-react";
-import { CUSTOMER_SEARCH_COLUMNS, type CustomerSearchColumnKey } from "@/lib/customerSearchColumns";
-import type { CustomerSearchRow } from "@/types/customer";
+import Link from "next/link";
+import { CUSTOMER_NAME_SEARCH_COLUMNS, customerNameCellValue, compareCustomerNameValues, type CustomerNameMatch, type CustomerNameColumnKey } from "@/lib/customerNameSearchColumns";
 
-interface CustomerNameMatch {
-  customerId: string;
-  customerName: string;
-}
+const summaryColumns = CUSTOMER_NAME_SEARCH_COLUMNS;
+type SummaryColumnKey = CustomerNameColumnKey;
+const summaryValue = customerNameCellValue;
+const summaryGridStyle = {
+  gridTemplateColumns: summaryColumns.map(column => column.key === "customerName" ? "minmax(280px, 1fr)" : column.width + "px").join(" "),
+  minWidth: summaryColumns.reduce((total, column) => total + column.width, 0) + 20,
+  whiteSpace: "nowrap",
+} as const;
 
 interface NameResponse {
   ok: boolean;
@@ -16,51 +21,62 @@ interface NameResponse {
   error?: string;
 }
 
-interface RowsResponse {
-  ok: boolean;
-  data: CustomerSearchRow[];
-  total: number;
-  page: number;
-  pageSize: number;
-  hasMore: boolean;
-  error?: string;
-}
-
-function displayCell(row: CustomerSearchRow, key: CustomerSearchColumnKey): string {
-  if (key === "select") return "—";
-  if (key === "name") return row.customerName || "—";
-  const value = row[key as keyof CustomerSearchRow];
-  return value === null || value === undefined || value === "" ? "—" : String(value);
-}
-
-export function CustomerNameSearchScreen() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [customers, setCustomers] = useState<CustomerNameMatch[]>([]);
-  const [selectedCustomer, setSelectedCustomer] = useState<CustomerNameMatch | null>(null);
-  const [allNamesVisible, setAllNamesVisible] = useState(false);
-  const [rows, setRows] = useState<CustomerSearchRow[]>([]);
-  const [rowsSearchTerm, setRowsSearchTerm] = useState("");
-  const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(0);
-  const [hasMore, setHasMore] = useState(false);
+export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initialLoadTimeMs, variant = "names" }: {
+  initialCustomers?: CustomerNameMatch[];
+  fetchedCount?: number;
+  initialLoadTimeMs?: number;
+  variant?: "names" | "customers";
+}) {
+  const [loadedCustomers, setCustomers] = useState<CustomerNameMatch[]>([]);
+  const customers = initialCustomers ?? loadedCustomers;
+  const [allNamesVisible, setAllNamesVisible] = useState(initialCustomers !== undefined);
   const [loadingNames, setLoadingNames] = useState(false);
-  const [loadingRows, setLoadingRows] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
   const [loadingStartedAt, setLoadingStartedAt] = useState<number | null>(null);
   const [elapsedMs, setElapsedMs] = useState(0);
   const [showLoadingDialog, setShowLoadingDialog] = useState(false);
   const [error, setError] = useState("");
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const requestVersion = useRef(0);
+  const [detail, setDetail] = useState<{ label: string; text: string } | null>(null);
+  const detailDialog = useRef<HTMLDialogElement>(null);
   const namesRequestVersion = useRef(0);
-  const loadingRowsRef = useRef(false);
-  const loadingNamesRef = useRef(false);
   const allNamesListRef = useRef<HTMLDivElement>(null);
   const [namesScrollTop, setNamesScrollTop] = useState(0);
   const [namesViewportHeight, setNamesViewportHeight] = useState(500);
+  const [allNamesLoadMs, setAllNamesLoadMs] = useState<number | null>(initialLoadTimeMs ?? null);
+  const [loadedCustomerSearch, setLoadedCustomerSearch] = useState("");
+  const [columnFilters, setColumnFilters] = useState<Partial<Record<SummaryColumnKey, string[]>>>({});
+  const [summarySort, setSummarySort] = useState<{ key: SummaryColumnKey; direction: "asc" | "desc" } | null>(null);
+  const displayedNames = useMemo(() => {
+    const filters = Object.entries(columnFilters).map(([key, values]) => [key as SummaryColumnKey, new Set(values)] as const);
+    const query = loadedCustomerSearch.trim().toLocaleLowerCase();
+    const filtered = filters.length || query ? customers.filter(customer =>
+      (!query || customer.customerName.toLocaleLowerCase().includes(query)) &&
+      filters.every(([key, values]) => values.has(summaryValue(customer, key)))) : customers;
+    if (!summarySort) return filtered;
+    const { key, direction } = summarySort;
+    const kind = summaryColumns.find(column => column.key === key)?.kind ?? "text";
+    return [...filtered].sort((a, b) => {
+      const left = summaryValue(a, key), right = summaryValue(b, key);
+      const comparison = compareCustomerNameValues(left, right, kind);
+      return direction === "asc" ? comparison : -comparison;
+    });
+  }, [customers, columnFilters, summarySort, loadedCustomerSearch]);
+  function resetNamesScroll() {
+    setNamesScrollTop(0);
+    if (allNamesListRef.current) allNamesListRef.current.scrollTop = 0;
+  }
 
-  const isLoading = loadingNames || loadingRows;
+  useEffect(() => {
+    if (initialCustomers === undefined) return;
+    setNamesScrollTop(0);
+    if (allNamesListRef.current) allNamesListRef.current.scrollTop = 0;
+  }, [initialCustomers]);
+
+  const isLoading = loadingNames;
+
+  useEffect(() => {
+    if (detail) detailDialog.current?.showModal();
+  }, [detail]);
 
   useEffect(() => {
     if (!isLoading || loadingStartedAt === null) {
@@ -92,115 +108,17 @@ export function CustomerNameSearchScreen() {
     return () => observer.disconnect();
   }, [allNamesVisible]);
 
-  useEffect(() => {
-    const term = searchTerm.trim();
-    if (!term || selectedCustomer?.customerName === term) {
-      namesRequestVersion.current += 1;
-      loadingNamesRef.current = false;
-      setCustomers([]);
-      setLoadingNames(false);
-      if (!loadingRowsRef.current) setLoadingStartedAt(null);
-      setDropdownOpen(false);
-      return;
-    }
-
-    const controller = new AbortController();
-    const requestId = ++namesRequestVersion.current;
-    loadingNamesRef.current = true;
-    setLoadingNames(true);
-    setLoadingMessage("Searching matching customer names");
-    setLoadingStartedAt(Date.now());
-    setError("");
-    const timer = window.setTimeout(async () => {
-      try {
-        const response = await fetch(`/api/customers/name-search?q=${encodeURIComponent(term)}`, {
-          signal: controller.signal,
-          cache: "no-store",
-        });
-        const payload = await response.json() as NameResponse;
-        if (!response.ok || !payload.ok) throw new Error(payload.error || "Customer names could not be searched.");
-        if (requestId === namesRequestVersion.current) {
-          setCustomers(payload.data);
-          setDropdownOpen(true);
-        }
-      } catch (searchError) {
-        if (controller.signal.aborted) return;
-        if (requestId !== namesRequestVersion.current) return;
-        setCustomers([]);
-        setError(searchError instanceof Error ? searchError.message : "Customer names could not be searched.");
-      } finally {
-        if (!controller.signal.aborted && requestId === namesRequestVersion.current) {
-          loadingNamesRef.current = false;
-          setLoadingNames(false);
-          if (!loadingRowsRef.current) setLoadingStartedAt(null);
-        }
-      }
-    }, 250);
-
-    return () => {
-      window.clearTimeout(timer);
-      controller.abort();
-    };
-  }, [searchTerm, selectedCustomer]);
-
-  async function loadRows(target: { customerId?: string; term: string; page?: number }) {
-    const requestId = ++requestVersion.current;
-    namesRequestVersion.current += 1;
-    loadingNamesRef.current = false;
-    loadingNamesRef.current = false;
-    setLoadingNames(false);
-    loadingRowsRef.current = true;
-    setLoadingRows(true);
-    setLoadingMessage("Loading full customer data");
-    setLoadingStartedAt(Date.now());
-    setError("");
-    setDropdownOpen(false);
-    try {
-      const params = new URLSearchParams();
-      if (target.customerId) params.set("customerId", target.customerId);
-      else params.set("q", target.term);
-      if (target.page && target.page > 1) params.set("page", String(target.page));
-      const response = await fetch(`/api/customers/name-search/results?${params}`, { cache: "no-store" });
-      const payload = await response.json() as RowsResponse;
-      if (!response.ok || !payload.ok) throw new Error(payload.error || "Matching customer data could not be loaded.");
-      if (requestId !== requestVersion.current) return;
-      setRows(payload.data);
-      setTotal(payload.total);
-      setPage(payload.page);
-      setHasMore(payload.hasMore);
-      setRowsSearchTerm(target.customerId ? "" : target.term);
-    } catch (loadError) {
-      if (requestId !== requestVersion.current) return;
-      setRows([]);
-      setTotal(0);
-      setHasMore(false);
-      setError(loadError instanceof Error ? loadError.message : "Matching customer data could not be loaded.");
-    } finally {
-      if (requestId === requestVersion.current) {
-        loadingRowsRef.current = false;
-        setLoadingRows(false);
-        if (!loadingNamesRef.current) setLoadingStartedAt(null);
-      }
-    }
-  }
-
   async function loadAllNames() {
     const requestId = ++namesRequestVersion.current;
-    requestVersion.current += 1;
-    loadingRowsRef.current = false;
-    loadingNamesRef.current = true;
-    setLoadingRows(false);
     setLoadingNames(true);
-    setLoadingMessage("Loading all customer names only");
+    setLoadingMessage("Loading customers, sales history, call history, and primary contacts");
+    setAllNamesLoadMs(null);
+    setLoadedCustomerSearch("");
+    setColumnFilters({});
+    setSummarySort(null);
+    const startedAt = performance.now();
     setLoadingStartedAt(Date.now());
     setError("");
-    setRows([]);
-    setRowsSearchTerm("");
-    setPage(1);
-    setTotal(0);
-    setHasMore(false);
-    setSelectedCustomer(null);
-    setDropdownOpen(false);
     setAllNamesVisible(false);
     try {
       const response = await fetch("/api/customers/name-search?all=1", { cache: "no-store" });
@@ -208,197 +126,107 @@ export function CustomerNameSearchScreen() {
       if (!response.ok || !payload.ok) throw new Error(payload.error || "All customer names could not be loaded.");
       if (requestId !== namesRequestVersion.current) return;
       setCustomers(payload.data);
-      setTotal(payload.data.length);
       setNamesScrollTop(0);
       setAllNamesVisible(true);
+      setAllNamesLoadMs(performance.now() - startedAt);
     } catch (allNamesError) {
       if (requestId !== namesRequestVersion.current) return;
       setCustomers([]);
-      setTotal(0);
       setError(allNamesError instanceof Error ? allNamesError.message : "All customer names could not be loaded.");
     } finally {
       if (requestId === namesRequestVersion.current) {
-        loadingNamesRef.current = false;
         setLoadingNames(false);
-        if (!loadingRowsRef.current) setLoadingStartedAt(null);
+        setLoadingStartedAt(null);
       }
     }
   }
 
-  function chooseCustomer(customer: CustomerNameMatch) {
-    setSelectedCustomer(customer);
-    setSearchTerm(customer.customerName);
-    setCustomers([]);
-    setAllNamesVisible(false);
-    void loadRows({ customerId: customer.customerId, term: customer.customerName });
-  }
-
-  function searchAllMatches() {
-    const term = searchTerm.trim();
-    if (!term) {
-      inputRef.current?.focus();
-      return;
-    }
-    setSelectedCustomer(null);
-    setAllNamesVisible(false);
-    void loadRows({ term, page: 1 });
-  }
-
-  const visibleSuggestions = customers.slice(0, 30);
-  const namesRowHeight = 30;
-  const firstVisibleName = Math.max(0, Math.floor(namesScrollTop / namesRowHeight) - 8);
+  const namesRowHeight = variant === "customers" ? 22 : 30;
+  const firstVisibleName = Math.max(0, Math.min(displayedNames.length - 1, Math.floor(namesScrollTop / namesRowHeight) - 8));
   const visibleNameCount = Math.ceil(namesViewportHeight / namesRowHeight) + 16;
-  const lastVisibleName = Math.min(customers.length, firstVisibleName + visibleNameCount);
-  const visibleAllNames = customers.slice(firstVisibleName, lastVisibleName);
+  const lastVisibleName = Math.min(displayedNames.length, firstVisibleName + visibleNameCount);
+  const visibleAllNames = displayedNames.slice(firstVisibleName, lastVisibleName);
 
   return (
-    <main className="ac-customer-name-search">
-      <header className="ac-customer-name-search-header">
+    <main className={`ac-customer-name-search${variant === "customers" ? " ac-customer-search-1-results" : ""}`}>
+      {variant === "names" && <header className="ac-customer-name-search-header">
         <h1>Customer Name Search</h1>
         <span className="ac-customer-name-search-status" role="status" aria-live="polite">
-          {loadingRows ? "Loading customer data…" : loadingNames ? "Searching names…" : allNamesVisible ? `${customers.length.toLocaleString()} customer names loaded` : rows.length ? `${rows.length.toLocaleString()} customer${rows.length === 1 ? "" : "s"} displayed · ${total.toLocaleString()} matching` : "Search by customer name"}
+          {loadingNames ? "Loading customers…" : allNamesVisible ? `${customers.length.toLocaleString()} customers loaded${allNamesLoadMs !== null ? ` in ${(allNamesLoadMs / 1000).toFixed(2)} seconds` : ""}` : "Load all names to browse customers"}
         </span>
-      </header>
+      </header>}
 
       <section className="ac-customer-name-search-panel">
-        <label htmlFor="customer-name-query">Customer name</label>
-        <div className="ac-customer-name-search-search-row">
-          <div className="ac-customer-name-search-input-wrap">
-            <Search size={17} aria-hidden="true" />
-            <input
-              ref={inputRef}
-              id="customer-name-query"
-              autoFocus
-              autoComplete="off"
-              maxLength={100}
-              role="combobox"
-              aria-expanded={dropdownOpen && customers.length > 0}
-              aria-controls="customer-name-options"
-              aria-autocomplete="list"
-              placeholder="Start typing a customer name…"
-              value={searchTerm}
-              onFocus={() => customers.length > 0 && setDropdownOpen(true)}
-              onChange={(event) => {
-                requestVersion.current += 1;
-                namesRequestVersion.current += 1;
-                loadingRowsRef.current = false;
-                loadingNamesRef.current = false;
-                setLoadingRows(false);
-                setLoadingNames(false);
-                setLoadingStartedAt(null);
-                setSearchTerm(event.target.value);
-                setSelectedCustomer(null);
-                setRows([]);
-                setTotal(0);
-                setAllNamesVisible(false);
-                setDropdownOpen(Boolean(event.target.value.trim()));
-              }}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  event.preventDefault();
-                  searchAllMatches();
-                }
-                if (event.key === "Escape") setDropdownOpen(false);
-              }}
-            />
-            {searchTerm && (
-              <button data-action-status="complete" type="button" aria-label="Clear search" onClick={() => {
-                requestVersion.current += 1;
-                namesRequestVersion.current += 1;
-                loadingRowsRef.current = false;
-                loadingNamesRef.current = false;
-                setLoadingRows(false);
-                setLoadingNames(false);
-                setLoadingStartedAt(null);
-                setSearchTerm("");
-                setSelectedCustomer(null);
-                setRows([]);
-                setTotal(0);
-                setAllNamesVisible(false);
-              }}>
-                <X size={16} aria-hidden="true" />
-              </button>
-            )}
-            {dropdownOpen && customers.length > 0 && (
-              <div id="customer-name-options" className="ac-customer-name-search-dropdown" role="listbox" aria-label="Matching customers">
-                {visibleSuggestions.map((customer) => (
-                  <button
-                    data-action-status="complete"
-                    type="button"
-                    role="option"
-                    aria-selected={selectedCustomer?.customerId === customer.customerId}
-                    key={customer.customerId}
-                    onMouseDown={(event) => event.preventDefault()}
-                    onClick={() => chooseCustomer(customer)}
-                  >
-                    {customer.customerName}
-                  </button>
-                ))}
-                {customers.length > visibleSuggestions.length && (
-                  <div className="ac-customer-name-search-dropdown-note">
-                    Showing {visibleSuggestions.length} of {customers.length.toLocaleString()} names. Type more to narrow the list.
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-          <button data-action-status="complete" type="button" className="ac-btn ac-btn-xs" onClick={searchAllMatches} disabled={loadingRows || !searchTerm.trim()}>
-            Search all matches
-          </button>
+        {variant === "names" && <div className="ac-customer-name-search-search-row">
           <button data-action-status="complete" type="button" className="ac-btn ac-btn-xs" onClick={() => void loadAllNames()} disabled={isLoading}>
-            Load all names
+            {loadingNames ? "Loading…" : "Load all names"}
           </button>
-        </div>
-        <p>Type to find matching names, select one to load its full customer row, or choose Load all names to browse every customer name. Search all matches loads full rows for the entered name.</p>
-        {selectedCustomer && <div className="ac-customer-name-search-selected">Selected: {selectedCustomer.customerName}</div>}
+        </div>}
         {error && <div className="ac-customer-name-search-error" role="alert">{error}</div>}
+        {allNamesVisible && variant === "names" && (
+          <div>
+            <label htmlFor="loaded-customer-query">Search loaded customers</label>
+            <div className="ac-customer-name-search-search-row">
+              <div className="ac-customer-name-search-input-wrap">
+                <Search size={17} aria-hidden="true" />
+                <input id="loaded-customer-query" type="search" autoComplete="off" placeholder="Type any part of a customer name…" value={loadedCustomerSearch}
+                  onChange={event => { setLoadedCustomerSearch(event.target.value); resetNamesScroll(); }} />
+                {loadedCustomerSearch && <button type="button" aria-label="Clear loaded customer search" onClick={() => { setLoadedCustomerSearch(""); resetNamesScroll(); }}><X size={16} aria-hidden="true" /></button>}
+              </div>
+              <span role="status" aria-live="polite">Showing {displayedNames.length.toLocaleString()} of {customers.length.toLocaleString()} customers</span>
+            </div>
+          </div>
+        )}
+        {allNamesVisible && (Object.keys(columnFilters).length > 0 || summarySort) && (
+          <div className="ac-customer-name-search-paging">
+            <button type="button" className="ac-btn ac-btn-xs" onClick={() => { setColumnFilters({}); setSummarySort(null); resetNamesScroll(); }}>Clear sorting and filters</button>
+          </div>
+        )}
 
         {allNamesVisible ? (
           <div ref={allNamesListRef} className="ac-customer-name-search-all-names" aria-label="All customer names" onScroll={(event) => setNamesScrollTop(event.currentTarget.scrollTop)}>
+            <div className="ac-customer-name-search-summary-header" style={summaryGridStyle}>
+              {summaryColumns.map(column => <CustomerNameColumnHeader key={column.key} columnKey={column.key} label={column.label} kind={column.kind}
+                getValues={() => customers.map(customer => summaryValue(customer, column.key))}
+                selected={columnFilters[column.key]} sort={summarySort?.key === column.key ? summarySort.direction : undefined}
+                onFilter={values => { setColumnFilters(current => { const next = { ...current }; if (values === undefined) delete next[column.key]; else next[column.key] = values; return next; }); resetNamesScroll(); }}
+                onSort={direction => { setSummarySort({ key: column.key, direction }); resetNamesScroll(); }} />)}
+            </div>
+            {displayedNames.length === 0 && <div className="ac-customer-name-search-empty">No customers match your search and selected filters.</div>}
             {firstVisibleName > 0 && <div aria-hidden="true" style={{ height: firstVisibleName * namesRowHeight }} />}
             {visibleAllNames.map((customer) => (
-              <button key={customer.customerId} type="button" className="ac-customer-name-search-all-name" onClick={() => chooseCustomer(customer)}>
-                {customer.customerName}
-              </button>
-            ))}
-            {lastVisibleName < customers.length && <div aria-hidden="true" style={{ height: (customers.length - lastVisibleName) * namesRowHeight }} />}
-          </div>
-        ) : <div className="ac-customer-name-search-table-wrap" aria-busy={loadingRows}>
-          {loadingRows ? (
-            <div className="ac-customer-name-search-empty">Loading customer data…</div>
-          ) : rows.length === 0 ? (
-            <div className="ac-customer-name-search-empty">
-              {rowsSearchTerm
-                ? `No customer data matches “${rowsSearchTerm}”.`
-                : selectedCustomer
-                  ? `No Customer Search row was returned for “${selectedCustomer.customerName}”.`
-                  : "Choose a customer name or search for all matching customers."}
-            </div>
-          ) : (
-            <>
-              <div className="ac-customer-name-search-data-grid">
-                <table className="ac-customer-name-search-data-table">
-                  <thead><tr>{CUSTOMER_SEARCH_COLUMNS.map((column) => <th key={column.key}>{column.label}</th>)}</tr></thead>
-                  <tbody>
-                    {rows.map((row) => (
-                      <tr key={row.customerId}>
-                        {CUSTOMER_SEARCH_COLUMNS.map((column) => <td key={column.key} title={displayCell(row, column.key)}>{displayCell(row, column.key)}</td>)}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div key={customer.customerId} className="ac-customer-name-search-all-name" style={{ ...summaryGridStyle, cursor: "default" }}>
+                {summaryColumns.map(column => {
+                  const value = summaryValue(customer, column.key);
+                  return <span key={column.key} data-column={column.key} title={value}>
+                    {variant === "customers" && column.key === "customerName"
+                      ? <Link href={`/customers/${customer.customerId}`} prefetch={false}>{value || "—"}</Link>
+                      : (column.key === "futureCallHistory" || column.key === "lastActionNote") && value
+                      ? <button type="button" style={{ border: 0, padding: 0, background: "transparent", color: "inherit", font: "inherit", cursor: "pointer", maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                          aria-label={`Read ${column.label} for ${customer.customerName}`}
+                          onClick={() => setDetail({ label: `${customer.customerName} — ${column.label}`, text: value })}>{value}</button>
+                      : value || "—"}
+                  </span>;
+                })}
               </div>
-              {rowsSearchTerm && total > 1_000 && (
-                <div className="ac-customer-name-search-paging">
-                  <span>Showing {(page - 1) * 1_000 + 1}–{Math.min(page * 1_000, total)} of {total.toLocaleString()}</span>
-                  <button data-action-status="complete" type="button" className="ac-btn ac-btn-xs" disabled={page <= 1 || loadingRows} onClick={() => void loadRows({ term: rowsSearchTerm, page: page - 1 })}>Previous</button>
-                  <button data-action-status="complete" type="button" className="ac-btn ac-btn-xs" disabled={!hasMore || loadingRows} onClick={() => void loadRows({ term: rowsSearchTerm, page: page + 1 })}>Next</button>
-                </div>
-              )}
-            </>
-          )}
+            ))}
+            {lastVisibleName < displayedNames.length && <div aria-hidden="true" style={{ height: (displayedNames.length - lastVisibleName) * namesRowHeight }} />}
+          </div>
+        ) : <div className="ac-customer-name-search-empty" aria-busy={loadingNames}>
+          {loadingNames ? "Loading customers…" : "Click Load all names to browse and search customers."}
         </div>}
+        {allNamesVisible && <footer className="ac-customer-search-1-count ac-recordbar" role="status" aria-live="polite">
+          <strong>Fetched: {(fetchedCount ?? customers.length).toLocaleString()} customers</strong>
+          <span>Matching: {displayedNames.length.toLocaleString()}</span>
+          {allNamesLoadMs !== null && <span>Load time: {(allNamesLoadMs / 1000).toFixed(2)} seconds</span>}
+        </footer>}
       </section>
+      {detail && <dialog ref={detailDialog} onClose={() => setDetail(null)} aria-labelledby="customer-name-detail-title"
+        style={{ position: "fixed", inset: 0, margin: "auto", padding: 20, width: "min(800px, 90vw)", maxHeight: "80vh", overflow: "auto", border: "1px solid #94a3b8", background: "white", color: "#111" }}>
+        <h2 id="customer-name-detail-title">{detail.label}</h2>
+        <pre style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere", font: "13px Arial, sans-serif", margin: "16px 0" }}>{detail.text}</pre>
+        <form method="dialog"><button type="submit" autoFocus className="ac-btn ac-btn-xs">Close</button></form>
+      </dialog>}
       {showLoadingDialog && isLoading && (
         <div className="ac-customer-name-loading-overlay" role="status" aria-live="polite">
           <div className="ac-customer-name-loading-dialog">

@@ -15,8 +15,8 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   const week = await resolveTrackingWeek();
 
   return (
-    <AppShell userDisplayName={session.user?.displayName} fillViewport>
-      <div className="ac-dashboard">
+    <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth compactHeader>
+      <div className="ac-dashboard-reference">
         <AccessMainMenu week={week} activeView={activeView} />
       </div>
     </AppShell>

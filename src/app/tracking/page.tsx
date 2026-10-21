@@ -66,8 +66,8 @@ export default async function TrackingPage({ searchParams }: PageProps) {
   ]);
 
   return (
-    <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth>
-      <div className="ac-tracking-page flex min-h-0 flex-1 flex-col">
+    <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth compactHeader>
+      <div className="ac-tracking-page ac-tracking-reference flex min-h-0 flex-1 flex-col">
         <TrackingScreen
           key={`${week.assignYear}-${week.assignWeek}-${customerId}-${projectId}`}
           week={week}

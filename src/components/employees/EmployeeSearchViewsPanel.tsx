@@ -34,6 +34,8 @@ import {
 import type { FilterOption } from "@/types/search";
 
 interface EmployeeSearchViewsPanelProps {
+  onTradeChange?: (tradeId: string) => void;
+  onSort?: () => void;
   trades: FilterOption[];
   statuses: FilterOption[];
   grades: FilterOption[];
@@ -145,7 +147,7 @@ function PresetGrid({
   );
 }
 
-function Views1Tab({ trades, currentTradeId }: Pick<EmployeeSearchViewsPanelProps, "trades" | "currentTradeId">) {
+function Views1Tab({ trades, currentTradeId, onTradeChange, onSort }: Pick<EmployeeSearchViewsPanelProps, "trades" | "currentTradeId" | "onTradeChange" | "onSort">) {
   return (
     <div className="ac-employee-search-views-1 ac-search-views-tab-pane">
       <div className="ac-employee-search-filter-row">
@@ -153,7 +155,7 @@ function Views1Tab({ trades, currentTradeId }: Pick<EmployeeSearchViewsPanelProp
           <option value="">&lt;Dates&gt;</option>
           <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.dates} />
         </select>
-        <AccessButton data-action-status="missing" xs className="ac-employee-search-date-btn">
+        <AccessButton data-action-status={onSort ? "complete" : "missing"} onClick={onSort} xs className="ac-employee-search-date-btn">
           Wk End Dt
         </AccessButton>
         <button data-action-status="missing" type="button" className="ac-employee-search-entry-dt-link">
@@ -177,7 +179,8 @@ function Views1Tab({ trades, currentTradeId }: Pick<EmployeeSearchViewsPanelProp
         </select>
         <select
           className="ac-select ac-employee-search-row-select ac-employee-search-trade-select"
-          defaultValue={currentTradeId}
+          value={currentTradeId}
+          onChange={event => onTradeChange?.(event.target.value)}
           aria-label="Trade"
         >
           <option value="">&lt;Trade&gt;</option>
@@ -790,7 +793,7 @@ export function EmployeeSearchViewsPanel(props: EmployeeSearchViewsPanelProps) {
         <div className="ac-customer-search-views-tab ac-employee-search-views-tab">
           <div className="ac-employee-search-views-body">
             {activeTab === 0 ? (
-              <Views1Tab trades={props.trades} currentTradeId={props.currentTradeId} />
+              <Views1Tab trades={props.trades} currentTradeId={props.currentTradeId} onTradeChange={props.onTradeChange} onSort={props.onSort} />
             ) : (
               TAB_CONTENT[activeTab - 1]()
             )}

@@ -5,23 +5,26 @@ import { createPortal } from "react-dom";
 
 interface EmployeeSearchColumnHeaderProps {
   label: string;
-  values: string[];
+  values?: string[];
+  getValues?: () => string[];
 }
 
 const SAMPLE_VALUES = ["Betolinos", "Cardinal Medieros Pkwy", "Leland House Waltham", "Penrose ORLEANS"];
 
 export function EmployeeSearchColumnHeader({
   label,
-  values,
+  values = [],
+  getValues,
 }: EmployeeSearchColumnHeaderProps) {
   const [open, setOpen] = useState(false);
+  const [loadedValues, setLoadedValues] = useState<string[] | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const [menuPosition, setMenuPosition] = useState({ left: 0, top: 0 });
   const options = useMemo(() => {
-    const actual = [...new Set(values.filter(Boolean))].slice(0, 12);
+    const actual = [...new Set((loadedValues ?? values).filter(Boolean))].slice(0, 12);
     return ["(Blanks)", ...(actual.length > 0 ? actual : SAMPLE_VALUES)];
-  }, [values]);
+  }, [values, loadedValues]);
   const [selected, setSelected] = useState(() => new Set(options));
 
   useEffect(() => {
@@ -73,6 +76,11 @@ export function EmployeeSearchColumnHeader({
     if (open) {
       setOpen(false);
       return;
+    }
+    if (getValues) {
+      const nextValues = getValues();
+      setLoadedValues(nextValues);
+      setSelected(new Set(["(Blanks)", ...[...new Set(nextValues.filter(Boolean))].slice(0, 12)]));
     }
     const rect = containerRef.current?.getBoundingClientRect();
     if (rect) {

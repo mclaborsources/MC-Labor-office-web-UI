@@ -7,6 +7,7 @@ const PROTECTED_PREFIXES = [
   "/tracking",
   "/employees",
   "/customers",
+  "/customer-search-1",
   "/jobs",
   "/dashboard",
   "/customer-menu",

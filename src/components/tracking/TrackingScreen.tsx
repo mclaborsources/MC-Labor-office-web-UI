@@ -98,8 +98,9 @@ const TRACKING_REPORT_OPTIONS_2 = [
 ];
 
 const LEGACY_SEARCH_OPTIONS = [
+  { label: "Main Menu", href: "/dashboard" },
   { label: "All Contacts Search", href: "/all-contacts-search" },
-  { label: "Customer Search", href: "/customers" },
+  { label: "Customer Search 1", href: "/customer-search-1" },
   { label: "[Main] Employee Search 3", href: "/employees" },
   { label: "[Main] Employee Search 3 NEW", href: "/employees" },
   { label: "Permits Search", href: "/customer-permits" },
@@ -303,7 +304,9 @@ function renderCell(col: GridCol, row: TrackingPreviewRow) {
   const val = String(row[col.key] ?? "");
   const gradeFields: (keyof TrackingPreviewRow)[] = ["jobApp", "osha", "health", "firstName", "middleInitial", "lastName", "city", "cell", "gradeChange", "wccState", "wcc", "oh"];
   const foreground = gradeFields.includes(col.key) ? trackingGradeColor(row.grade ?? row.gradeChange) : undefined;
-  const display = val || "—";
+  const display = col.key === "invoiceAmount" && row.invoiceAmount !== undefined
+    ? row.invoiceAmount.toLocaleString("en-US", { style: "currency", currency: "USD" })
+    : val || "—";
   const isCheck =
     col.key === "infoSent" ||
     col.key === "directionsEmail" ||
@@ -915,7 +918,7 @@ export function TrackingScreen({
               </AccessButton>
             </div>
 
-            <div>
+            <div className="ac-tracking-assigned-customer">
               <div className="ac-flabel">Assigned Cust</div>
               <div className="flex items-center gap-1">
                 <select
@@ -935,7 +938,7 @@ export function TrackingScreen({
       </div>
     </div>
 
-            <div>
+            <div className="ac-tracking-assigned-job">
               <div className="ac-flabel">Assigned Job</div>
               <div className="flex items-center gap-1">
                 <select
@@ -959,23 +962,19 @@ export function TrackingScreen({
               </div>
             </div>
 
-            <div>
+            <div className="ac-tracking-assignment-actions">
               <div className="ac-flabel">Assignment</div>
               <AccessButtonRow>
                 <AccessButton data-action-status="linked" onClick={() => { window.dispatchEvent(new Event(ROUTE_LOADING_EVENT)); router.push("/employee-quick-search"); }}>New</AccessButton>
                 <AccessButton data-action-status="complete" disabled={!selected} onClick={() => setReportMessage("Ending an assignment is unavailable until database writes are enabled.")}>End</AccessButton>
                 <AccessButton data-action-status="complete" disabled={!selected} onClick={() => setReportMessage("Transferring an assignment is unavailable until database writes are enabled.")}>Transfer</AccessButton>
               </AccessButtonRow>
-              <AccessButtonRow>
-                <AccessButton data-action-status="linked" xs className="ac-tracking-assign-cell" onClick={() => router.push("/phone-number-search")}>
-                  Cell # Search
-                </AccessButton>
-              </AccessButtonRow>
             </div>
 
-            <AccessButtonRow>
+            <AccessButtonRow className="ac-tracking-assignment-links">
               <AccessButton data-action-status="complete" onClick={() => setTrackingTab("ts-history")}>T Sheets HL</AccessButton>
               <AccessButton data-action-status="linked" onClick={() => router.push("/invoice-search")}>View Invoice</AccessButton>
+              <AccessButton data-action-status="linked" xs className="ac-tracking-assign-cell" onClick={() => router.push("/phone-number-search")}>Cell # Search</AccessButton>
             </AccessButtonRow>
           </aside>
 

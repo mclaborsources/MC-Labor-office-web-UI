@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { HelpCircle, Table2 } from "lucide-react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { CustomerSearchViewsPanel } from "@/components/customers/CustomerSearchViewsPanel";
@@ -18,6 +18,12 @@ import type { CustomerSearchRow } from "@/types/customer";
 import type { FilterOption } from "@/types/search";
 
 interface CustomerSearchScreenProps {
+  title?: string;
+  basePath?: string;
+  results?: ReactNode;
+  filterRow?: ReactNode;
+  onClearResultFilters?: () => void;
+  onSidebarSearchChange?: (values: Record<string, string>) => void;
   customers: CustomerSearchRow[];
   loadError?: string;
   salesmen: FilterOption[];
@@ -333,7 +339,11 @@ const CUSTOMER_SEARCH_SIDE_ROWS = [
 function CustomerSearchSidebar({
   searchValues,
   preservedFilters,
+  basePath = "/customers",
+  onSearchChange,
 }: {
+  onSearchChange?: (values: Record<string, string>) => void;
+  basePath?: string;
   searchValues: Record<string, string>;
   preservedFilters: Record<string, string>;
 }) {
@@ -378,7 +388,9 @@ function CustomerSearchSidebar({
         <div className="ac-customer-search-side-label" aria-hidden>
           Search
         </div>
-        <form className="ac-customer-search-side-main" action="/customers" method="get">
+        <form className="ac-customer-search-side-main" action={basePath} method="get"
+          onChange={onSearchChange ? event => onSearchChange(Object.fromEntries(Array.from(new FormData(event.currentTarget).entries()).map(([key, value]) => [key, String(value)]))) : undefined}
+          onSubmit={onSearchChange ? event => { event.preventDefault(); onSearchChange(Object.fromEntries(Array.from(new FormData(event.currentTarget).entries()).map(([key, value]) => [key, String(value)]))); } : undefined}>
           {Object.entries(preservedFilters).map(([key, value]) => value ? (
             <input key={key} type="hidden" name={key} value={value} />
           ) : null)}
@@ -506,6 +518,12 @@ function CustomerSearchUtilityRail() {
 }
 
 export function CustomerSearchScreen({
+  title = "Customer Search",
+  basePath = "/customers",
+  results,
+  filterRow,
+  onClearResultFilters,
+  onSidebarSearchChange,
   customers,
   loadError,
   salesmen,
@@ -561,7 +579,7 @@ export function CustomerSearchScreen({
       <CustomerPlaceholderControls />
       <div className="ac-customer-search ac-tracking--modern flex min-h-0 flex-1 flex-col">
         <div className="ac-customer-search-titlebar shrink-0">
-          <span className="ac-customer-search-title">Customer Search</span>
+          <span className="ac-customer-search-title">{title}</span>
           <AccessButton data-action-status="missing" xs disabled>
             New
           </AccessButton>
@@ -571,6 +589,8 @@ export function CustomerSearchScreen({
           <div className="ac-panel ac-panel-elevated ac-customer-search-shell min-h-0 flex-1">
             <div className="ac-customer-search-shell-inner">
               <CustomerSearchSidebar
+                onSearchChange={onSidebarSearchChange}
+                basePath={basePath}
                 searchValues={{
                   customerName: currentCustomerName,
                   customerPhone: currentCustomerPhone,
@@ -593,6 +613,7 @@ export function CustomerSearchScreen({
               />
 
               <CustomerSearchViewsPanel
+                filterRow={filterRow}
                 salesmen={salesmen}
                 customerTypes={customerTypes}
                 statuses={statuses}
@@ -610,7 +631,7 @@ export function CustomerSearchScreen({
 
               <CustomerSearchUtilityRail />
             </div>
-            <CustomerSearchActionBar hoveredColumn={hoveredColumn} onClearFilters={() => setColumnFilters({})} />
+            <CustomerSearchActionBar hoveredColumn={hoveredColumn} onClearFilters={() => { setColumnFilters({}); onClearResultFilters?.(); }} />
           </div>
 
           <div className="ac-panel ac-panel-elevated ac-customer-search-results-panel min-h-0 flex-1">
@@ -618,7 +639,7 @@ export function CustomerSearchScreen({
             {loadError ? (
               <ErrorAlert title="Could not load customers" message={loadError} />
             ) : (
-              <Suspense
+              results ?? <Suspense
                 fallback={
                   <div className="ac-panel p-3">
                     <Spinner label="Loading customers…" />

@@ -1,19 +1,22 @@
+"use client";
+
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, useState, type ReactNode } from "react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { EmployeeSearchViewsPanel, EmployeeSearchUtilityRail } from "@/components/employees/EmployeeSearchViewsPanel";
-import { EmployeeSearchColumnHeader } from "@/components/employees/EmployeeSearchColumnHeader";
+import { EmployeeSearchTable } from "./EmployeeSearchTable";
 import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { Spinner } from "@/components/ui/Spinner";
-import {
-  EMPLOYEE_SEARCH_DEFAULT_COLUMNS,
-  type EmployeeSearchColumnKey,
-} from "@/lib/employeeSearchColumns";
 import type { EmployeeSummary } from "@/types/employee";
 import type { FilterOption } from "@/types/search";
-import { EmployeeNameCell } from "@/components/employees/EmployeeNameCell";
 
-interface EmployeeSearchScreenProps {
+export interface EmployeeSearchScreenProps {
+  results?: ReactNode;
+  onEmployeeSearch?: (values: Record<string, string>) => void;
+  onClearFilters?: () => void;
+  onSort?: () => void;
+  onTradeChange?: (tradeId: string) => void;
+  searchResetVersion?: number;
   employees: EmployeeSummary[];
   loadError?: string;
   trades: FilterOption[];
@@ -29,136 +32,6 @@ interface EmployeeSearchScreenProps {
   currentState: string;
 }
 
-function cellValue(row: EmployeeSummary, key: EmployeeSearchColumnKey): string {
-  const accessValue = row.accessFields[key];
-  if (accessValue !== undefined && accessValue !== "") return accessValue;
-
-  const map: Partial<Record<EmployeeSearchColumnKey, string | undefined>> = {
-    EmployeeID: row.employeeId,
-    EmEmployeeStatus: row.status,
-    EmployeeUserFlag5: row.userFlag5,
-    OnlineJobAppFolder: "Online",
-    S1: row.s1,
-    EmployeeProfileType: row.profileType,
-    EmFirstName: row.firstName,
-    EmMiddle: row.middleInitial,
-    EmLastName: row.lastName,
-    EmStreet: row.street,
-    EmCity: row.city,
-    EmState: row.state,
-    EmMobilePhone: row.cellPhone,
-    EmGrade: row.grade,
-    EmHowReferred: row.howReferred,
-    EmTrade: row.trade,
-    EmQualification: row.qualification,
-    AvgHrsWorked: row.averageInterview,
-    FirstDateOnJob: row.fda,
-    TotalHoursWorked: row.thw,
-    LicenseExpDateFlag: row.licenseExpiration,
-    WeekEndingDate: row.weekEnding,
-    PayRate: row.payRate,
-    PayrollCoOnSiteInitials: row.payrollCompany,
-  };
-  return map[key] ?? "";
-}
-
-function EmployeeSearchTable({ employees }: { employees: EmployeeSummary[] }) {
-  const columns = EMPLOYEE_SEARCH_DEFAULT_COLUMNS;
-  return (
-    <div className="ac-customer-search-grid-wrap ac-employee-search-grid-wrap">
-      <div className="ac-grid ac-grid-tracking ac-customer-search-grid ac-employee-search-grid mc-scroll-smooth">
-        <table>
-          <colgroup>
-            {columns.map((col) => (
-              <col
-                key={col.key}
-                style={{ width: `${col.width}px`, minWidth: `${col.width}px` }}
-              />
-            ))}
-          </colgroup>
-          <thead>
-            <tr>
-              {columns.map((col) => (
-                <th key={col.key}>
-                  <EmployeeSearchColumnHeader
-                    label={col.label}
-                    values={employees.map((row) => cellValue(row, col.key))}
-                  />
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {employees.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={columns.length}
-                  className="!whitespace-normal py-6 text-center italic text-[#7a7a7a]"
-                >
-                  No employees found. Try adjusting your search or clearing the filters.
-                </td>
-              </tr>
-            ) : (
-              employees.map((row) => (
-                <tr key={row.employeeId}>
-                  {columns.map((col) => {
-                    if (col.key === "ActionSelect") {
-                      return (
-                        <td key={col.key} className="ac-employee-search-row-selector">
-                          {row.employeeId === employees[0]?.employeeId ? "â–¶" : ""}
-                        </td>
-                      );
-                    }
-                    if (col.key === "EmFirstName" || col.key === "EmLastName") {
-                      return (
-                        <td key={col.key} className="font-semibold">
-                          <EmployeeNameCell employeeId={row.employeeId} name={col.key === "EmFirstName" ? row.firstName : row.lastName} />
-                        </td>
-                      );
-                    }
-                    if (col.key === "OnlineJobAppFolder") {
-                      return (
-                        <td key={col.key} className="ac-employee-search-col-online">
-                          {cellValue(row, col.key) || "â€”"}
-                        </td>
-                      );
-                    }
-                    const value = cellValue(row, col.key);
-                    const columnClass =
-                      col.key === "EmployeeNoCommunicationText"
-                        ? "ac-employee-search-col-alert"
-                        : col.key === "EmMobilePhoneVerifyText"
-                        ? "ac-employee-search-col-cell"
-                        : col.key === "EmQualification"
-                          ? "ac-employee-search-col-qualification"
-                          : col.key === "LicenseExpDateFlag"
-                            ? "ac-employee-search-col-license"
-                            : col.key === "WeekEndingDate"
-                              ? "ac-employee-search-col-week-end"
-                              : undefined;
-                    return (
-                      <td key={col.key} className={columnClass}>
-                        {value}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-      <div className="ac-recordbar ac-customer-search-recordbar">
-        <span className="font-mono">
-          Record: |â—„ â—„ {employees.length === 0 ? 0 : 1} of {employees.length} â–º â–º|
-        </span>
-        <span className="text-[#7a7a7a]">Unfiltered</span>
-        <span className="ml-auto text-[#7a7a7a]">Max 300 per page</span>
-      </div>
-    </div>
-  );
-}
-
 const EMPLOYEE_SEARCH_SIDE_ROWS = [
   { label: "Name", employee: true, contact: true },
   { label: "Cell #", employee: true, contact: true },
@@ -167,7 +40,9 @@ const EMPLOYEE_SEARCH_SIDE_ROWS = [
   { label: "Lic #", employee: true, contact: false },
 ] as const;
 
-function EmployeeSearchSidebar() {
+function EmployeeSearchSidebar({ onSearch, resetVersion = 0 }: { onSearch?: (values: Record<string, string>) => void; resetVersion?: number }) {
+  const [useButton, setUseButton] = useState(false);
+  const values = (form: HTMLFormElement) => Object.fromEntries(Array.from(new FormData(form)).map(([key, value]) => [key, String(value)]));
   return (
     <aside className="ac-customer-search-sidebar ac-employee-search-sidebar shrink-0">
       <div className="ac-customer-search-screen-size">
@@ -193,7 +68,7 @@ function EmployeeSearchSidebar() {
         <div className="ac-customer-search-side-label" aria-hidden>
           Search
         </div>
-        <div className="ac-customer-search-side-main">
+        <form key={resetVersion} className="ac-customer-search-side-main" onSubmit={event => { event.preventDefault(); onSearch?.(values(event.currentTarget)); }} onChange={event => { if (!useButton) onSearch?.(values(event.currentTarget)); }}>
           <div className="ac-customer-search-side-grid-area">
             <div className="ac-customer-search-side-grid">
               <div className="ac-customer-search-side-corner" />
@@ -205,9 +80,10 @@ function EmployeeSearchSidebar() {
                   <div className="ac-customer-search-side-field-label">{row.label}:</div>
                   {row.employee ? (
                     <input
-                      readOnly
+                      readOnly={!onSearch}
                       className="ac-input ac-customer-search-side-input"
-                      value=""
+                      name={row.label}
+                      defaultValue=""
                       aria-label={`Employee ${row.label}`}
                     />
                   ) : (
@@ -228,17 +104,17 @@ function EmployeeSearchSidebar() {
             </div>
 
             <div className="ac-customer-search-side-search-col">
-              <AccessButton data-action-status="missing" xs className="ac-customer-search-side-search-btn">
+              <AccessButton data-action-status={onSearch ? "complete" : "missing"} type="submit" xs className="ac-customer-search-side-search-btn">
                 Search
               </AccessButton>
               <div className="ac-customer-search-use-button">
                 <span className="ac-customer-search-use-button-label">Use Button</span>
                 <label className="ac-customer-search-use-radio">
-                  <input type="radio" name="emp-use-button" defaultChecked />
+                  <input type="radio" name="emp-use-button" checked={useButton} onChange={() => setUseButton(true)} />
                   <span>Yes</span>
                 </label>
                 <label className="ac-customer-search-use-radio">
-                  <input type="radio" name="emp-use-button" />
+                  <input type="radio" name="emp-use-button" checked={!useButton} onChange={() => setUseButton(false)} />
                   <span>No</span>
                 </label>
               </div>
@@ -251,13 +127,13 @@ function EmployeeSearchSidebar() {
               Text All #
             </AccessButton>
           </div>
-        </div>
+        </form>
       </div>
     </aside>
   );
 }
 
-function EmployeeGridToolbar() {
+function EmployeeGridToolbar({ onClearFilters, onSort }: Pick<EmployeeSearchScreenProps, "onClearFilters" | "onSort">) {
   return (
     <div className="ac-employee-search-grid-toolbar shrink-0">
       <div className="ac-customer-search-action-group">
@@ -309,10 +185,8 @@ function EmployeeGridToolbar() {
         <span className="ac-flabel">Go To:</span>
         <input readOnly className="ac-input" aria-label="Go To" />
       </label>
-      <Link href="/employees">
-        <AccessButton data-action-status="linked" xs>Clear Filters</AccessButton>
-      </Link>
-      <AccessButton data-action-status="missing" xs>
+      {onClearFilters ? <AccessButton data-action-status="complete" onClick={onClearFilters} xs>Clear Filters</AccessButton> : <Link href="/employees"><AccessButton data-action-status="linked" xs>Clear Filters</AccessButton></Link>}
+      <AccessButton data-action-status={onSort ? "complete" : "missing"} onClick={onSort} xs>
         Sort
       </AccessButton>
       <AccessButton data-action-status="missing" xs className="ac-employee-search-delete-employee-btn">
@@ -323,6 +197,12 @@ function EmployeeGridToolbar() {
 }
 
 export function EmployeeSearchScreen({
+  onEmployeeSearch,
+  onClearFilters,
+  onSort,
+  onTradeChange,
+  searchResetVersion,
+  results: resultsContent,
   employees,
   loadError,
   trades,
@@ -356,8 +236,10 @@ export function EmployeeSearchScreen({
         <div className="ac-customer-search-body min-h-0 flex-1 flex-col">
           <div className="ac-panel ac-panel-elevated ac-customer-search-shell ac-employee-search-shell min-h-0 flex-1">
             <div className="ac-customer-search-shell-inner">
-              <EmployeeSearchSidebar />
+              <EmployeeSearchSidebar onSearch={onEmployeeSearch} resetVersion={searchResetVersion} />
               <EmployeeSearchViewsPanel
+                onTradeChange={onTradeChange}
+                onSort={onSort}
                 trades={trades}
                 statuses={statuses}
                 grades={grades}
@@ -375,7 +257,7 @@ export function EmployeeSearchScreen({
           </div>
 
           <div className="ac-panel ac-panel-elevated ac-employee-search-grid-panel shrink-0">
-            <EmployeeGridToolbar />
+            <EmployeeGridToolbar onClearFilters={onClearFilters} onSort={onSort} />
           </div>
 
           <div className="ac-panel ac-panel-elevated ac-customer-search-results-panel ac-employee-search-results-panel min-h-0 flex-1">
@@ -390,7 +272,7 @@ export function EmployeeSearchScreen({
                     </div>
                   }
                 >
-                  <EmployeeSearchTable employees={employees} />
+                  {resultsContent ?? <EmployeeSearchTable employees={employees} />}
                 </Suspense>
               )}
             </div>

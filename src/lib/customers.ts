@@ -1,4 +1,6 @@
 import { queryReadOnly } from "@/lib/db/sql";
+import { loadCustomerNameMatches } from "@/lib/customerNameSearchData";
+import type { CustomerNameMatch } from "@/lib/customerNameSearchColumns";
 import type {
   CustomerSummary,
   CustomerSearchRow,
@@ -664,33 +666,14 @@ export async function getCustomers(
 }
 
 export interface CustomerNameSearchResult {
-  data: Array<{ customerId: string; customerName: string }>;
+  data: CustomerNameMatch[];
 }
 
-/** Lightweight name-only search. It returns all matches, never full customer rows. */
+/** Uncapped customer list including sales, history, and primary-contact fields. */
 export async function searchCustomerNames(searchTerm: string, includeAll = false): Promise<CustomerNameSearchResult> {
   const namePattern = likePrefix(searchTerm);
   if (!namePattern && !includeAll) return { data: [] };
-
-  const rows = await queryReadOnly<{ CustomerID: unknown; CustomerName: string | null }>(
-    `SELECT
-       c.CustomerID,
-       ISNULL(c.CustBusName, '') AS CustomerName
-     FROM tblCustomer c WITH (NOLOCK)
-     WHERE ${namePattern ? "c.CustBusName LIKE @namePattern ESCAPE '~' AND" : ""}
-       LEN(LTRIM(RTRIM(ISNULL(c.CustBusName, '')))) > 1
-       AND c.CustBusName NOT IN ('-', '--', '---')
-     ORDER BY c.CustBusName, c.CustomerID
-     OPTION (RECOMPILE)`,
-    namePattern ? [{ name: "namePattern", value: namePattern }] : undefined,
-  );
-
-  return {
-    data: rows.map((row) => ({
-      customerId: safeStr(row.CustomerID),
-      customerName: safeStr(row.CustomerName),
-    })),
-  };
+  return { data: await loadCustomerNameMatches(namePattern) };
 }
 
 export async function getCustomerSearchRows(

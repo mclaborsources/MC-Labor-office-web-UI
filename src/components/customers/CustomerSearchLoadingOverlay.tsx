@@ -24,7 +24,7 @@ export function CustomerSearchLoadingOverlay() {
           Elapsed time: <strong>{(elapsedTenths / 10).toFixed(1)} seconds</strong>
         </div>
         {elapsedTenths >= 100 && (
-          <p className="ac-customer-loading-slow">The database is still processing this request.</p>
+          <p className="ac-customer-loading-slow">Still loading and preparing the page…</p>
         )}
       </div>
     </div>

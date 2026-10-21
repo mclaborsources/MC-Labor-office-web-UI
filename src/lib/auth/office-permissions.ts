@@ -2,6 +2,7 @@ import type { OfficeFeature } from "./office-staff";
 
 const objects: Record<string, string[]> = {
   tracking: ["frmTrackingEdit"], customers: ["frmCustomerSearch"],
+  "customer-search-1": ["frmCustomerSearch"],
   "customer-menu": ["frmCustomerMenu"], employees: ["frmEmployeeSearch", "frmEmployeeSearch3"],
   jobs: ["frmProjectSearch"], "employee-bonus-expense-report": ["frmAccumulatedReferralSearch"],
   "contract-report": ["frmContractReportSearch"], "weekly-customer-margin": ["frmWeeklyCustomerMarginReportSearch"],

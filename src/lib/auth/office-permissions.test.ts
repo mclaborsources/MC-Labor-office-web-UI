@@ -24,6 +24,11 @@ test("quick search page and data API use the same Access feature", () => {
   assert.equal(officeRouteAllowed("/api/employees/quick-search", grants), true);
   assert.equal(officeRouteAllowed("/api/employees/quick-search", []), false);
 });
+
+test("Customer Search 1 uses the existing Customer Search feature grant", () => {
+  assert.equal(officeRouteAllowed("/customer-search-1", [feature("frmCustomerSearch")]), true);
+  assert.equal(officeRouteAllowed("/customer-search-1", []), false);
+});
 test("employee detail tabs need their own feature grants", () => {
   const grants = [feature("frmEmployeeDataEntry")];
   assert.equal(officeRouteAllowed("/employees/123", grants), true);

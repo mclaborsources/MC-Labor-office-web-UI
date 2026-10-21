@@ -7,6 +7,8 @@ export type EmployeeSearchColumnKey = (typeof EMPLOYEE_SEARCH_COLUMNS)[number]["
 
 const DEFAULT_VIEW_COLUMN_DEFINITION = [
   ["ActionSelect", ""],
+  ["PayrollCoOnSiteInitials_IPG", "IF"],
+  ["JobApplicationStatus_IPG", "IPC"],
   ["EmployeeUserFlag5", "User Flag 5"],
   ["OnlineJobAppFolder", "O("],
   ["S1", "S1"],
