@@ -16142,6 +16142,9 @@ button[data-action-status="missing"], button[data-action-status="partial"] {
 .ac-access-menu-shortcuts { position:absolute; left:67.6%; top:599px; width:28%; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); grid-auto-rows:41px; gap:16px 20px; }
 .ac-access-menu-shortcuts > .ac-access-menu-button { height:41px; font-weight:bold; font-size:12px; }
 .ac-access-menu-shortcuts > .ac-access-menu-exit { grid-column:1 / -1; color:red; font-weight:normal; }
+.ac-access-menu-shortcuts > .ac-access-menu-logout { background:#c62828; color:#fff; border-color:#e57373 #8e1717 #8e1717 #e57373; font-weight:bold; }
+.ac-access-menu-shortcuts > .ac-access-menu-logout:hover { background:#a61f1f; }
+.ac-access-menu-shortcuts > .ac-access-menu-logout:disabled { opacity:.7; cursor:wait; }
 .ac-access-menu-screen-controls { position:absolute; top:795px; left:31.4%; width:285px; height:54px; box-sizing:border-box; display:flex; align-items:center; gap:4px; padding:3px; border:1px solid #fff; }
 .ac-access-menu-screen-controls > button { height:46px; }
 .ac-access-menu-screen-controls > span { white-space:nowrap; flex:none; }
@@ -16358,3 +16361,17 @@ html.mc-route-busy,html.mc-route-busy *,html.mc-employee-search-busy,html.mc-emp
 .ac-customer-records-loading-detail { font-size: 11px; color: #607184; margin-top: 8px; }
 @keyframes ac-customer-records-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .ac-customer-records-spinner { animation: none; } .ac-customer-records-loading .ac-customer-loading-bar { animation: none; } }
+
+.ac-logout-dialog { margin:auto; width:min(430px,calc(100vw - 32px)); padding:0; border:1px solid #a9b1bc; border-radius:8px; background:#fff; color:#243043; box-shadow:0 18px 60px #0004; font:14px Arial,sans-serif; }
+.ac-logout-dialog::backdrop { background:#18233280; }
+.ac-logout-dialog > header { padding:20px 24px 0; }
+.ac-logout-dialog h2 { margin:0; font-size:19px; font-weight:700; }
+.ac-logout-dialog-body { padding:12px 24px 22px; line-height:1.5; }
+.ac-logout-dialog-body p { margin:0; }
+.ac-logout-dialog-body .ac-logout-dialog-error { margin-top:14px; padding:10px 12px; background:#fff1f1; border:1px solid #fecaca; border-radius:4px; color:#a51e24; }
+.ac-logout-dialog > footer { display:flex; justify-content:flex-end; gap:10px; padding:14px 24px; background:#f4f6f8; border-top:1px solid #e0e5eb; }
+.ac-logout-dialog .ac-access-menu-button { min-height:34px; padding:6px 14px; border-radius:4px; font:13px Arial,sans-serif; }
+.ac-logout-dialog .ac-logout-dialog-confirm { background:#c62828; color:white; border-color:#b71c1c; }
+.ac-logout-dialog .ac-logout-dialog-confirm:hover { background:#a61f1f; }
+.ac-logout-dialog button:disabled { opacity:.65; cursor:wait; }
+.ac-logout-dialog button:focus-visible { outline:2px solid #2367a3; outline-offset:3px; }

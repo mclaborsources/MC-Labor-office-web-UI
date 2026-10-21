@@ -22,6 +22,8 @@ test("reference main menu retains all eight policy views, live documents and wor
   assert.match(html, /ac-access-menu-work-canvas/);
   assert.match(html, /logo_dashboard/);
   assert.match(html, /MC Labor eagle with American and Irish flags/);
+  assert.match(html, /ac-access-menu-logout[^>]*>Logout<\/button>/);
+  assert.doesNotMatch(html, />Exit Database</);
   assert.doesNotMatch(html, /ac-main-menu-hero/);
   assert.doesNotMatch(html, /Delete Blank Employees|Lock Weeks|Update Chrome Driver|Fix System Resource|Show Alerts screen/);
 });

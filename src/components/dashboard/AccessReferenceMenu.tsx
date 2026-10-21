@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { CircleHelp } from "lucide-react";
 import { DashboardRichText } from "./DashboardRichText";
 import { DASHBOARD_VIEW_IDS, dashboardViewLabel, type DashboardViewId } from "@/lib/dashboardViews";
@@ -15,6 +15,9 @@ export function AccessReferenceMenu({ activeView, policy, notes, trackingHref, t
 }) {
   const [arrows, setArrows] = useState(false);
   const [size, setSize] = useState("normal");
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [logoutError, setLogoutError] = useState("");
+  const logoutDialog = useRef<HTMLDialogElement>(null);
   return <div className="ac-access-menu" data-screen-size={size}>
     <nav className="ac-access-menu-views" aria-label="Company policy views">
       {DASHBOARD_VIEW_IDS.map(id => <button key={id} type="button" className="ac-access-menu-button" aria-pressed={id === activeView} onClick={() => {
@@ -51,17 +54,38 @@ export function AccessReferenceMenu({ activeView, policy, notes, trackingHref, t
       <div className="ac-access-menu-document"><DashboardRichText html={notes} emptyMessage="No company history notes configured." /></div>
     </section>
     <section className="ac-access-menu-shortcuts" aria-label="Search and utilities">
-      <button className="ac-access-menu-button ac-access-menu-exit" onClick={async () => {
-        const response = await fetch("/api/auth/logout", { method: "POST" });
-        if (response.ok) window.location.href = "/login";
-        else window.alert("Logout could not be completed. Please retry.");
-      }}>Exit Database</button>
+      <button type="button" className="ac-access-menu-button ac-access-menu-exit ac-access-menu-logout" disabled={loggingOut} onClick={() => {
+        setLogoutError("");
+        logoutDialog.current?.showModal();
+      }}>Logout</button>
       <Link href="/customers" className="ac-access-menu-button">Customer Search</Link><Link href="/employees" className="ac-access-menu-button">Employee Search</Link>
       <Link href="/customer-search-1" className="ac-access-menu-button">Customer Search 1</Link><Link href="/customers/name-search" className="ac-access-menu-button">Customer Name Search</Link>
       <Link href="/employee-licenses" className="ac-access-menu-button">Licensed Employee Search</Link>
     </section>
     <div className="ac-access-menu-screen-controls"><span>Screen Size</span><button className="ac-access-menu-button" aria-pressed={size === "normal"} onClick={() => setSize("normal")}>Normal</button><div>{[1, 2, 3, 4].map(n => <div key={n}><button className="ac-access-menu-button" aria-pressed={size === String(n)} onClick={() => setSize(String(n))}>{n}</button></div>)}</div></div>
     <div className="ac-access-menu-resource"><div>Size MB<span>{resourceSizeMb}</span></div><div>Max<span>2000</span></div></div>
+    <dialog ref={logoutDialog} className="ac-logout-dialog" aria-labelledby="logout-title" aria-describedby="logout-description" onCancel={event => { if (loggingOut) event.preventDefault(); }}>
+      <header><h2 id="logout-title">Log out of MC Labor?</h2></header>
+      <div className="ac-logout-dialog-body">
+        <p id="logout-description">You will return to the login page. You can sign in again whenever you are ready.</p>
+        {logoutError && <p className="ac-logout-dialog-error" role="alert">{logoutError}</p>}
+      </div>
+      <footer>
+        <button type="button" className="ac-access-menu-button" disabled={loggingOut} onClick={() => logoutDialog.current?.close()}>Stay signed in</button>
+        <button type="button" className="ac-access-menu-button ac-logout-dialog-confirm" disabled={loggingOut} onClick={async () => {
+          setLoggingOut(true);
+          setLogoutError("");
+          try {
+            const response = await fetch("/api/auth/logout", { method: "POST" });
+            if (!response.ok) throw new Error("Logout failed");
+            window.location.replace("/login");
+          } catch {
+            setLoggingOut(false);
+            setLogoutError("We couldn’t log you out. Please try again.");
+          }
+        }}>{loggingOut ? "Logging out…" : "Log out"}</button>
+      </footer>
+    </dialog>
     {children}
   </div>;
 }
