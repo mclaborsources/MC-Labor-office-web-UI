@@ -1,6 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { EmployeeInfoPanel } from "./EmployeeInfoPanel";
+import { DashboardShortcutsDialog } from "@/components/dashboard/DashboardShortcutsDialog";
+import { CircleHelp, Copy } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { EmployeeDetail, EmployeeSummary } from "@/types/employee";
@@ -53,11 +56,12 @@ export function EmployeeRecordScreen({ employee, employeeOptions = [], initialVi
         <Field label="First" value={employee.firstName} />
         <Field label="MI" value={employee.middleInitial} />
         <Field label="Last" value={employee.lastName} />
-        <Field label="Grade" value={employee.grade} />
-        <Field label="Status" value={employee.status} />
+        <label className="er-field er-grade-field"><span>Grade</span><select aria-label="Grade" defaultValue={employee.grade}><option>{employee.grade}</option></select></label>
+        <label className="er-field"><span>Status</span><select aria-label="Status" defaultValue={employee.status}><option>{employee.status}</option></select></label>
         <label className="er-placeholder"><input type="checkbox" checked={employee.profileType.toLowerCase().includes("placeholder")} readOnly /> Is Placeholder</label>
         <div className="er-add">Add New: <button data-action-status="missing" disabled>Placeholder</button><button data-action-status="missing" disabled>Employee</button><button data-action-status="missing" disabled>SUB</button></div>
-        <Link className="er-back" href="/employees">Employee Search</Link>
+        <div className="er-identity-tools"><input aria-label="Employee entry date" readOnly value={employee.accessFields.EmEntryDate ?? ""} /><div><button type="button" aria-label="Copy employee name" onClick={() => void navigator.clipboard.writeText(displayName)}><Copy size={14} /></button><button type="button" className="er-google" onClick={() => window.open(`https://www.google.com/search?q=${encodeURIComponent(displayName)}`, "_blank", "noopener,noreferrer")}>G</button></div><button type="button" disabled>Add SUB</button></div>
+        <button type="button" className="er-save" disabled title="Employee record editing is not connected">Save</button>
       </div>
       <div className="er-toolbar">
         <div className="er-view-tabs" role="tablist" aria-label="Employee record views">
@@ -84,6 +88,7 @@ export function EmployeeRecordScreen({ employee, employeeOptions = [], initialVi
           <div className="er-audit"><table><thead><tr><th>User</th><th>Date</th><th>Time</th><th>Sec</th></tr></thead><tbody><tr><td colSpan={4} className="er-audit-empty">No activity loaded</td></tr></tbody></table></div>
           <button data-action-status="partial" onClick={() => setMessage("Work history is not available for this employee yet.")}>Work History</button><button data-action-status="partial" onClick={() => setMessage("Form letter is not available for this employee yet.")}>Form Letter</button><Link className="er-job-application-link" href="/website-application">Job Application Screen</Link>
           <div className="er-copy"><button data-action-status="complete" onClick={async () => { try { await navigator.clipboard.writeText(displayName); setMessage("Employee name copied."); } catch { setMessage("Could not copy employee name."); } }}>Copy for Mobile App | 042</button><input readOnly value={displayName} aria-label="Employee name for mobile app" /></div>
+          <div className="er-header-icons"><DashboardShortcutsDialog /><button type="button" aria-label="Employee help" onClick={() => setMessage("Select an employee section above to view its details.")}><CircleHelp size={18} /></button></div>
           <button data-action-status="complete" className="er-delete" onClick={() => setMessage("Delete is disabled here to protect employee records.")}>Delete</button>
         </div>}
         {tab !== "Payroll" && tab !== "Quick Search" && tab !== "Others" && <nav className="er-sections" aria-label="Employee detail sections">{sections.map(item => <button data-action-status="complete" key={item} className={section === item ? "selected" : ""} onClick={() => setSection(item)}>{item}</button>)}</nav>}
@@ -113,32 +118,7 @@ export function EmployeeRecordScreen({ employee, employeeOptions = [], initialVi
         <div className="er-contact-history-tools"><span>Update History:</span>{["Year to Date", "Previous Year to Date", "Pre Previous Year to Date", "All"].map(x => <button data-action-status="missing" key={x} disabled>{x}</button>)}<span>Filter:</span>{["Call", "Custom Email", "Custom Text", "Custom Letter", "Custom Postcard", "All"].map(x => <button data-action-status="missing" key={x} disabled>{x}</button>)}<button data-action-status="missing" disabled>Browse for Response File</button><button data-action-status="missing" disabled>Open Response Folder</button></div>
         <div className="er-contact-history-grid"><table><thead><tr>{["Action Type", "User", "Date", "", "To", "Notes", "Response HL", "User", "Date"].map((x,i)=><th key={i}>{x}</th>)}</tr></thead><tbody><tr><td colSpan={9}>No contact history available</td></tr>{Array.from({length:4},(_,i)=><tr key={i}><td colSpan={9} /></tr>)}</tbody></table></div>
         <div className="er-contact-footer"><label>Em History Status<input readOnly value={employee.accessFields.EmployeeContactHistoryActionType ?? ""} /></label><label>Future Call<input readOnly value={employee.accessFields.EmployeeFutureCall ?? ""} /></label><button data-action-status="missing" disabled>Clear Future Call</button><label>Call #<input readOnly value={employee.accessFields.CallNumberID ?? ""} /></label><button data-action-status="missing" disabled>History</button><small>User　　Date</small></div>
-      </div> : section === sections[0] ? <>
-        <div className="er-contact-left">
-          <Field label="How Referred" value={employee.howReferred} />
-          <Field label="Where Found" value={employee.accessFields.WhereFound} />
-          <Field label="Street" value={employee.address} />
-          <Field label="City, State" value={[employee.city, employee.state].filter(Boolean).join(", ")} />
-          <Field label="Zip" value={employee.zip} />
-          <label className="er-check"><input type="checkbox" readOnly /> Different Mailing Address</label>
-          <Field label="Cell Phone" value={employee.cellPhone} />
-          <Field label="Email" value={employee.email} wide />
-        </div>
-        <div className="er-phones">
-          <div className="er-phone-head er-mobile-head"><span /><span /><strong>Mobile Phone #</strong><span /><strong>User</strong><strong>Date</strong><strong>Text Msg Addr</strong><strong>No Comm</strong><strong>User</strong><strong>Date</strong><strong>Valid</strong><strong>Verify Primary Mobile #</strong></div>
-          {employee.phoneRows.map((phone, index) => <div className="er-phone-row" key={index}><input type="radio" name="primary-mobile" aria-label={"Set mobile " + (index + 1) + " primary"} checked={index === 0 && Boolean(phone.number)} readOnly /><b>{index + 1}</b><input readOnly value={phone.number} /><button data-action-status="complete" aria-label={"Copy mobile phone " + (index + 1)} onClick={async () => { if (phone.number) try { await navigator.clipboard.writeText(phone.number); setMessage("Mobile phone copied."); } catch { setMessage("Could not copy mobile phone."); } }}>Copy</button><input readOnly value={phone.user} /><input readOnly value={phone.date} /><input readOnly value={phone.textAddress} /><input type="checkbox" aria-label={"No communication for mobile " + (index + 1)} checked={phone.noCommunication} readOnly /><input readOnly /><input readOnly /><input type="checkbox" aria-label={"Valid mobile " + (index + 1)} checked={phone.valid} readOnly /><input type="checkbox" aria-label={"Verify primary mobile " + (index + 1)} checked={phone.verifyPrimary} readOnly /></div>)}
-          <p>Select a Mobile Phone # first</p>
-          <div className="er-phone-head er-home-head"><span /><span /><strong>Home Phone #</strong><strong>Valid</strong><strong>Verify Primary Home #</strong></div>
-          {[1, 2, 3, 4].map(n => <div className="er-phone-row er-home-row" key={n}><input type="radio" name="primary-home" aria-label={"Set home " + n + " primary"} checked={n === 1 && Boolean(n === 1 ? employee.homePhone : employee.accessFields["EmHomePhone" + n])} readOnly /><b>{n}</b><input readOnly value={n === 1 ? employee.homePhone : employee.accessFields["EmHomePhone" + n] ?? ""} /><input type="checkbox" aria-label={"Valid home phone " + n} checked={n === 1 && employee.accessFields.EmHomePhoneVerifyText === "1"} readOnly /><input type="checkbox" aria-label={"Verify primary home phone " + n} checked={n === 1 && employee.accessFields.VerifyPrimaryHomePhone === "1"} readOnly /></div>)}
-          <p>Select a Home Phone # first</p>
-        </div>
-        <div className="er-notes">
-          <h3>Employee Notes</h3><button data-action-status="complete" onClick={() => setMessage(employee.notes.length ? "Employee notes are shown below." : "This employee has no saved notes.")}>Edit Notes</button>
-          <table><thead><tr>{["User", "Date", "Note Type", "Review Type", "Customer Assigned", "Assignment Date", "Notes"].map(x => <th key={x}>{x}</th>)}</tr></thead><tbody>{employee.notes.length ? employee.notes.map((note, i) => <tr key={note.date + "-" + i}><td>{note.user}</td><td>{note.date}</td><td>{note.noteType}</td><td>{note.reviewType}</td><td>{note.customer}</td><td>{note.assignmentDate}</td><td>{note.note}</td></tr>) : <tr><td colSpan={7}>No saved employee notes</td></tr>}</tbody></table>
-          <label>Folder<input readOnly value="" /></label><button data-action-status="complete" onClick={() => setMessage("No employee folder is linked to this record.")}>Open Employee Folder</button><button data-action-status="complete" onClick={() => setMessage("No employee face sheet is linked to this record.")}>Open Employee Face Sheet</button>
-        </div>
-        <div className="er-additional"><Field label="Trade" value={employee.trade} /><Field label="Profile Type" value={employee.profileType} /><Field label="Assignment" value={employee.currentAssignment} wide /></div>
-      </> : <div className="er-other-section"><h2>{section}</h2>{section === "10 Rates" ? <table><thead><tr>{["Field", "Old", "New", "Note", "Changed By", "Changed On"].map(x=><th key={x}>{x}</th>)}</tr></thead><tbody>{employee.rates.map(r=><tr key={r.rateId}><td>{r.field}</td><td>{r.oldRate}</td><td>{r.newRate}</td><td>{r.note}</td><td>{r.changedBy}</td><td>{r.changedOn}</td></tr>)}</tbody></table> : <p>There is no {section} information available in the connected employee record.</p>}</div>}
+      </div> : section === sections[0] ? <EmployeeInfoPanel employee={employee} onMessage={setMessage} tradeOptions={tradeOptions} qualificationOptions={qualificationOptions} /> : <div className="er-other-section"><h2>{section}</h2>{section === "10 Rates" ? <table><thead><tr>{["Field", "Old", "New", "Note", "Changed By", "Changed On"].map(x=><th key={x}>{x}</th>)}</tr></thead><tbody>{employee.rates.map(r=><tr key={r.rateId}><td>{r.field}</td><td>{r.oldRate}</td><td>{r.newRate}</td><td>{r.note}</td><td>{r.changedBy}</td><td>{r.changedOn}</td></tr>)}</tbody></table> : <p>There is no {section} information available in the connected employee record.</p>}</div>}
     </div>
     {message && <div className="er-message" role="status">{message}<button data-action-status="complete" onClick={() => setMessage("")}>Ã—</button></div>}
   </section>;

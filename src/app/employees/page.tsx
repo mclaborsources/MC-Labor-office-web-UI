@@ -10,8 +10,8 @@ export default async function EmployeesPage({ searchParams }: PageProps) {
     getSessionOrDefault(), searchParams,
     getEmployeeFilterOptions().catch(() => ({ trades: [], statuses: [], grades: [], cities: [], states: [] })),
   ]);
-  return <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth>
-    <EmployeeSearchLoader key={JSON.stringify(params)} {...options}
+  return <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth compactHeader>
+    <EmployeeSearchLoader cacheScope={JSON.stringify([session.user?.userId, session.officeStaffLoginId, session.loginGeneration])} key={JSON.stringify(params)} {...options}
       currentSearch={params.search ?? ""} currentTradeId={params.tradeId ?? ""}
       currentStatusId={params.statusId ?? ""} currentGradeId={params.gradeId ?? ""}
       currentCity={params.city ?? ""} currentState={params.state ?? ""} />

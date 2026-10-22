@@ -4,6 +4,8 @@ import { OfficeUserPresence } from "@/components/tracking/OfficeUserPresence";
 import { TRACKING_JOB_ACTION_ROUTES } from "@/lib/trackingJobActionRoutes";
 
 import Link from "next/link";
+import { CircleHelp } from "lucide-react";
+import { DashboardShortcutsDialog } from "@/components/dashboard/DashboardShortcutsDialog";
 import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useMemo, useRef, useState, type FocusEvent } from "react";
 import { dailyTotal, filterTrackingRows, groupTrackingRows, trackingJobKey, trackingDays } from "@/lib/trackingGrid";
@@ -19,6 +21,7 @@ import type {
 import { AccessButton } from "@/components/access/AccessButton";
 import { AccessToolbar, AccessButtonRow, AccessToolbarDivider } from "@/components/access/AccessToolbar";
 import { AccessTabStrip } from "@/components/access/AccessTabStrip";
+import { TrackingDataTable } from "./TrackingDataTable";
 import { TrackingJobTabBody } from "@/components/tracking/TrackingJobTabPanels";
 import { NewJobApplicationModal } from "@/components/tracking/NewJobApplicationModal";
 import { CopyPerDiemScreen, type PerDiemDestination } from "@/components/reports/CopyPerDiemScreen";
@@ -139,16 +142,15 @@ const LEGACY_ADMIN_OPTIONS = [
   { label: "Deleted Employees", href: "/deleted-employees" },
 ] as const;
 
-const STATUS_SWATCHES = ["#22a06b", "#ffffff", "#f4c20d", "#4a90e2"];
+const STATUS_SWATCHES = ["#22b14c", "#ffffff", "#ffc90e", "#42b6e9", "#ef8490"];
 const PALETTE_SWATCHES = [
-  "#9ca3af",
   "#ffffff",
-  "#f4c20d",
-  "#22a06b",
-  "#4a90e2",
-  "#7a5bd6",
-  "#f08fb0",
-  "#e8553e",
+  "#ffff66",
+  "#66ff66",
+  "#ffbf55",
+  "#c5a9df",
+  "#42b6e9",
+  "#ef8490",
 ];
 
 const JOB_INFO_TABS = [
@@ -376,7 +378,7 @@ function JobInfoField({
       <div
         className={`ac-readonly ac-tracking-field-box${highlight ? " ac-tracking-field-box--highlight" : ""}`}
       >
-        {value || "—"}
+        {value}
       </div>
     </div>
   );
@@ -485,8 +487,8 @@ function JobInfoTabPanel({
             <tbody>
               {gradeRows.map((r, i) => (
                 <tr key={i}>
-                  <td>{r.grade || "—"}</td>
-                  <td className="text-right">{r.rate || "—"}</td>
+                  <td>{r.grade}</td>
+                  <td className="text-right">{r.rate}</td>
                 </tr>
               ))}
             </tbody>
@@ -535,7 +537,7 @@ export function TrackingScreen({
   const [reportMessage, setReportMessage] = useState("");
   const [jobInfoTab, setJobInfoTab] = useState("job-info");
   const [trackingTab, setTrackingTab] = useState("tracking");
-  const [browsedCustomerId, setBrowsedCustomerId] = useState(selectedCustomerId || customers[0]?.customerId || "");
+  const [browsedCustomerId, setBrowsedCustomerId] = useState(selectedCustomerId || "");
   const customerPosition = customers.findIndex(customer => customer.customerId === browsedCustomerId);
   const browsedCustomer = customers[customerPosition];
   function browseCustomer(position: number) {
@@ -886,11 +888,15 @@ export function TrackingScreen({
         ))}
         <AccessButton data-action-status="linked"
           variant="go"
-          className="shrink-0"
+          className="shrink-0 ac-tracking-payroll-report"
           onClick={() => window.open("/wcc-payroll", "_blank", "noopener,noreferrer")}
         >
           WCC Payroll / Sales Report by Customer
         </AccessButton>
+        <div className="ac-tracking-toolbar-icons">
+          <DashboardShortcutsDialog />
+          <button type="button" aria-label="Tracking help" title="Tracking help" onClick={() => setReportMessage("Choose a week, customer, and job to view assignments. Double-click an employee to open their record.")}><CircleHelp size={18} /></button>
+        </div>
       </AccessToolbar>
 
       {reportMessage && <p role="status" className="ac-report-menu-status">{reportMessage}</p>}
@@ -923,10 +929,11 @@ export function TrackingScreen({
               <div className="flex items-center gap-1">
                 <select
                   className="ac-select ac-tracking-select--customer min-w-0 flex-1"
+                  aria-label="Assigned customer"
                   value={selectedCustomerId}
                   onChange={(e) => navigateFilter(e.target.value, "")}
                 >
-                  <option value="">Select customer…</option>
+                  <option value="" />
                   {customers.map((c) => (
                     <option key={c.customerId} value={c.customerId}>
                       {c.label} ({c.rowCount})
@@ -943,6 +950,7 @@ export function TrackingScreen({
               <div className="flex items-center gap-1">
                 <select
                   className="ac-select min-w-0 flex-1"
+                  aria-label="Assigned job"
                   value={selectedProjectId}
                   onChange={(e) => {
                     const job = jobs.find((option) => option.projectId === e.target.value);
@@ -950,7 +958,7 @@ export function TrackingScreen({
                     else navigateFilter(selectedCustomerId, "");
                   }}
                 >
-                  <option value="">Select job…</option>
+                  <option value="" />
                   {jobs.map((j) => (
                     <option key={j.projectId} value={j.projectId}>
                       {j.label}
@@ -1065,11 +1073,12 @@ export function TrackingScreen({
             <AccessButton data-action-status="linked" disabled={!selected} onClick={() => composeText(`Hours/timesheet reminder for week ending ${week.weekEndingDate}.`)}>Hrs AutoText</AccessButton>
             <AccessButton data-action-status="linked" disabled={!selected} onClick={openEmployee}>Payroll Change</AccessButton>
             <AccessToolbarDivider />
-            <span className="ac-tracking-refresh-label">Refresh</span>
+            <div className="ac-tracking-refresh-group"><span className="ac-tracking-refresh-label">Refresh</span>
             <AccessButton data-action-status="linked" onClick={() => { setQuery(""); setEmployeeFilter(""); navigateFilter("", ""); router.refresh(); }}>All</AccessButton>
             <AccessButton data-action-status="complete" onClick={() => { setQuery(""); setEmployeeFilter(""); router.refresh(); }}>Job</AccessButton>
             <AccessButton data-action-status="complete" disabled={!selected} onClick={() => { if (selected) setEmployeeFilter(selected.employeeId); router.refresh(); }}>Emp</AccessButton>
-            <AccessButton data-action-status="complete" disabled={!selected} onClick={() => setReportMessage("Deleting an assignment is unavailable until database writes are enabled.")}>Delete</AccessButton>
+            </div>
+            <AccessButton data-action-status="complete" className="ac-tracking-delete-assignment" disabled={!selected} onClick={() => setReportMessage("Deleting an assignment is unavailable until database writes are enabled.")}>Delete</AccessButton>
             <AccessToolbarDivider />
             <div className="ac-tracking-record-nav">
               <AccessButton data-action-status="complete" xs aria-label="First customer" disabled={!customers.length || customerPosition === 0} onClick={() => browseCustomer(0)}>
@@ -1084,7 +1093,7 @@ export function TrackingScreen({
                 disabled={!browsedCustomer}
                 title={browsedCustomer ? `Load tracking data for ${browsedCustomer.label}` : "No customers for this week"}
                 onClick={() => { if (browsedCustomer) { setQuery(""); setEmployeeFilter(""); navigateFilter(browsedCustomer.customerId, ""); router.refresh(); } }}
-              >{browsedCustomer?.label || "No customers"}</AccessButton>
+              >{browsedCustomer?.label || ""}</AccessButton>
               <AccessButton data-action-status="complete" xs aria-label="Next customer" disabled={!customers.length || customerPosition >= customers.length-1} onClick={() => browseCustomer(customerPosition+1)}>
                 ►
               </AccessButton>
@@ -1114,7 +1123,7 @@ export function TrackingScreen({
       {trackingTab === "tracking" ? (
         <div className="ac-tracking-grid-shell flex min-h-0 flex-1 flex-col">
           <div className="ac-grid ac-grid-tracking ac-tracking-grouped mc-scroll-smooth min-h-0 flex-1">
-            <table>
+            <TrackingDataTable columns={GRID_COLUMNS.map(headerLabel)}>
               <thead>
                 <tr>
                   {GRID_COLUMNS.map((col, i) => (
@@ -1155,7 +1164,7 @@ export function TrackingScreen({
                   ))
                 )}
               </tbody>
-            </table>
+            </TrackingDataTable>
           </div>
           <div className="ac-recordbar shrink-0">
             <span className="font-mono text-slate-600">
@@ -1181,7 +1190,7 @@ export function TrackingScreen({
       ) : (
         <div className="ac-tracking-grid-shell flex min-h-0 flex-1 flex-col">
           <div className={`ac-grid ac-grid-tracking ac-grid-tracking-detail ac-grid-tracking-${trackingTab} ${["hours", "hours2", "benefits"].includes(trackingTab) ? "ac-tracking-grouped" : ""} min-h-0 flex-1 overflow-auto`}>
-            <table><thead><tr>{activeColumns.map(column => <th key={column.key}><TrackingColumnFilter column={column} rows={preview?.rows ?? []} activeFilter={columnFilters[column.key]} activeSort={sort?.key === column.key ? sort.direction : undefined} onFilter={setColumnFilter} onSort={setColumnSort} /></th>)}
+            <TrackingDataTable columns={activeColumns.map(column => column.label)}><thead><tr>{activeColumns.map(column => <th key={column.key}><TrackingColumnFilter column={column} rows={preview?.rows ?? []} activeFilter={columnFilters[column.key]} activeSort={sort?.key === column.key ? sort.direction : undefined} onFilter={setColumnFilter} onSort={setColumnSort} /></th>)}
             </tr></thead><tbody>{visible.map(({row,index}, rowIndex) => <Fragment key={index}>
               {["hours", "hours2", "benefits"].includes(trackingTab) && (rowIndex === 0 || trackingJobKey(rows[rowIndex - 1]) !== trackingJobKey(row)) && <tr className="ac-tracking-job-heading" aria-label={`${row.customer} — ${row.jobSite}`}><td><span title={`${row.customer} — ${row.jobSite}`}>{row.jobSite || "Unassigned job"}</span></td><td colSpan={trackingTab === "hours" ? 26 : trackingTab === "hours2" ? 29 : 24} /></tr>}
               <tr id={`tracking-row-${index}`} style={["hours", "hours2"].includes(trackingTab) ? { "--tracking-grade-color": trackingGradeColor(row.grade ?? row.gradeChange) ?? "#000" } as React.CSSProperties : undefined} className={`${selectedSourceIndex === index ? "tracking-selected-row" : ""} ${row.placeholder ? "ac-tracking-row-placeholder" : ""}`} onClick={() => setSelectedIndex(index)} onDoubleClick={() => router.push(`/employees/${encodeURIComponent(row.employeeId)}`)}>{!(["hours", "hours2", "benefits"] as string[]).includes(trackingTab) && <><td className="ac-detail-employee"><Link href={`/employees/${encodeURIComponent(row.employeeId)}`}>{row.firstName} {row.lastName}</Link></td><td className="ac-detail-job">{row.jobSite || "—"}</td></>}
@@ -1203,7 +1212,7 @@ export function TrackingScreen({
               </> : <>
                 <td className="ac-detail-date">{row.weekEnding || "—"}</td><td className="ac-detail-history-user">{row.assignmentUser || "—"}</td><td className="ac-detail-timestamp">{row.assignmentTimestamp || "—"}</td><td className="ac-detail-history-user">{row.hrsAutoTextUser || "—"}</td><td className="ac-detail-timestamp">{row.hrsAutoTextTimestamp || "—"}</td><td className="ac-detail-history-user">{row.hlAutoTextUser || "—"}</td><td className="ac-detail-timestamp">{row.hlAutoTextTimestamp || "—"}</td>
               </>}
-            </tr>{rowIndex < visible.length - 1 && <tr className="ac-tracking-row-gap" aria-hidden="true"><td colSpan={trackingTab === "hours" ? 27 : trackingTab === "hours2" ? 30 : trackingTab === "benefits" ? 25 : 9} /></tr>}{["hours", "hours2", "benefits"].includes(trackingTab) && rowIndex < visible.length - 1 && trackingJobKey(row) !== trackingJobKey(rows[rowIndex + 1]) && <tr className="ac-tracking-row-gap" aria-hidden="true"><td colSpan={trackingTab === "hours" ? 27 : trackingTab === "hours2" ? 30 : 25} /></tr>}</Fragment>)}{!rows.length && <tr><td colSpan={trackingTab === "hours" ? 27 : trackingTab === "hours2" ? 30 : trackingTab === "benefits" ? 25 : 11}>{preview === undefined ? "No assignments loaded. Select a customer or use Refresh → All to load this week." : "No assignments match the current week and filters."}</td></tr>}</tbody></table>
+            </tr>{rowIndex < visible.length - 1 && <tr className="ac-tracking-row-gap" aria-hidden="true"><td colSpan={trackingTab === "hours" ? 27 : trackingTab === "hours2" ? 30 : trackingTab === "benefits" ? 25 : 9} /></tr>}{["hours", "hours2", "benefits"].includes(trackingTab) && rowIndex < visible.length - 1 && trackingJobKey(row) !== trackingJobKey(rows[rowIndex + 1]) && <tr className="ac-tracking-row-gap" aria-hidden="true"><td colSpan={trackingTab === "hours" ? 27 : trackingTab === "hours2" ? 30 : 25} /></tr>}</Fragment>)}{!rows.length && <tr><td colSpan={trackingTab === "hours" ? 27 : trackingTab === "hours2" ? 30 : trackingTab === "benefits" ? 25 : 11}>{preview === undefined ? "No assignments loaded. Select a customer or use Refresh → All to load this week." : "No assignments match the current week and filters."}</td></tr>}</tbody></TrackingDataTable>
           </div>
           <div className="ac-recordbar"><span>{rows.length} records · {summaryHours.toFixed(2)} daily hours</span><input type="search" aria-label="Filter tracking rows" className="ac-input" value={query} placeholder="Filter rows…" onChange={e => setQuery(e.target.value)} /><AccessButton data-action-status="complete" xs onClick={() => { setQuery(""); setEmployeeFilter(""); }}>Clear Filters</AccessButton></div>
           <p className="ac-tracking-status">{preview === undefined ? "Waiting for a customer selection or refresh · no tracking rows loaded" : preview.source ? `Live SQL · ${preview.source}` : "SQL unavailable"} · {trackingTab === "ts-history" ? "Assignment and message timestamps for the selected week." : "Values from the loaded tracking assignments."}</p>

@@ -42,6 +42,7 @@ function cellValue(row: EmployeeSummary, key: EmployeeSearchColumnKey): string {
 
 export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, resetVersion = 0, sortResetVersion = 0, fetchedCount }: { employees: EmployeeSummary[]; loadTiming?: { queryMs: number; elapsed: number }; resetVersion?: number; sortResetVersion?: number; fetchedCount?: number }) {
   const columns = EMPLOYEE_SEARCH_DEFAULT_COLUMNS;
+  const [selectedEmployee, setSelectedEmployee] = useState<string>();
   const [filters, setFilters] = useState<Partial<Record<EmployeeSearchColumnKey, string[]>>>({});
   const [sort, setSort] = useState<{ key: EmployeeSearchColumnKey; direction: "asc" | "desc" }>();
   useEffect(() => { setFilters({}); setSort(undefined); }, [resetVersion]);
@@ -111,7 +112,7 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
               </tr>
             ) : (
               visible.map((row) => (
-                <tr key={row.employeeId}>
+                <tr key={row.employeeId} className={(selectedEmployee ?? employees[0]?.employeeId) === row.employeeId ? "is-selected" : undefined} onClick={() => setSelectedEmployee(row.employeeId)}>
                   {columns.map((col) => {
                     if (col.key === "ActionSelect") {
                       return (

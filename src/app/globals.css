@@ -16860,3 +16860,406 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
 .ac-customer-search-date-popup > button { margin-right:8px; }
 .ac-customer-search-page .ac-customer-name-open { color:#000; text-decoration:none; font-weight:400; cursor:default; }
 .ac-customer-search-page .ac-customer-name-open:focus-visible { outline:1px dotted #444; outline-offset:1px; }
+/* Tracking — original Access toolbar, job summary, and assignment grid. */
+.ac-tracking-reference { min-width:0; font:14px Calibri,"Segoe UI",Arial,sans-serif; background:#ececec; }
+.ac-tracking-reference > .ac-tracking { min-width:1900px; background:#ececec; gap:0; }
+.ac-tracking-reference .ac-tracking-toolbar-band.ac-toolbar { height:50px; min-height:50px; padding:8px 6px 4px; gap:7px; border-bottom:1px solid #aaa; background:#ececec!important; overflow:visible; }
+.ac-tracking-reference .ac-tracking.ac-tracking--modern button.ac-btn[data-action-status],
+.ac-tracking-reference .ac-tracking.ac-tracking--modern a[href] button.ac-btn[data-action-status] { background:#eee!important; border:1px solid!important; border-color:#fff #777 #777 #fff!important; border-radius:0; color:#000!important; box-shadow:1px 1px 0 #bbb; font:400 14px/18px Calibri,"Segoe UI",Arial,sans-serif; }
+.ac-tracking-reference .ac-tracking-toolbar-band.ac-toolbar .ac-btn { height:29px; min-height:29px; padding:2px 8px; }
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-toolbar-band button.ac-tracking-toolbar-alert[data-action-status] { color:red!important; }
+.ac-tracking-reference .ac-tracking-toolbar-band .ac-select { height:25px; min-height:25px; font:14px Calibri,"Segoe UI",Arial,sans-serif; border:1px solid; border-color:#999 #fff #fff #999; background:#d0d4dd; border-radius:0; box-shadow:inset 1px 1px 0 #aaa; }
+.ac-tracking-reference .ac-tracking-toolbar-band .ac-select:nth-of-type(1) { margin-right:12px; }
+.ac-tracking-reference .ac-tracking-toolbar-band .ac-select:nth-of-type(2) { margin-right:12px; }
+.ac-tracking-reference .ac-tracking-toolbar-band .ac-tracking-payroll-report.ac-btn { width:157px; height:37px; min-height:37px; white-space:normal; font-size:12px; line-height:14px; }
+.ac-tracking-toolbar-icons { margin-left:auto; display:flex; align-items:center; gap:7px; padding-left:12px; }
+.ac-tracking-toolbar-icons > button { display:flex; align-items:center; justify-content:center; width:31px; height:31px; background:#fff; border:3px solid #20b63c; color:#000; }
+.ac-tracking-toolbar-icons > button:last-of-type { border-color:#e5b900; color:blue; }
+.ac-tracking-toolbar-icons .ac-shortcuts-titlebar { height:32px; flex:none; display:flex; align-items:center; gap:8px; padding:0 8px; background:#edf3f8; }
+.ac-tracking-toolbar-icons .ac-shortcuts-titlebar button { margin-left:auto; border:0; background:transparent; font-size:20px; }
+.ac-tracking-toolbar-icons .ac-shortcuts-footer button { width:18px; height:20px; padding:0; border:0; background:transparent; }
+.ac-tracking-reference .ac-tracking-filter-panel.ac-panel { height:193px; min-height:193px; max-height:193px; background:#ececec; overflow:visible; }
+.ac-tracking-reference .ac-tracking-filter-panel--tall .ac-tracking-job-shell { height:193px; min-height:193px; max-height:193px; grid-template-columns:375px minmax(800px,1fr) 360px; gap:6px; background:#ececec; }
+.ac-tracking-reference .ac-tracking-col-assign,.ac-tracking-reference .ac-tracking-col-detail,.ac-tracking-reference .ac-tracking-summary-rail { background:#ececec; }
+.ac-tracking-reference .ac-tracking-col-assign { padding:10px 7px 8px; gap:7px; }
+.ac-tracking-reference .ac-flabel,.ac-tracking-reference .ac-tracking-job-shell .ac-flabel { color:#000; font:400 14px/18px Calibri,"Segoe UI",Arial,sans-serif; }
+.ac-tracking-reference .ac-input,.ac-tracking-reference .ac-select,.ac-tracking-reference .ac-readonly { border:1px solid; border-color:#888 #fff #fff #888; border-radius:0; box-shadow:inset 1px 1px 0 #b9b9b9; font:400 14px/20px Calibri,"Segoe UI",Arial,sans-serif; }
+.ac-tracking-reference .ac-tracking-top-field--date { flex:0 0 140px; }
+.ac-tracking-reference .ac-tracking-top-field--week { flex:0 0 78px; }
+.ac-tracking-reference .ac-tracking-top-field--date input { width:98px; font:14px Calibri,"Segoe UI",Arial,sans-serif; }
+.ac-tracking-reference .ac-tracking-top-row .ac-tracking-top-empl { width:125px; min-width:125px; font-size:13px!important; padding:0 5px; }
+.ac-tracking-reference .ac-tracking-assigned-customer,.ac-tracking-reference .ac-tracking-assigned-job,.ac-tracking-reference .ac-tracking-assignment-actions { grid-template-columns:86px minmax(0,1fr); }
+.ac-tracking-reference .ac-tracking-select--customer { width:192px; }
+.ac-tracking-reference .ac-tracking-assigned-customer button[aria-label="Open customers"],.ac-tracking-reference .ac-tracking-assigned-job button[aria-label="Open jobs"] { color:red!important; width:25px; min-width:25px; padding:0!important; }
+.ac-tracking-reference .ac-tracking-assigned-job .ac-btn-primary { color:white; background:blue; border:1px solid #111; border-radius:0; font:700 12px Calibri,"Segoe UI",Arial,sans-serif; padding:4px; }
+.ac-tracking-reference .ac-tracking-assignment-actions { margin-top:4px; }
+.ac-tracking-reference .ac-tracking-assignment-actions .ac-btn { min-height:29px; height:29px; }
+.ac-tracking-reference .ac-tracking-col-detail > .ac-tabs { height:32px; min-height:32px; padding:9px 0 0; flex-wrap:nowrap; gap:2px; background:#ececec; }
+.ac-tracking-reference .ac-tracking-col-detail .ac-tab { height:24px; min-height:24px; padding:1px 5px; border:0; border-radius:0; background:#eee!important; color:#000; font:700 14px/20px Calibri,"Segoe UI",Arial,sans-serif; white-space:nowrap; }
+.ac-tracking-reference .ac-tracking-col-detail .ac-tab[aria-selected=true] { background:#fff!important; }
+.ac-tracking-reference .ac-tracking-detail-body--job-info { height:156px; padding:10px 7px 3px; border:1px solid; border-color:#fff #777 #777 #fff; background:#ececec; }
+.ac-tracking-reference .ac-tracking-job-info { height:137px; min-height:137px; display:grid; grid-template-columns:250px 340px minmax(220px,1fr) 216px; gap:0; background:#ececec; }
+.ac-tracking-reference .ac-tracking-job-info-section { padding:0 7px; border:0; }
+.ac-tracking-reference .ac-tracking-job-summary-row { height:28px; min-height:28px; grid-template-columns:90px 145px; gap:4px; }
+.ac-tracking-reference .ac-tracking-job-summary-label,.ac-tracking-reference .ac-tracking-job-doc-label { color:#000; font:14px Calibri,"Segoe UI",Arial,sans-serif; }
+.ac-tracking-reference .ac-tracking-job-info .ac-tracking-field-box { height:25px; min-height:25px; background:#ececec; }
+.ac-tracking-reference .ac-tracking-job-info-left .ac-tracking-job-summary-row:nth-last-child(-n+2) { grid-template-columns:99px 98px; background:#d8d8d8; }
+.ac-tracking-reference .ac-tracking-job-info-left .ac-tracking-job-summary-row:nth-last-child(-n+2) .ac-tracking-field-box { background:#d8d8d8; }
+.ac-tracking-reference .ac-tracking-job-doc-row { height:28px; min-height:28px; grid-template-columns:88px minmax(60px,1fr) 29px 100px; gap:3px; }
+.ac-tracking-reference .ac-tracking-job-info-mid .ac-btn { min-height:25px; height:25px; padding:1px 4px!important; }
+.ac-tracking-reference .ac-tracking-job-doc-hyperlinks { margin-top:0; text-align:center; }
+.ac-tracking-reference .ac-tracking-customer-notes { width:100%; height:128px; min-height:128px; border:0; border-radius:0; background:#d8d8d8; box-shadow:none; resize:none; font:14px Calibri,"Segoe UI",Arial,sans-serif; }
+.ac-tracking-reference .ac-tracking-customer-notes::placeholder { color:transparent; }
+.ac-tracking-reference .ac-tracking-grade-table--job-info { height:113px; min-height:113px; background:repeating-linear-gradient(#fff 0,#fff 19px,#edf0f7 19px,#edf0f7 20px); border:1px solid #b7bfca; }
+.ac-tracking-reference .ac-tracking-grade-table--job-info th { height:20px; padding:0 4px; font:13px Calibri,"Segoe UI",Arial,sans-serif; }
+.ac-tracking-reference .ac-tracking-grade-table--job-info td { height:20px; padding:0 4px; font:13px Calibri,"Segoe UI",Arial,sans-serif; }
+.ac-tracking-reference .ac-tracking-grade-recordbar { height:17px; min-height:17px; font:10px Calibri,"Segoe UI",Arial,sans-serif; padding:0; }
+.ac-tracking-reference .ac-tracking-summary-rail { padding:10px 7px 0; grid-template-rows:25px 28px 1fr 27px; gap:7px 8px; }
+.ac-tracking-reference .ac-tracking-users { border:1px solid #fff; background:#ececec; }
+.ac-tracking-reference .ac-tracking-summary-fields { padding:0; }
+.ac-tracking-reference .ac-tracking-margin-table { border:1px solid #bbb; border-radius:0; background:#fff; }
+.ac-tracking-reference .ac-tracking-margin-table th { background:#d8d8d8; font:13px Calibri,"Segoe UI",Arial,sans-serif; }
+.ac-tracking-reference .ac-tracking-actionbar.ac-panel { height:49px; min-height:49px; padding:4px 7px 7px; border-bottom:3px solid #242730; background:#ececec; overflow:visible; }
+.ac-tracking-reference .ac-tracking-actionbar .ac-tabs { height:41px; padding:4px; border:1px solid; border-color:#999 #fff #fff #999; gap:7px; }
+.ac-tracking-reference .ac-tracking-actionbar .ac-tab { height:31px; min-height:31px; padding:1px 8px; font:14px Calibri,"Segoe UI",Arial,sans-serif; border:1px solid; border-color:#fff #777 #777 #fff; background:#eee!important; }
+.ac-tracking-reference .ac-tracking-actionbar .ac-btn { height:29px; min-height:29px; padding:1px 7px; font:14px Calibri,"Segoe UI",Arial,sans-serif!important; }
+.ac-tracking-reference .ac-tracking-action-controls { gap:7px; flex-wrap:nowrap; justify-content:flex-start; }
+.ac-tracking-refresh-group { position:relative; display:flex; align-items:flex-end; gap:5px; padding:9px 4px 2px; border:1px solid #888; height:35px; }
+.ac-tracking-reference .ac-tracking-refresh-group .ac-tracking-refresh-label { position:absolute; top:-3px; left:50%; transform:translateX(-50%); color:#000; font:700 11px Calibri,"Segoe UI",Arial,sans-serif; }
+.ac-tracking-reference .ac-tracking-refresh-group .ac-btn { width:40px; height:22px; min-height:22px; padding:0; font-size:12px!important; }
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-delete-assignment.ac-btn[data-action-status] { color:#fff!important; background:#ff1825!important; font-weight:700!important; border:1px solid #ff1825!important; }
+.ac-tracking-reference .ac-tracking-record-nav { gap:7px; }
+.ac-tracking-reference .ac-tracking-record-nav [aria-label="First customer"],.ac-tracking-reference .ac-tracking-record-nav [aria-label="Last customer"] { display:none; }
+.ac-tracking-reference .ac-tracking-record-input { width:269px; min-width:269px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; }
+.ac-tracking-reference .ac-swatches { padding:3px 6px; border:1px solid #111; background:#999; gap:3px; }
+.ac-tracking-reference .ac-swatch { width:25px; height:25px; border:1px solid #111; border-radius:0; }
+.ac-tracking-reference .ac-tracking-palette-swatches { margin-left:-6px; }
+.ac-tracking-reference .ac-tracking-grid-shell { margin:19px 7px 0; border:1px solid #b5bdca; border-radius:0; }
+.ac-tracking-reference .ac-grid-tracking th { height:21px; padding:0 3px; background:#dfe3e9; border-color:#c1c8d5; color:#111; font:400 13px/19px Calibri,"Segoe UI",Arial,sans-serif; }
+.ac-tracking-reference .ac-grid-tracking td { height:22px; padding:0 3px; border-color:#e8edf8; color:#111; font:400 14px/20px Calibri,"Segoe UI",Arial,sans-serif; }
+.ac-tracking-reference .ac-tracking-toolbar-band.ac-toolbar { height:54px; min-height:54px; }
+.ac-tracking-reference .ac-tracking-detail-body--job-info { padding-top:15px; overflow:visible; }
+.ac-tracking-reference .ac-tracking-job-info-left,.ac-tracking-reference .ac-tracking-job-info-doc-rows { gap:0; }
+.ac-tracking-reference .ac-tracking-col-assign .ac-select { background:#fff!important; color:#000!important; }
+.ac-tracking-reference .ac-tracking.ac-tracking--modern button.ac-btn[aria-label="Open customers"][data-action-status],
+.ac-tracking-reference .ac-tracking.ac-tracking--modern button.ac-btn[aria-label="Open jobs"][data-action-status] { color:red!important; }
+.ac-tracking-reference .ac-tracking-grid-shell { margin-top:15px; }
+.ac-tracking-reference .ac-tracking-refresh-label { text-transform:none; letter-spacing:0; }
+/* Access field edges and native-looking, separately boxed dropdown arrows. */
+.ac-tracking-reference .ac-tracking-col-assign { position:relative; }
+.ac-tracking-reference .ac-tracking-job-shell .ac-input,
+.ac-tracking-reference .ac-tracking-job-shell .ac-readonly,
+.ac-tracking-reference .ac-tracking-job-shell .ac-select,
+.ac-tracking-reference .ac-tracking-job-info .ac-tracking-field-box,
+.ac-tracking-reference .ac-tracking-job-info .ac-tracking-doc-input { height:25px; min-height:25px; border:1px solid!important; border-color:#888 #fff #fff #888!important; border-radius:0; box-shadow:inset 1px 1px 0 #b9b9b9!important; padding:1px 3px; outline:none; font:400 14px/21px Calibri,"Segoe UI",Arial,sans-serif; }
+.ac-tracking-reference .ac-tracking-job-shell select.ac-select { appearance:none; background-color:#fff!important; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='23' viewBox='0 0 20 23'%3E%3Cpath fill='%23efefef' stroke='%23bcbcbc' d='M.5.5h19v22H.5z'/%3E%3Cpath fill='none' stroke='%23777777' d='m6 9 4 4 4-4'/%3E%3C/svg%3E")!important; background-position:right center!important; background-repeat:no-repeat!important; background-size:20px 23px!important; padding-right:23px; }
+.ac-tracking-reference .ac-tracking-col-assign .ac-tracking-assigned-customer > div:last-child,
+.ac-tracking-reference .ac-tracking-col-assign .ac-tracking-assigned-job > div:last-child { gap:7px; overflow:visible; }
+.ac-tracking-reference .ac-tracking-col-assign .ac-tracking-assigned-customer select.ac-select,
+.ac-tracking-reference .ac-tracking-col-assign .ac-tracking-assigned-job select.ac-select { width:192px; min-width:192px; max-width:192px; flex:0 0 192px; border-color:#888 #fff #fff #888!important; }
+.ac-tracking-reference .ac-tracking-col-assign .ac-tracking-assigned-customer select.ac-select:focus,
+.ac-tracking-reference .ac-tracking-col-assign .ac-tracking-assigned-job select.ac-select:focus { outline:1px dotted #777; outline-offset:-3px; box-shadow:inset 1px 1px 0 #b9b9b9!important; }
+.ac-tracking-reference .ac-tracking-assigned-customer button:last-child { width:45px; min-width:45px; padding:1px 4px!important; }
+.ac-tracking-reference .ac-tracking-assigned-job { position:relative; }
+.ac-tracking-reference .ac-tracking-assigned-job .ac-btn-primary { position:absolute; right:-1px; top:22px; width:44px; height:25px; text-align:center; }
+.ac-tracking-reference .ac-tracking-assignment-actions .ac-btn { flex:0 0 68px; min-width:68px; width:68px; }
+.ac-tracking-reference .ac-tracking-assignment-actions > div:last-child { gap:8px; }
+.ac-tracking-reference .ac-tracking-job-info .ac-tracking-doc-input,
+.ac-tracking-reference .ac-tracking-job-info .ac-tracking-field-box { background:#ececec!important; }
+.ac-tracking-reference .ac-tracking-job-info .ac-tracking-job-info-left .ac-tracking-job-summary-row:nth-last-child(-n+2) .ac-tracking-field-box { background:#d8d8d8!important; }
+.ac-tracking-reference .ac-tracking-job-info .ac-tracking-job-doc-value,
+.ac-tracking-reference .ac-tracking-job-info .ac-tracking-job-doc-flag { height:25px; min-height:25px; padding:1px 3px; border:1px solid; border-color:#888 #fff #fff #888; border-radius:0; background:#ececec; box-shadow:inset 1px 1px 0 #b9b9b9; }
+.ac-tracking-reference .ac-tracking-job-info .ac-tracking-field-box--highlight { background-image:none!important; color:#000; font-weight:400; }
+/* Shared Access datasheet presentation for all assignment views. */
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-grid-shell > .ac-grid { border:0; border-radius:0; box-shadow:none; background-color:#fff; background-image:linear-gradient(#e8edf8 1px,transparent 1px),linear-gradient(90deg,#e8edf8 1px,transparent 1px); background-size:51px 22px; }
+.ac-tracking-reference .ac-tracking.ac-tracking--modern table.ac-tracking-datasheet { border-collapse:collapse; border-spacing:0; margin:0; border:0; font:13px Calibri,"Segoe UI",Arial,sans-serif; }
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet thead { position:sticky; top:0; z-index:3; }
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet th { height:22px; min-height:22px; max-height:22px; padding:0 4px; border:1px solid #c5ccd7!important; background:#dfe3e9!important; box-shadow:none; color:#111; font:400 13px/20px Calibri,"Segoe UI",Arial,sans-serif; letter-spacing:0; white-space:nowrap; }
+.ac-tracking-reference .ac-tracking-datasheet th .ac-column-filter-trigger { height:20px; min-height:20px; padding:0; color:#111; font:400 13px/20px Calibri,"Segoe UI",Arial,sans-serif; gap:3px; }
+.ac-tracking-reference .ac-tracking-datasheet .ac-column-filter-arrow { flex:none; color:#60676f; font-size:10px; }
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet tbody td { height:24px; min-height:24px; max-height:24px; padding:0 3px; border:1px solid #e8edf8!important; background-color:#fff; font:400 14px/22px Calibri,"Segoe UI",Arial,sans-serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; box-shadow:none; }
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet tbody tr:nth-child(even) td { background-color:#fff; }
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet tbody tr:hover td { background-color:inherit!important; box-shadow:none!important; }
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet tbody .tracking-selected-row td,
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet tbody .tracking-selected-row:hover td { border-top:2px solid #b52639!important; border-bottom:2px solid #b52639!important; box-shadow:none!important; }
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet tbody .ac-tracking-row-gap td { height:24px!important; min-height:24px; padding:0!important; border:0!important; background:transparent!important; line-height:0; }
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet tbody .ac-tracking-job-heading td { height:24px; min-height:24px; padding:0 3px; border:1px solid #e8edf8!important; background:#fff!important; color:#000; font:700 14px/22px Calibri,"Segoe UI",Arial,sans-serif; }
+.ac-tracking-reference .ac-tracking-job-heading span { color:#000; text-decoration:underline; }
+.ac-tracking-reference .ac-tracking-datasheet .ac-tracking-payroll-badge { display:inline-flex; align-items:center; justify-content:center; min-width:36px; height:24px; padding:0 5px; border-radius:4px; color:#fff; font:700 10px/20px Calibri,"Segoe UI",Arial,sans-serif; box-shadow:none; }
+.ac-tracking-reference .ac-tracking-datasheet .ac-tracking-day-flag { display:flex; align-items:center; justify-content:center; height:20px; min-height:20px; margin:1px 0; border-radius:4px; font:400 13px/18px Calibri,"Segoe UI",Arial,sans-serif; }
+.ac-tracking-reference .ac-tracking-datasheet .ac-tracking-check { width:17px; height:17px; min-height:17px; border:1px solid #68e695; border-radius:2px; background:#e2ffeb; color:#149747; font:12px/15px Calibri,"Segoe UI",Arial,sans-serif; box-shadow:none; }
+.ac-tracking-reference .ac-tracking-datasheet .ac-tracking-note { color:red; text-decoration:underline; font-weight:400; }
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet td.ac-tracking-field-payRate,
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet td.ac-tracking-field-billRate,
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet td.ac-detail-rate,
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet td.ac-detail-bill { background:#ececec!important; text-align:right; color:#000; }
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet td.ac-hours-person,
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet td.ac-hours-contact,
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet td.ac-hours-location,
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet td.ac-hours-wcc,
+.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-datasheet td.ac-hours-sent { color:var(--tracking-grade-color,#000); }
+.ac-tracking-reference .ac-tracking-datasheet .ac-grid-spacer { padding:0!important; background:#fff!important; }
+/* Employee detail: Access reference form, scoped away from search screens. */
+.employee-record-screen { background:#d8d8d8; font:14px Calibri,"Segoe UI",Arial,sans-serif; }
+.employee-record-screen button,.employee-record-screen button[data-action-status] { height:25px; min-height:25px; padding:1px 10px; border:1px solid!important; border-color:#fff #777 #777 #fff!important; border-radius:0; background:#eee!important; color:#000!important; font:400 14px/20px Calibri,"Segoe UI",Arial,sans-serif; box-shadow:1px 1px 0 #bbb; }
+.employee-record-screen button:disabled { opacity:1; }
+.employee-record-screen input:not([type=checkbox]):not([type=radio]),.employee-record-screen select,.employee-record-screen textarea { height:25px; min-height:25px; border:1px solid; border-color:#888 #fff #fff #888; border-radius:0; background:#fff; box-shadow:inset 1px 1px 0 #b9b9b9; padding:1px 3px; color:#000; font:400 14px/21px Calibri,"Segoe UI",Arial,sans-serif; }
+.employee-record-screen select { appearance:auto; }
+.employee-record-screen input[type=checkbox],.employee-record-screen input[type=radio] { width:12px; height:12px; margin:0; accent-color:#000; }
+.employee-record-screen input.is-muted { background:#e8e9eb; }
+.employee-record-screen .er-topline { position:relative; min-width:1900px; width:100%; height:214px; min-height:214px; grid-template-columns:447px minmax(1453px,1fr); border:0; }
+.employee-record-screen .er-identity { display:block; position:relative; padding:7px; background:#d8d8d8; }
+.employee-record-screen .er-identity > .er-field { display:grid; grid-template-columns:88px 194px; gap:7px; height:28px; min-height:28px; }
+.employee-record-screen .er-identity > .er-field > span { width:auto; }
+.employee-record-screen .er-identity .er-field input,.employee-record-screen .er-identity .er-field select { width:194px; }
+.employee-record-screen .er-identity .er-field:nth-child(2) input { width:34px; }
+.employee-record-screen .er-identity .er-grade-field select { width:98px; }
+.employee-record-screen .er-placeholder { position:absolute; top:154px; left:7px; flex-direction:row-reverse; gap:8px; }
+.employee-record-screen .er-add { position:absolute; left:128px; top:153px; margin:0; gap:7px; }
+.employee-record-screen .er-add button { padding:1px 7px; }
+.employee-record-screen .er-save { position:absolute; top:189px; left:7px; width:65px; color:red!important; }
+.er-identity-tools { position:absolute; top:8px; left:318px; width:106px; display:flex; flex-direction:column; align-items:center; gap:3px; }
+.employee-record-screen .er-identity-tools > input { width:98px; text-align:center; background:#d8d8d8!important; }
+.er-identity-tools > div { display:flex; gap:3px; }
+.employee-record-screen .er-identity-tools > div button { width:25px; padding:1px; }
+.employee-record-screen .er-identity-tools .er-google { color:#00b7d7!important; font-weight:bold; }
+.employee-record-screen .er-identity-tools > button { width:81px; font-size:12px; }
+.employee-record-screen .er-toolbar { position:relative; min-width:1453px; height:187px; background:#e8e9eb; border:1px solid #fff; }
+.employee-record-screen .er-view-tabs { height:33px; padding-top:4px; display:flex; gap:1px; background:#d8d8d8; }
+.employee-record-screen .er-view-tabs button[data-action-status] { width:144px; height:28px; border:1px solid #fff!important; background:#000!important; color:#fff!important; font-weight:700; box-shadow:none; }
+.employee-record-screen .er-view-tabs button.active[data-action-status] { background:#e8e9eb!important; color:#000!important; }
+.employee-record-screen .er-tools { position:relative; height:77px; display:flex; align-items:center; padding:7px 10px; gap:10px; }
+.employee-record-screen .er-audit { width:265px; height:65px; margin-right:17px; background:white; overflow:auto; }
+.employee-record-screen .er-audit th,.employee-record-screen .er-audit td { height:16px; padding:0 4px; border:1px solid #aaa; font:11px/14px Calibri,"Segoe UI",Arial,sans-serif; }
+.employee-record-screen .er-audit th { background:#bfbfbf; font-weight:400; }
+.employee-record-screen .er-tools > button:not(.er-delete) { align-self:center; }
+.employee-record-screen .er-job-application-link { height:25px; padding:2px 10px; border:1px solid; border-color:#fff #777 #777 #fff; background:#eee; color:#000; text-decoration:none; }
+.employee-record-screen .er-copy { position:absolute; left:1020px; top:27px; width:216px; gap:0; }
+.employee-record-screen .er-copy button { width:185px; padding:0 5px; }
+.employee-record-screen .er-copy input { width:216px; background:#e8e9eb; }
+.employee-record-screen .er-delete { position:absolute; right:80px; top:7px; color:red!important; }
+.er-header-icons { position:absolute; right:7px; top:7px; display:flex; gap:5px; }
+.employee-record-screen .er-header-icons > button { width:31px; height:31px; padding:0; display:flex; align-items:center; justify-content:center; border:3px solid #20b63c!important; background:#fff!important; }
+.employee-record-screen .er-header-icons > button:last-of-type { border-color:#e5b900!important; color:blue!important; }
+.employee-record-screen .er-sections { position:absolute; left:10px; top:116px; display:grid; grid-template-columns:repeat(10,128px); grid-auto-rows:25px; gap:7px 8px; padding:0; }
+.employee-record-screen .er-sections button { padding:0 3px; font-size:12px; }
+.employee-record-screen .er-content:has(> .employee-info-reference) { display:block; padding:0; min-width:1900px; min-height:730px; }
+.employee-info-reference { position:relative; width:1900px; height:730px; background:#d8d8d8; }
+.ei-sidebar { position:absolute; top:4px; left:6px; width:344px; height:655px; }
+.ei-field { display:grid; grid-template-columns:88px 194px; gap:7px; align-items:center; min-height:28px; white-space:nowrap; }
+.ei-field > input,.ei-field > select { width:194px; min-width:0; }
+.employee-record-screen .ei-tool-list { position:absolute; left:291px; top:1px; padding:1px 4px; font-size:11px; font-weight:700; }
+.ei-license-in { display:flex; gap:4px; }
+.ei-license-in .ei-field input { background:#d8d8d8; }
+.employee-record-screen .ei-license-in > button { padding:1px 7px; }
+.ei-referred { margin-top:29px; }
+.ei-referred > .ei-field > span { color:red; }
+.employee-record-screen .ei-referred > input { margin-left:95px; width:194px; background:#d8d8d8; }
+.ei-license-fields { margin-top:29px; }
+.ei-license-fields .ei-field:nth-child(3) input,.ei-license-fields .ei-field:nth-child(4) input { width:98px; }
+.ei-license-fields .ei-field:nth-child(4) input { background:#d8d8d8; }
+.ei-experience { margin-top:28px; }
+.ei-osha { display:flex; align-items:center; gap:14px; }
+.ei-osha .ei-field { grid-template-columns:88px 98px; }
+.employee-record-screen .ei-car { position:absolute; top:506px; left:0; display:flex; align-items:center; gap:7px; width:185px; height:29px; padding:3px; border:1px solid #aaa; }
+.ei-car label { display:flex; align-items:center; gap:4px; }
+.employee-record-screen .ei-car button { height:20px; min-height:20px; padding:0 4px; font-size:11px; font-weight:700; }
+.ei-ppe { position:absolute; left:0; right:0; bottom:0; height:89px; border:1px solid #aaa; padding:2px 7px; display:flex; flex-wrap:wrap; align-content:flex-start; gap:9px 13px; }
+.ei-ppe header { display:flex; gap:7px; align-items:center; width:100%; height:22px; }
+.employee-record-screen .ei-ppe header button { height:20px; min-height:20px; padding:0 7px; font-size:11px; }
+.ei-ppe header button:last-child { margin-left:auto; }
+.ei-ppe label { display:flex; align-items:center; gap:7px; font-size:13px; }
+.ei-main { position:absolute; left:358px; top:34px; width:1115px; height:626px; border:1px solid #fff; background:#e8e9eb; }
+.ei-tabs { display:flex; gap:1px; height:28px; white-space:nowrap; }
+.ei-main > .ei-tabs { position:absolute; top:-1px; left:0; right:0; }
+.employee-record-screen .ei-tabs button { flex:1; min-width:0; padding:0 3px; border:1px solid #fff!important; background:#000!important; color:#fff!important; font-weight:700; height:28px; }
+.employee-record-screen .ei-tabs button.active { color:#000!important; background:#e8e9eb!important; border-bottom-color:#e8e9eb!important; }
+.ei-default { position:absolute; top:27px; left:0; right:0; bottom:0; }
+.ei-mobile { position:absolute; left:70px; top:28px; right:15px; }
+.ei-mobile-head,.ei-mobile-row { display:grid; grid-template-columns:14px 20px 98px 60px 45px 82px 194px 26px 80px 45px 82px 50px 132px; align-items:center; height:28px; }
+.ei-mobile-head { height:21px; margin-bottom:3px; }
+.ei-mobile-head strong,.ei-home-head strong { height:21px; background:#bfbfbf; text-align:center; font-weight:700; font-size:14px; margin-right:6px; white-space:nowrap; }
+.ei-mobile-head strong:nth-child(7) { grid-column:7/9; }
+.ei-mobile-row > input:not([type=radio]):not([type=checkbox]) { min-width:0; width:calc(100% - 6px); }
+.ei-mobile-row > input[type=checkbox],.ei-home-row > input[type=checkbox] { justify-self:center; }
+.ei-mobile-row > b,.ei-home-row > b { display:flex; align-items:center; justify-content:center; height:27px; margin-right:2px; font-weight:400; }
+.ei-mobile-row:first-of-type > b,.ei-home-row:nth-child(3) > b { background:#000; color:#fff; }
+.employee-record-screen .ei-mobile-row > button,.employee-record-screen .ei-home-row > button { width:25px; height:25px; padding:1px; justify-self:end; margin-right:6px; display:flex; align-items:center; justify-content:center; color:navy!important; }
+.ei-verify { display:flex; align-items:center; gap:6px; }
+.employee-record-screen .ei-verify input:not([type=checkbox]) { min-width:0; width:43px; }
+.ei-phone-actions { position:absolute; left:-60px; top:28px; display:flex; flex-direction:column; gap:17px; width:53px; }
+.employee-record-screen .ei-phone-actions button { height:42px; min-height:42px; width:53px; padding:1px; white-space:normal; font:700 12px/14px Calibri,"Segoe UI",Arial,sans-serif; }
+.ei-mobile p,.ei-home p { color:blue; font-style:italic; margin:12px 0 0; }
+.ei-mobile-hint { margin-left:0!important; }
+.ei-text { position:absolute; left:290px; top:172px; width:469px; height:102px; padding:3px 7px; border:1px solid; border-color:#888 #fff #fff #888; }
+.ei-text > div { display:flex; align-items:center; gap:10px; }
+.ei-text > div:first-of-type { height:26px; }
+.ei-text label { display:flex; align-items:center; gap:5px; }
+.ei-text > div:first-of-type > button { margin-left:auto; }
+.employee-record-screen .ei-text select { width:385px; height:41px; min-height:41px; }
+.employee-record-screen .ei-text > div > button { padding:0 5px; }
+.ei-text p { margin:4px 0; font-size:14px; color:blue; white-space:nowrap; }
+.ei-copy-names { position:absolute; left:823px; top:193px; display:flex; flex-direction:column; gap:10px; }
+.employee-record-screen .ei-copy-names button { width:161px; }
+.ei-home { position:absolute; left:70px; top:300px; width:426px; }
+.ei-home-head,.ei-home-row { display:grid; grid-template-columns:14px 20px 98px 60px 61px 160px; height:28px; align-items:center; }
+.ei-home-head { height:21px; margin-bottom:3px; }
+.ei-home-row > input:not([type=radio]):not([type=checkbox]) { width:98px; }
+.ei-home .ei-verify { padding-left:8px; }
+.ei-home .ei-phone-actions { top:28px; }
+.ei-update { position:absolute; left:415px; top:381px; width:173px; }
+.employee-record-screen .ei-update button { height:65px; min-height:65px; width:173px; white-space:normal; padding:5px; }
+.ei-address { position:absolute; left:640px; top:300px; width:345px; }
+.ei-address .ei-field { grid-template-columns:88px 194px; }
+.employee-record-screen .ei-address .ei-field input { background:#a6d6e1; }
+.employee-record-screen .ei-address .ei-field:last-of-type input { width:98px; }
+.employee-record-screen .ei-address > button { position:absolute; left:320px; top:0; padding:1px; width:25px; color:navy!important; }
+.ei-onboard { position:absolute; left:640px; top:417px; display:flex; align-items:center; gap:11px; }
+.ei-onboard strong { font-weight:700; }
+.ei-emails { position:absolute; left:11px; top:500px; width:842px; display:grid; grid-template-columns:470px 360px; grid-template-rows:repeat(3,28px); grid-auto-flow:column; gap:0 22px; }
+.ei-emails > label { position:relative; display:grid; align-items:center; grid-template-columns:96px 242px 49px; gap:6px; }
+.employee-record-screen .ei-emails input { width:242px; }
+.employee-record-screen .ei-emails button { width:25px; height:25px; padding:1px; justify-self:end; color:navy!important; }
+.ei-emails > label:nth-child(n+4) { grid-template-columns:49px 242px 49px; }
+.ei-emails a { position:absolute; left:402px; display:flex; align-items:center; gap:5px; color:#000; text-decoration:none; border:1px solid; border-color:#fff #777 #777 #fff; padding:2px 6px; background:#eee; }
+.ei-interview-notes { position:absolute; left:895px; top:476px; display:flex; flex-direction:column; gap:7px; width:210px; }
+.employee-record-screen .ei-interview-notes textarea { height:82px; min-height:82px; resize:none; }
+.ei-tab-content { padding:45px 20px 20px; }
+.ei-right { position:absolute; left:1477px; top:6px; width:379px; height:654px; border:1px solid #fff; background:#e8e9eb; }
+.ei-right .ei-tabs { position:absolute; top:0; left:0; right:18px; }
+.ei-right-body { position:absolute; inset:27px 0 0; padding:28px 9px; }
+.employee-record-screen .ei-right-body > button { margin-left:68px; color:navy!important; outline:1px solid blue; outline-offset:-1px; }
+.ei-right-body > small { display:inline-block; margin-left:20px; font-weight:700; font-size:11px; }
+.ei-action-row { display:grid; grid-template-columns:61px 146px 35px 78px; gap:3px; align-items:center; height:32px; }
+.ei-action-row:first-of-type { margin-top:13px; }
+.ei-action-row:first-of-type > span { color:red; }
+.employee-record-screen .ei-action-row > input,.employee-record-screen .ei-action-row > select { min-width:0; width:100%; }
+.ei-communication-flags { position:absolute; top:285px; left:9px; display:flex; flex-direction:column; gap:18px; }
+.ei-communication-flags label { display:flex; align-items:center; justify-content:space-between; width:171px; }
+.ei-right-actions { position:absolute; left:9px; top:468px; display:grid; grid-template-columns:88px 209px; gap:11px 16px; }
+.employee-record-screen .ei-right-actions button { padding:0 7px; }
+.employee-record-screen .ei-right-actions button:nth-child(odd) { color:red!important; }
+
+.ei-mobile-head > span:nth-child(8) { display:none; }
+/* Employee Search 3: Access reference layout. */
+.ac-employee-search-page { position:relative; min-width:1918px; font:14px Calibri,Arial,sans-serif; color:#000; background:#ececec; }
+.ac-employee-search-page .ac-customer-search,.ac-employee-search-page .ac-customer-search-body { background:#ececec; font:14px Calibri,Arial,sans-serif; }
+.ac-employee-search-page button[data-action-status],.ac-employee-search-page .ac-btn { background:#efefef!important; color:#000!important; border:1px solid!important; border-color:#fff #777 #777 #fff!important; border-radius:0!important; box-shadow:none!important; font-family:Calibri,Arial,sans-serif!important; font-size:14px!important; font-weight:400; height:29px; min-height:0; padding:1px 7px; }
+.ac-employee-search-page input,.ac-employee-search-page select { border-radius:0; color:#000; font:14px Calibri,Arial,sans-serif; }
+.ac-employee-search-page .ac-customer-search-titlebar { position:absolute; top:0; left:0; right:0; height:44px; min-height:0; padding:5px 8px; gap:7px; z-index:2; pointer-events:none; background:transparent; }
+.ac-employee-search-page .ac-customer-search-titlebar>* { pointer-events:auto; }
+.ac-employee-search-page .ac-customer-search-title { flex:0 0 277px; width:277px; font-size:27px; font-weight:400; }
+.ac-employee-search-page .ac-customer-search-titlebar .ac-btn { margin:0; font-weight:400; }
+.ac-employee-search-page .ac-customer-search-titlebar .ac-employee-search-cancel-btn { margin-left:auto; margin-right:0; }
+.ac-employee-search-page .ac-customer-search-shell { border:0; min-height:287px; height:287px; flex:none; padding:0; background:#ececec; box-shadow:none; }
+.ac-employee-search-page .ac-customer-search-shell-inner { height:287px; min-height:287px; padding:0; gap:0; background:#ececec; align-items:stretch; }
+.ac-employee-search-page .ac-customer-search-sidebar { width:428px; min-width:428px; height:287px; padding:46px 8px 0; border:0; background:#ececec; gap:11px; }
+.ac-employee-search-page .ac-customer-search-screen-size { width:283px; height:54px; min-height:54px; grid-template-columns:80px 53px 1fr; padding:3px; background:#ececec; border:1px solid; border-color:#fff #999 #999 #fff; }
+.ac-employee-search-page .ac-customer-search-screen-size-label { font-size:14px; font-weight:400; }
+.ac-employee-search-page .ac-customer-search-screen-normal.ac-btn { width:53px; height:46px; font-size:13px!important; }
+.ac-employee-search-page .ac-customer-search-screen-num.ac-btn,.ac-employee-search-page .ac-customer-search-screen-save.ac-btn { height:22px; min-height:22px; font-size:12px!important; padding:0 3px; }
+.ac-employee-search-page .ac-customer-search-side-search-wrap { border:0; min-height:0; background:transparent; }
+.ac-employee-search-page .ac-customer-search-side-label { margin-top:20px; flex-basis:25px; font-size:14px; font-weight:700; background:#bfbfbf; color:#000; border:1px solid #000; padding:10px 5px; }
+.ac-employee-search-page .ac-customer-search-side-main { padding:0 0 0 7px; background:transparent; gap:10px; }
+.ac-employee-search-page .ac-customer-search-side-grid { grid-template-columns:43px 125px 125px; gap:3px 7px; }
+.ac-employee-search-page .ac-customer-search-side-head { height:17px; min-height:17px; font-size:13px; background:#bfbfbf; border:1px solid #000; padding:0; }
+.ac-employee-search-page .ac-customer-search-side-corner { min-height:17px; }
+.ac-employee-search-page .ac-customer-search-side-field-label { font-size:14px; font-weight:400; }
+.ac-employee-search-page .ac-customer-search-side-input { height:25px; min-height:25px; font-size:14px; padding:1px 3px; background:white; border:2px inset #eee; }
+.ac-employee-search-page .ac-customer-search-side-search-col { width:62px; padding-top:20px; }
+.ac-employee-search-page .ac-customer-search-use-button { background:transparent; font-size:12px; padding:2px 7px; }
+.ac-employee-search-page .ac-employee-search-controls { padding-top:7px; }
+.ac-employee-search-page .ac-employee-search-view-tabs { height:26px; min-height:26px; gap:0; padding:0; }
+.ac-employee-search-page .ac-employee-search-view-tabs button { height:26px!important; font-size:14px!important; font-weight:700; padding:1px 6px; border-color:#eee!important; }
+.ac-employee-search-page .ac-employee-search-control-panel,.ac-employee-search-page .ac-employee-search-views-tab,.ac-employee-search-page .ac-employee-search-views-body { padding:0; margin:0; background:#ececec; border-radius:0; }
+.ac-employee-search-page .ac-employee-search-views-1 { position:relative; display:block; padding:0; height:254px; min-height:254px; background:#ececec; }
+.ac-employee-search-page .ac-employee-search-filter-row { position:absolute; left:13px; right:210px; top:10px; height:34px; padding:3px 7px; gap:6px; border:0; background:transparent; overflow:visible; }
+.ac-employee-search-page .ac-employee-search-row-select { flex:0 0 96px; height:25px; min-height:25px; font-size:13px; background:#fff; }
+.ac-employee-search-page .ac-employee-search-cluster-select { flex:0 0 250px; }
+.ac-employee-search-page .ac-employee-search-trade-select { flex:0 0 154px; background:#a4e6f8; }
+.ac-employee-search-page .ac-employee-search-filter-input { width:194px; flex:0 0 194px; height:25px; }
+.ac-employee-search-page .ac-customer-search-filter-label { margin-left:33px; }
+.ac-employee-search-page .ac-employee-search-entry-dt-link { height:25px; color:blue!important; text-decoration:underline; font-size:12px!important; }
+.ac-employee-search-page .ac-employee-search-action-row { position:absolute; top:51px; left:194px; right:65px; gap:19px; }
+.ac-employee-search-page .ac-employee-search-action-wide { width:149px; }
+.ac-employee-search-page .ac-employee-search-lic-flag-btn { flex:none; width:237px; margin-left:auto; }
+.ac-employee-search-page .ac-employee-search-action-row-right { gap:19px; margin-left:65px; }
+.ac-employee-search-page .ac-employee-search-views-1>.ac-employee-search-preset-grid { position:absolute; left:12px; right:11px; top:106px; width:auto; height:81px; display:grid!important; grid-template-columns:repeat(10,minmax(0,1fr))!important; gap:3px 7px; }
+.ac-employee-search-page .ac-employee-search-preset-grid .ac-btn,.ac-employee-search-page .ac-employee-search-preset-grid .ac-customer-search-preset-empty { height:25px!important; min-height:25px!important; max-height:25px; font-size:14px!important; font-weight:700; border-radius:0; }
+.ac-employee-search-page .ac-employee-search-btn-warn.ac-btn,.ac-employee-search-page .ac-employee-search-btn-warn-underline.ac-btn { color:red!important; }
+.ac-employee-search-page .ac-employee-search-btn-multi.ac-btn { background:#8dc6da!important; font-weight:400; }
+.ac-employee-search-page .ac-employee-search-call-filter-row { position:absolute; top:209px; left:12px; right:106px; padding:0; height:30px; flex-wrap:nowrap; background:transparent; gap:8px; font-size:14px; }
+.ac-employee-search-page .ac-employee-search-call-filter-group { display:flex; align-items:center; gap:12px; padding:3px; height:29px; border:1px solid #aaa; }
+.ac-employee-search-page .ac-employee-search-call-filter-group legend { float:left; width:auto; margin:0 8px 0 0; font-weight:700; }
+.ac-employee-search-page .ac-employee-search-v-btn { margin-left:auto; }
+.ac-employee-search-page .ac-employee-search-v-btn+.ac-employee-search-v-btn { margin-left:0; }
+.ac-employee-search-page .ac-employee-search-utility-rail { width:74px; min-width:74px; padding:78px 10px 0; background:#ececec; gap:5px; }
+.ac-employee-search-page .ac-customer-search-rail-icon { width:31px; height:31px; border:3px solid #24bb45!important; }
+.ac-employee-search-page .ac-customer-search-rail-icon--help { border-color:#e4ac00!important; color:blue!important; }
+.ac-employee-search-page .ac-employee-search-grid-panel { border:0; padding:0; box-shadow:none; }
+.ac-employee-search-page .ac-employee-search-grid-toolbar { flex-wrap:nowrap; height:44px; padding:7px 8px; gap:7px; background:#ececec; font-size:14px; }
+.ac-employee-search-page .ac-employee-search-yellow-input { width:285px; flex:0 0 285px; height:25px; background:#ffffa2; border:0; }
+.ac-employee-search-page .ac-customer-search-view-select-wide { flex:1; width:310px; height:25px; }
+.ac-employee-search-page .ac-employee-search-delete-employee-btn { background:#fa172d!important; color:white!important; font-weight:700; }
+.ac-employee-search-page .ac-employee-search-results-panel { padding:0 8px; border:0; box-shadow:none; }
+.ac-employee-search-page .ac-employee-search-grid { border:1px solid #aaa; background:white; }
+.ac-employee-search-page .ac-employee-search-grid table { table-layout:fixed; border-collapse:collapse; font:14px Calibri,Arial,sans-serif; }
+.ac-employee-search-page .ac-employee-search-grid th { height:20px; padding:0; background:#dfe3e8; border:1px solid #ccc; font-weight:400; }
+.ac-employee-search-page .ac-employee-search-grid td { height:22px; max-height:22px; padding:0 3px; line-height:21px; border:1px solid #e2ddd3; font-weight:400; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ac-employee-search-page .ac-employee-search-grid tbody tr:nth-child(odd) td { background:#fff; }
+.ac-employee-search-page .ac-employee-search-grid tbody tr:nth-child(even) td { background:#f2f2f2; }
+.ac-employee-search-page .ac-employee-search-grid tbody tr.is-selected td { background:#a5cdea; }
+.ac-employee-search-page .employee-name-open { color:#000; font-weight:400; text-decoration:none; }
+.ac-employee-search-page .ac-employee-search-grid td.ac-employee-search-col-online { color:#80af00; text-decoration:underline; }
+.ac-employee-search-page .ac-employee-search-grid td.ac-employee-search-col-alert { background:#fa1827!important; }
+.ac-employee-search-page .ac-employee-search-grid td.ac-employee-search-col-cell,.ac-employee-search-page .ac-employee-search-grid td.ac-employee-search-col-license { background:#fff500!important; }
+.ac-employee-search-page .ac-employee-search-grid td.ac-employee-search-col-qualification { background:#fbe6d6!important; }
+.ac-employee-search-page .ac-employee-search-grid td.ac-employee-search-col-week-end { font-weight:700; }
+/* Keep all Employee Search controls inside their own header; reset inherited offsets. */
+.ac-employee-search-page .ac-customer-search { position:relative; overflow:hidden; }
+.ac-employee-search-page .ac-customer-search-titlebar { display:flex!important; top:0!important; transform:none!important; visibility:visible; }
+.ac-employee-search-page .ac-employee-search-controls { top:0; height:287px; min-height:287px; padding-top:7px; background:#ececec; }
+.ac-employee-search-page .ac-employee-search-view-tabs { display:flex!important; position:relative; top:0; flex:none; height:26px; min-height:26px; }
+.ac-employee-search-page .ac-employee-search-control-panel { height:254px; min-height:254px; flex:none; }
+.ac-employee-search-page .ac-employee-search-views-tab { height:254px; min-height:254px; }
+.ac-employee-search-page .ac-employee-search-action-row { padding:0; }
+.ac-employee-search-page .ac-employee-search-action-row .ac-employee-search-lic-flag-btn.ac-btn { margin-left:auto; }
+.ac-employee-search-page .ac-employee-search-action-row .ac-employee-search-action-wide.ac-btn+.ac-employee-search-action-wide.ac-btn { margin-left:0; }
+.ac-employee-search-page .ac-employee-search-side-footer { display:none; }
+.ac-employee-search-page .ac-customer-search-side-grid-area { border:0; }
+.ac-employee-search-page .ac-customer-search-screen-size { margin:0; }
+.ac-employee-search-page .ac-employee-search-filter-row>.ac-employee-search-row-select { flex:0 0 auto; }
+.ac-employee-search-page .ac-employee-search-filter-row>.ac-employee-search-row-select:nth-child(1) { width:94px; }
+.ac-employee-search-page .ac-employee-search-filter-row>.ac-employee-search-row-select:nth-child(4) { width:121px; }
+.ac-employee-search-page .ac-employee-search-filter-row>.ac-employee-search-row-select:nth-child(5) { width:122px; }
+.ac-employee-search-page .ac-employee-search-filter-row>.ac-employee-search-trade-select { width:154px; }
+.ac-employee-search-page .ac-employee-search-filter-row>.ac-employee-search-cluster-select { width:250px; }
+.ac-employee-search-page .ac-employee-search-grid-toolbar .ac-employee-search-delete-employee-btn.ac-btn { color:#fff!important; background:#fa172d!important; }
+.ac-employee-search-page .ac-customer-search-titlebar { z-index:30; }
+.ac-employee-search-page .ac-customer-search-sidebar { flex:0 0 428px; }
+.ac-employee-search-page .ac-customer-search-shell-inner { min-width:0; }
+.ac-employee-search-page .ac-customer-search-control-panel { border-top:0; }
+.ac-employee-search-page .ac-employee-search-call-filter-group { min-width:517px; }
+.ac-employee-search-page .ac-employee-search-call-filter-group label { font:14px Calibri,Arial,sans-serif; font-weight:400; }
+.ac-employee-search-page .ac-employee-search-utility-rail .ac-customer-search-rail-icon { border:3px solid #24bb45!important; }
+.ac-employee-search-page .ac-employee-search-utility-rail .ac-customer-search-rail-icon--help { border-color:#e4ac00!important; }
+.ac-employee-search-page .ac-employee-search-views-1>.ac-employee-search-preset-grid { margin:0; padding:0; }
+.ac-employee-search-page .ac-employee-search-views-1>.ac-employee-search-preset-grid .ac-btn { font-weight:700!important; }
+.ac-employee-search-page .ac-employee-search-views-1>.ac-employee-search-preset-grid .ac-employee-search-btn-multi { font-weight:400!important; }
+.ac-employee-search-page .ac-employee-search-call-filter-row { margin:0; min-height:30px; height:30px; }
+.ac-employee-search-page .ac-employee-search-call-filter-group legend,.ac-employee-search-page .ac-employee-search-call-filter-group label { font:14px Calibri,Arial,sans-serif!important; }
+.ac-employee-search-page .ac-customer-search-side-search-col { margin-top:0; padding-top:20px; min-width:62px; width:62px; }
+.ac-employee-search-page .ac-employee-search-grid-toolbar>.ac-customer-search-action-group { flex:0 0 489px; justify-content:space-between; gap:7px; }
+.ac-employee-search-page .ac-employee-search-grid-toolbar>.ac-customer-search-view-select-wide { flex:0 0 310px; width:310px; }
+.ac-employee-search-page .ac-employee-search-grid-toolbar>.ac-employee-search-yellow-input { height:25px; min-height:25px; padding:0; }
+.ac-employee-search-page .ac-employee-search-grid-toolbar .ac-employee-search-goto-field input { width:128px; }
+.ac-employee-search-page .ac-employee-search-grid-toolbar button[data-action-status],.ac-employee-search-page .ac-employee-search-grid-toolbar a .ac-btn { background:#efefef!important; color:#000!important; }
+.ac-employee-search-page .ac-employee-search-grid-toolbar button.ac-employee-search-delete-employee-btn { background:#fa172d!important; color:#fff!important; }
+/* Preserve the Access blue preset against generic action-status button colors. */
+.ac-employee-search-page .ac-employee-search-views-1 > .ac-employee-search-preset-grid button.ac-employee-search-btn-multi[data-action-status],
+.ac-employee-search-page .ac-employee-search-views-1 > .ac-employee-search-preset-grid button.ac-employee-search-btn-multi[data-action-status]:hover {
+  background:#8dc6da!important;
+  color:#000!important;
+  border:1px solid #000!important;
+  font-weight:400!important;
+}

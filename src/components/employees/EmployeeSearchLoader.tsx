@@ -6,9 +6,12 @@ import { compareEmployeesAccessOrder, filterEmployeeSearch } from "@/lib/employe
 import { EmployeeSearchScreen, type EmployeeSearchScreenProps } from "./EmployeeSearchScreen";
 import { EmployeeSearchTable } from "./EmployeeSearchTable";
 import { CustomerRecordsLoading, type CustomerLoadProgress } from "../customers/CustomerRecordsLoading";
+import { BrowserSessionCache } from "@/lib/browserSessionCache";
 import type { EmployeeSummary } from "@/types/employee";
 
-export function EmployeeSearchLoader(props: Omit<EmployeeSearchScreenProps, "employees">) {
+const recordsCache = new BrowserSessionCache();
+
+export function EmployeeSearchLoader({ cacheScope, ...props }: Omit<EmployeeSearchScreenProps, "employees"> & { cacheScope: string }) {
   const router = useRouter();
   const [search, setSearch] = useState<Record<string, string>>({});
   const deferredSearch = useDeferredValue(search);
@@ -22,14 +25,15 @@ export function EmployeeSearchLoader(props: Omit<EmployeeSearchScreenProps, "emp
   const [progress, setProgress] = useState<CustomerLoadProgress>({ stage: "fetching", bytes: 0 });
   const { currentSearch, currentTradeId, currentStatusId, currentGradeId, currentCity, currentState } = props;
   useEffect(() => {
-    const controller = new AbortController();
+    let active = true;
+    setError("");
     const started = performance.now();
     const query = new URLSearchParams({ compressed: "1", search: currentSearch, tradeId: currentTradeId, statusId: currentStatusId, gradeId: currentGradeId, city: currentCity, state: currentState });
-    fetch(`/api/employees?${query}`, { cache: "no-store", signal: controller.signal }).then(async response => {
+    recordsCache.get(cacheScope, query.toString(), () => fetch(`/api/employees?${query}`, { cache: "no-store" }).then(async response => {
       if (!response.ok) throw new Error("Employee records could not be loaded. Refresh to retry.");
       const count = Number(response.headers.get("X-Record-Count"));
       const queryMs = Number(response.headers.get("X-Query-Ms"));
-      setProgress({ stage: "downloading", bytes: 0, count });
+      if (active) setProgress({ stage: "downloading", bytes: 0, count });
       const reader = response.body?.getReader();
       const chunks: string[] = [];
       const decoder = new TextDecoder();
@@ -41,22 +45,20 @@ export function EmployeeSearchLoader(props: Omit<EmployeeSearchScreenProps, "emp
           if (chunk.done) break;
           bytes += chunk.value.byteLength;
           chunks.push(decoder.decode(chunk.value, { stream: true }));
-          if (performance.now() - lastUpdate > 150 && !controller.signal.aborted) {
+          if (performance.now() - lastUpdate > 150 && active) {
             setProgress({ stage: "downloading", bytes, count });
             lastUpdate = performance.now();
           }
         }
         chunks.push(decoder.decode());
       } else chunks.push(await response.text());
-      if (controller.signal.aborted) return;
-      setProgress({ stage: "preparing", bytes, count });
+      if (active) setProgress({ stage: "preparing", bytes, count });
       await new Promise(resolve => window.setTimeout(resolve, 30));
-      if (controller.signal.aborted) return;
       const rows = JSON.parse(chunks.join("")) as EmployeeSummary[];
-      setData({ rows, queryMs, elapsed: performance.now() - started });
-    }).catch(error => { if (!controller.signal.aborted) setError(error.message); });
-    return () => controller.abort();
-  }, [currentSearch, currentTradeId, currentStatusId, currentGradeId, currentCity, currentState]);
+      return { rows, queryMs, elapsed: performance.now() - started };
+    })).then(result => { if (active) setData(result); }).catch(error => { if (active) setError(error.message); });
+    return () => { active = false; };
+  }, [cacheScope, currentSearch, currentTradeId, currentStatusId, currentGradeId, currentCity, currentState]);
   const filtered = useMemo(() => {
     const rows = filterEmployeeSearch(data?.rows ?? [], deferredSearch);
     const tradeLabel = props.trades.find(trade => trade.value === selectedTrade)?.label;

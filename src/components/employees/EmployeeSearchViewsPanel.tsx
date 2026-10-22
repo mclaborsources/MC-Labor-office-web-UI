@@ -195,7 +195,7 @@ function Views1Tab({ trades, currentTradeId, onTradeChange, onSort }: Pick<Emplo
         </select>
         <span className="ac-customer-search-filter-label">Filter:</span>
         <select className="ac-select ac-employee-search-filter-input" defaultValue="" aria-label="Filter">
-          <option value="">Unfiltered</option>
+          <option value="" />
           <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.filters} />
         </select>
       </div>

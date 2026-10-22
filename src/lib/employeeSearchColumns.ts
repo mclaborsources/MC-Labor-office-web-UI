@@ -36,12 +36,14 @@ const DEFAULT_VIEW_COLUMN_DEFINITION = [
   ["EmployeeID", "Emp"],
 ] as const satisfies readonly (readonly [EmployeeSearchColumnKey, string])[];
 
+const DEFAULT_COLUMN_WIDTHS = [19, 30, 37, 87, 33, 96, 130, 96, 86, 30, 86, 65, 100, 60, 22, 96, 44, 51, 87, 110, 94, 51, 78, 66, 75, 78, 79, 60];
+
 /** Saved Access layout selected by Views 1 > Default (View 01). */
 export const EMPLOYEE_SEARCH_DEFAULT_COLUMNS = DEFAULT_VIEW_COLUMN_DEFINITION.map(
-  ([key, label]) => {
+  ([key, label], index) => {
     const source = EMPLOYEE_SEARCH_ACCESS_COLUMNS.find((column) => column.key === key);
     if (!source) throw new Error(`Missing Access Employee Search column: ${key}`);
-    return { ...source, label };
+    return { ...source, label, width: DEFAULT_COLUMN_WIDTHS[index] ?? source.width };
   },
 );
 
