@@ -340,11 +340,15 @@ const CUSTOMER_SEARCH_SIDE_ROWS = [
 ] as const;
 
 function CustomerSearchSidebar({
+  heading,
+  headerActions,
   searchValues,
   preservedFilters,
   basePath = "/customers",
   onSearchChange,
 }: {
+  heading?: ReactNode;
+  headerActions?: ReactNode;
   onSearchChange?: (values: Record<string, string>) => void;
   basePath?: string;
   searchValues: Record<string, string>;
@@ -354,6 +358,8 @@ function CustomerSearchSidebar({
 
   return (
     <aside className="ac-customer-search-sidebar shrink-0">
+      {heading}
+      {headerActions && <div className="ac-customer-search-sidebar-tools">{headerActions}</div>}
       <div className="ac-customer-search-screen-size">
         <span className="ac-customer-search-screen-size-label">Screen Size</span>
         <AccessButton data-action-status="complete"
@@ -584,21 +590,20 @@ export function CustomerSearchScreen({
     <div className="ac-customer-search-page flex min-h-0 flex-1 flex-col">
       <CustomerPlaceholderControls />
       <div className="ac-customer-search ac-tracking--modern flex min-h-0 flex-1 flex-col">
-        <div className="ac-customer-search-titlebar shrink-0">
-          <span className="ac-customer-search-title">{title}</span>
-          {(basePath === "/customers" || onRefresh) && <AccessButton data-action-status="complete" xs onClick={onRefresh ?? (() => router.refresh())} title="Reload customer records from the database">
-            Refresh
-          </AccessButton>}
-          {onResetColumnOrder && <AccessButton data-action-status="complete" xs onClick={onResetColumnOrder}>Reset column order</AccessButton>}
-          <AccessButton data-action-status="missing" xs disabled>
-            New
-          </AccessButton>
-        </div>
-
         <div className="ac-customer-search-body min-h-0 flex-1 flex-col">
           <div className="ac-panel ac-panel-elevated ac-customer-search-shell min-h-0 flex-1">
             <div className="ac-customer-search-shell-inner">
               <CustomerSearchSidebar
+                heading={<div className="ac-customer-search-titlebar shrink-0">
+                  <span className="ac-customer-search-title">{title}</span>
+                  <AccessButton data-action-status="missing" xs disabled>New</AccessButton>
+                </div>}
+                headerActions={<>
+                  {(basePath === "/customers" || onRefresh) && <AccessButton data-action-status="complete" xs onClick={onRefresh ?? (() => router.refresh())} title="Reload customer records from the database">
+                    Refresh
+                  </AccessButton>}
+                  {onResetColumnOrder && <AccessButton data-action-status="complete" xs onClick={onResetColumnOrder}>Reset column order</AccessButton>}
+                </>}
                 onSearchChange={onSidebarSearchChange}
                 basePath={basePath}
                 searchValues={{

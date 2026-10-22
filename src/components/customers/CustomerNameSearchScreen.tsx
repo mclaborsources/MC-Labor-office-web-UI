@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CustomerNameColumnHeader } from "./CustomerNameColumnHeader";
 import { Search, X } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { CUSTOMER_NAME_SEARCH_COLUMNS, customerNameCellValue, compareCustomerNameValues, type CustomerNameMatch, type CustomerNameColumnKey } from "@/lib/customerNameSearchColumns";
 
 const defaultColumns = CUSTOMER_NAME_SEARCH_COLUMNS;
@@ -29,6 +29,7 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
   initialLoadTimeMs?: number;
   variant?: "names" | "customers";
 }) {
+  const router = useRouter();
   const [columnOrder, setColumnOrder] = useState<SummaryColumnKey[]>(() => defaultColumns.map(column => column.key));
   useEffect(() => { setColumnOrder(savedColumnOrders[variant] ?? defaultColumns.map(column => column.key)); }, [variant, resetOrderVersion]);
   const summaryColumns = useMemo(() => columnOrder.map(key => defaultColumns.find(column => column.key === key)!), [columnOrder]);
@@ -235,7 +236,9 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
                   const value = summaryValue(customer, column.key);
                   return <span key={column.key} data-column={column.key} title={value}>
                     {variant === "customers" && column.key === "customerName"
-                      ? <Link href={`/customers/${customer.customerId}`} prefetch={false}>{value || "—"}</Link>
+                      ? <span role="link" tabIndex={0} className="ac-customer-name-open" title="Double-click to open customer"
+                          onDoubleClick={() => router.push(`/customers/${customer.customerId}`)}
+                          onKeyDown={event => { if (event.key === "Enter") { event.preventDefault(); router.push(`/customers/${customer.customerId}`); } }}>{value || "—"}</span>
                       : (column.key === "futureCallHistory" || column.key === "lastActionNote") && value
                       ? <button type="button" style={{ border: 0, padding: 0, background: "transparent", color: "inherit", font: "inherit", cursor: "pointer", maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
                           aria-label={`Read ${column.label} for ${customer.customerName}`}

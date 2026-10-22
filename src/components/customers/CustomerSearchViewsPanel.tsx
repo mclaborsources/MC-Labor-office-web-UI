@@ -85,7 +85,7 @@ const CUSTOMER_SAVED_VIEW_OPTIONS = [
   "View 09",
 ] as const;
 
-function ClusterMultiSelect() {
+export function ClusterMultiSelect() {
   const [selected, setSelected] = useState<string[]>([]);
   const [filter, setFilter] = useState("");
   const visibleOptions = CUSTOMER_CLUSTER_OPTIONS.filter((option) =>
@@ -215,7 +215,8 @@ function CompactFilterRow(props: CustomerSearchViewsPanelProps) {
         />
       </Suspense>
       <span className="ac-customer-search-filter-label">Filter:</span>
-      <select className="ac-select ac-customer-search-filter-input" defaultValue="filter-12" aria-label="Filter">
+      <select className="ac-select ac-customer-search-filter-input" defaultValue="" aria-label="Filter">
+        <option value="" />
         {CUSTOMER_SAVED_FILTER_OPTIONS.map((option) => (
           <option key={option.value} value={option.value}>{option.label}</option>
         ))}
@@ -365,7 +366,7 @@ function ViewsTab() {
           <span className="ac-flabel">Profile Type:</span>
           {["All", "Customer Search", "Spare 1", "Spare 2", "Spare 3"].map((label, i) => (
             <label key={label} className="ac-customer-search-check">
-              <input type="checkbox" disabled defaultChecked={i === 0 || i === 1} />
+              <input type="checkbox" disabled defaultChecked={i === 0} />
               <span>{label}</span>
             </label>
           ))}

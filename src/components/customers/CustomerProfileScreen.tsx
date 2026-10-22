@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Home, Search } from "lucide-react";
+import { Home, Search, Copy, FolderOpen, FileText, CircleHelp } from "lucide-react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { AccessDataTable, type AccessColumn } from "@/components/access/AccessDataTable";
 import { AccessTabs } from "@/components/access/AccessTabs";
@@ -26,12 +26,14 @@ function ProfileField({
   wide,
   mono,
   className = "",
+  action,
 }: {
   label: string;
   value?: string | null;
   wide?: boolean;
   mono?: boolean;
   className?: string;
+  action?: "copy" | "open";
 }) {
   const normalizedLabel = label.toLowerCase();
   const inputType =
@@ -43,9 +45,15 @@ function ProfileField({
               : "text";
 
   return (
-    <label className={`ac-customer-profile-field ${wide ? "ac-customer-profile-field--wide" : ""} ${className}`}>
+    <label data-label={label} className={`ac-customer-profile-field ${wide ? "ac-customer-profile-field--wide" : ""} ${action ? "ac-customer-profile-field--action" : ""} ${className}`}>
       <span className="ac-flabel">{label}</span>
       <input type={inputType} className={`ac-input ${mono ? "font-mono" : ""}`} defaultValue={value ?? ""} aria-label={label} />
+      {action && <button type="button" className="ac-customer-profile-field-action" aria-label={`${action === "copy" ? "Copy" : "Open"} ${label}`} disabled={!value} onClick={event => {
+        event.preventDefault();
+        if (!value) return;
+        if (action === "copy") void navigator.clipboard.writeText(value);
+        else { try { const url = new URL(value.includes("://") ? value : `https://${value}`); if (["http:", "https:"].includes(url.protocol)) window.open(url.href, "_blank", "noopener,noreferrer"); } catch { /* Invalid URL. */ } }
+      }}>{action === "copy" ? <Copy size={14} /> : <FolderOpen size={16} />}</button>}
     </label>
   );
 }
@@ -144,10 +152,10 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
             <AccessButton data-action-status="missing" xs className="ac-customer-profile-step-arrow">
               ►
             </AccessButton>
-            <button data-action-status="missing" type="button" className="ac-customer-profile-util-icon" aria-label="Document" />
-            <button data-action-status="missing" type="button" className="ac-customer-profile-util-icon ac-customer-profile-util-icon--gear" aria-label="Settings" />
+            <button data-action-status="missing" type="button" className="ac-customer-profile-util-icon" aria-label="Document"><FileText size={17} /></button>
+            <button data-action-status="missing" type="button" className="ac-customer-profile-util-icon ac-customer-profile-util-icon--gear" aria-label="Settings"><CircleHelp size={17} /></button>
           </div>
-          <span className="ac-customer-profile-delete-link">Delete | 037</span>
+          <span className="ac-customer-profile-delete-link">Delete | 036</span>
         </div>
       </div>
 
@@ -196,11 +204,10 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
       <div className="ac-customer-profile-row ac-customer-profile-row-4">
         <ProfileSelect
           label="Assigned Type"
-          value="sheet-metal"
+          value=""
           wide
           options={[
             { value: "", label: "" },
-            { value: "sheet-metal", label: "SHEET METAL WORK-S" },
           ]}
         />
         <span className="ac-flabel ac-customer-profile-subtypes-label">Sub Types:</span>
@@ -208,12 +215,11 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
           <ProfileSelect
             key={i}
             label=""
-            value={i === 0 ? "supervisor" : ""}
+            value=""
             className="ac-customer-profile-subtype-select"
             options={
               i === 0
                 ? [
-                    { value: "supervisor", label: "Supervisor 5606" },
                     { value: "", label: "" },
                   ]
                 : [{ value: "", label: "" }]
@@ -248,28 +254,29 @@ function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
       <div className="ac-customer-profile-basic-grid">
         <div className="ac-customer-profile-col">
           <ProfileField label="Sales Package Name" value="" />
-          <ProfileField label="Street" value={customer.street} wide />
-          <ProfileField label="City/State" value={cityState} />
+          <ProfileField label="Street" value={customer.street} wide action="copy" />
+          <ProfileField label="City, State" value={cityState} action="copy" />
           <ProfileField label="Zip" value={customer.zip} />
           <label className="ac-customer-profile-check">
             <input type="checkbox" />
             <span>Different Mailing Address</span>
           </label>
-          <ProfileField label="Street" value={customer.mailStreet} wide />
+          <ProfileField label="Street" value={customer.mailStreet} wide action="copy" />
           <ProfileField
-            label="City/State"
+            label="City, State"
+            action="copy"
             value={[customer.mailCity, customer.mailState].filter(Boolean).join(", ")}
           />
           <ProfileField label="Zip" value={customer.mailZip} />
         </div>
 
         <div className="ac-customer-profile-col">
-          <ProfileField label="Phone" value={customer.phone} />
-          <ProfileField label="Fax" value={customer.fax} />
-          <ProfileField label="Invoice Email" value={customer.email} />
-          <ProfileField label="Customer Web Site" value={customer.website} wide />
-          <ProfileField label="Corp Web Site" value={customer.corpWebsite} wide />
-          <ProfileField label="Linkedin Profile" value="" wide />
+          <ProfileField label="Phone" value={customer.phone} action="copy" />
+          <ProfileField label="Fax" value={customer.fax} action="copy" />
+          <label className="ac-customer-profile-invoice-email"><span>Invoice Email</span><textarea className="ac-input" aria-label="Invoice Email" defaultValue={customer.email} /><button type="button" className="ac-customer-profile-field-action" aria-label="Copy Invoice Email" onClick={() => { if (customer.email) void navigator.clipboard.writeText(customer.email); }}><Copy size={14} /></button></label>
+          <ProfileField label="Customer Web Site" value={customer.website} wide action="open" />
+          <ProfileField label="Corp Web Site" value={customer.corpWebsite} wide action="open" />
+          <ProfileField label="LinkedIn Profile" value="" wide action="open" />
         </div>
 
         <div className="ac-customer-profile-col ac-customer-profile-col--meta">
@@ -323,15 +330,15 @@ function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
         </div>
 
         <div className="ac-customer-profile-links">
-          <div className="ac-customer-profile-links-title">Hyperlinks</div>
+          <div className="ac-customer-profile-links-title"><span>Hyperlinks</span></div>
           <div className="ac-customer-profile-links-grid">
             {CUSTOMER_PROFILE_LINK_ENTITIES.map((entity) => (
               <div key={entity} className="ac-customer-profile-links-col">
                 <div className="ac-customer-profile-links-head">{entity}</div>
                 {CUSTOMER_PROFILE_LINK_ACTIONS.map((action) => (
-                  <AccessButton data-action-status="missing" key={action} xs className="ac-customer-profile-link-btn">
+                  <div key={action} className="ac-customer-profile-link-row"><input aria-label={`${entity} ${action} file`} readOnly value="" /><AccessButton data-action-status="missing" xs className="ac-customer-profile-link-btn">
                     {action}
-                  </AccessButton>
+                  </AccessButton></div>
                 ))}
               </div>
             ))}
@@ -1377,7 +1384,7 @@ export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) 
   const [activeTab, setActiveTab] = useState("01-basic");
 
   return (
-    <div className="ac-customer-search-page flex min-h-0 flex-1 flex-col">
+    <div className="ac-customer-search-page ac-customer-profile-page flex min-h-0 flex-1 flex-col">
       <div className="ac-customer-search ac-customer-profile ac-tracking--modern flex min-h-0 flex-1 flex-col">
         <div className="ac-customer-search-body min-h-0 flex-1 flex-col">
           <div className="ac-panel ac-panel-elevated ac-customer-profile-shell shrink-0">
