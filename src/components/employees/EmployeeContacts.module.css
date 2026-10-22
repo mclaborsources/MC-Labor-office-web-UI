@@ -1,0 +1,63 @@
+/* Employee Contacts: Access notes, contacts and history layout. */
+.layout :global(.er-content):global(.er-contacts-content) { padding:0; min-width:1910px; background:#d8d8d8; }
+.layout :global(.er-contacts-screen) { position:relative; display:block; min-width:1910px; min-height:727px; background:#d8d8d8; font:14px Calibri,Arial,sans-serif; }
+.layout :global(.er-contact-notes) { position:absolute; left:0; top:6px; width:385px; }
+.layout :global(.er-contact-notes) label { display:flex; flex-direction:column; gap:5px; font:14px Calibri,Arial,sans-serif; }
+.layout :global(.er-contact-notes) textarea { width:385px; height:98px; }
+.layout :global(.er-contact-message) { position:absolute; left:903px; top:6px; width:311px; height:142px; padding:7px; border:1px solid; border-color:#fff #999 #999 #fff; }
+.layout :global(.er-contact-message) textarea { width:290px; height:54px; }
+.layout :global(.er-contact-message) button { width:290px; height:29px; margin-top:5px; }
+.layout :global(.er-salesmen) { position:absolute; left:1224px; top:14px; width:333px; height:126px; padding:0; display:block; }
+.layout :global(.er-salesmen) table { width:256px; table-layout:fixed; border-collapse:collapse; font:14px Calibri,Arial,sans-serif; }
+.layout :global(.er-salesmen) button { position:absolute; right:0; top:0; width:69px; height:29px; }
+.layout :global(.er-salesmen) button:last-child { top:32px; }
+.layout :global(.er-contact-grid-wrap) { position:absolute; left:92px; top:162px; width:1508px; height:149px; overflow:auto; display:flex; flex-direction:column; border:1px solid #bfc4ca; background:#fff; }
+.layout :global(.er-contact-grid) { table-layout:fixed; width:1484px; border-collapse:collapse; }
+.layout :global(.er-contact-grid-wrap) table,.layout :global(.er-contact-history-grid) table { font:14px Calibri,Arial,sans-serif; }
+.layout :global(.er-contact-grid-wrap) th,.layout :global(.er-contact-history-grid) th,.layout :global(.er-salesmen) th { height:20px; padding:0 4px; background:#dfe3e8; color:#18324c; font-weight:400; border:1px solid #bfc5cb; overflow:hidden; white-space:nowrap; }
+.layout :global(.er-contact-grid-wrap) th::after,.layout :global(.er-contact-history-grid) th::after { content:'⌄'; float:right; font-size:11px; }
+.layout :global(.er-contact-grid-wrap) td,.layout :global(.er-contact-history-grid) td,.layout :global(.er-salesmen) td { height:20px; padding:0 3px; line-height:19px; border:1px solid #eef0f7; background:#fff; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.layout :global(.er-contact-grid) tbody tr:first-child td { background:#a6cdeb; }
+.layout :global(.er-contact-grid) input[type=checkbox] { width:13px; height:13px; margin:0; accent-color:#0068b8; }
+.layout :global(.er-contact-hint) { position:absolute; left:92px; top:315px; margin:0; color:#243fe1; font:14px Calibri,Arial,sans-serif; }
+.layout :global(.er-contact-history-tools) { position:absolute; left:92px; top:354px; width:1508px; height:34px; display:flex; flex-wrap:nowrap; align-items:center; gap:3px; padding:3px; }
+.layout :global(.er-contact-history-tools)>span:nth-of-type(2) { margin-left:70px; }
+.layout :global(.er-contact-history-tools) button { flex:none; height:26px; padding:1px 5px; font:700 12px Calibri,Arial,sans-serif; }
+.layout :global(.er-contact-history-tools) button:nth-last-child(2) { margin-left:auto; width:181px; font:14px Calibri,Arial,sans-serif; }
+.layout :global(.er-contact-history-tools) button:last-child { width:181px; margin-left:16px; font:14px Calibri,Arial,sans-serif; }
+.layout :global(.er-contact-history-grid) { position:absolute; left:92px; top:391px; width:1508px; height:149px; display:flex; flex-direction:column; overflow:auto; border:1px solid #bfc4ca; background:#fff; }
+.layout :global(.er-contact-history-grid) table { width:1466px; table-layout:fixed; border-collapse:collapse; }
+.layout :global(.erc-recordbar) { margin-top:auto; flex:none; height:17px; background:#e8e9ed; color:#315171; border-top:1px solid #aaa; font:11px Calibri,Arial,sans-serif; white-space:nowrap; }
+.layout :global(.erc-recordbar) input { width:71px; height:16px; min-height:16px; padding:0 3px; border:1px solid #aaa; background:#fff; font:11px Calibri,Arial,sans-serif; }
+.layout :global(.erc-vertical) { position:absolute; left:0; width:25px; border:1px solid #000; background:#bfbfbf; writing-mode:vertical-rl; text-orientation:upright; display:flex; align-items:center; justify-content:center; letter-spacing:3px; font:700 13px Calibri,Arial,sans-serif; }
+.layout :global(.erc-contact-label) { top:162px; height:149px; }
+.layout :global(.erc-history-label) { top:354px; height:186px; }
+.layout :global(.erc-delete-contact),.layout :global(.erc-add-history),.layout :global(.erc-delete-history) { position:absolute; left:44px; width:33px; height:33px; padding:0; }
+.layout :global(.erc-delete-contact) { top:266px; font-size:22px; }
+.layout :global(.erc-add-history) { top:402px; }
+.layout :global(.erc-delete-history) { top:491px; font-size:22px; }
+.layout :global(.er-contact-footer) { position:absolute; left:96px; top:546px; display:block; width:1080px; height:82px; }
+.layout :global(.er-contact-footer)>label { position:absolute; display:flex; align-items:center; gap:8px; white-space:nowrap; font:14px Calibri,Arial,sans-serif; }
+.layout :global(.er-contact-footer)>label:first-child { left:0; top:0; }
+.layout :global(.er-contact-footer)>label:first-child input { width:121px; }
+.layout :global(.er-contact-footer)>label:nth-of-type(2) { left:293px; top:0; }
+.layout :global(.er-contact-footer)>label:nth-of-type(2) input { width:98px; }
+.layout :global(.er-contact-footer)>label:nth-of-type(3) { left:657px; top:0; }
+.layout :global(.er-contact-footer)>label:nth-of-type(3) input { width:290px; }
+.layout :global(.er-contact-footer)>button { position:absolute; top:0; left:480px; height:26px; }
+.layout :global(.er-contact-footer)>button:nth-of-type(2) { left:996px; }
+.layout :global(.erc-future-audit),.layout :global(.erc-call-audit) { position:absolute; top:28px; left:293px; }
+.layout :global(.erc-call-audit) { left:657px; }
+.layout :global(.erc-future-audit) label,.layout :global(.erc-call-audit) label { display:flex; align-items:center; height:28px; gap:8px; font:14px Calibri,Arial,sans-serif; }
+.layout :global(.erc-future-audit) label { gap:42px; }
+.layout :global(.erc-call-audit) label { gap:14px; }
+.layout :global(.erc-future-audit) input,.layout :global(.erc-call-audit) input { width:98px; height:26px; background:#d8d8d8!important; }
+.layout :global(.er-contact-notes) textarea { height:98px; min-height:98px; max-height:98px; width:385px; }
+.layout :global(.er-contact-message) { display:block; }
+.layout :global(.er-contact-message) textarea { height:54px; min-height:54px; width:290px; }
+.layout :global(.er-salesmen) { border:0; background:transparent; }
+.layout :global(.er-contact-grid) th { width:auto; }
+.layout :global(.er-contact-footer)>label { flex-direction:row; }
+.layout :global(.erc-future-audit) label,.layout :global(.erc-call-audit) label { flex-direction:row; }
+.layout :global(.er-contact-hint) { font-style:normal; }
+.layout :global(.erc-delete-contact),.layout :global(.erc-add-history),.layout :global(.erc-delete-history) { min-width:33px; max-width:33px; min-height:33px; }

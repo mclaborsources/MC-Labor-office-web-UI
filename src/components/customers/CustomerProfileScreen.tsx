@@ -380,7 +380,7 @@ interface EditableBillRate extends CustomerBillRate {
 function CustomerBillRatesTab({ customer }: { customer: CustomerDetail }) {
   const [filter, setFilter] = useState<BillRateFilter>("active");
   const [search, setSearch] = useState("");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(customer.billRates[0]?.billRateId ?? null);
   const [rows, setRows] = useState<EditableBillRate[]>(() =>
     customer.billRates.map((rate, index) => ({
       ...rate,
@@ -446,11 +446,10 @@ function CustomerBillRatesTab({ customer }: { customer: CustomerDetail }) {
         <button data-action-status="complete" type="button" onClick={() => moveSelected(-1)} disabled={!selectedId} aria-label="Move selected rate up">↑</button>
         <button data-action-status="complete" type="button" onClick={() => moveSelected(1)} disabled={!selectedId} aria-label="Move selected rate down">↓</button>
         <button data-action-status="complete" type="button" onClick={deleteSelected} disabled={!selectedId} aria-label="Delete selected rate">×</button>
-        <button data-action-status="complete" type="button" onClick={addRow} className="ac-customer-bill-rate-add">+ Add Rate</button>
       </div>
 
       <div className="ac-customer-bill-rate-grid-wrap">
-        <table className="ac-customer-bill-rate-grid">
+        <div className="ac-customer-bill-rate-scroll"><table className="ac-customer-bill-rate-grid">
           <thead>
             <tr>
               <th aria-label="Selected row" />
@@ -478,10 +477,11 @@ function CustomerBillRatesTab({ customer }: { customer: CustomerDetail }) {
                 <td><input type="checkbox" checked={row.active} onFocus={() => setSelectedId(row.billRateId)} onChange={(event) => updateRow(row.billRateId, "active", event.target.checked)} /></td>
               </tr>
             ))}
-            {visibleRows.length === 0 ? <tr><td colSpan={8} className="ac-customer-bill-rate-empty">No rates match this filter.</td></tr> : null}
+            <tr className={visibleRows.length === 0 ? "is-selected ac-bill-rate-new-row" : "ac-bill-rate-new-row"}><td><button type="button" onClick={addRow} aria-label="Add bill rate">*</button></td><td onDoubleClick={addRow} /><td /><td /><td /><td /><td /><td><input type="checkbox" checked readOnly aria-label="New rate active" /></td></tr>
+            {Array.from({length:Math.max(0,14-visibleRows.length)},(_,index)=><tr key={`blank-rate-${index}`} aria-hidden="true">{Array.from({length:8},(_,cell)=><td key={cell} />)}</tr>)}
           </tbody>
-        </table>
-        <div className="ac-customer-bill-rate-recordbar">Record: {visibleRows.length ? `1 of ${visibleRows.length}` : "0 of 0"} <span>{filter === "all" && !search ? "No Filter" : "Filtered"}</span><input aria-label="Search bill rates" placeholder="Search" value={search} onChange={(event) => setSearch(event.target.value)} /></div>
+        </table></div>
+        <div className="ac-customer-bill-rate-recordbar">Record:　|◂　◂　{visibleRows.length ? `1 of ${visibleRows.length}` : "1 of 1"}　▸　▸| <span>{filter === "all" && !search ? "No Filter" : "Filtered"}</span><input aria-label="Search bill rates" placeholder="Search" value={search} onChange={(event) => setSearch(event.target.value)} /></div>
       </div>
 
       <fieldset className="ac-customer-bill-rate-filter">
@@ -511,7 +511,9 @@ function CustomerInsuranceInfoTab() {
         {CUSTOMER_INSURANCE_CARRIERS.map((carrier) => (
           <input
             key={`${carrier}-wc`}
-            type="date"
+            type="text"
+            onFocus={event => { event.currentTarget.type = "date"; }}
+            onBlur={event => { if (!event.currentTarget.value) event.currentTarget.type = "text"; }}
             className="ac-input ac-customer-insurance-date"
             defaultValue=""
             aria-label={`${carrier} WC expiration date`}
@@ -522,7 +524,9 @@ function CustomerInsuranceInfoTab() {
         {CUSTOMER_INSURANCE_CARRIERS.map((carrier) => (
           <input
             key={`${carrier}-gl`}
-            type="date"
+            type="text"
+            onFocus={event => { event.currentTarget.type = "date"; }}
+            onBlur={event => { if (!event.currentTarget.value) event.currentTarget.type = "text"; }}
             className="ac-input ac-customer-insurance-date"
             defaultValue=""
             aria-label={`${carrier} GL expiration date`}
@@ -574,7 +578,7 @@ function SalesSelect({
     <label className={`ac-customer-sales-field ${className}`}>
       <span>{label}</span>
       <select className="ac-select" defaultValue={defaultValue} aria-label={label}>
-        <option value="">Select…</option>
+        <option value="" />
         {options.map((option) => (
           <option key={option} value={option}>{option}</option>
         ))}
@@ -625,7 +629,7 @@ function CustomerSalesTab() {
           </div>
           <label className="ac-customer-sales-date-field">
             <span>Date on Contract</span>
-            <input type="date" className="ac-input" defaultValue="" aria-label="Date on Contract" />
+            <input type="text" onFocus={event => { event.currentTarget.type = "date"; }} onBlur={event => { if (!event.currentTarget.value) event.currentTarget.type = "text"; }} className="ac-input" defaultValue="" aria-label="Date on Contract" />
           </label>
         </div>
 
@@ -670,19 +674,15 @@ function CustomerSalesTab() {
         <SalesSelect
           label="Allow Contract With"
           options={CUSTOMER_SALES_COMPANIES}
-          defaultValue="Industrial Power Group, Inc."
         />
-        <div className="ac-customer-sales-contract-actions">
-          <AccessButton data-action-status="missing" xs>Copy IPG Sales Contract</AccessButton>
-          <AccessButton data-action-status="missing" xs>Populate IPG Sales Contract</AccessButton>
-        </div>
+
         <label className="ac-customer-sales-small-field">
           <span>User</span>
           <input className="ac-input" defaultValue="" aria-label="Contract user" />
         </label>
         <label className="ac-customer-sales-small-field">
           <span>Date</span>
-          <input type="date" className="ac-input" defaultValue="" aria-label="Contract update date" />
+          <input type="text" onFocus={event => { event.currentTarget.type = "date"; }} onBlur={event => { if (!event.currentTarget.value) event.currentTarget.type = "text"; }} className="ac-input" defaultValue="" aria-label="Contract update date" />
         </label>
         <label className="ac-customer-sales-updated">
           <span>Updated Contract</span>
@@ -1041,7 +1041,7 @@ function CustomerOptionsTab() {
         <div className="ac-customer-options-section ac-customer-options-text-list">
           <h3>Texts</h3>
           <div>• Hours/timesheet texts from dropdown lists</div>
-          <div>• Hours/timesheet autotext <input type="checkbox" defaultChecked aria-label="Hours timesheet autotext" /></div>
+          <div>• Hours/timesheet autotext <input type="checkbox" aria-label="Hours timesheet autotext" /></div>
           <div>• Timesheet hyperlink color autotext</div>
         </div>
         <div className="ac-customer-options-help">
@@ -1061,7 +1061,7 @@ function CustomerOptionsTab() {
             <h3>Payroll Company</h3>
             <label className="ac-customer-options-select-row">
               <span>Allow Contract With</span>
-              <select defaultValue="Industrial Power Group, Inc.">
+              <select defaultValue=""><option value="" />
                 {CUSTOMER_SALES_COMPANIES.map((company) => <option key={company}>{company}</option>)}
               </select>
             </label>
@@ -1125,12 +1125,12 @@ function CustomerOptionsTab() {
           <div className="ac-customer-options-section ac-customer-options-other">
             <h3>Other</h3>
             <div className="ac-customer-options-other-grid">
-              <label><span>Status</span><select defaultValue="Salesman"><option>Salesman</option><option>Customer</option><option>Inactive</option><option>Prospect</option></select></label>
+              <label><span>Status</span><select defaultValue=""><option value="" /><option>Salesman</option><option>Customer</option><option>Inactive</option><option>Prospect</option></select></label>
               <OptionCheck label="Customer is Set Up" />
-              <label><span>Hunter</span><select defaultValue=""><option value="">Select…</option>{CUSTOMER_SALES_PEOPLE.map((person) => <option key={person}>{person}</option>)}</select></label>
-              <label><span>Credit History</span><select defaultValue=""><option value="">Select…</option><option>Excellent</option><option>Good</option><option>Fair</option><option>Hold</option></select></label>
+              <label><span>Hunter</span><select defaultValue=""><option value="" />{CUSTOMER_SALES_PEOPLE.map((person) => <option key={person}>{person}</option>)}</select></label>
+              <label><span>Credit History</span><select defaultValue=""><option value="" /><option>Excellent</option><option>Good</option><option>Fair</option><option>Hold</option></select></label>
               <AccessButton data-action-status="missing" xs>History</AccessButton>
-              <label><span>Term Limit</span><select defaultValue=""><option value="">Select…</option><option>15</option><option>30</option><option>45</option><option>60</option><option>90</option></select><em>(Days)</em></label>
+              <label><span>Term Limit</span><select defaultValue=""><option value="" /><option>15</option><option>30</option><option>45</option><option>60</option><option>90</option></select><em>(Days)</em></label>
               <AccessButton data-action-status="missing" xs>History</AccessButton>
               <label><span>Legal Status</span><select defaultValue="Non Legal"><option>Non Legal</option><option>Attorney Review</option><option>Collections</option><option>Judgment</option><option>Resolved</option></select></label>
               <AccessButton data-action-status="missing" xs>History</AccessButton>
@@ -1219,7 +1219,7 @@ function CustomerJobsTab({ customer }: { customer: CustomerDetail }) {
           <span>Select:</span>
           <AccessButton data-action-status="complete" xs onClick={() => setAllJobs(false)}>Clear</AccessButton>
           <AccessButton data-action-status="complete" xs onClick={() => setAllJobs(true)}>All</AccessButton>
-          <label><span>Change Job Status to:</span><select value={changeStatus} onChange={(event) => setChangeStatus(event.target.value)}><option value="">Select…</option>{CUSTOMER_JOB_STATUS_OPTIONS.map((status) => <option key={status}>{status}</option>)}</select></label>
+          <label><span>Change Job Status to:</span><select value={changeStatus} onChange={(event) => setChangeStatus(event.target.value)}><option value="" />{CUSTOMER_JOB_STATUS_OPTIONS.map((status) => <option key={status}>{status}</option>)}</select></label>
         </div>
         <div className="ac-customer-jobs-grid-wrap">
           <table className="ac-customer-jobs-grid">
@@ -1231,7 +1231,7 @@ function CustomerJobsTab({ customer }: { customer: CustomerDetail }) {
                   <td>{job.jobName}</td><td>{job.address}</td><td /><td /><td /><td>{job.status}</td><td />
                 </tr>
               ))}
-              {Array.from({ length: Math.max(0, 16 - jobs.length) }, (_, index) => <tr key={`job-blank-${index}`} aria-hidden><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}
+              {Array.from({ length: Math.max(0, 23 - jobs.length) }, (_, index) => <tr key={`job-blank-${index}`} aria-hidden><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}
             </tbody>
           </table>
           <div className="ac-customer-jobs-recordbar">Record:　|◄　◄　<span>{jobs.length ? `1 of ${jobs.length}` : ""}</span>　►　►|　<em>{jobGridSearch ? "Filtered" : "No Filter"}</em><input value={jobGridSearch} onChange={(event) => setJobGridSearch(event.target.value)} placeholder="Search" aria-label="Search jobs grid" /></div>
@@ -1245,7 +1245,7 @@ function CustomerJobsTab({ customer }: { customer: CustomerDetail }) {
             <thead><tr><th aria-label="Row selector" /><th>Foreman</th><th>Phone</th><th>Email</th><th aria-hidden /></tr></thead>
             <tbody>
               {foremen.map((foreman) => <tr key={foreman.foremanId}><td /><td>{foreman.foremanName}</td><td>{foreman.phone}</td><td>{foreman.email}</td><td /></tr>)}
-              {Array.from({ length: Math.max(0, 18 - foremen.length) }, (_, index) => <tr key={`foreman-blank-${index}`} aria-hidden><td /><td /><td /><td /><td /></tr>)}
+              {Array.from({ length: Math.max(0, 28 - foremen.length) }, (_, index) => <tr key={`foreman-blank-${index}`} aria-hidden><td /><td /><td /><td /><td /></tr>)}
             </tbody>
           </table>
           <div className="ac-customer-jobs-recordbar">Record:　|◄　◄　<span>{foremen.length ? `1 of ${foremen.length}` : ""}</span>　►　►|　<em>{foremanSearch ? "Filtered" : "No Filter"}</em><input value={foremanSearch} onChange={(event) => setForemanSearch(event.target.value)} placeholder="Search" aria-label="Search foremen" /></div>
@@ -1301,9 +1301,9 @@ function CustomerSalesHistoryTab({ customer }: { customer: CustomerDetail }) {
         <div className="ac-customer-sales-vertical">CONTACTS</div>
         <div className="ac-customer-sales-side-actions"><button data-action-status="missing">↑</button><button data-action-status="missing">↓</button><button data-action-status="missing">×</button></div>
         <div className="ac-customer-sales-history-table-wrap">
-          <table><thead><tr><th /><th>FName</th><th>LName</th><th>Title</th><th>Email</th><th>Cell</th><th>Carrier</th><th>Text Msg Addr</th><th>Office Phone</th><th>LinkedIn Profile</th><th>Notes</th><th>Sort</th><th>User</th><th>Date</th><th>Select</th></tr></thead>
-          <tbody>{customer.contacts.map((contact, index) => <tr key={contact.contactId}><td>{index ? "" : "*"}</td><td>{contact.firstName}</td><td>{contact.lastName}</td><td>{contact.title}</td><td>{contact.email}</td><td>{contact.cellPhone}</td><td /><td /><td>{contact.officePhone}</td><td /><td>{contact.notes}</td><td>{index + 1}</td><td>RMV</td><td>2/20/2026</td><td><input type="checkbox" /></td></tr>)}
-          {Array.from({ length: Math.max(0, 4 - customer.contacts.length) }, (_, i) => <tr key={`contact-blank-${i}`}><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}</tbody></table>
+          <table><colgroup>{[18,72,87,168,233,102,96,202,109,126,122,53,56,170,66].map((width,index)=><col key={index} style={{width}} />)}</colgroup><thead><tr><th /><th>FName</th><th>LName</th><th>Title</th><th>Email</th><th>Cell</th><th>Carrier</th><th>Text Msg Addr</th><th>Office Phone</th><th>LinkedIn Profile</th><th>Notes</th><th>Sort</th><th>User</th><th>Date</th><th>Select</th></tr></thead>
+          <tbody>{customer.contacts.map((contact, index) => <tr key={contact.contactId}><td>{index ? "" : "*"}</td><td>{contact.firstName}</td><td>{contact.lastName}</td><td>{contact.title}</td><td>{contact.email}</td><td>{contact.cellPhone}</td><td /><td /><td>{contact.officePhone}</td><td /><td>{contact.notes}</td><td>{index + 1}</td><td /><td /><td><input type="checkbox" /></td></tr>)}
+          {Array.from({ length: Math.max(0, 5 - customer.contacts.length) }, (_, i) => <tr key={`contact-blank-${i}`}><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}</tbody></table>
           <div className="ac-customer-sales-history-recordbar">Record:　|◄　◄　1 of {Math.max(1, customer.contacts.length)}　►　►|　 No Filter　<input placeholder="Search" /></div>
           <strong>For all Info emails, please select &quot;Info&quot; for the contact&apos;s Title value.</strong>
         </div>
@@ -1312,17 +1312,17 @@ function CustomerSalesHistoryTab({ customer }: { customer: CustomerDetail }) {
       <div className="ac-customer-sales-history-rowblock">
         <div className="ac-customer-sales-vertical">HISTORY</div>
         <div className="ac-customer-sales-side-actions"><button data-action-status="missing">Add</button><button data-action-status="missing">×</button></div>
-        <div className="ac-customer-sales-history-center">
+        <div className="ac-customer-sales-history-center"><div className="ac-sales-response-actions"><AccessButton data-action-status="missing" xs>Browse for Response File</AccessButton><AccessButton data-action-status="missing" xs>Open Response Folder</AccessButton></div>
           <div className="ac-customer-sales-history-filters"><span>Filter:</span>{[...SALES_HISTORY_ACTIONS, "All"].map((action) => <button data-action-status="complete" key={action} className={actionFilter === action ? "is-active" : ""} onClick={() => setActionFilter(action)}>{action}</button>)}</div>
-          <div className="ac-customer-sales-history-table-wrap ac-customer-sales-action-table"><table><thead><tr><th /><th>Action Type</th><th>User</th><th>Date</th><th /><th>To</th><th>Notes</th><th>Response HL</th><th>User</th><th>Date</th></tr></thead><tbody>{historyRows.map((row, i) => <tr key={`${row[0]}-${row[2]}`}><td>{i ? "" : "*"}</td><td>[{row[0]}]</td><td>{row[1]}</td><td>{row[2]}</td><td><a>View</a></td><td /><td>{row[3]}</td><td /><td /><td /></tr>)}</tbody></table><div className="ac-customer-sales-history-recordbar">Record:　|◄　◄　1 of {historyRows.length}　►　►|　 No Filter　<input placeholder="Search" /></div></div>
+          <div className="ac-customer-sales-history-table-wrap ac-customer-sales-action-table"><table><colgroup>{[18,175,56,95,56,145,415,244,56,96].map((width,index)=><col key={index} style={{width}} />)}</colgroup><thead><tr><th /><th>Action Type</th><th>User</th><th>Date</th><th /><th>To</th><th>Notes</th><th>Response HL</th><th>User</th><th>Date</th></tr></thead><tbody>{historyRows.map((row, i) => <tr key={`${row[0]}-${row[2]}`}><td>{i ? "" : "*"}</td><td>[{row[0]}]</td><td>{row[1]}</td><td>{row[2]}</td><td><a>View</a></td><td /><td>{row[3]}</td><td /><td /><td /></tr>)}</tbody></table><div className="ac-customer-sales-history-recordbar">Record:　|◄　◄　1 of {historyRows.length}　►　►|　 No Filter　<input placeholder="Search" /></div></div>
         </div>
         <aside className="ac-customer-sales-history-status">
-          <label><span>Sales History Status</span><select><option>101 - 0106</option><option>Active Prospect</option><option>Current Customer</option><option>Dormant</option></select></label>
-          <label><span>Internet Sales Ready</span><select><option>02 - Manpower</option><option>01 - Research</option><option>03 - Ready</option></select></label>
-          <label><span>Fast Action</span><select><option value="">Select…</option>{SALES_HISTORY_ACTIONS.map((x) => <option key={x}>{x}</option>)}</select></label>
+          <label><span>Sales History Status</span><select><option value="" /><option>Active Prospect</option><option>Current Customer</option><option>Dormant</option></select></label>
+          <label><span>Internet Sales Ready</span><select><option value="" /><option>01 - Research</option><option>03 - Ready</option></select></label>
+          <label className="ac-sales-audit"><span>User and Date</span><input readOnly value="" /><input readOnly value="" /></label><label><span>Fast Action</span><select><option value="" />{SALES_HISTORY_ACTIONS.map((x) => <option key={x}>{x}</option>)}</select></label>
           <OptionCheck label="Sales Package Sent" />
           <label><span>Future Call:</span><input /></label>
-          <AccessButton data-action-status="missing" xs>Clear</AccessButton><AccessButton data-action-status="missing" xs>History</AccessButton>
+          <AccessButton data-action-status="missing" xs>Clear</AccessButton><AccessButton data-action-status="missing" xs>History</AccessButton><label className="ac-sales-audit"><span>User and Date</span><input readOnly value="" /><input readOnly value="" /></label>
         </aside>
       </div>
 
@@ -1331,7 +1331,9 @@ function CustomerSalesHistoryTab({ customer }: { customer: CustomerDetail }) {
         <div className="ac-customer-sales-search-terms"><strong>Search Terms</strong><div>{customer.customerName}<br />{customer.customerName}, {customer.street}, {cityState}<br />{customer.contacts[0]?.firstName} {customer.contacts[0]?.lastName}, {customer.street}, {cityState}</div></div>
         <div className="ac-customer-sales-search-buttons">{["All", "Customer", "Contact", "City, State", "USA", "Card #", "True P", "Google", "LinkedIn", "Blue B", "Facebook", "BBB", "Corp Lk"].map((x) => <AccessButton data-action-status="missing" key={x} xs>{x}</AccessButton>)}</div>
         <label className="ac-customer-sales-research-notes"><span>Customer Research Notes</span><textarea /></label>
-        <AccessButton data-action-status="missing" xs>Record</AccessButton><AccessButton data-action-status="missing" xs>Customer Research History</AccessButton>
+        <div className="ac-sales-research-actions"><AccessButton data-action-status="missing" xs>Record</AccessButton><AccessButton data-action-status="missing" xs>Customer Research History</AccessButton><label>Entry User and Date <input readOnly value="" /><input readOnly value="" /></label></div>
+        <div className="ac-sales-research-flags">{["Corp Search, Found", "Corp Search, Not Found", "Lic Search, Found", "Lic Search, Not Found"].map(label=><label key={label}><span>{label}</span><input type="checkbox" /><input readOnly value="" /><input readOnly value="" /></label>)}</div>
+        <div className="ac-sales-permit"><div className="ac-customer-sales-vertical">PERMIT</div><div>{["Street", "City, State", "Date", "Fee", "Value"].map(label=><label key={label}><span>{label}</span><input readOnly value="" /></label>)}</div></div>
       </div>
     </section>
   );
@@ -1341,6 +1343,8 @@ const CUSTOMER_CONTACT_TITLES = ["Info", "Owner", "President", "Project Manager"
 
 function CustomerContactsTab({ customer }: { customer: CustomerDetail }) {
   const [contactSearch, setContactSearch] = useState("");
+  const [selectedContact, setSelectedContact] = useState(customer.contacts[0]?.contactId);
+  const selected = customer.contacts.find(contact => contact.contactId === selectedContact);
   const [permitSearch, setPermitSearch] = useState("");
   const contacts = customer.contacts.filter((contact) => {
     const term = contactSearch.trim().toLowerCase();
@@ -1352,10 +1356,10 @@ function CustomerContactsTab({ customer }: { customer: CustomerDetail }) {
       <div className="ac-customer-contacts-grid-row">
         <div className="ac-customer-contacts-side-buttons"><button data-action-status="missing">↑</button><button data-action-status="missing">↓</button><button data-action-status="missing">×</button><button data-action-status="missing" className="ac-customer-copy-icon">▧</button></div>
         <div className="ac-customer-contacts-table-wrap">
-          <table className="ac-customer-contacts-table"><thead><tr><th /><th>FName</th><th>LName</th><th>Title</th><th>Email</th><th>Cell</th><th>Carrier</th><th>Text Msg Addr</th><th>Office Phone</th><th>LinkedIn Profile</th><th>Notes</th><th>Sort</th><th>User</th><th>Date</th><th aria-hidden /></tr></thead>
+          <table className="ac-customer-contacts-table"><colgroup>{[18,72,87,168,242,102,107,183,109,126,217,53,56,151,20].map((width,index) => <col key={index} style={{width}} />)}</colgroup><thead><tr><th /><th>FName</th><th>LName</th><th>Title</th><th>Email</th><th>Cell</th><th>Carrier</th><th>Text Msg Addr</th><th>Office Phone</th><th>LinkedIn Profile</th><th>Notes</th><th>Sort</th><th>User</th><th>Date</th><th aria-hidden /></tr></thead>
           <tbody>
-            {contacts.map((contact, index) => <tr key={contact.contactId}><td>{index ? "" : "*"}</td><td>{contact.firstName}</td><td>{contact.lastName}</td><td><select defaultValue={contact.title}><option value={contact.title}>{contact.title}</option>{CUSTOMER_CONTACT_TITLES.filter((title) => title !== contact.title).map((title) => <option key={title}>{title}</option>)}</select></td><td>{contact.email}</td><td>{contact.cellPhone}</td><td /><td /><td>{contact.officePhone}</td><td /><td>{contact.notes}</td><td>{index + 1}</td><td>RMV</td><td>2/20/2026 8:48:23 PM</td><td /></tr>)}
-            {Array.from({ length: Math.max(0, 8 - contacts.length) }, (_, i) => <tr key={`contacts-blank-${i}`}><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}
+            {contacts.map((contact, index) => <tr key={contact.contactId} className={selectedContact === contact.contactId ? "is-selected" : undefined} onClick={() => setSelectedContact(contact.contactId)}><td aria-label="Select contact">{selectedContact === contact.contactId ? "▸" : ""}</td><td>{contact.firstName}</td><td>{contact.lastName}</td><td><select defaultValue={contact.title}><option value={contact.title}>{contact.title}</option>{CUSTOMER_CONTACT_TITLES.filter((title) => title !== contact.title).map((title) => <option key={title}>{title}</option>)}</select></td><td>{contact.email}</td><td>{contact.cellPhone}</td><td /><td /><td>{contact.officePhone}</td><td /><td>{contact.notes}</td><td>{index + 1}</td><td /><td /><td /></tr>)}
+            {Array.from({ length: Math.max(0, 10 - contacts.length) }, (_, i) => <tr key={`contacts-blank-${i}`}><td>{i === 0 ? "*" : ""}</td><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}
           </tbody></table>
           <div className="ac-customer-contacts-recordbar">Record:　|◄　◄　<span>{contacts.length ? `1 of ${contacts.length}` : ""}</span>　►　►|　<em>{contactSearch ? "Filtered" : "No Filter"}</em><input value={contactSearch} onChange={(event) => setContactSearch(event.target.value)} placeholder="Search" aria-label="Search contacts" /></div>
         </div>
@@ -1364,15 +1368,15 @@ function CustomerContactsTab({ customer }: { customer: CustomerDetail }) {
       <div className="ac-customer-contacts-guidance">
         <strong>For all Info emails, please select &quot;Info&quot; for the contact&apos;s Title value.</strong>
         <p>To use one of these buttons, highlight one contact row first by clicking the gray bar at the left side of the row.</p>
-        <div><AccessButton data-action-status="missing" xs>▧　Copy Contact Email Address</AccessButton><AccessButton data-action-status="missing" xs>▣　Send Email to Contact</AccessButton></div>
+        <div><AccessButton data-action-status="complete" disabled={!selected?.email} onClick={() => { if (selected?.email) void navigator.clipboard.writeText(selected.email); }} xs><Copy size={14} /> Copy Contact Email Address</AccessButton><AccessButton data-action-status="complete" disabled={!selected?.email} onClick={() => { if (selected?.email) window.location.href = `mailto:${selected.email}`; }} xs>▣　Send Email to Contact</AccessButton></div>
       </div>
 
       <div className="ac-customer-permits">
-        <div className="ac-customer-permits-heading"><h2>Permits</h2><AccessButton data-action-status="missing" xs>▧　Copy Street</AccessButton><span>Double-click on City, State to select the state and city.</span></div>
+        <div className="ac-customer-permits-heading"><h2>Permits</h2><AccessButton data-action-status="complete" onClick={() => void navigator.clipboard.writeText(customer.street ?? "")} xs><Copy size={14} /> Copy Street</AccessButton><span>Double-click on City, State to select the state and city.</span></div>
         <div className="ac-customer-permits-table-wrap">
           <table className="ac-customer-permits-table"><thead><tr><th /><th>Permit Date</th><th>Street</th><th>City, State</th><th>Fee</th><th>Value</th><th>Timestamp</th><th>Permit Search Link</th><th>Link</th><th aria-hidden /><th aria-hidden /></tr></thead>
           <tbody><tr className="is-selected"><td>*</td><td><input type="date" aria-label="Permit date" /></td><td><input defaultValue={customer.street} aria-label="Permit street" /></td><td><input defaultValue={[customer.city, customer.state].filter(Boolean).join(", ")} aria-label="Permit city and state" /></td><td><input aria-label="Permit fee" /></td><td><input aria-label="Permit value" /></td><td /><td /><td /><td /><td /></tr>
-          {Array.from({ length: 7 }, (_, i) => <tr key={`permit-blank-${i}`}><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}</tbody></table>
+          {Array.from({ length: 8 }, (_, i) => <tr key={`permit-blank-${i}`}><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}</tbody></table>
           <div className="ac-customer-contacts-recordbar">Record:　|◄　◄　<span>1 of 1</span>　►　►|　<em>{permitSearch ? "Filtered" : "No Filter"}</em><input value={permitSearch} onChange={(event) => setPermitSearch(event.target.value)} placeholder="Search" aria-label="Search permits" /></div>
         </div>
       </div>
