@@ -11,6 +11,7 @@ const defaultTabs: PageTab[] = [
   { href: "/dashboard", label: "Main Menu" },
 ];
 const labels: Record<string, string> = {
+  "/admin/office-staff": "Edit Office Staff", "/admin/office-staff/permissions": "Modify Permissions",
   "/dashboard": "Menu", "/tracking": "Tracking", "/reports": "Reports", "/customers": "Customers",
   "/customer-menu": "Customer Menu", "/customer-permits": "Customer Permits", "/employees": "Employees",
   "/jobs": "Jobs", "/deposits-to-be-made": "Record of Deposits to be Made", "/office-staff-hours": "Office Staff Hours",

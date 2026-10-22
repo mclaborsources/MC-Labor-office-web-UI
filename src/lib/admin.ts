@@ -82,9 +82,10 @@ export interface OfficeStaffRecord {
   canDelete: boolean;
   profile: boolean;
   employeeResearch: boolean;
+  emailOptions?: boolean[];
 }
 
-export async function getOfficeStaffList(): Promise<OfficeStaffRecord[]> {
+export async function getOfficeStaffList(strict = false): Promise<OfficeStaffRecord[]> {
   try {
     const rows = await queryReadOnly<{
       OfficeStaffID: unknown;
@@ -97,6 +98,14 @@ export async function getOfficeStaffList(): Promise<OfficeStaffRecord[]> {
       OfficeStaffCanDelete: boolean | number | null;
       Profile: boolean | number | null;
       OfficeStaffEmployeeResearch: boolean | number | null;
+      OfficeStaffEmployeeHealthInsuranceAlarmEmail: boolean | number | null;
+      OfficeStaffARReportBCCEmail: boolean | number | null;
+      OfficeStaffTrackingReportEmailSend: boolean | number | null;
+      OfficeStaffTrackingReportEmailSendLogout: boolean | number | null;
+      OfficeStaffTrackingReportEmailReceive: boolean | number | null;
+      OfficeStaffSalesmanRecordsCustomersLogout: boolean | number | null;
+      OfficeStaffMOReminderEmailSend: boolean | number | null;
+      OfficeStaffMOReminderEmailReceive: boolean | number | null;
     }>(
       `SELECT OfficeStaffID,
               ISNULL(OfficeStaffFirstName, '') AS OfficeStaffFirstName,
@@ -107,7 +116,15 @@ export async function getOfficeStaffList(): Promise<OfficeStaffRecord[]> {
               ISNULL(OfficeStaffActive, 0) AS OfficeStaffActive,
               ISNULL(OfficeStaffCanDelete, 0) AS OfficeStaffCanDelete,
               ISNULL(Profile, 0) AS Profile,
-              ISNULL(OfficeStaffEmployeeResearch, 0) AS OfficeStaffEmployeeResearch
+              ISNULL(OfficeStaffEmployeeResearch, 0) AS OfficeStaffEmployeeResearch,
+              ISNULL(OfficeStaffEmployeeHealthInsuranceAlarmEmail, 0) AS OfficeStaffEmployeeHealthInsuranceAlarmEmail,
+              ISNULL(OfficeStaffARReportBCCEmail, 0) AS OfficeStaffARReportBCCEmail,
+              ISNULL(OfficeStaffTrackingReportEmailSend, 0) AS OfficeStaffTrackingReportEmailSend,
+              ISNULL(OfficeStaffTrackingReportEmailSendLogout, 0) AS OfficeStaffTrackingReportEmailSendLogout,
+              ISNULL(OfficeStaffTrackingReportEmailReceive, 0) AS OfficeStaffTrackingReportEmailReceive,
+              ISNULL(OfficeStaffSalesmanRecordsCustomersLogout, 0) AS OfficeStaffSalesmanRecordsCustomersLogout,
+              ISNULL(OfficeStaffMOReminderEmailSend, 0) AS OfficeStaffMOReminderEmailSend,
+              ISNULL(OfficeStaffMOReminderEmailReceive, 0) AS OfficeStaffMOReminderEmailReceive
        FROM tblOfficeStaff WITH (NOLOCK)
        ORDER BY OfficeStaffActive DESC, OfficeStaffLastName, OfficeStaffFirstName`,
     );
@@ -122,8 +139,10 @@ export async function getOfficeStaffList(): Promise<OfficeStaffRecord[]> {
       canDelete: r.OfficeStaffCanDelete === true || r.OfficeStaffCanDelete === 1,
       profile: r.Profile === true || r.Profile === 1,
       employeeResearch: r.OfficeStaffEmployeeResearch === true || r.OfficeStaffEmployeeResearch === 1,
+      emailOptions: [r.OfficeStaffEmployeeHealthInsuranceAlarmEmail === true || r.OfficeStaffEmployeeHealthInsuranceAlarmEmail === 1, r.OfficeStaffARReportBCCEmail === true || r.OfficeStaffARReportBCCEmail === 1, r.OfficeStaffTrackingReportEmailSend === true || r.OfficeStaffTrackingReportEmailSend === 1, r.OfficeStaffTrackingReportEmailSendLogout === true || r.OfficeStaffTrackingReportEmailSendLogout === 1, r.OfficeStaffTrackingReportEmailReceive === true || r.OfficeStaffTrackingReportEmailReceive === 1, r.OfficeStaffSalesmanRecordsCustomersLogout === true || r.OfficeStaffSalesmanRecordsCustomersLogout === 1, r.OfficeStaffMOReminderEmailSend === true || r.OfficeStaffMOReminderEmailSend === 1, r.OfficeStaffMOReminderEmailReceive === true || r.OfficeStaffMOReminderEmailReceive === 1],
     }));
-  } catch {
+  } catch (error) {
+    if (strict) throw error;
     return [];
   }
 }

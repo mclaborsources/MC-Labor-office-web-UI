@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getValues, selected, sort, onFilter, onSort, width, onResize, onResetWidth }: {
+export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getValues, selected, sort, onFilter, onSort, width, onResize, onResetWidth, onMoveLeft, onMoveRight }: {
   label: string;
   columnKey?: string;
   kind?: "text" | "date" | "number";
@@ -12,6 +12,8 @@ export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getV
   sort?: "asc" | "desc";
   onFilter: (values: string[] | undefined) => void;
   onSort: (direction: "asc" | "desc") => void;
+  onMoveLeft?: () => void;
+  onMoveRight?: () => void;
   width?: number;
   onResize?: (width: number) => void;
   onResetWidth?: () => void;
@@ -46,7 +48,7 @@ export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getV
   }, [open]);
 
   return <div className="ac-column-filter" data-column={columnKey} style={{ position: "relative", minWidth: 0 }}>
-    <button ref={trigger} type="button" className={`ac-column-filter-trigger${selected || sort ? " is-active" : ""}`} aria-label={`Sort or filter ${label}`} aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(!open)}>
+    <button ref={trigger} type="button" title={label} className={`ac-column-filter-trigger${selected || sort ? " is-active" : ""}`} aria-label={`Sort or filter ${label}`} aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(!open)}>
       <span>{label}{sort ? (sort === "asc" ? " ↑" : " ↓") : ""}{selected ? " •" : ""}</span><span aria-hidden="true">▾</span>
     </button>
     {onResize && <span role="separator" aria-orientation="vertical" aria-label={`Resize ${label} column`} tabIndex={0}
@@ -71,12 +73,13 @@ export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getV
         } else if (event.key === "Home") { event.preventDefault(); onResetWidth?.(); }
       }} />}
     {open && createPortal(<div ref={menu} className="ac-column-filter-menu" style={{ position: "fixed", ...position, width: 280, maxHeight: "100vh", overflow: "auto" }} role="dialog" aria-label={`${label} sort and filter`}>
-      <CustomerNameColumnMenu label={label} kind={kind} getValues={getValues} selected={selected} onFilter={onFilter} onSort={onSort} close={() => setOpen(false)} />
+      <CustomerNameColumnMenu label={label} kind={kind} getValues={getValues} selected={selected} onFilter={onFilter} onSort={onSort} onMoveLeft={onMoveLeft} onMoveRight={onMoveRight} close={() => setOpen(false)} />
     </div>, document.body)}
   </div>;
 }
 
-function CustomerNameColumnMenu({ label, kind, getValues, selected, onFilter, onSort, close }: {
+function CustomerNameColumnMenu({ label, kind, getValues, selected, onFilter, onSort, onMoveLeft, onMoveRight, close }: {
+  onMoveLeft?: () => void; onMoveRight?: () => void;
   label: string; getValues: () => string[]; selected?: string[];
   kind: "text" | "date" | "number";
   onFilter: (values: string[] | undefined) => void; onSort: (direction: "asc" | "desc") => void; close: () => void;
@@ -91,6 +94,10 @@ function CustomerNameColumnMenu({ label, kind, getValues, selected, onFilter, on
   const last = Math.min(shown.length, first + 16);
   const dates = kind === "date";
   return <>
+    {(onMoveLeft || onMoveRight) && <>
+      <button type="button" className="ac-column-filter-action" disabled={!onMoveLeft} onClick={() => { onMoveLeft?.(); close(); }}>Move column left</button>
+      <button type="button" className="ac-column-filter-action" disabled={!onMoveRight} onClick={() => { onMoveRight?.(); close(); }}>Move column right</button>
+    </>}
     <button type="button" className="ac-column-filter-action" onClick={() => { onSort("asc"); close(); }}>{dates ? "Sort oldest to newest" : kind === "number" ? "Sort smallest to largest" : "Sort A to Z"}</button>
     <button type="button" className="ac-column-filter-action" onClick={() => { onSort("desc"); close(); }}>{dates ? "Sort newest to oldest" : kind === "number" ? "Sort largest to smallest" : "Sort Z to A"}</button>
     <button type="button" className="ac-column-filter-action" disabled={!selected} onClick={() => { onFilter(undefined); close(); }}>Clear filter from {label}</button>

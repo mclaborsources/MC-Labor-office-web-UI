@@ -6,10 +6,15 @@ import { Search, X } from "lucide-react";
 import Link from "next/link";
 import { CUSTOMER_NAME_SEARCH_COLUMNS, customerNameCellValue, compareCustomerNameValues, type CustomerNameMatch, type CustomerNameColumnKey } from "@/lib/customerNameSearchColumns";
 
-const summaryColumns = CUSTOMER_NAME_SEARCH_COLUMNS;
+const defaultColumns = CUSTOMER_NAME_SEARCH_COLUMNS;
 type SummaryColumnKey = CustomerNameColumnKey;
 const summaryValue = customerNameCellValue;
+const savedColumnOrders: Partial<Record<"names" | "customers", SummaryColumnKey[]>> = {};
 const savedColumnWidths: Partial<Record<"names" | "customers", Partial<Record<SummaryColumnKey, number>>>> = {};
+
+export function resetCustomerColumnOrder(variant: "names" | "customers") {
+  delete savedColumnOrders[variant];
+}
 
 interface NameResponse {
   ok: boolean;
@@ -17,12 +22,27 @@ interface NameResponse {
   error?: string;
 }
 
-export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initialLoadTimeMs, variant = "names" }: {
+export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initialLoadTimeMs, resetOrderVersion = 0, variant = "names" }: {
+  resetOrderVersion?: number;
   initialCustomers?: CustomerNameMatch[];
   fetchedCount?: number;
   initialLoadTimeMs?: number;
   variant?: "names" | "customers";
 }) {
+  const [columnOrder, setColumnOrder] = useState<SummaryColumnKey[]>(() => defaultColumns.map(column => column.key));
+  useEffect(() => { setColumnOrder(savedColumnOrders[variant] ?? defaultColumns.map(column => column.key)); }, [variant, resetOrderVersion]);
+  const summaryColumns = useMemo(() => columnOrder.map(key => defaultColumns.find(column => column.key === key)!), [columnOrder]);
+  function moveColumn(key: SummaryColumnKey, offset: number) {
+    setColumnOrder(current => {
+      const index = current.indexOf(key);
+      const destination = index + offset;
+      if (index < 0 || destination < 0 || destination >= current.length) return current;
+      const next = [...current];
+      [next[index], next[destination]] = [next[destination], next[index]];
+      savedColumnOrders[variant] = next;
+      return next;
+    });
+  }
   const [columnWidths, setColumnWidths] = useState<Partial<Record<SummaryColumnKey, number>>>({});
   useEffect(() => { setColumnWidths(savedColumnWidths[variant] ?? {}); }, [variant]);
   function resizeColumn(key: SummaryColumnKey, width?: number) {
@@ -65,7 +85,7 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
       filters.every(([key, values]) => values.has(summaryValue(customer, key)))) : customers;
     if (!summarySort) return filtered;
     const { key, direction } = summarySort;
-    const kind = summaryColumns.find(column => column.key === key)?.kind ?? "text";
+    const kind = defaultColumns.find(column => column.key === key)?.kind ?? "text";
     return [...filtered].sort((a, b) => {
       const left = summaryValue(a, key), right = summaryValue(b, key);
       const comparison = compareCustomerNameValues(left, right, kind);
@@ -188,6 +208,7 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
             </div>
           </div>
         )}
+        {allNamesVisible && variant === "names" && <div className="ac-customer-name-search-paging"><button type="button" className="ac-btn ac-btn-xs" onClick={() => { resetCustomerColumnOrder(variant); setColumnOrder(defaultColumns.map(column => column.key)); }}>Reset column order</button></div>}
         {allNamesVisible && (Object.keys(columnFilters).length > 0 || summarySort) && (
           <div className="ac-customer-name-search-paging">
             <button type="button" className="ac-btn ac-btn-xs" onClick={() => { setColumnFilters({}); setSummarySort(null); resetNamesScroll(); }}>Clear sorting and filters</button>
@@ -197,7 +218,9 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
         {allNamesVisible ? (
           <div ref={allNamesListRef} className="ac-customer-name-search-all-names" aria-label="All customer names" onScroll={(event) => setNamesScrollTop(event.currentTarget.scrollTop)}>
             <div className="ac-customer-name-search-summary-header" style={summaryGridStyle}>
-              {summaryColumns.map(column => <CustomerNameColumnHeader key={column.key} columnKey={column.key} label={column.label} kind={column.kind}
+              {summaryColumns.map((column, index) => <CustomerNameColumnHeader key={column.key} columnKey={column.key} label={column.label} kind={column.kind}
+                onMoveLeft={index > 0 ? () => moveColumn(column.key, -1) : undefined}
+                onMoveRight={index < summaryColumns.length - 1 ? () => moveColumn(column.key, 1) : undefined}
                 width={columnWidths[column.key] ?? column.width} onResize={width => resizeColumn(column.key, width)} onResetWidth={() => resizeColumn(column.key)}
                 getValues={() => customers.map(customer => summaryValue(customer, column.key))}
                 selected={columnFilters[column.key]} sort={summarySort?.key === column.key ? summarySort.direction : undefined}

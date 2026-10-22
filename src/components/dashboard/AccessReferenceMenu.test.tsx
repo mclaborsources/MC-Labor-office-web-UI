@@ -20,6 +20,11 @@ test("reference main menu retains all eight policy views, live documents and wor
   assert.match(html, /10\/21\/2026/);
   assert.match(html, /week=42&amp;year=2026/);
   assert.match(html, /ac-access-menu-work-canvas/);
+  assert.match(html, /aria-label="Open shortcuts"/);
+  assert.equal((html.match(/class="ac-shortcuts-row/g) ?? []).length, 91);
+  assert.equal((html.match(/class="ac-shortcuts-inactive"/g) ?? []).length, 90);
+  assert.match(html, /href="\/admin\/office-staff"[^>]*>Office Staff<\/a>/);
+  assert.match(html, /Company Settings: Acc Ref Hours Limit/);
   assert.match(html, /logo_dashboard/);
   assert.match(html, /MC Labor eagle with American and Irish flags/);
   assert.match(html, /ac-access-menu-exit[^>]*>Exit Database<\/button>/);

@@ -20,6 +20,7 @@ import type { FilterOption } from "@/types/search";
 
 export interface CustomerSearchScreenProps {
   onRefresh?: () => void;
+  onResetColumnOrder?: () => void;
   title?: string;
   basePath?: string;
   results?: ReactNode;
@@ -521,6 +522,7 @@ function CustomerSearchUtilityRail() {
 
 export function CustomerSearchScreen({
   onRefresh,
+  onResetColumnOrder,
   title = "Customer Search",
   basePath = "/customers",
   results,
@@ -587,6 +589,7 @@ export function CustomerSearchScreen({
           {(basePath === "/customers" || onRefresh) && <AccessButton data-action-status="complete" xs onClick={onRefresh ?? (() => router.refresh())} title="Reload customer records from the database">
             Refresh
           </AccessButton>}
+          {onResetColumnOrder && <AccessButton data-action-status="complete" xs onClick={onResetColumnOrder}>Reset column order</AccessButton>}
           <AccessButton data-action-status="missing" xs disabled>
             New
           </AccessButton>

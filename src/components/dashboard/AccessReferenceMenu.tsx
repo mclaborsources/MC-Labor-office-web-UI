@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRef, useState, type ReactNode } from "react";
 import { CircleHelp } from "lucide-react";
+import { DashboardShortcutsDialog } from "./DashboardShortcutsDialog";
 import { clearSavedPageTabs } from "@/lib/pageTabStorage";
 import { DashboardRichText } from "./DashboardRichText";
 import { DASHBOARD_VIEW_IDS, dashboardViewLabel, type DashboardViewId } from "@/lib/dashboardViews";
@@ -26,7 +27,10 @@ export function AccessReferenceMenu({ activeView, policy, notes, trackingHref, t
         if (url.href !== window.location.href) window.history.pushState(null, "", url);
       }}>{dashboardViewLabel(id)}</button>)}
     </nav>
-    <div className="ac-access-menu-corner"><button type="button" onClick={onNotes} aria-label="Company information"><CircleHelp size={20} /></button></div>
+    <div className="ac-access-menu-corner">
+      <DashboardShortcutsDialog />
+      <button type="button" onClick={onNotes} aria-label="Company information" title="Company information"><CircleHelp size={20} /></button>
+    </div>
     <section className="ac-access-menu-policy">
       <header><span>Company Policy</span><button className="ac-access-menu-button" onClick={onPolicies}>Edit Policies</button></header>
       <div className="ac-access-menu-document"><DashboardRichText html={policy} emptyMessage="No policy text configured for this view." /></div>
