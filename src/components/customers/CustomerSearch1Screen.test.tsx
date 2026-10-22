@@ -27,6 +27,8 @@ test("Customer Search 1 reuses the Customers controls with the 31-column uncappe
   assert.match(html, /Search all loaded customer fields/);
   assert.match(html, /Last week ending from/);
   assert.equal((html.match(/aria-label="Sort or filter /g) ?? []).length, 31);
+  assert.equal((html.match(/role="separator"/g) ?? []).length, 31);
+  assert.match(html, /aria-label="Resize Name column"/);
   assert.match(html, /Ctc Email/);
   assert.match(html, /ac-customer-search-1-results/);
   assert.ok((html.match(/class="ac-customer-name-search-all-name"/g) ?? []).length < 60);

@@ -3,6 +3,7 @@
 import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { clearSavedPageTabs } from "@/lib/pageTabStorage";
 
 const navItems = [
   ["/dashboard", "Main Menu"], ["/tracking", "Tracking"], ["/customer-menu", "Customer Menu"],
@@ -28,6 +29,7 @@ export function LogoutButton() {
       onClick={async () => {
         const response = await fetch("/api/auth/logout", { method: "POST" });
         if (!response.ok) { window.alert("Logout could not be completed. Please retry."); return; }
+        clearSavedPageTabs();
         window.location.href = "/login";
       }}
     >

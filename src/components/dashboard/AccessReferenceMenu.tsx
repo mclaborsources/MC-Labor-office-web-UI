@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRef, useState, type ReactNode } from "react";
 import { CircleHelp } from "lucide-react";
+import { clearSavedPageTabs } from "@/lib/pageTabStorage";
 import { DashboardRichText } from "./DashboardRichText";
 import { DASHBOARD_VIEW_IDS, dashboardViewLabel, type DashboardViewId } from "@/lib/dashboardViews";
 import { ZIP_CODE_1_URL, ZIP_CODE_2_URL } from "@/lib/dashboardConstants";
@@ -78,6 +79,7 @@ export function AccessReferenceMenu({ activeView, policy, notes, trackingHref, t
           try {
             const response = await fetch("/api/auth/logout", { method: "POST" });
             if (!response.ok) throw new Error("Logout failed");
+            clearSavedPageTabs();
             window.location.replace("/login");
           } catch {
             setLoggingOut(false);

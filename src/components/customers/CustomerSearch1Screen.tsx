@@ -11,9 +11,15 @@ import type { FilterOption } from "@/types/search";
 import { unpackCustomers } from "@/lib/customerSearchTransport";
 import { CustomerRecordsLoading, type CustomerLoadProgress } from "./CustomerRecordsLoading";
 
+import { BrowserSessionCache } from "@/lib/browserSessionCache";
+
+const recordsCache = new BrowserSessionCache();
+const searchCache = new BrowserSessionCache();
+
 const EMPTY_CUSTOMERS: CustomerNameMatch[] = [];
 
-export function CustomerSearch1Screen({ customers: suppliedCustomers, packedCustomers, fetchedCount, params, loadTimeMs, loadError, options, lastActionUsers }: {
+export function CustomerSearch1Screen({ cacheScope = "default", customers: suppliedCustomers, packedCustomers, fetchedCount, params, loadTimeMs, loadError, options, lastActionUsers }: {
+  cacheScope?: string;
   customers?: CustomerNameMatch[];
   packedCustomers?: string;
   fetchedCount?: number;
@@ -24,6 +30,7 @@ export function CustomerSearch1Screen({ customers: suppliedCustomers, packedCust
   lastActionUsers: FilterOption[];
 }) {
   const [loaded, setLoaded] = useState<{ rows: CustomerNameMatch[]; count: number; elapsed: number }>();
+  const [revision, setRevision] = useState(0);
   const [fetchError, setFetchError] = useState("");
   const [progress, setProgress] = useState<CustomerLoadProgress>({ stage: "fetching", bytes: 0 });
   const needsFetch = suppliedCustomers === undefined && packedCustomers === undefined;
@@ -37,28 +44,32 @@ export function CustomerSearch1Screen({ customers: suppliedCustomers, packedCust
       try {
         const query = new URLSearchParams(sidebarValues);
         query.set("ids", "1");
-        const response = await fetch(`/api/customers/name-search?${query}`, { signal: controller.signal, cache: "no-store" });
-        if (!response.ok) throw new Error("Search could not be completed. Try again.");
-        const result = await response.json() as { ids: string[] | null };
+        query.sort();
+        const result = await searchCache.get(cacheScope, query.toString(), async () => {
+          const response = await fetch(`/api/customers/name-search?${query}`, { cache: "no-store" });
+          if (!response.ok) throw new Error("Search could not be completed. Try again.");
+          return await response.json() as { ids: string[] | null };
+        });
         if (!controller.signal.aborted) { setMatchingIds(result.ids ? new Set(result.ids) : null); setFetchError(""); }
       } catch (error) { if (!controller.signal.aborted) setFetchError(error instanceof Error ? error.message : "Search failed."); }
       finally { if (!controller.signal.aborted) setSearching(false); }
     }, 250);
     return () => { window.clearTimeout(timer); controller.abort(); };
-  }, [sidebarValues]);
+  }, [sidebarValues, cacheScope, revision]);
   useEffect(() => {
     if (!needsFetch) return;
-    const controller = new AbortController();
+    let cancelled = false;
     const started = performance.now();
     const query = new URLSearchParams(Object.entries(params).filter((entry): entry is [string, string] => entry[1] !== undefined));
     query.set("all", "1");
     query.set("packed", "1");
     for (const key of ["customerName", "customerPhone", "contactName", "contactPhone", "contactEmail", "contactText", "search", "city", "state", "salesmanId", "customerTypeId", "statusId"]) query.delete(key);
-    fetch(`/api/customers/name-search?${query}`, { cache: "no-store", signal: controller.signal })
+    query.sort();
+    recordsCache.get(cacheScope, query.toString(), () => fetch(`/api/customers/name-search?${query}`, { cache: "no-store" })
       .then(async response => {
         if (!response.ok) throw new Error("Customer records could not be loaded. Refresh to retry.");
         const count = Number(response.headers.get("X-Customer-Count")) || undefined;
-        setProgress({ stage: "downloading", bytes: 0, count });
+        if (!cancelled) setProgress({ stage: "downloading", bytes: 0, count });
         const reader = response.body?.getReader();
         const decoder = new TextDecoder();
         const chunks: string[] = [];
@@ -71,21 +82,19 @@ export function CustomerSearch1Screen({ customers: suppliedCustomers, packedCust
             bytes += chunk.value.byteLength;
             chunks.push(decoder.decode(chunk.value, { stream: true }));
             if (performance.now() - lastUpdate > 150) {
-              if (!controller.signal.aborted) setProgress({ stage: "downloading", bytes, count });
+              if (!cancelled) setProgress({ stage: "downloading", bytes, count });
               lastUpdate = performance.now();
             }
           }
           chunks.push(decoder.decode());
         } else chunks.push(await response.text());
-        if (controller.signal.aborted) return;
-        setProgress({ stage: "preparing", bytes, count });
+        if (!cancelled) setProgress({ stage: "preparing", bytes, count });
         await new Promise(resolve => window.setTimeout(resolve, 30));
-        if (controller.signal.aborted) return;
         const rows = unpackCustomers(chunks.join(""));
-        if (!controller.signal.aborted) setLoaded({ rows, count: Number(response.headers.get("X-Customer-Count")) || rows.length, elapsed: Math.round(performance.now() - started) });
-      }).catch(error => { if (!controller.signal.aborted) setFetchError(error.message); });
-    return () => controller.abort();
-  }, [needsFetch, params]);
+        return { rows, count: Number(response.headers.get("X-Customer-Count")) || rows.length, elapsed: Math.round(performance.now() - started) };
+      })).then(data => { if (!cancelled) setLoaded(data); }).catch(error => { if (!cancelled) setFetchError(error.message); });
+    return () => { cancelled = true; };
+  }, [needsFetch, params, cacheScope, revision]);
   const customers = useMemo(() => loaded?.rows ?? (packedCustomers ? unpackCustomers(packedCustomers) : suppliedCustomers ?? EMPTY_CUSTOMERS), [loaded, packedCustomers, suppliedCustomers]);
   const elapsed = loaded?.elapsed ?? loadTimeMs;
   const router = useRouter();
@@ -102,7 +111,8 @@ export function CustomerSearch1Screen({ customers: suppliedCustomers, packedCust
     setResetVersion(version => version + 1);
     if (Object.values(params).some(Boolean)) router.replace("/customer-search-1");
   };
-  return <CustomerSearchScreen title="Customer Search 1" basePath="/customer-search-1"
+  const refresh = () => { recordsCache.clear(); searchCache.clear(); setLoaded(undefined); setFetchError(""); setRevision(value => value + 1); };
+  return <CustomerSearchScreen onRefresh={refresh} title="Customer Search 1" basePath="/customer-search-1"
     customers={[]} loadError={fetchError || loadError} {...options} customerUserFlagOptions={Array.from({ length: 8 }, () => [])} lastActionUsers={lastActionUsers}
     currentSearch={params.search ?? ""} currentSalesmanId={params.salesmanId ?? ""} currentCustomerTypeId={params.customerTypeId ?? ""}
     currentStatusId={params.statusId ?? ""} currentCity={params.city ?? ""} currentState={params.state ?? ""}

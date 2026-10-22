@@ -6,6 +6,7 @@ import { CustomerCellNavigation } from "@/components/customers/CustomerCellNavig
 import { UnhandledRejectionDiagnostics } from "@/components/layout/UnhandledRejectionDiagnostics";
 import { VisitSessionGuard } from "@/components/layout/VisitSessionGuard";
 import { isOfficeStaffMode } from "@/lib/auth/mode";
+import { TableColumnResizing } from "@/components/layout/TableColumnResizing";
 
 export const metadata: Metadata = {
   title: "MC Labor — Office Portal",
@@ -25,6 +26,7 @@ export default function RootLayout({
       <body className="antialiased">
         <VisitSessionGuard enabled={isOfficeStaffMode()}>{children}</VisitSessionGuard>
         <CustomerCellNavigation />
+        <TableColumnResizing />
         <UnhandledRejectionDiagnostics />
         <Suspense fallback={null}><RouteLoadingIndicator /></Suspense>
       </body>

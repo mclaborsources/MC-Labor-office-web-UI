@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getValues, selected, sort, onFilter, onSort }: {
+export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getValues, selected, sort, onFilter, onSort, width, onResize, onResetWidth }: {
   label: string;
   columnKey?: string;
   kind?: "text" | "date" | "number";
@@ -12,11 +12,15 @@ export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getV
   sort?: "asc" | "desc";
   onFilter: (values: string[] | undefined) => void;
   onSort: (direction: "asc" | "desc") => void;
+  width?: number;
+  onResize?: (width: number) => void;
+  onResetWidth?: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const menu = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ left: 0, top: 0 });
+  const drag = useRef<{ x: number; width: number } | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -41,10 +45,31 @@ export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getV
     };
   }, [open]);
 
-  return <div className="ac-column-filter" data-column={columnKey}>
+  return <div className="ac-column-filter" data-column={columnKey} style={{ position: "relative", minWidth: 0 }}>
     <button ref={trigger} type="button" className={`ac-column-filter-trigger${selected || sort ? " is-active" : ""}`} aria-label={`Sort or filter ${label}`} aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(!open)}>
       <span>{label}{sort ? (sort === "asc" ? " ↑" : " ↓") : ""}{selected ? " •" : ""}</span><span aria-hidden="true">▾</span>
     </button>
+    {onResize && <span role="separator" aria-orientation="vertical" aria-label={`Resize ${label} column`} tabIndex={0}
+      aria-valuemin={48} aria-valuemax={1600} aria-valuenow={width}
+      title="Drag to resize; double-click to reset width"
+      style={{ position: "absolute", right: -3, top: 0, bottom: 0, width: 7, cursor: "col-resize", touchAction: "none", userSelect: "none", zIndex: 2 }}
+      onPointerDown={event => {
+        if (event.button !== 0) return;
+        event.preventDefault(); event.stopPropagation();
+        drag.current = { x: event.clientX, width: event.currentTarget.parentElement!.getBoundingClientRect().width };
+        event.currentTarget.setPointerCapture(event.pointerId);
+      }}
+      onPointerMove={event => { if (drag.current) onResize(Math.max(48, Math.min(1600, Math.round(drag.current.width + event.clientX - drag.current.x)))); }}
+      onPointerUp={event => { drag.current = null; if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId); }}
+      onLostPointerCapture={() => { drag.current = null; }}
+      onPointerCancel={() => { drag.current = null; }}
+      onDoubleClick={event => { event.stopPropagation(); onResetWidth?.(); }}
+      onKeyDown={event => {
+        if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+          event.preventDefault();
+          onResize(Math.max(48, Math.min(1600, (width ?? 100) + (event.key === "ArrowRight" ? 10 : -10))));
+        } else if (event.key === "Home") { event.preventDefault(); onResetWidth?.(); }
+      }} />}
     {open && createPortal(<div ref={menu} className="ac-column-filter-menu" style={{ position: "fixed", ...position, width: 280, maxHeight: "100vh", overflow: "auto" }} role="dialog" aria-label={`${label} sort and filter`}>
       <CustomerNameColumnMenu label={label} kind={kind} getValues={getValues} selected={selected} onFilter={onFilter} onSort={onSort} close={() => setOpen(false)} />
     </div>, document.body)}

@@ -1,11 +1,15 @@
 "use client";
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import { clearSavedPageTabs } from "@/lib/pageTabStorage";
 
 /** A new tab starts a new visit; pagehide closes the current web login. */
 export function VisitSessionGuard({ enabled, children }: { enabled: boolean; children: ReactNode }) {
   const pathname = usePathname();
   const [ready, setReady] = useState(!enabled);
+  useEffect(() => {
+    if (pathname === "/login") clearSavedPageTabs();
+  }, [pathname]);
   useEffect(() => {
     if (!enabled) return;
     let cancelled = false;

@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { PAGE_TABS_STORAGE_KEY } from "@/lib/pageTabStorage";
 
 type PageTab = { href: string; label: string };
-const STORAGE_KEY = "mc-open-page-tabs-v2";
+const STORAGE_KEY = PAGE_TABS_STORAGE_KEY;
 const defaultTabs: PageTab[] = [
   { href: "/dashboard", label: "Main Menu" },
 ];

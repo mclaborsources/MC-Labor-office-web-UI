@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
 import { Icon } from "@/components/ui/Icon";
 import { ChangePasswordDialog } from "@/components/ChangePasswordDialog";
+import { clearSavedPageTabs } from "@/lib/pageTabStorage";
 
 export default function LoginPage({ officeStaff, initialError = "" }: { officeStaff?: { id: number; name: string }[]; initialError?: string }) {
   const router = useRouter();
@@ -64,6 +65,7 @@ export default function LoginPage({ officeStaff, initialError = "" }: { officeSt
       }
 
       const data = await res.json();
+      clearSavedPageTabs();
       window.dispatchEvent(new Event("mc-office-session-changed"));
       router.push(data.needsSetup ? "/setup" : data.nextPath ?? "/tracking");
       router.refresh();

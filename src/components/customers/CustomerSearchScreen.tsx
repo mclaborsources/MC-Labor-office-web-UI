@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { HelpCircle, Table2 } from "lucide-react";
 import { AccessButton } from "@/components/access/AccessButton";
@@ -17,7 +18,8 @@ import {
 import type { CustomerSearchRow } from "@/types/customer";
 import type { FilterOption } from "@/types/search";
 
-interface CustomerSearchScreenProps {
+export interface CustomerSearchScreenProps {
+  onRefresh?: () => void;
   title?: string;
   basePath?: string;
   results?: ReactNode;
@@ -518,6 +520,7 @@ function CustomerSearchUtilityRail() {
 }
 
 export function CustomerSearchScreen({
+  onRefresh,
   title = "Customer Search",
   basePath = "/customers",
   results,
@@ -553,6 +556,7 @@ export function CustomerSearchScreen({
   hasMore,
   loadTimeMs,
 }: CustomerSearchScreenProps) {
+  const router = useRouter();
   const [hoveredColumn, setHoveredColumn] = useState("");
   const [columnFilters, setColumnFilters] = useState<Partial<Record<CustomerSearchColumnKey, string[]>>>({});
   const paginationQuery = Object.fromEntries(
@@ -580,6 +584,9 @@ export function CustomerSearchScreen({
       <div className="ac-customer-search ac-tracking--modern flex min-h-0 flex-1 flex-col">
         <div className="ac-customer-search-titlebar shrink-0">
           <span className="ac-customer-search-title">{title}</span>
+          {(basePath === "/customers" || onRefresh) && <AccessButton data-action-status="complete" xs onClick={onRefresh ?? (() => router.refresh())} title="Reload customer records from the database">
+            Refresh
+          </AccessButton>}
           <AccessButton data-action-status="missing" xs disabled>
             New
           </AccessButton>

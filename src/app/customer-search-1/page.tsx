@@ -11,7 +11,7 @@ export default async function CustomerSearch1Page({ searchParams }: { searchPara
     getOfficeStaffList().catch(() => []),
   ]);
   return <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth>
-    <CustomerSearch1Screen key={JSON.stringify(params)} params={params} loadTimeMs={0} loadError=""
+    <CustomerSearch1Screen cacheScope={JSON.stringify([session.user?.userId, session.officeStaffLoginId, session.loginGeneration])} key={JSON.stringify(params)} params={params} loadTimeMs={0} loadError=""
       options={options} lastActionUsers={officeStaff.filter(staff => staff.initials).map(staff => ({ value: staff.initials, label: staff.initials }))} />
   </AppShell>;
 }

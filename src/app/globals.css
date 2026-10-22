@@ -16375,3 +16375,5 @@ html.mc-route-busy,html.mc-route-busy *,html.mc-employee-search-busy,html.mc-emp
 .ac-logout-dialog .ac-logout-dialog-confirm:hover { background:#a61f1f; }
 .ac-logout-dialog button:disabled { opacity:.65; cursor:wait; }
 .ac-logout-dialog button:focus-visible { outline:2px solid #2367a3; outline-offset:3px; }
+html.mc-column-edge, html.mc-column-edge *, html.mc-column-dragging, html.mc-column-dragging * { cursor: col-resize !important; }
+html.mc-column-dragging, html.mc-column-dragging * { user-select: none !important; }

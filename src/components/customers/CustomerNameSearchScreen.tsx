@@ -9,11 +9,7 @@ import { CUSTOMER_NAME_SEARCH_COLUMNS, customerNameCellValue, compareCustomerNam
 const summaryColumns = CUSTOMER_NAME_SEARCH_COLUMNS;
 type SummaryColumnKey = CustomerNameColumnKey;
 const summaryValue = customerNameCellValue;
-const summaryGridStyle = {
-  gridTemplateColumns: summaryColumns.map(column => column.key === "customerName" ? "minmax(280px, 1fr)" : column.width + "px").join(" "),
-  minWidth: summaryColumns.reduce((total, column) => total + column.width, 0) + 20,
-  whiteSpace: "nowrap",
-} as const;
+const savedColumnWidths: Partial<Record<"names" | "customers", Partial<Record<SummaryColumnKey, number>>>> = {};
 
 interface NameResponse {
   ok: boolean;
@@ -27,6 +23,21 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
   initialLoadTimeMs?: number;
   variant?: "names" | "customers";
 }) {
+  const [columnWidths, setColumnWidths] = useState<Partial<Record<SummaryColumnKey, number>>>({});
+  useEffect(() => { setColumnWidths(savedColumnWidths[variant] ?? {}); }, [variant]);
+  function resizeColumn(key: SummaryColumnKey, width?: number) {
+    setColumnWidths(current => {
+      const next = { ...current };
+      if (width === undefined) delete next[key]; else next[key] = width;
+      savedColumnWidths[variant] = next;
+      return next;
+    });
+  }
+  const summaryGridStyle = {
+    gridTemplateColumns: summaryColumns.map(column => column.key === "customerName" && columnWidths[column.key] === undefined ? "minmax(280px, 1fr)" : (columnWidths[column.key] ?? column.width) + "px").join(" "),
+    minWidth: summaryColumns.reduce((total, column) => total + (columnWidths[column.key] ?? column.width), 0) + 20,
+    whiteSpace: "nowrap",
+  } as const;
   const [loadedCustomers, setCustomers] = useState<CustomerNameMatch[]>([]);
   const customers = initialCustomers ?? loadedCustomers;
   const [allNamesVisible, setAllNamesVisible] = useState(initialCustomers !== undefined);
@@ -187,6 +198,7 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
           <div ref={allNamesListRef} className="ac-customer-name-search-all-names" aria-label="All customer names" onScroll={(event) => setNamesScrollTop(event.currentTarget.scrollTop)}>
             <div className="ac-customer-name-search-summary-header" style={summaryGridStyle}>
               {summaryColumns.map(column => <CustomerNameColumnHeader key={column.key} columnKey={column.key} label={column.label} kind={column.kind}
+                width={columnWidths[column.key] ?? column.width} onResize={width => resizeColumn(column.key, width)} onResetWidth={() => resizeColumn(column.key)}
                 getValues={() => customers.map(customer => summaryValue(customer, column.key))}
                 selected={columnFilters[column.key]} sort={summarySort?.key === column.key ? summarySort.direction : undefined}
                 onFilter={values => { setColumnFilters(current => { const next = { ...current }; if (values === undefined) delete next[column.key]; else next[column.key] = values; return next; }); resetNamesScroll(); }}
