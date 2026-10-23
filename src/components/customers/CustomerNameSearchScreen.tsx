@@ -271,15 +271,17 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
                 {summaryColumns.map(column => {
                   const value = summaryValue(customer, column.key);
                   return <span key={column.key} data-column={column.key} title={value}>
-                    {variant === "customers" && column.key === "customerName"
+                    {column.key === "kickback" || column.key === "rts"
+                      ? <input type="checkbox" aria-label={`${column.key === "rts" ? "RTS" : "Kickback"} for ${customer.customerName}`} checked={["true", "1", "yes", "x"].includes(value.toLowerCase())} disabled />
+                      : variant === "customers" && column.key === "customerName"
                       ? <span role="link" tabIndex={0} className="ac-customer-name-open" title="Double-click to open customer"
                           onDoubleClick={() => router.push(`/customers/${customer.customerId}`)}
-                          onKeyDown={event => { if (event.key === "Enter") { event.preventDefault(); router.push(`/customers/${customer.customerId}`); } }}>{value || "—"}</span>
+                          onKeyDown={event => { if (event.key === "Enter") { event.preventDefault(); router.push(`/customers/${customer.customerId}`); } }}>{value}</span>
                       : (column.key === "futureCallHistory" || column.key === "lastActionNote") && value
                       ? <button type="button" style={{ border: 0, padding: 0, background: "transparent", color: "inherit", font: "inherit", cursor: "pointer", maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
                           aria-label={`Read ${column.label} for ${customer.customerName}`}
                           onClick={() => setDetail({ label: `${customer.customerName} — ${column.label}`, text: value })}>{value}</button>
-                      : value || "—"}
+                      : value}
                   </span>;
                 })}
               </div>

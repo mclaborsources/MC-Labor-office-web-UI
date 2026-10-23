@@ -16538,9 +16538,45 @@ html.mc-route-busy,html.mc-route-busy *,html.mc-employee-search-busy,html.mc-emp
 .ac-customer-search-1-results [data-column^="internetSalesReady"] { background:#c2d69a; }
 .ac-customer-search-1-results [data-column^="lastAction"] { background:#fcd5b4; }
 .ac-customer-search-1-results [data-column^="futureCall"] { background:#c5d9f1; }
-.ac-customer-search-1-results [data-column^="ctc"] { background:#ffff99; }
+.ac-customer-search-1-results [data-column^="ctc"] { background:#fff; }
 .ac-customer-search-1-results [data-column="noCommunication"] { background:#ff2d2d; text-align:center; }
 .ac-customer-search-1-results [data-column="act"] { color:#f20d0d; text-align:right; font-weight:bold; }
+.ac-customer-search-1-results [data-column="profileType"] { background:#b985d1; }
+.ac-customer-search-1-results [data-column="whereFound"] { background:#ffff85; }
+.ac-customer-search-1-results [data-column="spare2"] { background:#c2d69a; }
+.ac-customer-search-1-results [data-column^="spacer"] { background:#000; color:#fff; }
+.ac-customer-search-1-results [data-column="contractDate"],.ac-customer-search-1-results [data-column="contractLink"],.ac-customer-search-1-results [data-column="wcDate"],.ac-customer-search-1-results [data-column="wcLink"] { background:#fff000; }
+.ac-customer-search-1-results [data-column="glDate"],.ac-customer-search-1-results [data-column="glLink"],.ac-customer-search-1-results [data-column="glDateHistory"],.ac-customer-search-1-results [data-column="glLinkHistory"] { background:#9be3f1; }
+.ac-customer-search-1-results [data-column="wcDateHistory"],.ac-customer-search-1-results [data-column="wcLinkHistory"] { background:#fff000; }
+.ac-customer-search-1-results [data-column="lastActionNote"] { background:#fff000; }
+.ac-customer-search-1-results [data-column="select"] { background:#b985d1; }
+.ac-customer-search-1-results [data-column^="siteVisit"] { background:#fff000; }
+.ac-customer-search-1-results [data-column^="officeVisit"] { background:#d6d6d6; }
+.ac-customer-search-1-results [data-column^="coldCall"] { background:#bdb9b1; }
+.ac-customer-search-1-results [data-column^="dormantCall"] { background:#c6b6d0; }
+.ac-customer-search-1-results [data-column^="outlookEmail"] { background:#d0eaf0; }
+.ac-customer-search-1-results [data-column^="mailer"] { background:#c9f99f; }
+.ac-customer-search-1-results [data-column="contactInfoLink"],.ac-customer-search-1-results [data-column="contactsLink"],.ac-customer-search-1-results [data-column="basicInfoLink"],.ac-customer-search-1-results [data-column="contactsTabLink"],.ac-customer-search-1-results [data-column="billRatesLink"],.ac-customer-search-1-results [data-column="insuranceLink"],.ac-customer-search-1-results [data-column="salesLink"],.ac-customer-search-1-results [data-column="collectionsLink"],.ac-customer-search-1-results [data-column="customerLink"],.ac-customer-search-1-results [data-column="insuranceClaimsLink"],.ac-customer-search-1-results [data-column="optionsLink"],.ac-customer-search-1-results [data-column="rateMultiplierLink"],.ac-customer-search-1-results [data-column="jobsLink"],.ac-customer-search-1-results [data-column="salesHistoryLink"] { background:#ffff99; color:#267a26; text-decoration:underline; }
+.ac-customer-search-1-results [data-column="wcLink"],.ac-customer-search-1-results [data-column="glLink"] { text-decoration:none; }
+.ac-customer-search-1-results .ac-column-filter[data-column="profileType"] .ac-column-filter-trigger { background:#b985d1; }
+.ac-customer-search-1-results .ac-column-filter[data-column="whereFound"] .ac-column-filter-trigger { background:#ffff85; }
+.ac-customer-search-1-results .ac-column-filter[data-column="spare2"] .ac-column-filter-trigger { background:#c2d69a; }
+.ac-customer-search-1-results .ac-column-filter[data-column^="spacer"] .ac-column-filter-trigger { background:#000; color:#fff; }
+.ac-customer-search-1-results .ac-column-filter[data-column="contractDate"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="contractLink"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="wcDate"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="wcLink"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="lastActionNote"] .ac-column-filter-trigger { background:#fff000; }
+.ac-customer-search-1-results .ac-column-filter[data-column="glDate"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="glLink"] .ac-column-filter-trigger { background:#9be3f1; }
+.ac-customer-search-1-results .ac-column-filter[data-column="glDateHistory"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="glLinkHistory"] .ac-column-filter-trigger { background:#9be3f1; }
+.ac-customer-search-1-results .ac-column-filter[data-column="wcDateHistory"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="wcLinkHistory"] .ac-column-filter-trigger { background:#fff000; }
+.ac-customer-search-1-results .ac-column-filter[data-column="select"] .ac-column-filter-trigger { background:#b985d1; }
+.ac-customer-search-1-results .ac-column-filter[data-column^="siteVisit"] .ac-column-filter-trigger { background:#fff000; }
+.ac-customer-search-1-results .ac-column-filter[data-column^="officeVisit"] .ac-column-filter-trigger { background:#d6d6d6; }
+.ac-customer-search-1-results .ac-column-filter[data-column^="coldCall"] .ac-column-filter-trigger { background:#bdb9b1; }
+.ac-customer-search-1-results .ac-column-filter[data-column^="dormantCall"] .ac-column-filter-trigger { background:#c6b6d0; }
+.ac-customer-search-1-results .ac-column-filter[data-column^="outlookEmail"] .ac-column-filter-trigger { background:#d0eaf0; }
+.ac-customer-search-1-results .ac-column-filter[data-column^="mailer"] .ac-column-filter-trigger { background:#c9f99f; }
+.ac-customer-search-1-results .ac-column-filter[data-column="contactInfoLink"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="contactsLink"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="basicInfoLink"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="contactsTabLink"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="billRatesLink"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="insuranceLink"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="salesLink"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="collectionsLink"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="customerLink"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="insuranceClaimsLink"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="optionsLink"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="rateMultiplierLink"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="jobsLink"] .ac-column-filter-trigger,.ac-customer-search-1-results .ac-column-filter[data-column="salesHistoryLink"] .ac-column-filter-trigger { background:#ffff99; }
+.ac-customer-search-1-results .ac-column-filter[data-column^="internetSalesReady"] .ac-column-filter-trigger { background:#c2d69a; }
+.ac-customer-search-1-results .ac-column-filter[data-column^="lastAction"] .ac-column-filter-trigger { background:#fcd5b4; }
+.ac-customer-search-1-results .ac-column-filter[data-column^="futureCall"] .ac-column-filter-trigger { background:#c5d9f1; }
 .ac-customer-search-1-results [data-column="customerName"] a { color:#0756a2; text-decoration:underline; }
 .ac-customer-search-1-count { display:flex; flex:none; align-items:center; flex-wrap:wrap; gap:20px; padding:5px 10px; border-top:1px solid #7895b5; background:#e7edf4; color:#182638; font:12px Arial,sans-serif; }
 .ac-customer-search-1-filters { display:flex; flex-wrap:wrap; height:auto !important; gap:4px; padding:4px; }

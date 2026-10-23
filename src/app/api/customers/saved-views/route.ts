@@ -4,7 +4,7 @@ import { requireSession } from "@/lib/auth/session";
 import { hasSameOrigin } from "@/lib/auth/origin";
 import { queryReadOnlyUncached } from "@/lib/db/sql";
 import { withTransaction, WritesDisabledError } from "@/lib/db/write";
-import { customerSavedViewSchema, customerViewLayoutSchema } from "@/lib/customerSavedViews";
+import { customerSavedViewSchema, customerViewLayoutSchema, normalizeCustomerSavedView } from "@/lib/customerSavedViews";
 export const runtime = "nodejs";
 async function userKey() {
   const session = await requireSession();
@@ -22,7 +22,7 @@ export async function GET() {
   try {
     const key=await userKey();
     const rows=await queryReadOnlyUncached<{slot:number;name:string;layout:string}>("SELECT Slot AS slot, ViewName AS name, LayoutJson AS layout FROM dbo.WebCustomerSavedView WHERE UserKey=@user ORDER BY Slot",[{name:"user",value:key}]);
-    return NextResponse.json({views:rows.map(row=>customerSavedViewSchema.parse({...row,layout:JSON.parse(row.layout)}))},{headers:{"Cache-Control":"private, no-store"}});
+    return NextResponse.json({views:rows.map(row=>normalizeCustomerSavedView({...row,layout:JSON.parse(row.layout)}))},{headers:{"Cache-Control":"private, no-store"}});
   } catch(error) {return failure(error);}
 }
 export async function PUT(request:Request) {

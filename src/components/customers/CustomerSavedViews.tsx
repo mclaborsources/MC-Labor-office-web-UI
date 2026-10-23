@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
-import { customerSavedViewSchema, defaultCustomerViewLayout, type CustomerSavedView, type CustomerViewLayout } from "@/lib/customerSavedViews";
+import { blastEmailPresetLayout, callListTemplatePresetLayout, coldDormantCallPresetLayout, customerInfoPresetLayout, customerSavedViewSchema, defaultCustomerPresetLayout, defaultCustomerViewLayout, emailMailerPresetLayout, kickbacksPresetLayout, normalizeCustomerSavedView, profileTypePresetLayout, ryanEamonBrianPresetLayout, rtsPresetLayout, salesPackagesPresetLayout, selectProfilePresetLayout, siobhanOnePresetLayout, siobhanTwoPresetLayout, siobhanTwoScreensPresetLayout, siteOfficeVisitPresetLayout, testOneScreenPresetLayout, testTwoScreenPresetLayout, type CustomerSavedView, type CustomerViewLayout } from "@/lib/customerSavedViews";
 import { CUSTOMER_SEARCH_PRESET_GRID } from "@/lib/customerSearchColumns";
 import { CUSTOMER_SEARCH_VIEWS_2_GRID } from "@/lib/customerSearchViewsLayout";
 function originalName(slot:number) {
@@ -20,17 +20,24 @@ export function CustomerSavedViewsProvider({children}:{children:ReactNode}) {
   const [layout,setLayout]=useState(defaultCustomerViewLayout);
   const [ready,setReady]=useState(false),[busy,setBusy]=useState(false),[message,setMessage]=useState("");
   const [name,setName]=useState(""),[error,setError]=useState("");
-  const dialog=useRef<HTMLDialogElement>(null),deleteDialog=useRef<HTMLDialogElement>(null),saveSlot=useRef(1),snapshot=useRef(layout),selectedSlot=useRef(1);
+  const dialog=useRef<HTMLDialogElement>(null),deleteDialog=useRef<HTMLDialogElement>(null),saveSlot=useRef(1),snapshot=useRef(layout);
   useEffect(()=>{
     let active=true;
     fetch("/api/customers/saved-views",{cache:"no-store"}).then(async response=>{
       const data=await response.json(); if(!response.ok) throw new Error(data.error);
-      const saved=(data.views as unknown[]).map(view=>customerSavedViewSchema.parse(view));
-      if(active){setViews(saved); const initial=saved.find(view=>view.slot===selectedSlot.current); if(initial) setLayout(initial.layout); setReady(true);}
+      const saved=(data.views as unknown[]).map(view=>normalizeCustomerSavedView(view));
+      if(active){
+        setViews(saved);
+        // View 01 is active on first open, so load its saved columns as soon as
+        // the database response arrives instead of leaving the default layout.
+        setLayout(saved.find(view=>view.slot===1)?.layout ?? defaultCustomerPresetLayout());
+        setReady(true);
+      }
     }).catch(error=>{if(active)setMessage(error.message || "Saved views could not be loaded. Reload before saving.");});
     return ()=>{active=false;};
   },[]);
-  const select=(next:number)=>{selectedSlot.current=next;setSlot(next);setLayout(views.find(view=>view.slot===next)?.layout ?? defaultCustomerViewLayout());setMessage("");};
+  const presetLayout=(viewSlot:number)=>viewSlot===1 ? defaultCustomerPresetLayout() : viewSlot===2 ? customerInfoPresetLayout() : viewSlot===3 || viewSlot===4 ? blastEmailPresetLayout() : viewSlot===5 ? siteOfficeVisitPresetLayout() : viewSlot===6 ? coldDormantCallPresetLayout() : viewSlot===7 ? emailMailerPresetLayout() : viewSlot===9 ? ryanEamonBrianPresetLayout() : viewSlot===10 ? siobhanOnePresetLayout() : viewSlot===11 ? profileTypePresetLayout() : viewSlot===12 ? kickbacksPresetLayout() : viewSlot===17 ? selectProfilePresetLayout() : viewSlot===18 ? siobhanTwoPresetLayout() : viewSlot===23 ? testOneScreenPresetLayout() : viewSlot===24 ? testTwoScreenPresetLayout() : viewSlot===25 ? rtsPresetLayout() : viewSlot===26 ? siobhanTwoScreensPresetLayout() : viewSlot===27 ? salesPackagesPresetLayout() : viewSlot===28 ? callListTemplatePresetLayout() : defaultCustomerViewLayout();
+  const select=(next:number)=>{setSlot(next);setLayout(views.find(view=>view.slot===next)?.layout ?? presetLayout(next));setMessage("");};
   const openSave=()=>{saveSlot.current=slot;snapshot.current=structuredClone(layout);setName(views.find(view=>view.slot===slot)?.name ?? originalName(slot));setError("");dialog.current?.showModal();};
   async function save() {
     setBusy(true);setError("");
@@ -50,7 +57,7 @@ export function CustomerSavedViewsProvider({children}:{children:ReactNode}) {
     try {
       const response=await fetch("/api/customers/saved-views",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({slot:deleteSlot})});
       const data=await response.json();if(!response.ok)throw new Error(data.error);
-      setViews(current=>current.filter(view=>view.slot!==deleteSlot));setLayout(defaultCustomerViewLayout());setMessage("Saved view deleted.");deleteDialog.current?.close();
+      setViews(current=>current.filter(view=>view.slot!==deleteSlot));setLayout(presetLayout(deleteSlot));setMessage("Saved view deleted.");deleteDialog.current?.close();
     }catch(error){setMessage(error instanceof Error ? error.message : "View could not be deleted.");}finally{setBusy(false);}
   }
   return <Context.Provider value={{slot,select,views,layout,setLayout,ready,busy,message,openSave,openDelete,remove}}>

@@ -1,6 +1,130 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { customerSavedViewSchema, defaultCustomerViewLayout } from "./customerSavedViews";
+import { blastEmailPresetLayout, callListTemplatePresetLayout, coldDormantCallPresetLayout, customerInfoPresetLayout, customerSavedViewSchema, defaultCustomerPresetLayout, defaultCustomerViewLayout, emailMailerPresetLayout, kickbacksPresetLayout, profileTypePresetLayout, ryanEamonBrianPresetLayout, rtsPresetLayout, salesPackagesPresetLayout, selectProfilePresetLayout, siobhanOnePresetLayout, siobhanTwoPresetLayout, siobhanTwoScreensPresetLayout, siteOfficeVisitPresetLayout, testOneScreenPresetLayout, testTwoScreenPresetLayout } from "./customerSavedViews";
+test("Default preset exposes the Access columns in screenshot order",()=>{
+ const layout=defaultCustomerPresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)),[
+  "select","customerName","noCommunication","street","city","state","customerType","lastWeekEnding","firstWeekEnding","act",
+  "internetSalesReadyUser","internetSalesReadyDate","internetSalesReady","lastActionUser","lastActionDate","lastAction",
+  "futureCallUser","futureCallUserDate","futureCallUserTime","futureCall","futureCallHistory","salesHistoryStatus","contactsLink",
+  "licenseNumber","licenseIssueDate","licenseExpireDate","salesPackageSentFilter","salesPackageSentDate","salesPackageSentUser","contactCount",
+ ]);
+});
+test("Customer Info preset adds its screenshot columns after the shared customer columns",()=>{
+ const layout=customerInfoPresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)).slice(-3),["contactsLink","customerDescription","importNote"]);
+ assert.equal(layout.hidden.includes("firstWeekEnding"),true);
+});
+test("Blast Email preset exposes the screenshot contact columns in order",()=>{
+ const layout=blastEmailPresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)).slice(-6),["salesHistoryStatus","contactsLink","ctcTitle","ctcFirst","ctcLast","ctcEmail"]);
+});
+test("Site / Office Visit preset exposes both visit user and date columns",()=>{
+ const layout=siteOfficeVisitPresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)).slice(-4),["siteVisitUser","siteVisitDate","officeVisitUser","officeVisitDate"]);
+});
+test("Cold / Dormant Call preset exposes the user and date columns in screenshot order",()=>{
+ const layout=coldDormantCallPresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)).slice(-4),["coldCallUser","coldCallDate","dormantCallUser","dormantCallDate"]);
+});
+test("Email / Mailer preset exposes Outlook and Mailer dates and users in order",()=>{
+ const layout=emailMailerPresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)).slice(-4),["outlookEmailUser","outlookEmailDate","mailerUser","mailerDate"]);
+});
+test("Ryan-Eamon Brian preset exposes its profile and sales columns in screenshot order",()=>{
+ const layout=ryanEamonBrianPresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)),[
+  "select","customerName","noCommunication","profileType","sAdm","salesAdmin","street","city","state","customerType",
+  "firstWeekEnding","lastWeekEnding","act","internetSalesReadyUser","internetSalesReadyDate","internetSalesReady","salesHistoryLink","spare1",
+ ]);
+});
+test("Siobhan 1 preset exposes its compact location and action columns in order",()=>{
+ const layout=siobhanOnePresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)),[
+  "select","customerName","city","state","phone","sAdm","customerType","lastActionUser","lastActionDate","lastAction",
+  "futureCallUser","futureCallUserDate","futureCall","futureCallUserTime","salesHistoryStatus","contactsLink","spare2",
+ ]);
+});
+test("Profile Type preset joins both screenshot sections in column order",()=>{
+ const layout=profileTypePresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)),[
+  "select","entryUserName","entryDate","profileType","customerType","sAdm","customerName","noCommunication","street","city","state",
+  "act","lastWeekEnding","internetSalesReadyUser","internetSalesReadyDate","internetSalesReady","futureCallUser","futureCallUserDate",
+  "futureCall","futureCallHistory","salesHistoryStatus","spacer1","salesHistoryLink","lastActionUser","lastActionDate","lastAction",
+  "permitDate","permitStreet","permitCity","permitState","permitFee","permitValue","siteVisitUser","siteVisitDate","officeVisitUser",
+  "officeVisitDate","mailerUser","mailerDate","coldCallUser","coldCallDate","ctcTitle","ctcFirst","ctcLast","ctcCell","ctcEmail",
+ ]);
+});
+test("Kick Backs preset exposes its checkbox, count and action columns in order",()=>{
+ const layout=kickbacksPresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)).slice(-3),["kickback","kickbackTimes","kickbackAction"]);
+});
+test("Select Profile preset shows only its four screenshot columns",()=>{
+ const layout=selectProfilePresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)),["select","entryUserName","entryDate","profileType"]);
+});
+test("Siobhan 2 preset exposes its permit and future-call columns in screenshot order",()=>{
+ const layout=siobhanTwoPresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)),[
+  "select","customerName","city","phone","state","customerType","firstWeekEnding","lastWeekEnding","act","lastActionUser","lastActionDate",
+  "lastAction","permitCity","permitDate","futureCallUser","futureCallUserDate","futureCall","futureCallHistory","salesHistoryStatus","contactsLink","spare2",
+ ]);
+});
+test("RTS preset exposes its customer and return-to-sender columns in screenshot order",()=>{
+ const layout=rtsPresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)),[
+  "select","entryUserName","entryDate","profileType","customerName","street","city","state","ctcFirst","ctcLast","permitCards","ctcEmail","rts","rtsUser","rtsDate",
+ ]);
+});
+test("Siobhan 2 Screens preset exposes both screenshot sections in column order",()=>{
+ const layout=siobhanTwoScreensPresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)),[
+  "select","entryUserName","entryDate","profileType","customerName","phone","city","state","customerType","contractWith","sAdm",
+  "firstWeekEnding","lastWeekEnding","lastActionUser","lastActionDate","lastAction","act","futureCallUser","customerIdValue",
+  "futureCallUserDate","futureCall","futureCallUserTime","salesHistoryStatus","contactsLink","spare2","spacer1","permitDate",
+  "permitCity","permitState","permitFee","permitValue","ctcFirst","ctcLast","ctcTitle","ctcCell","contactOffPhone","ctcEmail",
+ ]);
+});
+test("Sales Packages preset exposes the screenshot columns and package fields in order",()=>{
+ const layout=salesPackagesPresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)),[
+  "select","profileType","customerName","city","state","customerType","contractWith","sAdm","firstWeekEnding","lastWeekEnding",
+  "lastActionUser","lastActionDate","lastAction","act","futureCallUser","futureCallUserDate","futureCall","futureCallUserTime",
+  "salesHistoryStatus","salesPackageSentFilter","salesPackageSentDate","salesPackageSent","contactsLink","spare2","spacer1",
+  "permitDate","permitCity","permitState","permitFee","permitValue","ctcFirst","ctcLast","ctcTitle","ctcCell","contactOffPhone",
+  "ctcEmail","entryUserName","entryDate",
+ ]);
+});
+test("Call List Template preset exposes both screenshot sections and user flags in order",()=>{
+ const layout=callListTemplatePresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)),[
+  "select","entryUserName","entryDate","profileType","customerName","city","state","noCommunication","customerType","contractWith",
+  "sAdm","firstWeekEnding","lastWeekEnding","lastActionUser","lastActionDate","lastAction","act","futureCallUser",
+  "futureCallUserDate","futureCall","futureCallUserTime","salesHistoryStatus","salesPackageSentFilter","salesPackageSentDate",
+  "salesPackageSent","contactsLink","spacer1","permitDate","permitCity","permitState","permitFee","permitValue","ctcFirst",
+  "ctcLast","ctcTitle","ctcCell","contactOffPhone","ctcEmail","spacer3","spare1","spare3","spare4","spare5","spare6",
+  "spare7","spacer2","spare2","spare8",
+ ]);
+});
+test("Test 1 Screen preset exposes the screenshot permit and contact columns in order",()=>{
+ const layout=testOneScreenPresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)),[
+  "select","entryUserName","entryDate","profileType","customerName","noCommunication","city","state","customerType","lastWeekEnding",
+  "lastActionUser","lastActionDate","lastAction","act","futureCallUser","futureCallUserDate","futureCall","futureCallUserTime",
+  "salesHistoryStatus","permitDate","permitCity","permitState","permitFee","permitValue","ctcTitle","ctcFirst","ctcLast",
+  "ctcCell","ctcEmail","spare1","contactCount",
+ ]);
+});
+test("Test 2 Screen preset exposes the screenshot sales, permit and contact columns in order",()=>{
+ const layout=testTwoScreenPresetLayout();
+ assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)),[
+  "select","customerType","sAdm","customerName","noCommunication","street","city","state","act","lastWeekEnding",
+  "internetSalesReadyUser","internetSalesReadyDate","internetSalesReady","futureCallUser","futureCallUserDate","futureCall",
+  "futureCallHistory","salesHistoryStatus","spacer1","salesHistoryLink","lastActionUser","lastActionDate","lastAction","permitDate",
+  "permitStreet","permitCity","permitState","permitFee","permitValue","spare8","siteVisitUser","siteVisitDate","officeVisitUser",
+  "officeVisitDate","coldCallUser","coldCallDate","ctcTitle","ctcFirst","ctcLast","ctcCell","ctcEmail","mailerDate","mailerUser",
+ ]);
+});
 test("saved views retain reordered, hidden, resized, filtered and sorted columns",()=>{
  const layout=defaultCustomerViewLayout();
  [layout.order[0],layout.order[1]]=[layout.order[1],layout.order[0]];
