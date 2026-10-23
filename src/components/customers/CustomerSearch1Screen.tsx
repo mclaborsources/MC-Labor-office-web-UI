@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { CustomerSavedViewsProvider } from "./CustomerSavedViews";
 import { CustomerSearchScreen } from "./CustomerSearchScreen";
 import { CustomerNameSearchScreen, resetCustomerColumnOrder } from "./CustomerNameSearchScreen";
 import { CustomerSearch1Filters } from "./CustomerSearch1Filters";
@@ -99,6 +100,7 @@ export function CustomerSearch1Screen({ cacheScope = "default", customers: suppl
   const elapsed = loaded?.elapsed ?? loadTimeMs;
   const router = useRouter();
   const [resetOrderVersion, setResetOrderVersion] = useState(0);
+  const [showColumnsVersion, setShowColumnsVersion] = useState(0);
   const [resetVersion, setResetVersion] = useState(0);
   const [filters, setFilters] = useState<Filters>({});
   const filteredCustomers = useMemo(() => {
@@ -113,7 +115,7 @@ export function CustomerSearch1Screen({ cacheScope = "default", customers: suppl
     if (Object.values(params).some(Boolean)) router.replace("/customer-search-1");
   };
   const refresh = () => { recordsCache.clear(); searchCache.clear(); setLoaded(undefined); setFetchError(""); setRevision(value => value + 1); };
-  return <CustomerSearchScreen onResetColumnOrder={() => { resetCustomerColumnOrder("customers"); setResetOrderVersion(value => value + 1); }} onRefresh={refresh} title="Customer Search 1" basePath="/customer-search-1"
+  return <CustomerSavedViewsProvider><CustomerSearchScreen onShowAllColumns={() => setShowColumnsVersion(value => value + 1)} onResetColumnOrder={() => { resetCustomerColumnOrder("customers"); setResetOrderVersion(value => value + 1); }} onRefresh={refresh} title="Customer Search 1" basePath="/customer-search-1"
     customers={[]} loadError={fetchError || loadError} {...options} customerUserFlagOptions={Array.from({ length: 8 }, () => [])} lastActionUsers={lastActionUsers}
     currentSearch={params.search ?? ""} currentSalesmanId={params.salesmanId ?? ""} currentCustomerTypeId={params.customerTypeId ?? ""}
     currentStatusId={params.statusId ?? ""} currentCity={params.city ?? ""} currentState={params.state ?? ""}
@@ -124,6 +126,6 @@ export function CustomerSearch1Screen({ cacheScope = "default", customers: suppl
     onClearResultFilters={clear}
     onSidebarSearchChange={setSidebarValues}
     filterRow={<><CustomerSearch1Filters rows={customers} filters={filters} onChange={setFilters} onClear={clear} />{searching && <span role="status">Updating search results…</span>}</>}
-    results={needsFetch && !loaded && !fetchError ? <CustomerRecordsLoading progress={progress} /> : <CustomerNameSearchScreen resetOrderVersion={resetOrderVersion} key={resetVersion} variant="customers" initialCustomers={filteredCustomers} fetchedCount={loaded?.count ?? fetchedCount} initialLoadTimeMs={elapsed} />}
-  />;
+    results={needsFetch && !loaded && !fetchError ? <CustomerRecordsLoading progress={progress} /> : <CustomerNameSearchScreen showColumnsVersion={showColumnsVersion} resetOrderVersion={resetOrderVersion} key={resetVersion} variant="customers" initialCustomers={filteredCustomers} fetchedCount={loaded?.count ?? fetchedCount} initialLoadTimeMs={elapsed} />}
+  /></CustomerSavedViewsProvider>;
 }

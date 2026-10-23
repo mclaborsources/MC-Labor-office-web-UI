@@ -16597,6 +16597,19 @@ html.mc-route-busy,html.mc-route-busy *,html.mc-employee-search-busy,html.mc-emp
 html.mc-column-edge, html.mc-column-edge *, html.mc-column-dragging, html.mc-column-dragging * { cursor: col-resize !important; }
 html.mc-column-dragging, html.mc-column-dragging * { user-select: none !important; }
 .ac-shortcuts-dialog { position:fixed; inset:0; margin:auto; width:414px; max-width:calc(100vw - 24px); height:658px; max-height:calc(100dvh - 32px); padding:0; border:1px solid #b0b0b0; border-radius:9px; background:#f0f0f0; color:#222; box-shadow:0 8px 25px #0005; font:13px Arial,sans-serif; overflow:hidden; }
+.ac-customer-saved-view-dialog { position:fixed; inset:0; margin:auto; width:min(520px,calc(100vw - 28px)); max-height:calc(100dvh - 28px); padding:0; border:1px solid #777; background:#d8d8d8; color:#000; box-shadow:0 8px 28px #0005; font:15px Arial,sans-serif; }
+.ac-customer-saved-view-dialog:not([open]) { display:none; }
+.ac-customer-saved-view-dialog::backdrop { background:rgb(0 0 0 / 28%); }
+.ac-customer-saved-view-dialog header { padding:14px 16px; border-bottom:1px solid #aaa; background:#c8c8c8; }
+.ac-customer-saved-view-dialog h2 { margin:0; font-size:19px; font-weight:700; }
+.ac-customer-saved-view-body { padding:16px; }
+.ac-customer-saved-view-body label { display:block; }
+.ac-customer-saved-view-body input { display:block; box-sizing:border-box; width:100%; height:32px; margin-top:7px; padding:4px 7px; border:2px inset #ddd; background:#fff; color:#000; font:15px Arial,sans-serif; }
+.ac-customer-saved-view-body p { margin:10px 0 0; }
+.ac-customer-saved-view-body [role=alert] { color:#a00000; }
+.ac-customer-saved-view-dialog footer { display:flex; justify-content:flex-end; gap:8px; padding:11px 16px; border-top:1px solid #aaa; background:#d0d0d0; }
+.ac-customer-saved-view-dialog footer button { min-width:82px; min-height:33px; font-size:14px; }
+.ac-customer-saved-view-delete-dialog footer button[type=submit] { min-width:92px; }
 .ac-shortcuts-dialog[open] { display:flex; flex-direction:column; }
 .ac-shortcuts-dialog::backdrop { background:#0002; }
 .ac-access-menu-corner .ac-shortcuts-titlebar { height:32px; flex:none; display:flex; align-items:center; gap:8px; padding:0 8px; background:#edf3f8; }
@@ -17906,3 +17919,5 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
 .employee-record-screen .er-tr-former > label { grid-template-columns:94px auto; margin-bottom:2px; }
 .employee-record-screen .er-tr-former > label:first-of-type { margin-top:7px; }
 .employee-record-screen .er-tr-former > label:nth-of-type(n+3) input { width:98px; }
+
+.ac-customer-search-page .ac-customer-search-preset-grid > button { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }

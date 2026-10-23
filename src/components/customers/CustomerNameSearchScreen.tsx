@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useCustomerViewField } from "./CustomerSavedViews";
 import { CustomerNameColumnHeader } from "./CustomerNameColumnHeader";
 import { Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -10,10 +11,12 @@ const defaultColumns = CUSTOMER_NAME_SEARCH_COLUMNS;
 type SummaryColumnKey = CustomerNameColumnKey;
 const summaryValue = customerNameCellValue;
 const savedColumnOrders: Partial<Record<"names" | "customers", SummaryColumnKey[]>> = {};
+const savedHiddenColumns: Partial<Record<"names" | "customers", SummaryColumnKey[]>> = {};
 const savedColumnWidths: Partial<Record<"names" | "customers", Partial<Record<SummaryColumnKey, number>>>> = {};
 
 export function resetCustomerColumnOrder(variant: "names" | "customers") {
   delete savedColumnOrders[variant];
+  delete savedHiddenColumns[variant];
 }
 
 interface NameResponse {
@@ -22,30 +25,61 @@ interface NameResponse {
   error?: string;
 }
 
-export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initialLoadTimeMs, resetOrderVersion = 0, variant = "names" }: {
+export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initialLoadTimeMs, resetOrderVersion = 0, showColumnsVersion = 0, variant = "names" }: {
   resetOrderVersion?: number;
+  showColumnsVersion?: number;
   initialCustomers?: CustomerNameMatch[];
   fetchedCount?: number;
   initialLoadTimeMs?: number;
   variant?: "names" | "customers";
 }) {
   const router = useRouter();
-  const [columnOrder, setColumnOrder] = useState<SummaryColumnKey[]>(() => defaultColumns.map(column => column.key));
-  useEffect(() => { setColumnOrder(savedColumnOrders[variant] ?? defaultColumns.map(column => column.key)); }, [variant, resetOrderVersion]);
-  const summaryColumns = useMemo(() => columnOrder.map(key => defaultColumns.find(column => column.key === key)!), [columnOrder]);
+  const [columnOrder, setColumnOrder] = useCustomerViewField("order", defaultColumns.map(column => column.key), variant === "customers");
+
+  const [hiddenColumns, setHiddenColumns] = useCustomerViewField("hidden", [], variant === "customers");
+  const previousReset = useRef(resetOrderVersion);
+  useEffect(() => {
+    const resetChanged=previousReset.current!==resetOrderVersion;
+    previousReset.current=resetOrderVersion;
+    if(variant === "customers" && !resetChanged)return;
+    setColumnOrder(savedColumnOrders[variant] ?? defaultColumns.map(column=>column.key));
+    setHiddenColumns(savedHiddenColumns[variant] ?? []);
+  }, [variant,resetOrderVersion,setColumnOrder,setHiddenColumns]);
+  const previousShowColumns=useRef(showColumnsVersion);
+  useEffect(() => {
+    if(previousShowColumns.current===showColumnsVersion)return;
+    previousShowColumns.current=showColumnsVersion;
+    delete savedHiddenColumns[variant];
+    setHiddenColumns([]);
+  }, [showColumnsVersion, variant, setHiddenColumns]);
+  const summaryColumns = useMemo(() => columnOrder.filter(key => !hiddenColumns.includes(key)).map(key => defaultColumns.find(column => column.key === key)!), [columnOrder, hiddenColumns]);
+  function hideColumn(key: SummaryColumnKey) {
+    setHiddenColumns(current => {
+      const next = [...new Set([...current, key])];
+      savedHiddenColumns[variant] = next;
+      return next;
+    });
+  }
+  function showAllColumns() {
+    delete savedHiddenColumns[variant];
+    setHiddenColumns([]);
+  }
   function moveColumn(key: SummaryColumnKey, offset: number) {
     setColumnOrder(current => {
+      const visible = current.filter(column => !hiddenColumns.includes(column));
+      const visibleIndex = visible.indexOf(key);
+      const destinationKey = visible[visibleIndex + offset];
+      if (visibleIndex < 0 || destinationKey === undefined) return current;
       const index = current.indexOf(key);
-      const destination = index + offset;
-      if (index < 0 || destination < 0 || destination >= current.length) return current;
+      const destination = current.indexOf(destinationKey);
       const next = [...current];
       [next[index], next[destination]] = [next[destination], next[index]];
       savedColumnOrders[variant] = next;
       return next;
     });
   }
-  const [columnWidths, setColumnWidths] = useState<Partial<Record<SummaryColumnKey, number>>>({});
-  useEffect(() => { setColumnWidths(savedColumnWidths[variant] ?? {}); }, [variant]);
+  const [columnWidths, setColumnWidths] = useCustomerViewField("widths", {}, variant === "customers");
+  useEffect(() => { if(variant !== "customers")setColumnWidths(savedColumnWidths[variant] ?? {}); }, [variant,setColumnWidths]);
   function resizeColumn(key: SummaryColumnKey, width?: number) {
     setColumnWidths(current => {
       const next = { ...current };
@@ -76,8 +110,8 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
   const [namesViewportHeight, setNamesViewportHeight] = useState(500);
   const [allNamesLoadMs, setAllNamesLoadMs] = useState<number | null>(initialLoadTimeMs ?? null);
   const [loadedCustomerSearch, setLoadedCustomerSearch] = useState("");
-  const [columnFilters, setColumnFilters] = useState<Partial<Record<SummaryColumnKey, string[]>>>({});
-  const [summarySort, setSummarySort] = useState<{ key: SummaryColumnKey; direction: "asc" | "desc" } | null>(null);
+  const [columnFilters, setColumnFilters] = useCustomerViewField("filters", {}, variant === "customers");
+  const [summarySort, setSummarySort] = useCustomerViewField("sort", null, variant === "customers");
   const displayedNames = useMemo(() => {
     const filters = Object.entries(columnFilters).map(([key, values]) => [key as SummaryColumnKey, new Set(values)] as const);
     const query = loadedCustomerSearch.trim().toLocaleLowerCase();
@@ -209,7 +243,8 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
             </div>
           </div>
         )}
-        {allNamesVisible && variant === "names" && <div className="ac-customer-name-search-paging"><button type="button" className="ac-btn ac-btn-xs" onClick={() => { resetCustomerColumnOrder(variant); setColumnOrder(defaultColumns.map(column => column.key)); }}>Reset column order</button></div>}
+        {allNamesVisible && variant === "names" && <div className="ac-customer-name-search-paging"><button type="button" className="ac-btn ac-btn-xs" onClick={() => { resetCustomerColumnOrder(variant); setColumnOrder(defaultColumns.map(column => column.key)); setHiddenColumns([]); }}>Reset column order</button></div>}
+        {allNamesVisible && variant === "names" && hiddenColumns.length > 0 && <div className="ac-customer-name-search-paging"><button type="button" className="ac-btn ac-btn-xs" onClick={showAllColumns}>Show all columns</button></div>}
         {allNamesVisible && (Object.keys(columnFilters).length > 0 || summarySort) && (
           <div className="ac-customer-name-search-paging">
             <button type="button" className="ac-btn ac-btn-xs" onClick={() => { setColumnFilters({}); setSummarySort(null); resetNamesScroll(); }}>Clear sorting and filters</button>
@@ -220,6 +255,7 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
           <div ref={allNamesListRef} className="ac-customer-name-search-all-names" aria-label="All customer names" onScroll={(event) => setNamesScrollTop(event.currentTarget.scrollTop)}>
             <div className="ac-customer-name-search-summary-header" style={summaryGridStyle}>
               {summaryColumns.map((column, index) => <CustomerNameColumnHeader key={column.key} columnKey={column.key} label={column.label} kind={column.kind}
+                onHide={summaryColumns.length > 1 ? () => hideColumn(column.key) : undefined}
                 onMoveLeft={index > 0 ? () => moveColumn(column.key, -1) : undefined}
                 onMoveRight={index < summaryColumns.length - 1 ? () => moveColumn(column.key, 1) : undefined}
                 width={columnWidths[column.key] ?? column.width} onResize={width => resizeColumn(column.key, width)} onResetWidth={() => resizeColumn(column.key)}

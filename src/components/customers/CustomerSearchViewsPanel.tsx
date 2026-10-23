@@ -1,12 +1,14 @@
 "use client";
 
-import { Suspense, useEffect, useState, type ComponentType, type ReactNode } from "react";
+import { Suspense, createContext, useContext, useEffect, useState, type ComponentType, type ReactNode } from "react";
 import { AccessButton } from "@/components/access/AccessButton";
+import { CustomerSavedViewActions, useCustomerSavedViews } from "./CustomerSavedViews";
 import { CustomerFilters } from "@/components/customers/CustomerFilters";
 import {
   CUSTOMER_SEARCH_PRESET_GRID,
   CUSTOMER_SEARCH_VIEW_TABS,
   customerSearchPresetBtnClass,
+  customerSearchPresetView,
   type CustomerSearchPresetCell,
 } from "@/lib/customerSearchColumns";
 import {
@@ -307,19 +309,43 @@ function DuplicatesPanel() {
   );
 }
 
+const CustomerViewSelectionContext = createContext<{
+  selectedView: string;
+  setSelectedView: (view: string) => void;
+} | null>(null);
+
+function useCustomerViewSelection() {
+  const selection = useContext(CustomerViewSelectionContext);
+  const saved = useCustomerSavedViews();
+  if (!selection) throw new Error("Customer view controls require a view selection provider.");
+  return saved ? {selectedView:customerSearchPresetView(0,saved.slot-1),setSelectedView:(view:string)=>{const slot=Number(view.replace("View ",""));if(Number.isInteger(slot) && slot>=1 && slot<=64)saved.select(slot);}} : selection;
+}
+
+function CustomerViewSelect() {
+  const saved = useCustomerSavedViews();
+  const { selectedView, setSelectedView } = useCustomerViewSelection();
+  const options = [...new Set([
+    ...Array.from({ length: 64 }, (_, index) => customerSearchPresetView(0, index)),
+    ...(saved ? [] : CUSTOMER_SAVED_VIEW_OPTIONS),
+  ])];
+  return <select className="ac-select ac-customer-search-view-select-wide" value={selectedView} onChange={event => setSelectedView(event.target.value)} aria-label="View">
+    {options.map(view => <option key={view} value={view}>{view}</option>)}
+  </select>;
+}
+
 function PresetGrid({
   grid,
   rows = 4,
   cols = 8,
+  viewOffset = 0,
 }: {
   grid: readonly (readonly (CustomerSearchPresetCell | "textured" | null)[])[];
   rows?: number;
   cols?: number;
+  viewOffset?: number;
 }) {
-  const firstPreset = grid
-    .flat()
-    .find((cell): cell is CustomerSearchPresetCell => Boolean(cell && typeof cell === "object" && "label" in cell));
-  const [selectedPreset, setSelectedPreset] = useState(firstPreset?.label ?? "");
+  const { selectedView, setSelectedView } = useCustomerViewSelection();
+  const saved = useCustomerSavedViews();
 
   return (
     <div className="ac-customer-search-preset-grid">
@@ -331,26 +357,27 @@ function PresetGrid({
               <AccessButton data-action-status="complete"
                 key={`${rowIndex}-${colIndex}-${cell.label}`}
                 xs
-                aria-pressed={selectedPreset === cell.label}
-                onClick={() => setSelectedPreset(cell.label)}
+                aria-pressed={selectedView === customerSearchPresetView(rowIndex, colIndex, cols, viewOffset)}
+                onClick={() => setSelectedView(customerSearchPresetView(rowIndex, colIndex, cols, viewOffset))}
                 className={`${customerSearchPresetBtnClass(cell.style)} ${
-                  selectedPreset === cell.label ? "ac-customer-search-preset-btn--active" : ""
+                  selectedView === customerSearchPresetView(rowIndex, colIndex, cols, viewOffset) ? "ac-customer-search-preset-btn--active" : ""
                 }`}
               >
-                {cell.label}
+                {saved?.views.find(item => customerSearchPresetView(0,item.slot-1)===customerSearchPresetView(rowIndex,colIndex,cols,viewOffset))?.name ?? cell.label}
               </AccessButton>
             );
           }
-          if (cell === "textured") {
-            return (
-              <div
-                key={`${rowIndex}-${colIndex}-textured`}
-                className="ac-customer-search-preset-empty ac-customer-search-preset-textured"
-                aria-hidden
-              />
-            );
-          }
-          return <div key={`${rowIndex}-${colIndex}-empty`} className="ac-customer-search-preset-empty" aria-hidden />;
+          const view = customerSearchPresetView(rowIndex, colIndex, cols, viewOffset);
+          return <AccessButton
+            data-action-status="complete"
+            key={`${rowIndex}-${colIndex}-empty`}
+            xs
+            aria-label={view}
+            title={view}
+            aria-pressed={selectedView === view}
+            onClick={() => setSelectedView(view)}
+            className={`ac-customer-search-preset-empty ${cell === "textured" ? "ac-customer-search-preset-textured" : ""} ${selectedView === view ? "ac-customer-search-preset-btn--active" : ""}`}
+          >{saved?.views.find(item=>customerSearchPresetView(0,item.slot-1)===view)?.name}</AccessButton>;
         }),
       )}
     </div>
@@ -390,17 +417,8 @@ function ViewsTab() {
           </div>
           <div className="ac-customer-search-view-controls-group ac-customer-search-view-controls-group--end">
             <span className="ac-flabel">View:</span>
-            <select className="ac-select ac-customer-search-view-select-wide" defaultValue="View 01" aria-label="View">
-              {CUSTOMER_SAVED_VIEW_OPTIONS.map((viewName) => (
-                <option key={viewName} value={viewName}>{viewName}</option>
-              ))}
-            </select>
-            <AccessButton data-action-status="missing" xs disabled>
-              Save View
-            </AccessButton>
-            <AccessButton data-action-status="missing" xs disabled>
-              Delete View
-            </AccessButton>
+            <CustomerViewSelect />
+            <CustomerSavedViewActions />
           </div>
         </div>
       </div>
@@ -411,7 +429,7 @@ function ViewsTab() {
 function Views2Tab() {
   return (
     <div className="ac-customer-search-views-preset ac-search-views-tab-pane">
-      <PresetGrid grid={CUSTOMER_SEARCH_VIEWS_2_GRID} />
+      <PresetGrid grid={CUSTOMER_SEARCH_VIEWS_2_GRID} viewOffset={32} />
       <div className="ac-customer-search-views-footer shrink-0">
         <div className="ac-customer-search-view-controls">
           <div className="ac-customer-search-view-controls-group">
@@ -422,6 +440,11 @@ function Views2Tab() {
             <AccessButton data-action-status="missing" xs disabled>
               Update Selected
             </AccessButton>
+          </div>
+          <div className="ac-customer-search-view-controls-group ac-customer-search-view-controls-group--end">
+            <span className="ac-flabel">View:</span>
+            <CustomerViewSelect />
+            <CustomerSavedViewActions />
           </div>
         </div>
       </div>
@@ -808,6 +831,7 @@ const TAB_CONTENT: readonly ComponentType<UserSettingsTabProps>[] = [
 
 export function CustomerSearchViewsPanel(props: CustomerSearchViewsPanelProps) {
   const [activeTab, setActiveTab] = useState(0);
+  const [selectedView, setSelectedView] = useState("View 01");
   const [customerUserFlagOptions, setCustomerUserFlagOptions] = useState(props.customerUserFlagOptions);
   const [userFlagsLoaded, setUserFlagsLoaded] = useState(props.customerUserFlagOptions.some((options) => options.length > 0));
   const showCompactFilter = activeTab <= 2;
@@ -831,6 +855,7 @@ export function CustomerSearchViewsPanel(props: CustomerSearchViewsPanelProps) {
   }, [activeTab, userFlagsLoaded]);
 
   return (
+    <CustomerViewSelectionContext.Provider value={{ selectedView, setSelectedView }}>
     <div className="ac-customer-search-controls min-w-0 flex-1">
       <div className="ac-tabs ac-customer-search-view-tabs shrink-0 overflow-x-auto">
         {CUSTOMER_SEARCH_VIEW_TABS.map((label, i) => (
@@ -861,5 +886,6 @@ export function CustomerSearchViewsPanel(props: CustomerSearchViewsPanelProps) {
         </div>
       </div>
     </div>
+    </CustomerViewSelectionContext.Provider>
   );
 }

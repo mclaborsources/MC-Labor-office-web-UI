@@ -110,3 +110,8 @@ export function customerSearchPresetBtnClass(style?: CustomerSearchPresetStyle):
       return undefined;
   }
 }
+
+/** Number the preset slots across each row, continuing on Views 2. */
+export function customerSearchPresetView(row: number, column: number, columns = 8, offset = 0): string {
+  return `View ${String(offset + row * columns + column + 1).padStart(2, "0")}`;
+}

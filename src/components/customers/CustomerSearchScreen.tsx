@@ -21,6 +21,7 @@ import type { FilterOption } from "@/types/search";
 export interface CustomerSearchScreenProps {
   onRefresh?: () => void;
   onResetColumnOrder?: () => void;
+  onShowAllColumns?: () => void;
   title?: string;
   basePath?: string;
   results?: ReactNode;
@@ -468,7 +469,7 @@ function CustomerSearchSidebar({
   );
 }
 
-function CustomerSearchActionBar({ hoveredColumn, onClearFilters }: { hoveredColumn: string; onClearFilters: () => void }) {
+function CustomerSearchActionBar({ hoveredColumn, onClearFilters, onShowAllColumns }: { hoveredColumn: string; onClearFilters: () => void; onShowAllColumns?: () => void }) {
   return (
     <div className="ac-customer-search-action-bar shrink-0">
       <div className="ac-customer-search-action-group">
@@ -504,6 +505,7 @@ function CustomerSearchActionBar({ hoveredColumn, onClearFilters }: { hoveredCol
       <AccessButton data-action-status="missing" xs disabled className="ac-customer-search-btn-transfer">
         Transfer to Deleted
       </AccessButton>
+      {onShowAllColumns && <AccessButton data-action-status="complete" xs onClick={onShowAllColumns}>Show all columns</AccessButton>}
       <AccessButton data-action-status="complete" xs onClick={onClearFilters}>Clear Filters</AccessButton>
     </div>
   );
@@ -529,6 +531,7 @@ function CustomerSearchUtilityRail() {
 export function CustomerSearchScreen({
   onRefresh,
   onResetColumnOrder,
+  onShowAllColumns,
   title = "Customer Search",
   basePath = "/customers",
   results,
@@ -646,7 +649,7 @@ export function CustomerSearchScreen({
 
               <CustomerSearchUtilityRail />
             </div>
-            <CustomerSearchActionBar hoveredColumn={hoveredColumn} onClearFilters={() => { setColumnFilters({}); onClearResultFilters?.(); }} />
+            <CustomerSearchActionBar onShowAllColumns={onShowAllColumns} hoveredColumn={hoveredColumn} onClearFilters={() => { setColumnFilters({}); onClearResultFilters?.(); }} />
           </div>
 
           <div className="ac-panel ac-panel-elevated ac-customer-search-results-panel min-h-0 flex-1">
