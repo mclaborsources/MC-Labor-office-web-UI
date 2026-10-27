@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import { createPortal } from "react-dom";
 
-export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getValues, selected, sort, onFilter, onSort, width, onResize, onResetWidth, onMoveLeft, onMoveRight, onHide }: {
+export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getValues, selected, sort, onFilter, onSort, onSelect, onDragStart, onDragOver, onDrop, onDragEnd, dragging, dropTarget, width, onResize, onResetWidth, onMoveLeft, onMoveRight, onHide }: {
   label: string;
   columnKey?: string;
   kind?: "text" | "date" | "number";
@@ -12,6 +12,13 @@ export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getV
   sort?: "asc" | "desc";
   onFilter: (values: string[] | undefined) => void;
   onSort: (direction: "asc" | "desc") => void;
+  onSelect?: () => void;
+  onDragStart?: (event: DragEvent<HTMLDivElement>) => void;
+  onDragOver?: (event: DragEvent<HTMLDivElement>) => void;
+  onDrop?: (event: DragEvent<HTMLDivElement>) => void;
+  onDragEnd?: () => void;
+  dragging?: boolean;
+  dropTarget?: boolean;
   onHide?: () => void;
   onMoveLeft?: () => void;
   onMoveRight?: () => void;
@@ -48,8 +55,10 @@ export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getV
     };
   }, [open]);
 
-  return <div className="ac-column-filter" data-column={columnKey} style={{ position: "relative", minWidth: 0 }}>
-    <button ref={trigger} type="button" title={label} className={`ac-column-filter-trigger${selected || sort ? " is-active" : ""}`} aria-label={`Sort or filter ${label}`} aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen(!open)}>
+  return <div className="ac-column-filter" data-column={columnKey} draggable={Boolean(onDragStart)}
+    onDragStart={onDragStart} onDragOver={onDragOver} onDrop={onDrop} onDragEnd={onDragEnd}
+    style={{ position: "relative", minWidth: 0, cursor: onDragStart ? "grab" : undefined, opacity: dragging ? 0.45 : 1, outline: dropTarget ? "2px solid #2563eb" : undefined, outlineOffset: -2 }}>
+    <button ref={trigger} type="button" title={label} className={`ac-column-filter-trigger${selected || sort ? " is-active" : ""}`} aria-label={`Sort or filter ${label}`} aria-haspopup="dialog" aria-expanded={open} onClick={() => { onSelect?.(); setOpen(!open); }}>
       <span>{label}{sort ? (sort === "asc" ? " ↑" : " ↓") : ""}{selected ? " •" : ""}</span><span aria-hidden="true">▾</span>
     </button>
     {onResize && <span role="separator" aria-orientation="vertical" aria-label={`Resize ${label} column`} tabIndex={0}

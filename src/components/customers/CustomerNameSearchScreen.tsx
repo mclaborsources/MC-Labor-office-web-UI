@@ -26,11 +26,12 @@ interface NameResponse {
   error?: string;
 }
 
-export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initialLoadTimeMs, resetOrderVersion = 0, showColumnsVersion = 0, goToColumnRequest, onVisibleColumnsChange, variant = "names", selectedCustomerIds, onSelectedCustomerIdsChange }: {
+export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initialLoadTimeMs, resetOrderVersion = 0, showColumnsVersion = 0, goToColumnRequest, onVisibleColumnsChange, onSelectedColumnChange, variant = "names", selectedCustomerIds, onSelectedCustomerIdsChange }: {
   resetOrderVersion?: number;
   showColumnsVersion?: number;
   goToColumnRequest?: { key: string; id: number } | null;
   onVisibleColumnsChange?: (keys: string[]) => void;
+  onSelectedColumnChange?: (key: CustomerNameColumnKey) => void;
   initialCustomers?: CustomerNameMatch[];
   fetchedCount?: number;
   initialLoadTimeMs?: number;
@@ -40,6 +41,8 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
 }) {
   const router = useRouter();
   const [columnOrder, setColumnOrder] = useCustomerViewField("order", defaultColumns.map(column => column.key), variant === "customers");
+  const [draggedColumn, setDraggedColumn] = useState<SummaryColumnKey | null>(null);
+  const [dragOverColumn, setDragOverColumn] = useState<SummaryColumnKey | null>(null);
 
   const [hiddenColumns, setHiddenColumns] = useCustomerViewField("hidden", [], variant === "customers");
   const previousReset = useRef(resetOrderVersion);
@@ -119,6 +122,18 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
       const destination = current.indexOf(destinationKey);
       const next = [...current];
       [next[index], next[destination]] = [next[destination], next[index]];
+      savedColumnOrders[variant] = next;
+      return next;
+    });
+  }
+  function reorderColumn(source: SummaryColumnKey, target: SummaryColumnKey) {
+    if (source === target) return;
+    setColumnOrder(current => {
+      const from = current.indexOf(source), to = current.indexOf(target);
+      if (from < 0 || to < 0) return current;
+      const next = [...current];
+      next.splice(from, 1);
+      next.splice(to, 0, source);
       savedColumnOrders[variant] = next;
       return next;
     });
@@ -300,6 +315,23 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
           <div ref={allNamesListRef} className="ac-customer-name-search-all-names" aria-label="All customer names" onScroll={(event) => setNamesScrollTop(event.currentTarget.scrollTop)}>
             <div className="ac-customer-name-search-summary-header" style={summaryGridStyle}>
               {summaryColumns.map((column, index) => <CustomerNameColumnHeader key={column.key} columnKey={column.key} label={column.label} kind={column.kind}
+                dragging={draggedColumn === column.key} dropTarget={dragOverColumn === column.key && draggedColumn !== column.key}
+                onDragStart={event => {
+                  setDraggedColumn(column.key);
+                  setDragOverColumn(null);
+                  event.dataTransfer.effectAllowed = "move";
+                  event.dataTransfer.setData("text/plain", column.key);
+                }}
+                onDragOver={event => { event.preventDefault(); event.dataTransfer.dropEffect = "move"; setDragOverColumn(column.key); }}
+                onDrop={event => {
+                  event.preventDefault();
+                  const source = (event.dataTransfer.getData("text/plain") || draggedColumn) as SummaryColumnKey | null;
+                  if (source && defaultColumns.some(item => item.key === source)) reorderColumn(source, column.key);
+                  setDraggedColumn(null);
+                  setDragOverColumn(null);
+                }}
+                onDragEnd={() => { setDraggedColumn(null); setDragOverColumn(null); }}
+                onSelect={() => { if (column.key !== "select") onSelectedColumnChange?.(column.key); }}
                 onHide={summaryColumns.length > 1 ? () => hideColumn(column.key) : undefined}
                 onMoveLeft={index > 0 ? () => moveColumn(column.key, -1) : undefined}
                 onMoveRight={index < summaryColumns.length - 1 ? () => moveColumn(column.key, 1) : undefined}
@@ -315,7 +347,7 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
               <div key={customer.customerId} className="ac-customer-name-search-all-name" style={{ ...summaryGridStyle, cursor: "default" }}>
                 {summaryColumns.map(column => {
                   const value = summaryValue(customer, column.key);
-                  return <span key={column.key} data-column={column.key} title={value}>
+                  return <span key={column.key} data-column={column.key} title={value} onClick={() => { if (column.key !== "select") onSelectedColumnChange?.(column.key); }}>
                     {column.key === "select" && onSelectedCustomerIdsChange
                       ? <button type="button" aria-label={`${selectedCustomerIds?.includes(customer.customerId) ? "Deselect" : "Select"} ${customer.customerName}`}
                           aria-pressed={selectedCustomerIds?.includes(customer.customerId) ?? false}

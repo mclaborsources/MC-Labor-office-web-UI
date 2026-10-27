@@ -11,6 +11,8 @@ import { CustomerPlaceholderControls } from "@/components/customers/CustomerPlac
 import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { Icon } from "@/components/ui/Icon";
 import { Spinner } from "@/components/ui/Spinner";
+import { CustomerSearchLoadingOverlay } from "@/components/customers/CustomerSearchLoadingOverlay";
+import { createPortal } from "react-dom";
 import {
   CUSTOMER_SEARCH_COLUMNS,
   type CustomerSearchColumnKey,
@@ -18,9 +20,13 @@ import {
 import type { CustomerSearchRow } from "@/types/customer";
 import type { FilterOption } from "@/types/search";
 import type { CustomerSearchViews3Filters } from "@/lib/customerSearch1Filters";
+import { CUSTOMER_NAME_SEARCH_COLUMNS } from "@/lib/customerNameSearchColumns";
 
 export interface CustomerSearchScreenProps {
   onRefresh?: () => void;
+  onUpdateColumn?: (columnKey: string) => Promise<void> | void;
+  onUpdateAll?: () => Promise<void> | void;
+  selectedCustomerColumn?: string;
   onResetColumnOrder?: () => void;
   onShowAllColumns?: () => void;
   onGoToColumn?: (key: string) => void;
@@ -489,7 +495,27 @@ function CustomerSearchSidebar({
   );
 }
 
-function CustomerSearchActionBar({ hoveredColumn, onClearFilters, onShowAllColumns }: { hoveredColumn: string; onClearFilters: () => void; onShowAllColumns?: () => void }) {
+function CustomerSearchActionBar({ hoveredColumn, onClearFilters, onShowAllColumns, selectedColumn, selectedCount, onUpdateColumn, onUpdateAll, onTransferToDeleted }: {
+  hoveredColumn: string; onClearFilters: () => void; onShowAllColumns?: () => void; selectedColumn?: string; selectedCount: number;
+  onUpdateColumn?: (columnKey: string) => Promise<void> | void; onUpdateAll?: () => Promise<void> | void;
+  onTransferToDeleted?: () => Promise<void> | void;
+}) {
+  const [busy, setBusy] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [confirmTransfer, setConfirmTransfer] = useState(false);
+  const columnLabel = CUSTOMER_NAME_SEARCH_COLUMNS.find(column => column.key === selectedColumn)?.label ?? "";
+  async function run(label: string, action?: () => Promise<void> | void) {
+    if (!action || busy) return;
+    setBusy(label); setMessage(""); setError("");
+    try { await action(); setMessage(`${label} finished.`); }
+    catch (reason) { setError(reason instanceof Error ? reason.message : `${label} failed.`); }
+    finally { setBusy(""); }
+  }
+  async function transfer() {
+    setConfirmTransfer(false);
+    await run("Transfer to Deleted", onTransferToDeleted);
+  }
   return (
     <div className="ac-customer-search-action-bar shrink-0">
       <div className="ac-customer-search-action-group">
@@ -512,19 +538,34 @@ function CustomerSearchActionBar({ hoveredColumn, onClearFilters, onShowAllColum
       </span>
       <div className="ac-customer-search-action-group">
         <span className="ac-customer-search-action-hint">Click in column first</span>
-        <AccessButton data-action-status="missing" xs disabled>
+        <AccessButton data-action-status={onUpdateColumn ? "complete" : "missing"} xs disabled={!onUpdateColumn || !selectedColumn || Boolean(busy)} title={selectedColumn ? `Refresh ${columnLabel} from the database` : "Select a table column first"} onClick={() => void run(`Update ${columnLabel}`, () => onUpdateColumn?.(selectedColumn!))}>
           Update Column
         </AccessButton>
       </div>
       <div className="ac-customer-search-action-group">
         <span className="ac-customer-search-action-hint">All columns - takes time</span>
-        <AccessButton data-action-status="missing" xs disabled>
+        <AccessButton data-action-status={onUpdateAll ? "complete" : "missing"} xs disabled={!onUpdateAll || Boolean(busy)} title="Reload all customer columns from the database" onClick={() => void run("Update All", onUpdateAll)}>
           Update All
         </AccessButton>
       </div>
-      <AccessButton data-action-status="missing" xs disabled className="ac-customer-search-btn-transfer">
+      <AccessButton data-action-status={onTransferToDeleted ? "complete" : "missing"} xs disabled={!onTransferToDeleted || selectedCount === 0 || Boolean(busy)} onClick={() => setConfirmTransfer(true)} className="ac-customer-search-btn-transfer" title={selectedCount ? `Move ${selectedCount} selected customer rows to the Deleted profile` : "Select one or more customer rows first"}>
         Transfer to Deleted
       </AccessButton>
+      {busy && <CustomerSearchLoadingOverlay title={busy} description={busy === "Update All" ? "Reloading customer records and all available columns from the database…" : `Reloading customer records for ${columnLabel || "the selected column"}…`} />}
+      {(message || error) && <span role={error ? "alert" : "status"} aria-live="polite" style={{ color: error ? "#b91c1c" : "#166534", fontSize: 12 }}>{error || message}</span>}
+      {confirmTransfer && onTransferToDeleted && typeof document !== "undefined" && createPortal(
+        <div role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) setConfirmTransfer(false); }} style={{ position: "fixed", inset: 0, zIndex: 10000, display: "grid", placeItems: "center", padding: 16, background: "rgba(0,0,0,.35)" }}>
+          <section role="dialog" aria-modal="true" aria-labelledby="customer-transfer-deleted-title" style={{ width: "min(440px, 100%)", background: "#fff", border: "1px solid #9ca3af", boxShadow: "0 12px 36px rgba(0,0,0,.28)", padding: 20 }}>
+            <strong id="customer-transfer-deleted-title" style={{ fontSize: 18 }}>Transfer selected customers?</strong>
+            <p style={{ margin: "12px 0" }}>Move the selected customer rows to the Deleted profile?</p>
+            {error && <p role="alert" style={{ color: "#b91c1c" }}>{error}</p>}
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+              <AccessButton data-action-status="complete" xs onClick={() => setConfirmTransfer(false)}>Cancel</AccessButton>
+              <AccessButton data-action-status="complete" xs onClick={() => void transfer()}>Transfer</AccessButton>
+            </div>
+          </section>
+        </div>, document.body,
+      )}
       {onShowAllColumns && <AccessButton data-action-status="complete" xs onClick={onShowAllColumns}>Show all columns</AccessButton>}
       <AccessButton data-action-status="complete" xs onClick={onClearFilters}>Clear Filters</AccessButton>
     </div>
@@ -550,6 +591,9 @@ function CustomerSearchUtilityRail() {
 
 export function CustomerSearchScreen({
   onRefresh,
+  onUpdateColumn,
+  onUpdateAll,
+  selectedCustomerColumn,
   onResetColumnOrder,
   onShowAllColumns,
   onGoToColumn,
@@ -710,7 +754,11 @@ export function CustomerSearchScreen({
 
               <CustomerSearchUtilityRail />
             </div>
-            <CustomerSearchActionBar onShowAllColumns={onShowAllColumns} hoveredColumn={hoveredColumn} onClearFilters={() => { setColumnFilters({}); onClearResultFilters?.(); }} />
+            <CustomerSearchActionBar onShowAllColumns={onShowAllColumns} hoveredColumn={hoveredColumn} selectedColumn={selectedCustomerColumn}
+              selectedCount={selectedCustomerIds?.length ?? 0}
+              onUpdateColumn={onUpdateColumn} onUpdateAll={onUpdateAll}
+              onTransferToDeleted={onAdminTransfer ? () => onAdminTransfer("Deleted") : undefined}
+              onClearFilters={() => { setColumnFilters({}); onClearResultFilters?.(); }} />
           </div>
 
           <div className="ac-panel ac-panel-elevated ac-customer-search-results-panel min-h-0 flex-1">

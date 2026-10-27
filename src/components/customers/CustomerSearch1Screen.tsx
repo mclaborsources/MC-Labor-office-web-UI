@@ -46,6 +46,7 @@ export function CustomerSearch1Screen({ cacheScope = "default", customers: suppl
   const [matchingIds, setMatchingIds] = useState<Set<string> | null>(null);
   const [searching, setSearching] = useState(false);
   const [goToColumnRequest, setGoToColumnRequest] = useState<{ key: string; id: number } | null>(null);
+  const [selectedColumnKey, setSelectedColumnKey] = useState<CustomerNameColumnKey>();
   const [visibleCustomerColumns, setVisibleCustomerColumns] = useState<string[]>(() => CUSTOMER_NAME_SEARCH_COLUMNS.filter(column => column.key !== "select").map(column => column.key));
   useEffect(() => {
     const controller = new AbortController();
@@ -162,7 +163,32 @@ export function CustomerSearch1Screen({ cacheScope = "default", customers: suppl
     setResetVersion(version => version + 1);
     if (Object.values(params).some(Boolean)) router.replace("/customer-search-1");
   };
-  const refresh = () => { recordsCache.clear(); searchCache.clear(); setLoaded(undefined); setFetchError(""); setRevision(value => value + 1); };
+  const fetchCustomerRows = async () => {
+    recordsCache.clear(); searchCache.clear(); setFetchError("");
+    const started = performance.now();
+    const query = new URLSearchParams(Object.entries(params).filter((entry): entry is [string, string] => entry[1] !== undefined));
+    query.set("all", "1"); query.set("packed", "1");
+    for (const key of ["customerName", "customerPhone", "contactName", "contactPhone", "contactEmail", "contactText", "search", "city", "state", "salesmanId", "customerTypeId", "statusId"]) query.delete(key);
+    query.sort();
+    const response = await fetch(`/api/customers/name-search?${query}`, { cache: "no-store" });
+    if (!response.ok) throw new Error("Customer records could not be refreshed from the database.");
+    const rows = unpackCustomers(await response.text());
+    return { rows, count: Number(response.headers.get("X-Customer-Count")) || rows.length, elapsed: Math.round(performance.now() - started) };
+  };
+  const refresh = async () => setLoaded(await fetchCustomerRows());
+  const updateColumnFromDatabase = async (columnKey: string) => {
+    const fresh = await fetchCustomerRows();
+    const freshById = new Map(fresh.rows.map(row => [row.customerId, row]));
+    setLoaded(current => ({
+      rows: (current?.rows ?? customers).map(row => {
+        const updated = freshById.get(row.customerId);
+        return updated ? { ...row, [columnKey]: updated[columnKey as keyof CustomerNameMatch] } : row;
+      }),
+      count: fresh.count,
+      elapsed: fresh.elapsed,
+    }));
+  };
+  const updateAllFromDatabase = async () => setLoaded(await fetchCustomerRows());
   const runCustomerUtility = async (action: "create-action" | "clear-future-call", extra: Record<string, unknown>) => {
     if (!selectedCustomerIds.length) throw new Error("Select one or more customer rows first.");
     const response = await fetch("/api/customers/utilities", {
@@ -238,7 +264,7 @@ export function CustomerSearch1Screen({ cacheScope = "default", customers: suppl
     const selected = new Set(selectedCustomerIds);
     return customers.filter(row => selected.has(row.customerId)).map(row => row.customerName);
   }, [customers, selectedCustomerIds]);
-  return <CustomerSavedViewsProvider><CustomerSearchScreen onShowAllColumns={() => setShowColumnsVersion(value => value + 1)} onResetColumnOrder={() => { resetCustomerColumnOrder("customers"); setResetOrderVersion(value => value + 1); }} onRefresh={refresh} onGoToColumn={goToColumn} visibleCustomerColumns={visibleCustomerColumns} onExportView={exportCurrentView} title="Customer Search 1" basePath="/customer-search-1"
+  return <CustomerSavedViewsProvider><CustomerSearchScreen onShowAllColumns={() => setShowColumnsVersion(value => value + 1)} onResetColumnOrder={() => { resetCustomerColumnOrder("customers"); setResetOrderVersion(value => value + 1); }} onRefresh={() => { void refresh().catch(error => setFetchError(error instanceof Error ? error.message : "Refresh failed.")); }} onUpdateColumn={updateColumnFromDatabase} onUpdateAll={updateAllFromDatabase} selectedCustomerColumn={selectedColumnKey} onGoToColumn={goToColumn} visibleCustomerColumns={visibleCustomerColumns} onExportView={exportCurrentView} title="Customer Search 1" basePath="/customer-search-1"
     customers={[]} loadError={fetchError || loadError} {...options} customerUserFlagOptions={Array.from({ length: 8 }, () => [])} lastActionUsers={lastActionUsers}
     views3Filters={views3Filters} onViews3FiltersChange={updateViews3Filters}
     adminSelectedCount={selectedCustomerIds.length} adminIncludeProfiles={includedProfiles}
@@ -259,6 +285,6 @@ export function CustomerSearch1Screen({ cacheScope = "default", customers: suppl
     onClearResultFilters={clear}
     onSidebarSearchChange={setSidebarValues}
     filterRow={<><CustomerSearch1Filters rows={customers} filters={filters} onChange={setFilters} onClear={clear} />{searching && <span role="status">Updating search results…</span>}</>}
-    results={<>{filtersLoading && <CustomerSearchLoadingOverlay title="Updating Customer Results" description="Applying customer filters…" />}{needsFetch && !loaded && !fetchError ? <CustomerRecordsLoading progress={progress} /> : <CustomerNameSearchScreen showColumnsVersion={showColumnsVersion} resetOrderVersion={resetOrderVersion} goToColumnRequest={goToColumnRequest} onVisibleColumnsChange={setVisibleCustomerColumns} key={resetVersion} variant="customers" initialCustomers={filteredCustomers} fetchedCount={loaded?.count ?? fetchedCount} initialLoadTimeMs={elapsed} selectedCustomerIds={selectedCustomerIds} onSelectedCustomerIdsChange={setSelectedCustomerIds} />}</>}
+    results={<>{filtersLoading && <CustomerSearchLoadingOverlay title="Updating Customer Results" description="Applying customer filters…" />}{needsFetch && !loaded && !fetchError ? <CustomerRecordsLoading progress={progress} /> : <CustomerNameSearchScreen showColumnsVersion={showColumnsVersion} resetOrderVersion={resetOrderVersion} goToColumnRequest={goToColumnRequest} onVisibleColumnsChange={setVisibleCustomerColumns} onSelectedColumnChange={setSelectedColumnKey} key={resetVersion} variant="customers" initialCustomers={filteredCustomers} fetchedCount={loaded?.count ?? fetchedCount} initialLoadTimeMs={elapsed} selectedCustomerIds={selectedCustomerIds} onSelectedCustomerIdsChange={setSelectedCustomerIds} />}</>}
   /></CustomerSavedViewsProvider>;
 }

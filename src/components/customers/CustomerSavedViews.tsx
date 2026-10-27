@@ -8,9 +8,14 @@ function originalName(slot:number) {
   const index=(slot-1)%32,cell=grid[Math.floor(index/8)]?.[index%8];
   return cell && typeof cell === "object" ? cell.label : `View ${String(slot).padStart(2,"0")}`;
 }
+function presetButtonName(slot:number) {
+  const grid=slot<=32 ? CUSTOMER_SEARCH_PRESET_GRID : CUSTOMER_SEARCH_VIEWS_2_GRID;
+  const index=(slot-1)%32,cell=grid[Math.floor(index/8)]?.[index%8];
+  return cell && typeof cell === "object" ? cell.label : "";
+}
 type ViewsContext = {
   slot:number; select:(slot:number)=>void; views:CustomerSavedView[]; layout:CustomerViewLayout;
-  setLayout:Dispatch<SetStateAction<CustomerViewLayout>>; ready:boolean; busy:boolean; message:string;
+  setLayout:Dispatch<SetStateAction<CustomerViewLayout>>; ready:boolean; busy:boolean; message:string; canRename:boolean;
   openSave:()=>void; openRename:()=>void; openDelete:()=>void; remove:()=>Promise<void>;
 };
 const Context=createContext<ViewsContext|null>(null);
@@ -39,7 +44,15 @@ export function CustomerSavedViewsProvider({children}:{children:ReactNode}) {
   const presetLayout=(viewSlot:number)=>viewSlot===1 ? defaultCustomerPresetLayout() : viewSlot===2 ? customerInfoPresetLayout() : viewSlot===3 || viewSlot===4 ? blastEmailPresetLayout() : viewSlot===5 ? siteOfficeVisitPresetLayout() : viewSlot===6 ? coldDormantCallPresetLayout() : viewSlot===7 ? emailMailerPresetLayout() : viewSlot===8 ? viewEightPresetLayout() : viewSlot===9 ? ryanEamonBrianPresetLayout() : viewSlot===10 ? siobhanOnePresetLayout() : viewSlot===11 ? profileTypePresetLayout() : viewSlot===12 ? kickbacksPresetLayout() : viewSlot===13 ? viewThirteenPresetLayout() : viewSlot===14 ? viewFourteenPresetLayout() : viewSlot===15 ? viewFifteenPresetLayout() : viewSlot===16 ? viewSixteenPresetLayout() : viewSlot===17 ? selectProfilePresetLayout() : viewSlot===18 ? siobhanTwoPresetLayout() : isBlankGridCustomerViewSlot(viewSlot) ? viewNineteenPresetLayout() : viewSlot===23 ? testOneScreenPresetLayout() : viewSlot===24 ? testTwoScreenPresetLayout() : viewSlot===25 ? rtsPresetLayout() : viewSlot===26 ? siobhanTwoScreensPresetLayout() : viewSlot===27 ? salesPackagesPresetLayout() : viewSlot===28 ? callListTemplatePresetLayout() : viewSlot===31 ? viewThirtyOnePresetLayout() : viewSlot===32 ? viewThirtyTwoPresetLayout() : defaultCustomerViewLayout();
   const select=(next:number)=>{setSlot(next);setLayout(views.find(view=>view.slot===next)?.layout ?? presetLayout(next));setMessage("");};
   const openSave=()=>{setDialogMode("save");saveSlot.current=slot;snapshot.current=structuredClone(layout);setName(views.find(view=>view.slot===slot)?.name ?? originalName(slot));setError("");dialog.current?.showModal();};
-  const openRename=()=>{const saved=views.find(view=>view.slot===slot);if(!saved)return;setDialogMode("rename");saveSlot.current=slot;snapshot.current=structuredClone(saved.layout);setName(saved.name);setError("");dialog.current?.showModal();};
+  const canRename=Boolean(views.some(view=>view.slot===slot)||presetButtonName(slot));
+  const openRename=()=>{
+    const saved=views.find(view=>view.slot===slot);
+    const presetName=presetButtonName(slot);
+    if(!saved&&!presetName)return;
+    setDialogMode("rename");saveSlot.current=slot;
+    snapshot.current=structuredClone(saved?.layout ?? presetLayout(slot));
+    setName(saved?.name ?? presetName);setError("");dialog.current?.showModal();
+  };
   async function save() {
     setBusy(true);setError("");
     try {
@@ -47,8 +60,9 @@ export function CustomerSavedViewsProvider({children}:{children:ReactNode}) {
       const response=await fetch("/api/customers/saved-views",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(view)});
       const data=await response.json();if(!response.ok)throw new Error(data.error);
       const saved=customerSavedViewSchema.parse(data.view);
+      const replacing=views.some(item=>item.slot===saved.slot);
       setViews(current=>[...current.filter(item=>item.slot!==saved.slot),saved]);
-      setMessage(dialogMode==="rename"?`${saved.name} renamed.`:`${saved.name} saved to the database.`);dialog.current?.close();
+      setMessage(dialogMode==="rename"?`${saved.name} renamed.`:replacing?`${saved.name} updated in View ${String(saved.slot).padStart(2,"0")}.`:`${saved.name} saved to View ${String(saved.slot).padStart(2,"0")}.`);dialog.current?.close();
     }catch(error){setError(error instanceof Error ? error.message : "View could not be saved.");}finally{setBusy(false);}
   }
   const openDelete=()=>{if(views.some(view=>view.slot===slot))deleteDialog.current?.showModal();};
@@ -61,17 +75,17 @@ export function CustomerSavedViewsProvider({children}:{children:ReactNode}) {
       setViews(current=>current.filter(view=>view.slot!==deleteSlot));setLayout(presetLayout(deleteSlot));setMessage("Saved view deleted.");deleteDialog.current?.close();
     }catch(error){setMessage(error instanceof Error ? error.message : "View could not be deleted.");}finally{setBusy(false);}
   }
-  return <Context.Provider value={{slot,select,views,layout,setLayout,ready,busy,message,openSave,openRename,openDelete,remove}}>
+  return <Context.Provider value={{slot,select,views,layout,setLayout,ready,busy,message,canRename,openSave,openRename,openDelete,remove}}>
     {children}
     <dialog ref={dialog} className="ac-customer-saved-view-dialog" onCancel={event=>{if(busy)event.preventDefault();}}>
       <form onSubmit={event=>{event.preventDefault();void save();}}>
-        <header><h2>{dialogMode==="rename"?"Rename View":"Save View"} {String(saveSlot.current).padStart(2,"0")}</h2></header>
+        <header><h2>{dialogMode==="rename"?"Rename View":views.some(view=>view.slot===saveSlot.current)?"Update View":"Save View"} {String(saveSlot.current).padStart(2,"0")}</h2></header>
         <div className="ac-customer-saved-view-body">
           <label>Button name<input autoFocus required maxLength={80} value={name} onChange={event=>setName(event.target.value)} /></label>
-          <p>{dialogMode==="rename"?"Change the button name. The saved columns and layout will stay the same.":"Save column order, widths, hidden columns, sorting, and column filters."}</p>
+          <p>{dialogMode==="rename"?"Change this existing button’s name. Its current column layout will stay the same.":views.some(view=>view.slot===saveSlot.current)?"Replace this same view button’s saved columns, widths, hidden columns, sorting, and filters with the current layout.":"Save the current columns, widths, hidden columns, sorting, and filters to this existing view button."}</p>
           {error && <p role="alert">{error}</p>}
         </div>
-        <footer><button className="ac-btn ac-btn-xs" type="submit" disabled={busy || !name.trim()}>{busy ? (dialogMode==="rename"?"Renaming…":"Saving…") : (dialogMode==="rename"?"Rename":"Save")}</button><button className="ac-btn ac-btn-xs" type="button" disabled={busy} onClick={()=>dialog.current?.close()}>Cancel</button></footer>
+        <footer><button className="ac-btn ac-btn-xs" type="submit" disabled={busy || !name.trim()}>{busy ? (dialogMode==="rename"?"Renaming…":views.some(view=>view.slot===saveSlot.current)?"Updating…":"Saving…") : (dialogMode==="rename"?"Rename":views.some(view=>view.slot===saveSlot.current)?"Update View":"Save View")}</button><button className="ac-btn ac-btn-xs" type="button" disabled={busy} onClick={()=>dialog.current?.close()}>Cancel</button></footer>
       </form>
     </dialog>
     <dialog ref={deleteDialog} className="ac-customer-saved-view-dialog ac-customer-saved-view-delete-dialog" onCancel={event=>{if(busy)event.preventDefault();}}>
@@ -87,7 +101,7 @@ export function CustomerSavedViewActions() {
   const state=useCustomerSavedViews();
   if(!state)return null;
   return <><button type="button" data-action-status="complete" className="ac-btn ac-btn-xs" onClick={state.openSave} disabled={!state.ready || state.busy}>Save View</button>
-    <button type="button" data-action-status="complete" className="ac-btn ac-btn-xs" onClick={state.openRename} disabled={!state.ready || state.busy || !state.views.some(view=>view.slot===state.slot)}>Rename View</button>
+    <button type="button" data-action-status="complete" className="ac-btn ac-btn-xs" onClick={state.openRename} disabled={!state.ready || state.busy || !state.canRename}>Rename View</button>
     <button type="button" data-action-status="complete" className="ac-btn ac-btn-xs" onClick={state.openDelete} disabled={!state.ready || state.busy || !state.views.some(view=>view.slot===state.slot)}>Delete View</button>
     {state.message && <span role="status" title={state.message} style={{position:"fixed",right:16,bottom:20,zIndex:1000,maxWidth:420,padding:"8px 12px",border:"1px solid #aaa",background:"#fff",color:"#111",fontSize:13}}>{state.message}</span>}</>;
 }
