@@ -1,6 +1,6 @@
 import { CUSTOMER_NAME_SEARCH_COLUMNS, type CustomerNameMatch } from "./customerNameSearchColumns";
 
-const keys = ["customerId", ...CUSTOMER_NAME_SEARCH_COLUMNS.map(column => column.key)] as const;
+const keys = ["customerId", "lastCallDate", "hasAssignment", "hasSignedContract", ...CUSTOMER_NAME_SEARCH_COLUMNS.map(column => column.key)] as const;
 type Cell = string | boolean;
 type PackedCustomers = { values: Cell[][]; rows: number[][] };
 

@@ -17,11 +17,23 @@ import {
 } from "@/lib/customerSearchColumns";
 import type { CustomerSearchRow } from "@/types/customer";
 import type { FilterOption } from "@/types/search";
+import type { CustomerSearchViews3Filters } from "@/lib/customerSearch1Filters";
 
 export interface CustomerSearchScreenProps {
   onRefresh?: () => void;
   onResetColumnOrder?: () => void;
   onShowAllColumns?: () => void;
+  onGoToColumn?: (key: string) => void;
+  visibleCustomerColumns?: string[];
+  onExportView?: () => Promise<void> | void;
+  selectedCustomerNames?: string[];
+  onApplyMultiFilter?: () => void;
+  onClearMultiFilter?: () => void;
+  multiFilterActive?: boolean;
+  selectedCustomerIds?: string[];
+  onCreateCustomerAction?: (actionType: number) => Promise<void> | void;
+  onClearFutureCall?: (choice: "set" | "clear" | "ignore", statusId?: number) => Promise<void> | void;
+  onRayAction?: (action: "change-customer-type" | "fix-zips" | "change-contact-title" | "delete-contacts" | "set-flag4-do-not-email", payload?: { customerTypeId?: number; titleId?: number }) => Promise<number | void>;
   title?: string;
   basePath?: string;
   results?: ReactNode;
@@ -56,6 +68,14 @@ export interface CustomerSearchScreenProps {
   total: number;
   hasMore: boolean;
   loadTimeMs: number;
+  views3Filters?: CustomerSearchViews3Filters;
+  onViews3FiltersChange?: (filters: CustomerSearchViews3Filters) => void;
+  adminSelectedCount?: number;
+  adminIncludeProfiles?: string[];
+  onAdminIncludeProfilesChange?: (profiles: string[]) => void;
+  onAdminTransfer?: (profile: string) => Promise<void> | void;
+  userSettingsSelectedCount?: number;
+  onApplyUserFlag?: (slot: number, value: string, password: string) => Promise<void> | void;
 }
 
 function cellValue(row: CustomerSearchRow, key: CustomerSearchColumnKey): string {
@@ -532,6 +552,17 @@ export function CustomerSearchScreen({
   onRefresh,
   onResetColumnOrder,
   onShowAllColumns,
+  onGoToColumn,
+  visibleCustomerColumns,
+  onExportView,
+  selectedCustomerNames,
+  onApplyMultiFilter,
+  onClearMultiFilter,
+  multiFilterActive,
+  selectedCustomerIds,
+  onCreateCustomerAction,
+  onClearFutureCall,
+  onRayAction,
   title = "Customer Search",
   basePath = "/customers",
   results,
@@ -566,6 +597,14 @@ export function CustomerSearchScreen({
   total,
   hasMore,
   loadTimeMs,
+  views3Filters,
+  onViews3FiltersChange,
+  adminSelectedCount,
+  adminIncludeProfiles,
+  onAdminIncludeProfilesChange,
+  onAdminTransfer,
+  userSettingsSelectedCount,
+  onApplyUserFlag,
 }: CustomerSearchScreenProps) {
   const router = useRouter();
   const [hoveredColumn, setHoveredColumn] = useState("");
@@ -645,6 +684,28 @@ export function CustomerSearchScreen({
                 currentStatusId={currentStatusId}
                 currentCity={currentCity}
                 currentState={currentState}
+                views3Filters={views3Filters}
+                onViews3FiltersChange={onViews3FiltersChange}
+                adminSelectedCount={adminSelectedCount}
+                adminIncludeProfiles={adminIncludeProfiles}
+                onAdminIncludeProfilesChange={onAdminIncludeProfilesChange}
+                onAdminTransfer={onAdminTransfer}
+                userSettingsSelectedCount={userSettingsSelectedCount}
+                onApplyUserFlag={onApplyUserFlag}
+                onGoToColumn={onGoToColumn}
+                visibleCustomerColumns={visibleCustomerColumns}
+                onExportView={onExportView}
+                onRefresh={onRefresh}
+                onZero={() => { setColumnFilters({}); onClearResultFilters?.(); }}
+                onCancel={() => router.back()}
+                selectedCustomerNames={selectedCustomerNames}
+                onApplyMultiFilter={onApplyMultiFilter}
+                onClearMultiFilter={onClearMultiFilter}
+                multiFilterActive={multiFilterActive}
+                selectedCustomerIds={selectedCustomerIds}
+                onCreateCustomerAction={onCreateCustomerAction}
+                onClearFutureCall={onClearFutureCall}
+                onRayAction={onRayAction}
               />
 
               <CustomerSearchUtilityRail />

@@ -27,7 +27,7 @@ const OPTIONAL_CUSTOMER_COLUMN_CANDIDATES: Partial<Record<CustomerNameColumnKey,
   researchWebsiteChanged: ["RWebSiteChanged", "RWebSiteCheck", "RWebSiteChecked", "ResearchWebsiteChanged"],
   salesContractMlsLink: ["HLinkSalesContractMLS"], wcDateHistory: ["WCxDateHSG"], glDateHistory: ["GLxDateHSG"],
   wcLinkHistory: ["HLinkWCxDateHSG"], glLinkHistory: ["HLinkGLxDateHSG"], transferToDeleted: ["TransferToDeleted"],
-  countyFilter: ["CountyFilter"], contractSalesman: ["ContractSalesman"],
+  contractSalesman: ["ContractSalesman"],
   permitDate: ["PermitDate"], permitStreet: ["PermitStreet"], permitCity: ["PermitCity"], permitState: ["PermitState"],
   permitFee: ["PermitFee"], permitValue: ["PermitValue"], permitTimestamp: ["PermitTimestamp"],
   permitSearchLink: ["PermitSearchLink"], permitLink: ["PermitLink"], permitCards: ["PermitCards"], permitLetter: ["PermitLetter"],
@@ -70,6 +70,10 @@ export const CUSTOMER_NAME_SEARCH_SQL = `SELECT c.CustomerID AS customerId, c.Cu
   c.HLinkSalesContract AS contractLink,
   CONVERT(varchar(10), c.WCxDate, 101) AS wcDate, CONVERT(varchar(10), c.GLxDate, 101) AS glDate,
   c.HLinkWCxDate AS wcLink, c.HLinkGLxDate AS glLink,
+  (SELECT TOP (1) cl.ClusterCountyFilter FROM dbo.tblClusterCities cc WITH (NOLOCK)
+    JOIN dbo.tblClusters cl WITH (NOLOCK) ON cl.ClusterID=cc.ClusterID
+    WHERE cc.StateCityID=c.StateCityID AND ISNULL(cc.ClusterCityActive,1)=1 AND ISNULL(cl.ClusterActive,1)=1
+      AND NULLIF(cl.ClusterCountyFilter,'') IS NOT NULL ORDER BY cl.ClusterSort,cl.ClusterID) AS countyFilter,
   /*DYNAMIC_CUSTOMER_COLUMNS*/
   CASE WHEN NULLIF(c.HLinkSalesContract, '') IS NULL THEN 'False' ELSE 'True' END AS contractOnFile,
   paymentStatus.PullDownCustPaymentStatus AS paymentStatus,
@@ -191,6 +195,7 @@ export const CUSTOMER_NAME_CONTACTS_SQL = `WITH PrimaryContacts AS (
   WHERE cc.CustomerContactSort = 1
 )
 SELECT cc.CustomerID AS customerId, cc.CustomerContactFName AS ctcFirst,
+  cc.CustomerContactID AS customerContactId,
   cc.CustomerContactLName AS ctcLast, title.PullDownCustomerContactTitle AS ctcTitle,
   cc.CustomerContactEmail AS ctcEmail, cc.CustomerContactCell AS ctcCell,
   cc.CustomerContactOfficePhone AS ctcOfficePhone, cc.CustomerContactOfficePhone AS contactOffPhone,
@@ -245,9 +250,10 @@ export const CUSTOMER_NAME_ACTIVITY_SUMMARY_SQL = `WITH CustomerActivities AS (
     ROW_NUMBER() OVER (PARTITION BY h.CustomerID, h.CustomerSalesHistoryActionTypeID
       ORDER BY h.CustomerSalesHistoryTimestamp DESC, h.CustomerSalesHistoryID DESC) AS rn
   FROM tblCustomerSalesHistory h WITH (NOLOCK)
-  WHERE h.CustomerSalesHistoryActionTypeID IN (-7, -8, -9, -10, -41, -43)
+  WHERE h.CustomerSalesHistoryActionTypeID IN (-5, -7, -8, -9, -10, -41, -42, -43)
 )
 SELECT CustomerID AS customerId,
+  CONVERT(varchar(10), MAX(CASE WHEN CustomerSalesHistoryActionTypeID IN (-5, -9, -41, -42) THEN CustomerSalesHistoryTimestamp END), 101) AS lastCallDate,
   MAX(CASE WHEN CustomerSalesHistoryActionTypeID = -7 THEN CustomerSalesHistoryUserName END) AS siteVisitUser,
   CONVERT(varchar(10), MAX(CASE WHEN CustomerSalesHistoryActionTypeID = -7 THEN CustomerSalesHistoryTimestamp END), 101) AS siteVisitDate,
   MAX(CASE WHEN CustomerSalesHistoryActionTypeID = -8 THEN CustomerSalesHistoryUserName END) AS officeVisitUser,
@@ -263,7 +269,9 @@ SELECT CustomerID AS customerId,
 FROM CustomerActivities WHERE rn = 1 GROUP BY CustomerID`;
 
 export function toCustomerNameMatch(row: Record<string, unknown>): CustomerNameMatch {
-  const result: Record<string, string | boolean> = { customerId: String(row.customerId ?? "").trim() };
+  const signedContract = row.hasSignedContract === true || row.hasSignedContract === 1 || String(row.hasSignedContract ?? "").toLowerCase() === "true" || Boolean(String(row.contractOnFile ?? "").trim() && String(row.contractOnFile).toLowerCase() !== "false");
+  const hasAssignment = Boolean(String(row.assignWeek ?? "").trim() && String(row.assignWeek) !== "0" || String(row.assignYear ?? "").trim() && String(row.assignYear) !== "0");
+  const result: Record<string, string | boolean> = { customerId: String(row.customerId ?? "").trim(), lastCallDate: String(row.lastCallDate ?? "").trim(), hasAssignment, hasSignedContract: signedContract };
   const fixedLabels: Record<string, string> = {
     contactInfoLink: "Contact Info", contactsLink: "Contacts", basicInfoLink: "01", contactsTabLink: "02",
     billRatesLink: "03", insuranceLink: "04", salesLink: "05", collectionsLink: "06",
@@ -282,7 +290,12 @@ export async function loadCustomerNameMatches(namePattern: string | null): Promi
   const schema = await queryReadOnly<{ COLUMN_NAME: string }>(
     "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='tblCustomer'",
   ).catch(() => []);
-  const optionalFields = optionalCustomerSelect(new Set(schema.map(row => row.COLUMN_NAME.toLowerCase())));
+  const availableColumns = new Set(schema.map(row => row.COLUMN_NAME.toLowerCase()));
+  const signedContractFields = ["HLinkSalesContractIPG", "HLinkSalesContractISG"].filter(field => availableColumns.has(field.toLowerCase()));
+  const signedContractExpression = signedContractFields.length
+    ? `CASE WHEN ${signedContractFields.map(field => `NULLIF(c.[${field}], '') IS NOT NULL`).join(" OR ")} THEN 'True' ELSE 'False' END AS [hasSignedContract]`
+    : `CASE WHEN NULLIF(c.HLinkSalesContract, '') IS NULL THEN 'False' ELSE 'True' END AS [hasSignedContract]`;
+  const optionalFields = [optionalCustomerSelect(availableColumns), signedContractExpression].filter(Boolean).join(",\n  ");
   const customerSql = CUSTOMER_NAME_SEARCH_SQL.replace("/*DYNAMIC_CUSTOMER_COLUMNS*/", optionalFields ? `${optionalFields},` : "");
   const [rows, weeks, invoices, jobs, contactCounts, salesPackages, actions, contacts, history, permits, activitySummary] = await Promise.all([
     queryReadOnly<Record<string, unknown>>(customerSql, [{ name: "namePattern", value: namePattern }]),

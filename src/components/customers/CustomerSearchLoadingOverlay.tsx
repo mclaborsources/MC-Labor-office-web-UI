@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export function CustomerSearchLoadingOverlay() {
+export function CustomerSearchLoadingOverlay({ title = "Loading Customer Search", description = "Searching and preparing customer records…" }: { title?: string; description?: string } = {}) {
   const [elapsedTenths, setElapsedTenths] = useState(0);
 
   useEffect(() => {
@@ -15,8 +15,8 @@ export function CustomerSearchLoadingOverlay() {
   return (
     <div className="ac-customer-loading-backdrop" role="status" aria-live="polite" aria-label="Loading customer data">
       <div className="ac-customer-loading-modal">
-        <div className="ac-customer-loading-title">Loading Customer Search</div>
-        <p>Searching and preparing customer records…</p>
+        <div className="ac-customer-loading-title">{title}</div>
+        <p>{description}</p>
         <div className="ac-customer-loading-track" aria-hidden="true">
           <span className="ac-customer-loading-bar" />
         </div>

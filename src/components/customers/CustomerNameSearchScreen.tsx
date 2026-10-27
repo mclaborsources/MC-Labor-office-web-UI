@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useCustomerViewField } from "./CustomerSavedViews";
 import { CustomerNameColumnHeader } from "./CustomerNameColumnHeader";
 import { Search, X } from "lucide-react";
@@ -25,13 +26,17 @@ interface NameResponse {
   error?: string;
 }
 
-export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initialLoadTimeMs, resetOrderVersion = 0, showColumnsVersion = 0, variant = "names" }: {
+export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initialLoadTimeMs, resetOrderVersion = 0, showColumnsVersion = 0, goToColumnRequest, onVisibleColumnsChange, variant = "names", selectedCustomerIds, onSelectedCustomerIdsChange }: {
   resetOrderVersion?: number;
   showColumnsVersion?: number;
+  goToColumnRequest?: { key: string; id: number } | null;
+  onVisibleColumnsChange?: (keys: string[]) => void;
   initialCustomers?: CustomerNameMatch[];
   fetchedCount?: number;
   initialLoadTimeMs?: number;
   variant?: "names" | "customers";
+  selectedCustomerIds?: string[];
+  onSelectedCustomerIdsChange?: (ids: string[]) => void;
 }) {
   const router = useRouter();
   const [columnOrder, setColumnOrder] = useCustomerViewField("order", defaultColumns.map(column => column.key), variant === "customers");
@@ -53,6 +58,46 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
     setHiddenColumns([]);
   }, [showColumnsVersion, variant, setHiddenColumns]);
   const summaryColumns = useMemo(() => columnOrder.filter(key => !hiddenColumns.includes(key)).map(key => defaultColumns.find(column => column.key === key)!), [columnOrder, hiddenColumns]);
+  useEffect(() => {
+    onVisibleColumnsChange?.(summaryColumns.map(column => column.key));
+  }, [summaryColumns, onVisibleColumnsChange]);
+  const handledGoToRequest = useRef<number | null>(null);
+  const pendingNavigationKey = useRef<SummaryColumnKey | null>(null);
+  const [showColumnPrompt, setShowColumnPrompt] = useState<{ key: SummaryColumnKey; label: string } | null>(null);
+  useEffect(() => {
+    if (!goToColumnRequest || handledGoToRequest.current === goToColumnRequest.id) return;
+    handledGoToRequest.current = goToColumnRequest.id;
+    const key = goToColumnRequest.key as SummaryColumnKey;
+    const column = defaultColumns.find(item => item.key === key);
+    if (!column) return;
+    if (hiddenColumns.includes(key)) {
+      setShowColumnPrompt({ key, label: column.label });
+    } else {
+      pendingNavigationKey.current = key;
+    }
+  }, [goToColumnRequest, hiddenColumns]);
+  function makePromptedColumnVisible() {
+    if (!showColumnPrompt) return;
+    const { key } = showColumnPrompt;
+    pendingNavigationKey.current = key;
+    setShowColumnPrompt(null);
+    setHiddenColumns(current => {
+      const next = current.filter(item => item !== key);
+      savedHiddenColumns[variant] = next;
+      return next;
+    });
+  }
+  useEffect(() => {
+    const key = pendingNavigationKey.current;
+    if (!key || !summaryColumns.some(column => column.key === key)) return;
+    const container = allNamesListRef.current;
+    const header = container?.querySelector<HTMLElement>(`.ac-column-filter[data-column="${key}"]`);
+    if (!container || !header) return;
+    const containerRect = container.getBoundingClientRect();
+    const headerRect = header.getBoundingClientRect();
+    container.scrollTo({ left: container.scrollLeft + headerRect.left - containerRect.left - (container.clientWidth - headerRect.width) / 2, behavior: "smooth" });
+    pendingNavigationKey.current = null;
+  }, [summaryColumns]);
   function hideColumn(key: SummaryColumnKey) {
     setHiddenColumns(current => {
       const next = [...new Set([...current, key])];
@@ -271,7 +316,17 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
                 {summaryColumns.map(column => {
                   const value = summaryValue(customer, column.key);
                   return <span key={column.key} data-column={column.key} title={value}>
-                    {column.key === "kickback" || column.key === "rts" || column.key === "researchWebsiteChanged"
+                    {column.key === "select" && onSelectedCustomerIdsChange
+                      ? <button type="button" aria-label={`${selectedCustomerIds?.includes(customer.customerId) ? "Deselect" : "Select"} ${customer.customerName}`}
+                          aria-pressed={selectedCustomerIds?.includes(customer.customerId) ?? false}
+                          title={`${selectedCustomerIds?.includes(customer.customerId) ? "Deselect" : "Select"} ${customer.customerName}`}
+                          onClick={() => onSelectedCustomerIdsChange(selectedCustomerIds?.includes(customer.customerId)
+                            ? (selectedCustomerIds ?? []).filter(id => id !== customer.customerId)
+                            : [...new Set([...(selectedCustomerIds ?? []), customer.customerId])])}
+                          style={{ display: "block", width: "100%", height: "100%", minHeight: 18, padding: 0, border: 0, borderRadius: 0, background: "transparent", color: "#000", font: "700 13px Arial,sans-serif", lineHeight: "18px", cursor: "pointer" }}>
+                          {selectedCustomerIds?.includes(customer.customerId) ? "X" : ""}
+                        </button>
+                      : column.key === "kickback" || column.key === "rts" || column.key === "researchWebsiteChanged"
                       ? <input type="checkbox" aria-label={`${column.label} for ${customer.customerName}`} checked={["true", "1", "yes", "x"].includes(value.toLowerCase())} disabled />
                       : variant === "customers" && column.key === "customerName"
                       ? <span role="link" tabIndex={0} className="ac-customer-name-open" title="Double-click to open customer"
@@ -303,6 +358,20 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
         <pre style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere", font: "13px Arial, sans-serif", margin: "16px 0" }}>{detail.text}</pre>
         <form method="dialog"><button type="submit" autoFocus className="ac-btn ac-btn-xs">Close</button></form>
       </dialog>}
+      {showColumnPrompt && typeof document !== "undefined" && createPortal(
+        <div role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) setShowColumnPrompt(null); }}
+          style={{ position: "fixed", inset: 0, zIndex: 10000, display: "grid", placeItems: "center", padding: 16, background: "rgba(0,0,0,.35)" }}>
+          <div role="dialog" aria-modal="true" aria-labelledby="customer-show-column-title"
+            style={{ width: "min(460px, 100%)", padding: 24, border: "1px solid #777", background: "#eee", color: "#111", boxShadow: "0 8px 28px rgba(0,0,0,.35)", font: "15px Arial, sans-serif" }}>
+            <strong id="customer-show-column-title" style={{ display: "block", marginBottom: 16, fontSize: 18 }}>Show hidden column?</strong>
+            <p style={{ margin: "0 0 22px", lineHeight: 1.5 }}>{showColumnPrompt.label} is hidden in the current view. Make it visible?</p>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
+              <button type="button" className="ac-btn" style={{ minWidth: 90, minHeight: 34, fontSize: 14 }} onClick={() => setShowColumnPrompt(null)}>Cancel</button>
+              <button type="button" className="ac-btn" style={{ minWidth: 120, minHeight: 34, fontSize: 14 }} onClick={makePromptedColumnVisible}>Make visible</button>
+            </div>
+          </div>
+        </div>, document.body,
+      )}
       {showLoadingDialog && isLoading && (
         <div className="ac-customer-name-loading-overlay" role="status" aria-live="polite">
           <div className="ac-customer-name-loading-dialog">

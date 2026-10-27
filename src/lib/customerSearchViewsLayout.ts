@@ -101,27 +101,27 @@ export type AdminTransferButton = {
 /** Admin Utilities — Transfer to button grid */
 export const CUSTOMER_ADMIN_TRANSFER_BUTTONS: readonly (readonly (AdminTransferButton | null)[])[] = [
   [
-    { label: "Cust Search", color: "#e4e4e4" },
-    { label: "PPP Loans", color: "#f5e6a8" },
-    { label: "D&B", color: "#f0a060" },
-    { label: "Hold", color: "#f5b8c8" },
+    { label: "Cust Search", color: "#d9d9d9" },
+    { label: "PPP Loans", color: "#fff200" },
+    { label: "D&B", color: "#ffc20e" },
+    { label: "Hold", color: "#ffb3b3" },
   ],
   [
-    { label: "Research", color: "#b8d4f0" },
+    { label: "Research", color: "#8bd0ff" },
     null,
-    { label: "Spare 1", color: "#c8e6c8" },
-    { label: "Spare 2", color: "#e8dcc8" },
+    { label: "Spare 1", color: "#75e595" },
+    { label: "Spare 2", color: "#dac19b" },
   ],
   [
-    { label: "Spare 3", color: "#e8a8b0" },
-    { label: "Health Care", color: "#b0b0b0" },
-    { label: "Spare 4", color: "#f5f0c0" },
-    { label: "Spare 5", color: "#60a8f0" },
+    { label: "Spare 3", color: "#d96b77" },
+    { label: "Health Care", color: "#8c8c8c" },
+    { label: "Spare 4", color: "#ffe9ab" },
+    { label: "Spare 5", color: "#0095fa" },
   ],
   [
-    { label: "Spare 6", color: "#60a860" },
-    { label: "Spare 7", color: "#c8b8e8" },
-    { label: "Spare 8", color: "#80e0e8" },
+    { label: "Spare 6", color: "#20ac48" },
+    { label: "Spare 7", color: "#e1cdef" },
+    { label: "Spare 8", color: "#41f1e9" },
     null,
   ],
 ] as const;

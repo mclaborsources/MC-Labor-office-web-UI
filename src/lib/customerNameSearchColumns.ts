@@ -191,7 +191,7 @@ export const CUSTOMER_NAME_SEARCH_COLUMNS = [
 ] as const;
 
 export type CustomerNameColumnKey = typeof CUSTOMER_NAME_SEARCH_COLUMNS[number]["key"];
-export type CustomerNameMatch = { customerId: string; noCommunication: boolean } &
+export type CustomerNameMatch = { customerId: string; customerContactId: string; noCommunication: boolean; lastCallDate: string; hasAssignment: boolean; hasSignedContract: boolean } &
   Record<Exclude<CustomerNameColumnKey, "noCommunication">, string>;
 
 export function customerNameCellValue(customer: CustomerNameMatch, key: CustomerNameColumnKey): string {
