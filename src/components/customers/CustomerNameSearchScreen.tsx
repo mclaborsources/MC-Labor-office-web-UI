@@ -271,8 +271,8 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
                 {summaryColumns.map(column => {
                   const value = summaryValue(customer, column.key);
                   return <span key={column.key} data-column={column.key} title={value}>
-                    {column.key === "kickback" || column.key === "rts"
-                      ? <input type="checkbox" aria-label={`${column.key === "rts" ? "RTS" : "Kickback"} for ${customer.customerName}`} checked={["true", "1", "yes", "x"].includes(value.toLowerCase())} disabled />
+                    {column.key === "kickback" || column.key === "rts" || column.key === "researchWebsiteChanged"
+                      ? <input type="checkbox" aria-label={`${column.label} for ${customer.customerName}`} checked={["true", "1", "yes", "x"].includes(value.toLowerCase())} disabled />
                       : variant === "customers" && column.key === "customerName"
                       ? <span role="link" tabIndex={0} className="ac-customer-name-open" title="Double-click to open customer"
                           onDoubleClick={() => router.push(`/customers/${customer.customerId}`)}

@@ -113,6 +113,127 @@ export function emailMailerPresetLayout(): CustomerViewLayout {
   };
 }
 
+/** Access frmCustomerSearch > Views > View 08: an empty grid with only Select visible. */
+export function viewEightPresetLayout(): CustomerViewLayout {
+  const visible: CustomerNameColumnKey[] = ["select"];
+  const visibleSet = new Set(visible);
+  return {
+    order: [...visible, ...CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key))],
+    hidden: CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key)),
+    widths: {}, filters: {}, sort: null,
+  };
+}
+
+/** Access frmCustomerSearch > Views > View 19: an empty grid with only Select visible. */
+export function viewNineteenPresetLayout(): CustomerViewLayout {
+  const visible: CustomerNameColumnKey[] = ["select"];
+  const visibleSet = new Set(visible);
+  return {
+    order: [...visible, ...CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key))],
+    hidden: CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key)),
+    widths: {}, filters: {}, sort: null,
+  };
+}
+
+export function isBlankGridCustomerViewSlot(slot: number): boolean {
+  return [19, 20, 21, 22, 29, 30].includes(slot);
+}
+
+/** Access frmCustomerSearch > Views > View 31 column order and visibility. */
+export function viewThirtyOnePresetLayout(): CustomerViewLayout {
+  const visible: CustomerNameColumnKey[] = [
+    "select", "customerName", "noCommunication", "sAdm", "customerType", "firstWeekEnding", "lastWeekEnding", "act",
+    "siteVisitStatus", "siteVisitDate", "officeVisitUser", "officeVisitDate", "lastActionUser", "lastActionDate", "lastAction",
+    "futureCallUser", "futureCallUserDate", "futureCall", "futureCallHistory", "salesHistoryStatus", "contactsLink", "spare1", "spare2",
+  ];
+  const visibleSet = new Set(visible);
+  return {
+    order: [...visible, ...CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key))],
+    hidden: CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key)),
+    widths: {}, filters: {}, sort: null,
+  };
+}
+
+/** Access frmCustomerSearch > Views > View 32 column order and visibility. */
+export function viewThirtyTwoPresetLayout(): CustomerViewLayout {
+  const visible: CustomerNameColumnKey[] = [
+    "select", "entryUserName", "entryDate", "profileType", "customerType", "customerName", "noCommunication", "street", "city",
+    "state", "phone", "act", "lastWeekEnding", "internetSalesReadyUser", "internetSalesReadyDate", "internetSalesReady",
+    "futureCallUser", "futureCallUserDate", "futureCall", "futureCallHistory", "salesHistoryStatus", "spacer1", "kickback",
+    "kickbackTimes", "kickbackAction", "salesHistoryLink", "lastActionUser", "lastActionDate", "lastAction", "permitDate",
+    "permitStreet", "permitCity", "permitState", "permitFee", "permitValue", "siteVisitStatus", "siteVisitDate", "officeVisitUser",
+    "officeVisitDate", "spacer3", "mailerUser", "mailerDate", "coldCallUser", "coldCallDate", "ctcTitle", "ctcFirst", "ctcLast",
+    "ctcCell", "contactOffPhone", "ctcEmail", "spacer2", "spare1", "spare2", "spare3", "spare4", "spare5", "spare6", "spare7", "spare8",
+  ];
+  const visibleSet = new Set(visible);
+  return {
+    order: [...visible, ...CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key))],
+    hidden: CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key)),
+    widths: {}, filters: {}, sort: null,
+  };
+}
+
+/** Access frmCustomerSearch > Views > View 13 column order and visibility. */
+export function viewThirteenPresetLayout(): CustomerViewLayout {
+  const visible: CustomerNameColumnKey[] = [
+    "select", "customerName", "noCommunication", "street", "city", "state", "customerType", "phone", "website",
+    "researchTries", "researchUser", "researchDate", "researchNoteShort", "spacer1", "contactsLink",
+  ];
+  const visibleSet = new Set(visible);
+  return {
+    order: [...visible, ...CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key))],
+    hidden: CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key)),
+    widths: {}, filters: {}, sort: null,
+  };
+}
+
+/** Access frmCustomerSearch > Views > View 14 column order and visibility. */
+export function viewFourteenPresetLayout(): CustomerViewLayout {
+  const visible: CustomerNameColumnKey[] = [
+    "select", "customerName", "noCommunication", "street", "city", "state", "phone", "website", "researchTries",
+    "researchUser", "researchDate", "timePerSearch", "researchNoteShort", "researchBefore", "researchAfter", "researchUp",
+    "spacer1", "contactsLink",
+  ];
+  const visibleSet = new Set(visible);
+  return {
+    order: [...visible, ...CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key))],
+    hidden: CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key)),
+    widths: {}, filters: {}, sort: null,
+  };
+}
+
+/** Access frmCustomerSearch > Views > View 15 column order and visibility. */
+export function viewFifteenPresetLayout(): CustomerViewLayout {
+  const visible: CustomerNameColumnKey[] = [
+    "select", "customerName", "noCommunication", "street", "city", "state", "phone", "lcu", "researchTries", "researchUser",
+    "researchDate", "researchTime", "timePerSearch", "researchNoteShort", "researchBefore", "researchAfter", "researchUp",
+    "researchWebsite", "researchWebsiteB", "cannotMakeAssignments", "corpS", "contactsLink", "researchNote",
+  ];
+  const visibleSet = new Set(visible);
+  return {
+    order: [...visible, ...CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key))],
+    hidden: CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key)),
+    widths: {}, filters: {}, sort: null,
+  };
+}
+
+/** Access frmCustomerSearch > Views > View 16 column order and visibility. */
+export function viewSixteenPresetLayout(): CustomerViewLayout {
+  const visible: CustomerNameColumnKey[] = [
+    "select", "customerName", "noCommunication", "street", "city", "state", "customerType", "whereFound", "profileType",
+    "phone", "website", "lastWeekEnding", "internetSalesReady", "internetSalesReadyDate", "spare1", "spare2", "spare3", "spare4",
+    "lcu", "researchTries", "researchUser", "researchDate", "researchTime", "timePerSearch", "researchNoteShort",
+    "researchBefore", "researchAfter", "researchUp", "corpS", "contactsLink", "researchNote", "researchWebsite",
+    "researchWebsiteB", "researchWebsiteChanged",
+  ];
+  const visibleSet = new Set(visible);
+  return {
+    order: [...visible, ...CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key))],
+    hidden: CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key)),
+    widths: {}, filters: {}, sort: null,
+  };
+}
+
 /** Access frmCustomerSearch > Views > Ryan-Eamon Brian column order and visibility. */
 export function ryanEamonBrianPresetLayout(): CustomerViewLayout {
   const visible: CustomerNameColumnKey[] = [

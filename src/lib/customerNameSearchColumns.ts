@@ -173,6 +173,7 @@ export const CUSTOMER_NAME_SEARCH_COLUMNS = [
   { key: "cannotMakeAssignments", label: "Cannot Make Assignments", width: 185, kind: "text" },
   { key: "researchWebsite", label: "R-Web Site", width: 140, kind: "text" },
   { key: "researchWebsiteB", label: "R-Web Site B", width: 140, kind: "text" },
+  { key: "researchWebsiteChanged", label: "R-Web Site Changed", width: 120, kind: "text" },
   { key: "futureVisit", label: "Future Visit", width: 120, kind: "date" },
   { key: "futureVisitUser", label: "Future Visit User", width: 140, kind: "text" },
   { key: "futureVisitDate", label: "Future Visit Updated", width: 150, kind: "date" },
