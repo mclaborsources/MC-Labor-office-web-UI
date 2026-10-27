@@ -5,6 +5,7 @@ import { databaseSchema, saveDatabaseSettings } from "@/lib/config/database";
 import { buildConfig, closePool } from "@/lib/db/sql";
 import { hasSameOrigin } from "@/lib/auth/origin";
 import { connectionErrorMessage } from "@/lib/db/connectionError";
+import { ensureCustomerSavedViewsTable, verifyCustomerSavedViewsAccess } from "@/lib/customerSavedViewsDb";
 
 export async function POST(request: Request) {
   if (!hasSameOrigin(request)) {
@@ -35,7 +36,19 @@ export async function POST(request: Request) {
   try {
     await candidate.connect();
     await candidate.request().query("SELECT 1 AS ok");
+    if (body.action === "save") {
+      // Install the per-user view preferences table as part of first-run/relink
+      // setup so staff do not need a separate manual SQL step.
+      await ensureCustomerSavedViewsTable(candidate);
+      // Verify the configured SQL account can read, insert, update, and delete
+      // saved preferences. The probe is rolled back and leaves no row behind.
+      await verifyCustomerSavedViewsAccess(candidate);
+    }
   } catch (error) {
+    if(body.action === "save") {
+      console.error("[database-setup] saved-view table initialization failed", error);
+      return NextResponse.json({ error: "Could not enable saved views for this SQL connection. The app account needs SELECT, INSERT, UPDATE, and DELETE access to dbo.WebCustomerSavedView (and CREATE TABLE on first setup). Ask a database administrator to grant the missing database access, then save the connection again." }, { status: 400 });
+    }
     return NextResponse.json({ error: connectionErrorMessage(error) }, { status: 400 });
   } finally {
     await candidate.close().catch(() => undefined);

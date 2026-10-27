@@ -16,7 +16,7 @@ function presetButtonName(slot:number) {
 type ViewsContext = {
   slot:number; select:(slot:number)=>void; views:CustomerSavedView[]; layout:CustomerViewLayout;
   setLayout:Dispatch<SetStateAction<CustomerViewLayout>>; ready:boolean; busy:boolean; message:string; canRename:boolean;
-  openSave:()=>void; openRename:()=>void; openDelete:()=>void; remove:()=>Promise<void>;
+  openSave:()=>void; openRename:()=>void; openDelete:()=>void; remove:()=>Promise<void>; retryLoad:()=>void; loadFailed:boolean;
 };
 const Context=createContext<ViewsContext|null>(null);
 export const useCustomerSavedViews = ()=>useContext(Context);
@@ -24,6 +24,7 @@ export function CustomerSavedViewsProvider({children}:{children:ReactNode}) {
   const [slot,setSlot]=useState(1),[views,setViews]=useState<CustomerSavedView[]>([]);
   const [layout,setLayout]=useState(defaultCustomerViewLayout);
   const [ready,setReady]=useState(false),[busy,setBusy]=useState(false),[message,setMessage]=useState("");
+  const [loadFailed,setLoadFailed]=useState(false),[loadAttempt,setLoadAttempt]=useState(0);
   const [name,setName]=useState(""),[error,setError]=useState(""),[dialogMode,setDialogMode]=useState<"save"|"rename">("save");
   const dialog=useRef<HTMLDialogElement>(null),deleteDialog=useRef<HTMLDialogElement>(null),saveSlot=useRef(1),snapshot=useRef(layout);
   useEffect(()=>{
@@ -36,11 +37,13 @@ export function CustomerSavedViewsProvider({children}:{children:ReactNode}) {
         // View 01 is active on first open, so load its saved columns as soon as
         // the database response arrives instead of leaving the default layout.
         setLayout(saved.find(view=>view.slot===1)?.layout ?? defaultCustomerPresetLayout());
+        setLoadFailed(false);
         setReady(true);
       }
-    }).catch(error=>{if(active)setMessage(error.message || "Saved views could not be loaded. Reload before saving.");});
+    }).catch(error=>{if(active){setLoadFailed(true);setMessage(error.message || "Saved views could not be loaded. Retry before saving.");}});
     return ()=>{active=false;};
-  },[]);
+  },[loadAttempt]);
+  const retryLoad=()=>{setMessage("");setLoadFailed(false);setReady(false);setLoadAttempt(attempt=>attempt+1);};
   const presetLayout=(viewSlot:number)=>viewSlot===1 ? defaultCustomerPresetLayout() : viewSlot===2 ? customerInfoPresetLayout() : viewSlot===3 || viewSlot===4 ? blastEmailPresetLayout() : viewSlot===5 ? siteOfficeVisitPresetLayout() : viewSlot===6 ? coldDormantCallPresetLayout() : viewSlot===7 ? emailMailerPresetLayout() : viewSlot===8 ? viewEightPresetLayout() : viewSlot===9 ? ryanEamonBrianPresetLayout() : viewSlot===10 ? siobhanOnePresetLayout() : viewSlot===11 ? profileTypePresetLayout() : viewSlot===12 ? kickbacksPresetLayout() : viewSlot===13 ? viewThirteenPresetLayout() : viewSlot===14 ? viewFourteenPresetLayout() : viewSlot===15 ? viewFifteenPresetLayout() : viewSlot===16 ? viewSixteenPresetLayout() : viewSlot===17 ? selectProfilePresetLayout() : viewSlot===18 ? siobhanTwoPresetLayout() : isBlankGridCustomerViewSlot(viewSlot) ? viewNineteenPresetLayout() : viewSlot===23 ? testOneScreenPresetLayout() : viewSlot===24 ? testTwoScreenPresetLayout() : viewSlot===25 ? rtsPresetLayout() : viewSlot===26 ? siobhanTwoScreensPresetLayout() : viewSlot===27 ? salesPackagesPresetLayout() : viewSlot===28 ? callListTemplatePresetLayout() : viewSlot===31 ? viewThirtyOnePresetLayout() : viewSlot===32 ? viewThirtyTwoPresetLayout() : defaultCustomerViewLayout();
   const select=(next:number)=>{setSlot(next);setLayout(views.find(view=>view.slot===next)?.layout ?? presetLayout(next));setMessage("");};
   const openSave=()=>{setDialogMode("save");saveSlot.current=slot;snapshot.current=structuredClone(layout);setName(views.find(view=>view.slot===slot)?.name ?? originalName(slot));setError("");dialog.current?.showModal();};
@@ -75,7 +78,7 @@ export function CustomerSavedViewsProvider({children}:{children:ReactNode}) {
       setViews(current=>current.filter(view=>view.slot!==deleteSlot));setLayout(presetLayout(deleteSlot));setMessage("Saved view deleted.");deleteDialog.current?.close();
     }catch(error){setMessage(error instanceof Error ? error.message : "View could not be deleted.");}finally{setBusy(false);}
   }
-  return <Context.Provider value={{slot,select,views,layout,setLayout,ready,busy,message,canRename,openSave,openRename,openDelete,remove}}>
+  return <Context.Provider value={{slot,select,views,layout,setLayout,ready,busy,message,canRename,openSave,openRename,openDelete,remove,retryLoad,loadFailed}}>
     {children}
     <dialog ref={dialog} className="ac-customer-saved-view-dialog" onCancel={event=>{if(busy)event.preventDefault();}}>
       <form onSubmit={event=>{event.preventDefault();void save();}}>
@@ -103,7 +106,7 @@ export function CustomerSavedViewActions() {
   return <><button type="button" data-action-status="complete" className="ac-btn ac-btn-xs" onClick={state.openSave} disabled={!state.ready || state.busy}>Save View</button>
     <button type="button" data-action-status="complete" className="ac-btn ac-btn-xs" onClick={state.openRename} disabled={!state.ready || state.busy || !state.canRename}>Rename View</button>
     <button type="button" data-action-status="complete" className="ac-btn ac-btn-xs" onClick={state.openDelete} disabled={!state.ready || state.busy || !state.views.some(view=>view.slot===state.slot)}>Delete View</button>
-    {state.message && <span role="status" title={state.message} style={{position:"fixed",right:16,bottom:20,zIndex:1000,maxWidth:420,padding:"8px 12px",border:"1px solid #aaa",background:"#fff",color:"#111",fontSize:13}}>{state.message}</span>}</>;
+    {state.message && <span role={state.loadFailed?"alert":"status"} title={state.message} style={{position:"fixed",right:16,bottom:20,zIndex:1000,maxWidth:420,padding:"8px 12px",border:"1px solid #aaa",background:"#fff",color:"#111",fontSize:13}}>{state.message}{state.loadFailed&&<button type="button" className="ac-btn ac-btn-xs" onClick={state.retryLoad} style={{marginLeft:8}}>Retry</button>}</span>}</>;
 }
 export function useCustomerViewField<K extends keyof CustomerViewLayout>(key:K,initial:CustomerViewLayout[K],enabled:boolean):[CustomerViewLayout[K],Dispatch<SetStateAction<CustomerViewLayout[K]>>] {
   const context=useCustomerSavedViews();
