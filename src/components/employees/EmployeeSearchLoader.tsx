@@ -30,7 +30,10 @@ export function EmployeeSearchLoader({ cacheScope, ...props }: Omit<EmployeeSear
     const started = performance.now();
     const query = new URLSearchParams({ compressed: "1", search: currentSearch, tradeId: currentTradeId, statusId: currentStatusId, gradeId: currentGradeId, city: currentCity, state: currentState });
     recordsCache.get(cacheScope, query.toString(), () => fetch(`/api/employees?${query}`, { cache: "no-store" }).then(async response => {
-      if (!response.ok) throw new Error("Employee records could not be loaded. Refresh to retry.");
+      if (!response.ok) {
+        const body = await response.json().catch(() => null) as { error?: string } | null;
+        throw new Error(body?.error || `Employee records could not be loaded (HTTP ${response.status}). Refresh to retry.`);
+      }
       const count = Number(response.headers.get("X-Record-Count"));
       const queryMs = Number(response.headers.get("X-Query-Ms"));
       if (active) setProgress({ stage: "downloading", bytes: 0, count });

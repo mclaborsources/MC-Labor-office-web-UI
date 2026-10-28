@@ -9,6 +9,7 @@ import { ErrorAlert } from "@/components/ui/ErrorAlert";
 import { Spinner } from "@/components/ui/Spinner";
 import type { EmployeeSummary } from "@/types/employee";
 import type { FilterOption } from "@/types/search";
+import { EmployeeSavedViewActions, EmployeeSavedViewsProvider, useEmployeeSavedViews } from "./EmployeeSavedViews";
 
 export interface EmployeeSearchScreenProps {
   results?: ReactNode;
@@ -134,6 +135,7 @@ function EmployeeSearchSidebar({ onSearch, resetVersion = 0 }: { onSearch?: (val
 }
 
 function EmployeeGridToolbar({ onClearFilters, onSort }: Pick<EmployeeSearchScreenProps, "onClearFilters" | "onSort">) {
+  const saved = useEmployeeSavedViews();
   return (
     <div className="ac-employee-search-grid-toolbar shrink-0">
       <div className="ac-customer-search-action-group">
@@ -165,22 +167,18 @@ function EmployeeGridToolbar({ onClearFilters, onSort }: Pick<EmployeeSearchScre
         Update Column
       </AccessButton>
       <span className="ac-flabel">View:</span>
-      <select className="ac-select ac-customer-search-view-select-wide" defaultValue="01" aria-label="View">
-        {Array.from({ length: 10 }, (_, i) => {
+      <select className="ac-select ac-customer-search-view-select-wide" value={String(saved?.slot ?? 1).padStart(2, "0")} aria-label="View" onChange={event => saved?.select(Number(event.target.value))}>
+        {Array.from({ length: 64 }, (_, i) => {
           const value = String(i + 1).padStart(2, "0");
+          const savedName = saved?.views.find(view => view.slot === i + 1)?.name;
           return (
             <option key={value} value={value}>
-              View {value}
+              {savedName ? `${savedName} (View ${value})` : `View ${value}`}
             </option>
           );
         })}
       </select>
-      <AccessButton data-action-status="missing" xs>
-        Save
-      </AccessButton>
-      <AccessButton data-action-status="missing" xs>
-        Delete
-      </AccessButton>
+      <EmployeeSavedViewActions />
       <label className="ac-employee-search-goto-field">
         <span className="ac-flabel">Go To:</span>
         <input readOnly className="ac-input" aria-label="Go To" />
@@ -196,7 +194,7 @@ function EmployeeGridToolbar({ onClearFilters, onSort }: Pick<EmployeeSearchScre
   );
 }
 
-export function EmployeeSearchScreen({
+function EmployeeSearchScreenContent({
   onEmployeeSearch,
   onClearFilters,
   onSort,
@@ -281,4 +279,8 @@ export function EmployeeSearchScreen({
       </div>
     </div>
   );
+}
+
+export function EmployeeSearchScreen(props: EmployeeSearchScreenProps) {
+  return <EmployeeSavedViewsProvider><EmployeeSearchScreenContent {...props} /></EmployeeSavedViewsProvider>;
 }

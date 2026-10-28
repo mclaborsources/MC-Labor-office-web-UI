@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
+import { createPortal } from "react-dom";
 import { CustomerNameColumnHeader } from "../customers/CustomerNameColumnHeader";
 import { compareCustomerNameValues } from "@/lib/customerNameSearchColumns";
 import { EmployeeNameCell } from "./EmployeeNameCell";
-import { EMPLOYEE_SEARCH_DEFAULT_COLUMNS, type EmployeeSearchColumnKey } from "@/lib/employeeSearchColumns";
+import { EMPLOYEE_SEARCH_DEFAULT_COLUMNS, EMPLOYEE_SEARCH_COLUMNS, type EmployeeSearchColumnKey } from "@/lib/employeeSearchColumns";
+import { defaultEmployeeViewLayout } from "@/lib/employeeSavedViews";
+import { useEmployeeSavedViews } from "./EmployeeSavedViews";
 import type { EmployeeSummary } from "@/types/employee";
 
 function cellValue(row: EmployeeSummary, key: EmployeeSearchColumnKey): string {
@@ -15,7 +18,6 @@ function cellValue(row: EmployeeSummary, key: EmployeeSearchColumnKey): string {
     EmployeeID: row.employeeId,
     EmEmployeeStatus: row.status,
     EmployeeUserFlag5: row.userFlag5,
-    OnlineJobAppFolder: "Online",
     S1: row.s1,
     EmployeeProfileType: row.profileType,
     EmFirstName: row.firstName,
@@ -41,12 +43,58 @@ function cellValue(row: EmployeeSummary, key: EmployeeSearchColumnKey): string {
 }
 
 export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, resetVersion = 0, sortResetVersion = 0, fetchedCount }: { employees: EmployeeSummary[]; loadTiming?: { queryMs: number; elapsed: number }; resetVersion?: number; sortResetVersion?: number; fetchedCount?: number }) {
-  const columns = EMPLOYEE_SEARCH_DEFAULT_COLUMNS;
+  const saved = useEmployeeSavedViews();
+  const [localLayout, setLocalLayout] = useState(defaultEmployeeViewLayout);
+  const layout = saved?.layout ?? localLayout;
+  const setLayout = saved?.setLayout ?? setLocalLayout;
+  const columns = useMemo(() => layout.order
+    .filter(key => !layout.hidden.includes(key))
+    .map(key => EMPLOYEE_SEARCH_DEFAULT_COLUMNS.find(column => column.key === key) ?? EMPLOYEE_SEARCH_COLUMNS.find(column => column.key === key))
+    .filter((column): column is NonNullable<typeof column> => Boolean(column)), [layout.order, layout.hidden]);
   const [selectedEmployee, setSelectedEmployee] = useState<string>();
-  const [filters, setFilters] = useState<Partial<Record<EmployeeSearchColumnKey, string[]>>>({});
-  const [sort, setSort] = useState<{ key: EmployeeSearchColumnKey; direction: "asc" | "desc" }>();
-  useEffect(() => { setFilters({}); setSort(undefined); }, [resetVersion]);
-  useEffect(() => { setSort(undefined); }, [sortResetVersion]);
+  const [flagOverrides, setFlagOverrides] = useState<Record<string, boolean>>({});
+  const filters = layout.filters;
+  const sort = layout.sort;
+  const [draggedColumn, setDraggedColumn] = useState<EmployeeSearchColumnKey | null>(null);
+  const [dragOverColumn, setDragOverColumn] = useState<EmployeeSearchColumnKey | null>(null);
+  const [unhideColumnsOpen, setUnhideColumnsOpen] = useState(false);
+  const setFilters = (update: typeof filters | ((current: typeof filters) => typeof filters)) => setLayout(current => ({ ...current, filters: typeof update === "function" ? update(current.filters) : update }));
+  const setSort = (next: typeof sort) => setLayout(current => ({ ...current, sort: next }));
+  const resizeColumn = (key: EmployeeSearchColumnKey, width: number) => setLayout(current => ({ ...current, widths: { ...current.widths, [key]: Math.max(48, Math.min(1600, Math.round(width))) } }));
+  const resetColumnWidth = (key: EmployeeSearchColumnKey) => setLayout(current => { const widths = { ...current.widths }; delete widths[key]; return { ...current, widths }; });
+  useEffect(() => { setFilters({}); setSort(null); }, [resetVersion]);
+  useEffect(() => { setSort(null); }, [sortResetVersion]);
+  function hideColumn(key: EmployeeSearchColumnKey) {
+    setLayout(current => current.hidden.length >= EMPLOYEE_SEARCH_COLUMNS.length - 1 || current.hidden.includes(key)
+      ? current
+      : { ...current, hidden: [...current.hidden, key] });
+  }
+  function setColumnVisible(key: EmployeeSearchColumnKey, visible: boolean) {
+    setLayout(current => ({ ...current, hidden: visible ? current.hidden.filter(item => item !== key) : current.hidden.includes(key) || current.hidden.length >= EMPLOYEE_SEARCH_COLUMNS.length - 1 ? current.hidden : [...current.hidden, key] }));
+  }
+  function reorderColumn(source: EmployeeSearchColumnKey, target: EmployeeSearchColumnKey) {
+    if (source === target) return;
+    setLayout(current => {
+      const from = current.order.indexOf(source), to = current.order.indexOf(target);
+      if (from < 0 || to < 0) return current;
+      const order = [...current.order];
+      order.splice(from, 1);
+      order.splice(to, 0, source);
+      return { ...current, order };
+    });
+  }
+  function beginColumnDrag(key: EmployeeSearchColumnKey, event: DragEvent<HTMLDivElement>) {
+    setDraggedColumn(key);
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", key);
+  }
+  function dropColumn(key: EmployeeSearchColumnKey, event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    const source = draggedColumn ?? event.dataTransfer.getData("text/plain") as EmployeeSearchColumnKey;
+    if (source) reorderColumn(source, key);
+    setDraggedColumn(null);
+    setDragOverColumn(null);
+  }
   const kind = (key: EmployeeSearchColumnKey): "text" | "date" | "number" => /Date|FirstDateOnJob/.test(key) ? "date" : /Hours|AvgHrs|PayRate/.test(key) ? "number" : "text";
   const employees = useMemo(() => {
     const active = Object.entries(filters) as [EmployeeSearchColumnKey, string[]][];
@@ -73,12 +121,12 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
   return (
     <div className="ac-customer-search-grid-wrap ac-employee-search-grid-wrap">
       <div ref={viewport} onScroll={event => setScrollTop(event.currentTarget.scrollTop)} className="ac-grid ac-grid-tracking ac-customer-search-grid ac-employee-search-grid mc-scroll-smooth">
-        <table>
+        <table data-column-count={columns.length}>
           <colgroup>
             {columns.map((col) => (
               <col
                 key={col.key}
-                style={{ width: `${col.width}px`, minWidth: `${col.width}px` }}
+                style={{ width: `${layout.widths[col.key] ?? col.width}px`, minWidth: `${layout.widths[col.key] ?? col.width}px` }}
               />
             ))}
           </colgroup>
@@ -88,12 +136,24 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
                 <th key={col.key}>
                   <CustomerNameColumnHeader
                     label={col.label}
+                    columnKey={col.key}
                     kind={kind(col.key)}
                     getValues={() => sourceEmployees.map((row) => cellValue(row, col.key))}
                     selected={filters[col.key]}
                     sort={sort?.key === col.key ? sort.direction : undefined}
                     onSort={direction => setSort({ key: col.key, direction })}
                     onFilter={values => setFilters(previous => { const next = { ...previous }; if (values) next[col.key] = values; else delete next[col.key]; return next; })}
+                    width={layout.widths[col.key] ?? col.width}
+                    onResize={width => resizeColumn(col.key, width)}
+                    onResetWidth={() => resetColumnWidth(col.key)}
+                    onHide={columns.length > 1 ? () => hideColumn(col.key) : undefined}
+                    onUnhideColumns={() => setUnhideColumnsOpen(true)}
+                    onDragStart={event => beginColumnDrag(col.key, event)}
+                    onDragOver={event => { event.preventDefault(); setDragOverColumn(col.key); }}
+                    onDrop={event => dropColumn(col.key, event)}
+                    onDragEnd={() => { setDraggedColumn(null); setDragOverColumn(null); }}
+                    dragging={draggedColumn === col.key}
+                    dropTarget={dragOverColumn === col.key && draggedColumn !== col.key}
                   />
                 </th>
               ))}
@@ -136,6 +196,11 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
                       );
                     }
                     const value = cellValue(row, col.key);
+                    if (col.key === "EmployeeReturnToSender" || col.key === "EmployeeRIP") {
+                      const flagId = `${row.employeeId}:${col.key}`;
+                      const checked = flagOverrides[flagId] ?? /^(1|true|yes|y|x|-1)$/i.test(value.trim());
+                      return <td key={col.key} className="ac-employee-search-boolean-cell"><input type="checkbox" aria-label={`${col.label} for ${row.firstName} ${row.lastName}`} checked={checked} onChange={event => setFlagOverrides(current => ({ ...current, [flagId]: event.target.checked }))} /></td>;
+                    }
                     const columnClass =
                       col.key === "PayrollCoOnSiteInitials_IPG"
                         ? "ac-employee-search-col-ipg"
@@ -165,6 +230,19 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
           </tbody>
         </table>
       </div>
+      {unhideColumnsOpen && createPortal(<div role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) setUnhideColumnsOpen(false); }} style={{ position: "fixed", inset: 0, zIndex: 10000, display: "grid", placeItems: "center", background: "rgba(0,0,0,.35)" }}>
+        <section role="dialog" aria-modal="true" aria-labelledby="employee-unhide-title" style={{ width: 380, maxWidth: "calc(100vw - 32px)", maxHeight: "min(640px, calc(100vh - 32px))", display: "flex", flexDirection: "column", background: "white", border: "1px solid #999", borderRadius: 6, boxShadow: "0 12px 36px rgba(0,0,0,.28)" }}>
+          <header style={{ padding: "12px 16px", borderBottom: "1px solid #ddd", fontWeight: 600 }} id="employee-unhide-title">Unhide Columns</header>
+          <div style={{ overflow: "auto", padding: "12px 16px", display: "grid", gap: 5 }}>
+            <span style={{ fontSize: 13, marginBottom: 3 }}>Column:</span>
+            {EMPLOYEE_SEARCH_COLUMNS.map(column => {
+              const checked = !layout.hidden.includes(column.key);
+              return <label key={column.key} style={{ display: "flex", alignItems: "center", gap: 7, minHeight: 21, fontSize: 13 }}><input type="checkbox" checked={checked} onChange={event => setColumnVisible(column.key, event.target.checked)} />{column.label}</label>;
+            })}
+          </div>
+          <footer style={{ padding: "10px 16px", borderTop: "1px solid #ddd", display: "flex", justifyContent: "flex-end" }}><button type="button" className="ac-btn ac-btn-xs" onClick={() => setUnhideColumnsOpen(false)}>Close</button></footer>
+        </section>
+      </div>, document.body)}
       <div className="ac-recordbar ac-customer-search-recordbar">
         <span className="font-mono">
           Record: {employees.length === 0 ? 0 : first + 1} of {employees.length.toLocaleString()}

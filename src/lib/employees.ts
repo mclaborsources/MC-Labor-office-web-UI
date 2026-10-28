@@ -292,8 +292,11 @@ async function loadEmployeeSearchHoldingFields(
       }
       map.set(String(row.EmployeeID), values);
     }
-  } catch {
+  } catch (error) {
     // Some older database snapshots do not have the Access holding table.
+    // Keep the core employee search available; the remaining fields are
+    // supplied by the summary/default-field queries where possible.
+    console.warn("[employees] Could not load Employee Search holding fields:", error);
   }
   return map;
 }
@@ -380,9 +383,9 @@ export interface GetEmployeesParams {
 export async function getEmployees(
   params: GetEmployeesParams = {},
 ): Promise<PaginatedResult<EmployeeSummary>> {
-  const [{ rows, index }, defaultFields] = await Promise.all([
-    loadEmployeeSearchIndex(), loadEmployeeDefaultFields(),
-  ]);
+  const indexPromise = loadEmployeeSearchIndex();
+  const defaultFieldsPromise = loadEmployeeDefaultFields();
+  const { rows, index } = await indexPromise;
   const filteredRows = searchTextIndex(index, params.search ?? "")
     .map((rowIndex) => rows[rowIndex])
     .filter((row) =>
@@ -393,8 +396,19 @@ export async function getEmployees(
       && (!params.state || safeStr(row.EmState) === params.state));
   const total = filteredRows.length;
   const data = filteredRows.map(toEmployeeSummary);
+  const [defaultFields, holdingFields] = await Promise.all([
+    defaultFieldsPromise,
+    loadEmployeeSearchHoldingFields(data.map((employee) => employee.employeeId)),
+  ]);
   for (const e of data) {
-    const fields = defaultFields.get(e.employeeId) ?? {};
+    // frmEmployeeSearch3Holding contains the complete Access search row,
+    // including fields that are not part of the compact employee summary.
+    // Merge calculated query fields as well so every displayed column has a
+    // database-backed value when its Access holding field is unavailable.
+    const fields = {
+      ...(defaultFields.get(e.employeeId) ?? {}),
+      ...(holdingFields.get(e.employeeId) ?? {}),
+    };
     e.accessFields = fields;
     e.userFlag5 = fields.EmployeeUserFlag5 ?? "";
     e.s1 = fields.S1 ?? "";

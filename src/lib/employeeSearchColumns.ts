@@ -5,47 +5,8 @@ export const EMPLOYEE_SEARCH_COLUMNS = EMPLOYEE_SEARCH_ACCESS_COLUMNS;
 
 export type EmployeeSearchColumnKey = (typeof EMPLOYEE_SEARCH_COLUMNS)[number]["key"];
 
-const DEFAULT_VIEW_COLUMN_DEFINITION = [
-  ["ActionSelect", ""],
-  ["PayrollCoOnSiteInitials_IPG", "IF"],
-  ["JobApplicationStatus_IPG", "IPC"],
-  ["EmployeeUserFlag5", "User Flag 5"],
-  ["OnlineJobAppFolder", "O("],
-  ["S1", "S1"],
-  ["EmEmployeeStatus", "EE Status"],
-  ["EmployeeProfileType", "Profile Type"],
-  ["EmFirstName", "First Name"],
-  ["EmMiddle", "M"],
-  ["EmLastName", "Last Name"],
-  ["EmStreet", "Street"],
-  ["EmCity", "City"],
-  ["EmState", "State"],
-  ["EmployeeNoCommunicationText", "!"],
-  ["EmMobilePhone", "Cell # 1"],
-  ["EmMobilePhoneVerifyText", "Cell"],
-  ["EmGrade", "Grad"],
-  ["EmHowReferred", "How Ref"],
-  ["EmTrade", "Trade"],
-  ["EmQualification", "Qualification"],
-  ["AvgHrsWorked", "Avg I"],
-  ["FirstDateOnJob", "FDA"],
-  ["TotalHoursWorked", "THW"],
-  ["LicenseExpDateFlag", "Lic Exp D"],
-  ["WeekEndingDate", "Week End"],
-  ["PayRate", "Pay Rate"],
-  ["EmployeeID", "Emp"],
-] as const satisfies readonly (readonly [EmployeeSearchColumnKey, string])[];
-
-const DEFAULT_COLUMN_WIDTHS = [19, 30, 37, 87, 33, 96, 130, 96, 86, 30, 86, 65, 100, 60, 22, 96, 44, 51, 87, 110, 94, 51, 78, 66, 75, 78, 79, 60];
-
-/** Saved Access layout selected by Views 1 > Default (View 01). */
-export const EMPLOYEE_SEARCH_DEFAULT_COLUMNS = DEFAULT_VIEW_COLUMN_DEFINITION.map(
-  ([key, label], index) => {
-    const source = EMPLOYEE_SEARCH_ACCESS_COLUMNS.find((column) => column.key === key);
-    if (!source) throw new Error(`Missing Access Employee Search column: ${key}`);
-    return { ...source, label, width: DEFAULT_COLUMN_WIDTHS[index] ?? source.width };
-  },
-);
+/** Employee Search 3 opens with every Access field visible. */
+export const EMPLOYEE_SEARCH_DEFAULT_COLUMNS = EMPLOYEE_SEARCH_ACCESS_COLUMNS;
 
 export const EMPLOYEE_SEARCH_VIEW_TABS = [
   "Views 1",

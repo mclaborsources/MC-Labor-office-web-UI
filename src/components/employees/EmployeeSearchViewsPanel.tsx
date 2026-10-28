@@ -11,6 +11,7 @@ import {
   employeeSearchPresetBtnClass,
   type EmployeeSearchPresetCell,
 } from "@/lib/employeeSearchColumns";
+import { employeeSearchBlankPresetLayout, employeeSearchPresetLayoutForName } from "@/lib/employeeSavedViews";
 import {
   EMPLOYEE_ADMIN_INCLUDE_PROFILES,
   EMPLOYEE_CALL_LISTS_2_ADDITIONAL,
@@ -32,6 +33,7 @@ import {
   employeeViews3BtnClass,
 } from "@/lib/employeeSearchViewsLayout";
 import type { FilterOption } from "@/types/search";
+import { useEmployeeSavedViews } from "./EmployeeSavedViews";
 
 interface EmployeeSearchViewsPanelProps {
   onTradeChange?: (tradeId: string) => void;
@@ -122,24 +124,35 @@ function FilterRadioGroup({
 function PresetGrid({
   grid = EMPLOYEE_SEARCH_PRESET_GRID,
   className = "",
+  viewOffset = 0,
 }: {
   grid?: readonly (readonly (EmployeeSearchPresetCell | null)[])[];
   className?: string;
+  viewOffset?: number;
 }) {
+  const saved = useEmployeeSavedViews();
   return (
     <div className={`ac-employee-search-preset-grid ${className}`}>
       {grid.map((row, rowIndex) =>
         row.map((cell, colIndex) =>
           cell ? (
-            <AccessButton data-action-status="missing"
+            <AccessButton data-action-status="complete"
               key={`${rowIndex}-${colIndex}-${cell.label}`}
               xs
-              className={employeeSearchPresetBtnClass(cell.style)}
+              aria-pressed={saved?.slot === viewOffset + rowIndex * 10 + colIndex + 1}
+              className={`${employeeSearchPresetBtnClass(cell.style) ?? ""} ${saved?.slot === viewOffset + rowIndex * 10 + colIndex + 1 ? "ac-employee-search-preset-btn--active" : ""}`}
+              onClick={() => saved?.selectPreset(viewOffset + rowIndex * 10 + colIndex + 1, employeeSearchPresetLayoutForName(cell.label))}
             >
-              {cell.label}
+              {saved?.views.find(view => view.slot === viewOffset + rowIndex * 10 + colIndex + 1)?.name ?? cell.label}
             </AccessButton>
           ) : (
-            <div key={`${rowIndex}-${colIndex}-empty`} className="ac-customer-search-preset-empty" aria-hidden />
+            viewOffset === 0 && rowIndex === 1 && colIndex === 8 ? (
+              <AccessButton data-action-status="complete" key="employee-blank-home-preset" xs aria-label="Blank view: Home column" title="Blank view: Home column"
+                aria-pressed={saved?.slot === 19}
+                className={`ac-customer-search-preset-empty ${saved?.slot === 19 ? "ac-employee-search-preset-btn--active" : ""}`}
+                onClick={() => saved?.selectPreset(19, employeeSearchBlankPresetLayout())}
+              />
+            ) : <div key={`${rowIndex}-${colIndex}-empty`} className="ac-customer-search-preset-empty" aria-hidden />
           ),
         ),
       )}
@@ -249,7 +262,7 @@ function Views1Tab({ trades, currentTradeId, onTradeChange, onSort }: Pick<Emplo
 function Views2Tab() {
   return (
     <div className="ac-employee-search-views-2 ac-search-views-tab-pane">
-      <PresetGrid grid={EMPLOYEE_SEARCH_VIEWS_2_GRID} className="ac-employee-views2-preset-grid" />
+      <PresetGrid grid={EMPLOYEE_SEARCH_VIEWS_2_GRID} className="ac-employee-views2-preset-grid" viewOffset={30} />
     </div>
   );
 }
