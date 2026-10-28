@@ -67,7 +67,7 @@ export function filterCustomerSearch1Views3Rows(rows: CustomerNameMatch[], filte
     if (filters.state && filters.state !== "All" && row.state.toUpperCase() !== filters.state.toUpperCase()) return false;
     if (filters.county && filters.county !== "All" && row.countyFilter.toLowerCase().replace(/ county$/, "") !== filters.county.toLowerCase().replace(/ county$/, "")) return false;
     if (dateKey && duration && !dateMatchesDuration(String(row[dateKey] ?? ""), duration)) return false;
-    if (flagKey && filters.userValue) {
+    if (flagKey && filters.userValue && filters.userValue !== "All") {
       const value = String(row[flagKey] ?? "");
       if (filters.userValue === "[BLANK]" ? value !== "" : value !== filters.userValue) return false;
     }

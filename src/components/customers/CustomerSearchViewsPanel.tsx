@@ -473,15 +473,19 @@ function Views3Tab({ customerUserFlagOptions, views3Filters = {}, onViews3Filter
           <div className="ac-customer-search-user-setting-fields">
             <label className="ac-customer-search-inline-select-wrap">
               <span className="ac-flabel">Select</span>
-              <select className="ac-select" value={views3Filters.userFlag ?? ""} onChange={event => onViews3FiltersChange?.({ ...views3Filters, userFlag: event.target.value, userValue: "" })}>
-                <option value="">Select</option>
-                {Array.from({ length: 8 }, (_, index) => <option key={index + 1} value={String(index + 1)}>User Flag {index + 1}</option>)}
+              <select className="ac-select" value={views3Filters.userFlag ?? "Select"} onChange={event => {
+                const userFlag = event.target.value;
+                onViews3FiltersChange?.({ ...views3Filters, userFlag, userValue: userFlag === "Select" ? "" : "All" });
+              }}>
+                <option value="Select">Select</option>
+                {Array.from({ length: 8 }, (_, index) => <option key={index + 1} value={String(index + 1)}>{index + 1}</option>)}
               </select>
             </label>
             <label className="ac-customer-search-inline-select-wrap">
               <span className="ac-flabel">Value</span>
               <select className="ac-select" value={views3Filters.userValue ?? ""} onChange={event => update("userValue", event.target.value)} disabled={!flagIndex}>
                 <option value="">Value</option>
+                {flagIndex >= 1 && flagIndex <= 8 && <option value="All">All</option>}
                 <option value="[BLANK]">[BLANK]</option>
                 {flagOptions.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
               </select>

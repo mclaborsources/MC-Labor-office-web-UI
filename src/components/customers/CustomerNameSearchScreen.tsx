@@ -45,6 +45,7 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
   const [dragOverColumn, setDragOverColumn] = useState<SummaryColumnKey | null>(null);
 
   const [hiddenColumns, setHiddenColumns] = useCustomerViewField("hidden", [], variant === "customers");
+  const [unhideColumnsOpen, setUnhideColumnsOpen] = useState(false);
   const previousReset = useRef(resetOrderVersion);
   useEffect(() => {
     const resetChanged=previousReset.current!==resetOrderVersion;
@@ -108,9 +109,12 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
       return next;
     });
   }
-  function showAllColumns() {
-    delete savedHiddenColumns[variant];
-    setHiddenColumns([]);
+  function setColumnVisible(key: SummaryColumnKey, visible: boolean) {
+    setHiddenColumns(current => {
+      const next = visible ? current.filter(item => item !== key) : [...new Set([...current, key])];
+      savedHiddenColumns[variant] = next;
+      return next;
+    });
   }
   function moveColumn(key: SummaryColumnKey, offset: number) {
     setColumnOrder(current => {
@@ -304,12 +308,29 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
           </div>
         )}
         {allNamesVisible && variant === "names" && <div className="ac-customer-name-search-paging"><button type="button" className="ac-btn ac-btn-xs" onClick={() => { resetCustomerColumnOrder(variant); setColumnOrder(defaultColumns.map(column => column.key)); setHiddenColumns([]); }}>Reset column order</button></div>}
-        {allNamesVisible && variant === "names" && hiddenColumns.length > 0 && <div className="ac-customer-name-search-paging"><button type="button" className="ac-btn ac-btn-xs" onClick={showAllColumns}>Show all columns</button></div>}
         {allNamesVisible && (Object.keys(columnFilters).length > 0 || summarySort) && (
           <div className="ac-customer-name-search-paging">
             <button type="button" className="ac-btn ac-btn-xs" onClick={() => { setColumnFilters({}); setSummarySort(null); resetNamesScroll(); }}>Clear sorting and filters</button>
           </div>
         )}
+
+        {unhideColumnsOpen && createPortal(<div role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) setUnhideColumnsOpen(false); }} style={{ position: "fixed", inset: 0, zIndex: 9999, display: "grid", placeItems: "center", background: "rgba(0,0,0,.3)" }}>
+          <section role="dialog" aria-modal="true" aria-labelledby="ac-unhide-columns-title" style={{ display: "flex", flexDirection: "column", width: 300, maxWidth: "calc(100vw - 32px)", maxHeight: "min(80vh, 540px)", padding: 12, border: "1px solid #888", borderRadius: 4, background: "#fff", boxShadow: "0 8px 28px rgba(0,0,0,.3)" }}>
+            <h2 id="ac-unhide-columns-title" style={{ margin: "0 0 10px", fontSize: 16, fontWeight: 600 }}>Unhide Columns</h2>
+            <div style={{ overflowY: "auto", border: "1px solid #bbb", padding: "4px 8px" }}>
+              {columnOrder.map(key => {
+                const column = defaultColumns.find(item => item.key === key);
+                if (!column) return null;
+                const visible = !hiddenColumns.includes(key);
+                return <label key={key} style={{ display: "flex", alignItems: "center", gap: 7, minHeight: 23, fontSize: 13 }}>
+                  <input type="checkbox" checked={visible} disabled={visible && summaryColumns.length <= 1} onChange={event => setColumnVisible(key, event.target.checked)} />
+                  <span>{column.label}</span>
+                </label>;
+              })}
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}><button type="button" className="ac-btn ac-btn-xs" onClick={() => setUnhideColumnsOpen(false)}>Close</button></div>
+          </section>
+        </div>, document.body)}
 
         {allNamesVisible ? (
           <div ref={allNamesListRef} className="ac-customer-name-search-all-names" aria-label="All customer names" onScroll={(event) => setNamesScrollTop(event.currentTarget.scrollTop)}>
@@ -333,8 +354,7 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
                 onDragEnd={() => { setDraggedColumn(null); setDragOverColumn(null); }}
                 onSelect={() => { if (column.key !== "select") onSelectedColumnChange?.(column.key); }}
                 onHide={summaryColumns.length > 1 ? () => hideColumn(column.key) : undefined}
-                onMoveLeft={index > 0 ? () => moveColumn(column.key, -1) : undefined}
-                onMoveRight={index < summaryColumns.length - 1 ? () => moveColumn(column.key, 1) : undefined}
+                onUnhideColumns={() => setUnhideColumnsOpen(true)}
                 width={columnWidths[column.key] ?? column.width} onResize={width => resizeColumn(column.key, width)} onResetWidth={() => resizeColumn(column.key)}
                 getValues={() => customers.map(customer => summaryValue(customer, column.key))}
                 selected={columnFilters[column.key]} sort={summarySort?.key === column.key ? summarySort.direction : undefined}

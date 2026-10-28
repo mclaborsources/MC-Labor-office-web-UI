@@ -18528,10 +18528,11 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
    below the filters instead of stretching this panel to fill the viewport. */
 @media (min-width: 1200px) {
   .ac-customer-search-page .ac-customer-search-shell-inner:has(.ac-customer-search-views-3) {
-    height: 282px;
-    min-height: 282px;
-    max-height: 282px;
-    flex: 0 0 282px;
+    height: 298px;
+    min-height: 298px;
+    max-height: 298px;
+    margin-top: 0;
+    flex: 0 0 298px;
   }
 }
 
@@ -18579,10 +18580,215 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
 .ac-customer-search-page .ac-customer-search-views-body {
   flex: 1 1 0;
   gap: 8px;
+  width: 100%;
 }
 .ac-customer-search-page .ac-customer-search-views-left {
   flex: 1 1 0;
-  width: 0;
+  width: 100%;
+}
+
+/* Customer Search Views 3 reference layout: compact, full-width Access filter bands. */
+.ac-customer-search-page .ac-customer-search-views-3.ac-search-views-tab-pane {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: 36px 36px 34px 36px 36px 32px;
+  gap: 8px;
+  align-content: start;
+  width: 100%;
+  height: 258px;
+  min-height: 258px;
+  max-height: 258px;
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+}
+.ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-views-filter-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.06fr) minmax(0, 1fr);
+  gap: 14px;
+  min-width: 0;
+  height: 36px;
+}
+.ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-views-filter-row:nth-of-type(2) {
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr) minmax(330px, .8fr);
+}
+.ac-customer-search-page .ac-customer-search-views-3 .ac-customer-search-filter-group {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 2px 5px;
+  border: 1px solid #aaa;
+  border-radius: 0;
+  background: #ececec;
+  white-space: nowrap;
+}
+.ac-customer-search-page .ac-customer-search-views-3 .ac-customer-search-filter-group legend {
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  z-index: 1;
+  transform: translateY(-50%);
+  margin: 0;
+  padding: 0 2px;
+  background: #ececec;
+  color: #111;
+  font: 400 15px/20px Calibri, "Segoe UI", Arial, sans-serif;
+}
+.ac-customer-search-page .ac-customer-search-views-3 .ac-customer-search-filter-group-options {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0 4px;
+  min-width: 0;
+  overflow: hidden;
+}
+.ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-views-filter-row:first-child > .ac-customer-search-filter-group:first-child .ac-customer-search-filter-group-options { margin-left: 64px; }
+.ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-views-filter-row:first-child > .ac-customer-search-filter-group:nth-child(2) .ac-customer-search-filter-group-options { margin-left: 53px; }
+.ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-filter-group--wide:nth-child(2) .ac-customer-search-filter-group-options { margin-left: 105px; }
+.ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-views-filter-row:nth-of-type(2) > .ac-customer-search-filter-group:first-child .ac-customer-search-filter-group-options { margin-left: 49px; }
+.ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-views-filter-row:nth-of-type(2) > .ac-customer-search-filter-group:nth-child(2) .ac-customer-search-filter-group-options { margin-left: 49px; }
+.ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-filter-group--wide:nth-child(5) .ac-customer-search-filter-group-options { margin-left: 64px; }
+.ac-customer-search-page .ac-customer-search-views-3 .ac-customer-search-radio {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 3px;
+  color: #111;
+  font: 400 14px/22px Calibri, "Segoe UI", Arial, sans-serif;
+  white-space: nowrap;
+}
+.ac-customer-search-page .ac-customer-search-views-3 .ac-customer-search-radio input {
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  margin: 0;
+}
+.ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-filter-group--wide {
+  width: 100%;
+}
+.ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-filter-group--wide:nth-child(5) {
+  width: 100%;
+}
+.ac-customer-search-page .ac-customer-search-views-3 .ac-customer-search-filter-group--user-setting {
+  position: relative;
+  flex: initial;
+  justify-content: flex-start;
+}
+.ac-customer-search-page .ac-customer-search-views-3 .ac-customer-search-filter-group--user-setting legend {
+  line-height: 18px;
+}
+.ac-customer-search-page .ac-customer-search-views-3 .ac-customer-search-user-setting-fields {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 6px;
+  margin-left: 88px;
+  min-width: 0;
+}
+.ac-customer-search-page .ac-customer-search-views-3 .ac-customer-search-inline-select-wrap {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: row;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+  white-space: nowrap;
+}
+.ac-customer-search-page .ac-customer-search-views-3 .ac-customer-search-inline-select-wrap .ac-flabel {
+  flex: 0 0 auto;
+  font: 400 14px Calibri, "Segoe UI", Arial, sans-serif;
+  text-transform: none;
+  white-space: nowrap;
+}
+.ac-customer-search-page .ac-customer-search-views-3 .ac-customer-search-inline-select-wrap .ac-select {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  width: 68px;
+  min-width: 0;
+  height: 24px;
+  min-height: 24px;
+  padding: 0 3px;
+  font: 14px Arial, sans-serif;
+}
+.ac-customer-search-page .ac-customer-search-views-3 .ac-customer-search-views-reset-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  padding: 0 9px;
+}
+.ac-customer-search-page .ac-customer-search-views-3 .ac-customer-search-spare-btn {
+  box-sizing: border-box;
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  height: 30px;
+  min-height: 30px;
+  max-height: 30px;
+  border: 1px solid;
+  border-color: #fff #888 #888 #fff;
+  background: #ececec;
+  box-shadow: 1px 1px 0 #777;
+}
+.ac-customer-search-page .ac-customer-search-views-3 button.ac-customer-search-reset-all-btn.ac-btn,
+.ac-customer-search-page .ac-customer-search-views-3 button.ac-customer-search-reset-all-btn.ac-btn:hover {
+  background: #f00018 !important;
+  background-image: none !important;
+  color: #111 !important;
+}
+.ac-customer-search-page .ac-customer-search-shell .ac-customer-search-views-3 button.ac-customer-search-reset-all-btn.ac-btn[data-action-status]:not(.ac-customer-search-btn-transfer):not(.ac-customer-search-transfer-btn),
+.ac-customer-search-page .ac-customer-search-shell .ac-customer-search-views-3 button.ac-customer-search-reset-all-btn.ac-btn[data-action-status]:not(.ac-customer-search-btn-transfer):not(.ac-customer-search-transfer-btn):hover {
+  background: #f00018 !important;
+  background-image: none !important;
+  border-color: #111 !important;
+  color: #111 !important;
+}
+.ac-customer-search-page .ac-customer-search-views-3 .ac-customer-search-reset-all-btn.ac-btn {
+  flex: 0 0 97px;
+  width: 97px;
+  min-width: 97px;
+  height: 27px;
+  min-height: 27px;
+  max-height: 27px;
+  align-self: center;
+  margin-left: auto;
+  border: 1px solid #111;
+  border-radius: 0;
+  background: #f00018;
+  color: #111;
+  font: 400 14px Calibri, "Segoe UI", Arial, sans-serif;
+}
+
+@media (max-width: 1100px) {
+  .ac-customer-search-page .ac-customer-search-views-3.ac-search-views-tab-pane {
+    grid-template-rows: auto;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+  }
+  .ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-views-filter-row,
+  .ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-views-filter-row:nth-of-type(2) {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+  }
+  .ac-customer-search-page .ac-customer-search-views-3 .ac-customer-search-filter-group {
+    min-height: 30px;
+  }
+  .ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-filter-group--wide:nth-child(5) {
+    width: 100%;
+  }
 }
 .ac-customer-search-page .ac-customer-search-ray-tab {
   display: grid;
