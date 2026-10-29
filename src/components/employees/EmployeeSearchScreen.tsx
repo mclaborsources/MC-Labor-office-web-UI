@@ -10,6 +10,13 @@ import { Spinner } from "@/components/ui/Spinner";
 import type { EmployeeSummary } from "@/types/employee";
 import type { FilterOption } from "@/types/search";
 import { EmployeeSavedViewActions, EmployeeSavedViewsProvider, useEmployeeSavedViews } from "./EmployeeSavedViews";
+import type { EmployeeSearchViews3Filters } from "@/lib/employeeSearchViews3Filters";
+import type { EmployeeSearchViews4Filters } from "@/lib/employeeSearchViews4Filters";
+import type { EmployeeSearchUtilityFilters } from "@/lib/employeeSearchUtilities";
+import type { EmployeeCallNumberFilter } from "@/lib/employeeSearchUtilities";
+import type { EmployeeSearchViews1Filters } from "@/lib/employeeSearchViews1Filters";
+import type { EmployeeSearchCallListFilters } from "@/lib/employeeSearchCallListFilters";
+import type { EmployeeSearchCallLists2Filters } from "@/lib/employeeSearchCallLists2";
 
 export interface EmployeeSearchScreenProps {
   results?: ReactNode;
@@ -17,6 +24,32 @@ export interface EmployeeSearchScreenProps {
   onClearFilters?: () => void;
   onSort?: () => void;
   onTradeChange?: (tradeId: string) => void;
+  views3Filters?: EmployeeSearchViews3Filters;
+  views1Filters?: EmployeeSearchViews1Filters;
+  onViews1FiltersChange?: (filters: EmployeeSearchViews1Filters) => void;
+  onViews3FiltersChange?: (filters: EmployeeSearchViews3Filters) => void;
+  views4Filters?: EmployeeSearchViews4Filters;
+  onViews4FiltersChange?: (filters: EmployeeSearchViews4Filters) => void;
+  activeEmployee?: EmployeeSummary;
+  onActiveEmployeeChange?: (employee: EmployeeSummary | undefined) => void;
+  userSettingsSelectedCount?: number;
+  onApplyUserFlag?: (slot: number, value: string, password: string) => Promise<void>;
+  utilityFilters?: EmployeeSearchUtilityFilters;
+  onUtilityFiltersChange?: (filters: EmployeeSearchUtilityFilters) => void;
+  utilityEmployees?: EmployeeSummary[];
+  employeeRows?: EmployeeSummary[];
+  selectedEmployeeIds?: string[];
+  onRefresh?: () => void;
+  adminIncludedProfiles?: string[];
+  onAdminIncludedProfilesChange?: (profiles: string[]) => void;
+  onSelectedEmployeeIdsChange?: (ids: string[]) => void;
+  callNumberFilter?: EmployeeCallNumberFilter;
+  onCallNumberFilterChange?: (filter: EmployeeCallNumberFilter) => void;
+  callListFilters?: EmployeeSearchCallListFilters;
+  onCallListFiltersChange?: (filters: EmployeeSearchCallListFilters) => void;
+  callLists2Filters?: EmployeeSearchCallLists2Filters;
+  onCallLists2FiltersChange?: (filters: EmployeeSearchCallLists2Filters) => void;
+  onCallLists2SortChange?: (sort: "name" | "number") => void;
   searchResetVersion?: number;
   employees: EmployeeSummary[];
   loadError?: string;
@@ -199,6 +232,32 @@ function EmployeeSearchScreenContent({
   onClearFilters,
   onSort,
   onTradeChange,
+  views3Filters,
+  views1Filters,
+  onViews1FiltersChange,
+  onViews3FiltersChange,
+  views4Filters,
+  onViews4FiltersChange,
+  activeEmployee,
+  onActiveEmployeeChange,
+  userSettingsSelectedCount,
+  onApplyUserFlag,
+  utilityFilters,
+  onUtilityFiltersChange,
+  utilityEmployees,
+  employeeRows,
+  selectedEmployeeIds,
+  onRefresh,
+  adminIncludedProfiles,
+  onAdminIncludedProfilesChange,
+  onSelectedEmployeeIdsChange,
+  callNumberFilter,
+  onCallNumberFilterChange,
+  callListFilters,
+  onCallListFiltersChange,
+  callLists2Filters,
+  onCallLists2FiltersChange,
+  onCallLists2SortChange,
   searchResetVersion,
   results: resultsContent,
   employees,
@@ -249,6 +308,32 @@ function EmployeeSearchScreenContent({
                 currentGradeId={currentGradeId}
                 currentCity={currentCity}
                 currentState={currentState}
+                views3Filters={views3Filters}
+                views1Filters={views1Filters}
+                onViews1FiltersChange={onViews1FiltersChange}
+                onViews3FiltersChange={onViews3FiltersChange}
+                views4Filters={views4Filters}
+                onViews4FiltersChange={onViews4FiltersChange}
+                activeEmployee={activeEmployee}
+                userSettingsSelectedCount={userSettingsSelectedCount}
+                onApplyUserFlag={onApplyUserFlag}
+                utilityFilters={utilityFilters}
+                onUtilityFiltersChange={onUtilityFiltersChange}
+                utilityEmployees={utilityEmployees}
+                employeeRows={employeeRows}
+                selectedEmployeeIds={selectedEmployeeIds}
+                onRefresh={onRefresh}
+                adminIncludedProfiles={adminIncludedProfiles}
+                onAdminIncludedProfilesChange={onAdminIncludedProfilesChange}
+                onSelectedEmployeeIdsChange={onSelectedEmployeeIdsChange}
+                callNumberFilter={callNumberFilter}
+                onCallNumberFilterChange={onCallNumberFilterChange}
+                callListFilters={callListFilters}
+                onCallListFiltersChange={onCallListFiltersChange}
+                callLists2Filters={callLists2Filters}
+                onCallLists2FiltersChange={onCallLists2FiltersChange}
+                onCallLists2SortChange={onCallLists2SortChange}
+                onZero={onClearFilters}
               />
               <EmployeeSearchUtilityRail />
             </div>
@@ -270,7 +355,7 @@ function EmployeeSearchScreenContent({
                     </div>
                   }
                 >
-                  {resultsContent ?? <EmployeeSearchTable employees={employees} />}
+                  {resultsContent ?? <EmployeeSearchTable employees={employees} onActiveEmployeeChange={onActiveEmployeeChange} />}
                 </Suspense>
               )}
             </div>

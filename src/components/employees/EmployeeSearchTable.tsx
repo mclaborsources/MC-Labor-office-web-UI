@@ -10,7 +10,7 @@ import { defaultEmployeeViewLayout } from "@/lib/employeeSavedViews";
 import { useEmployeeSavedViews } from "./EmployeeSavedViews";
 import type { EmployeeSummary } from "@/types/employee";
 
-function cellValue(row: EmployeeSummary, key: EmployeeSearchColumnKey): string {
+export function employeeSearchCellValue(row: EmployeeSummary, key: EmployeeSearchColumnKey): string {
   const accessValue = row.accessFields[key];
   if (accessValue !== undefined && accessValue !== "") return accessValue;
 
@@ -42,7 +42,7 @@ function cellValue(row: EmployeeSummary, key: EmployeeSearchColumnKey): string {
   return map[key] ?? "";
 }
 
-export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, resetVersion = 0, sortResetVersion = 0, fetchedCount }: { employees: EmployeeSummary[]; loadTiming?: { queryMs: number; elapsed: number }; resetVersion?: number; sortResetVersion?: number; fetchedCount?: number }) {
+export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, resetVersion = 0, sortResetVersion = 0, fetchedCount, onActiveEmployeeChange, selectedEmployeeIds = [], onSelectedEmployeeIdsChange }: { employees: EmployeeSummary[]; loadTiming?: { queryMs: number; elapsed: number }; resetVersion?: number; sortResetVersion?: number; fetchedCount?: number; onActiveEmployeeChange?: (employee: EmployeeSummary | undefined) => void; selectedEmployeeIds?: string[]; onSelectedEmployeeIdsChange?: (ids: string[]) => void }) {
   const saved = useEmployeeSavedViews();
   const [localLayout, setLocalLayout] = useState(defaultEmployeeViewLayout);
   const layout = saved?.layout ?? localLayout;
@@ -98,9 +98,15 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
   const kind = (key: EmployeeSearchColumnKey): "text" | "date" | "number" => /Date|FirstDateOnJob/.test(key) ? "date" : /Hours|AvgHrs|PayRate/.test(key) ? "number" : "text";
   const employees = useMemo(() => {
     const active = Object.entries(filters) as [EmployeeSearchColumnKey, string[]][];
-    const rows = active.length ? sourceEmployees.filter(row => active.every(([key, values]) => values.includes(cellValue(row, key)))) : sourceEmployees;
-    return sort ? [...rows].sort((a, b) => compareCustomerNameValues(cellValue(a, sort.key).replace(kind(sort.key) === "number" ? /[$,]/g : /$^/g, ""), cellValue(b, sort.key).replace(kind(sort.key) === "number" ? /[$,]/g : /$^/g, ""), kind(sort.key)) * (sort.direction === "asc" ? 1 : -1)) : rows;
+    const rows = active.length ? sourceEmployees.filter(row => active.every(([key, values]) => values.includes(employeeSearchCellValue(row, key)))) : sourceEmployees;
+    return sort ? [...rows].sort((a, b) => compareCustomerNameValues(employeeSearchCellValue(a, sort.key).replace(kind(sort.key) === "number" ? /[$,]/g : /$^/g, ""), employeeSearchCellValue(b, sort.key).replace(kind(sort.key) === "number" ? /[$,]/g : /$^/g, ""), kind(sort.key)) * (sort.direction === "asc" ? 1 : -1)) : rows;
   }, [sourceEmployees, filters, sort]);
+  const activeEmployeeId = employees.some(employee => employee.employeeId === selectedEmployee)
+    ? selectedEmployee
+    : employees[0]?.employeeId;
+  useEffect(() => {
+    onActiveEmployeeChange?.(employees.find(employee => employee.employeeId === activeEmployeeId));
+  }, [activeEmployeeId, employees, onActiveEmployeeChange]);
   const viewport = useRef<HTMLDivElement>(null);
   const [scrollTop, setScrollTop] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(600);
@@ -138,7 +144,7 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
                     label={col.label}
                     columnKey={col.key}
                     kind={kind(col.key)}
-                    getValues={() => sourceEmployees.map((row) => cellValue(row, col.key))}
+                    getValues={() => sourceEmployees.map((row) => employeeSearchCellValue(row, col.key))}
                     selected={filters[col.key]}
                     sort={sort?.key === col.key ? sort.direction : undefined}
                     onSort={direction => setSort({ key: col.key, direction })}
@@ -172,12 +178,13 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
               </tr>
             ) : (
               visible.map((row) => (
-                <tr key={row.employeeId} className={(selectedEmployee ?? employees[0]?.employeeId) === row.employeeId ? "is-selected" : undefined} onClick={() => setSelectedEmployee(row.employeeId)}>
+                <tr key={row.employeeId} className={activeEmployeeId === row.employeeId ? "is-selected" : undefined} onClick={() => { setSelectedEmployee(row.employeeId); onActiveEmployeeChange?.(row); }}>
                   {columns.map((col) => {
                     if (col.key === "ActionSelect") {
+                      const selected = selectedEmployeeIds.includes(row.employeeId);
                       return (
                         <td key={col.key} className="ac-employee-search-row-selector">
-                          {row.employeeId === employees[0]?.employeeId ? "â–¶" : ""}
+                          {onSelectedEmployeeIdsChange ? <button type="button" aria-label={`${selected ? "Deselect" : "Select"} ${row.fullName}`} aria-pressed={selected} title={`${selected ? "Deselect" : "Select"} ${row.fullName}`} onClick={event => { event.stopPropagation(); onSelectedEmployeeIdsChange(selected ? selectedEmployeeIds.filter(id => id !== row.employeeId) : [...new Set([...selectedEmployeeIds, row.employeeId])]); }} style={{ display: "block", width: "100%", height: "100%", minHeight: 18, padding: 0, border: 0, background: "transparent", color: "#000", font: "700 13px Arial,sans-serif", lineHeight: "18px", cursor: "pointer" }}>{selected ? "X" : ""}</button> : row.employeeId === employees[0]?.employeeId ? "â–¶" : ""}
                         </td>
                       );
                     }
@@ -191,11 +198,11 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
                     if (col.key === "OnlineJobAppFolder") {
                       return (
                         <td key={col.key} className="ac-employee-search-col-online">
-                          {cellValue(row, col.key) || "â€”"}
+                          {employeeSearchCellValue(row, col.key) || "â€”"}
                         </td>
                       );
                     }
-                    const value = cellValue(row, col.key);
+                    const value = employeeSearchCellValue(row, col.key);
                     if (col.key === "EmployeeReturnToSender" || col.key === "EmployeeRIP") {
                       const flagId = `${row.employeeId}:${col.key}`;
                       const checked = flagOverrides[flagId] ?? /^(1|true|yes|y|x|-1)$/i.test(value.trim());
@@ -208,12 +215,36 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
                           ? "ac-employee-search-col-ipc"
                         : col.key === "EmployeeNoCommunicationText"
                         ? "ac-employee-search-col-alert"
+                        : col.key === "EmployeeNoCommUserName" || col.key === "EmployeeNoCommDate" || col.key === "EmployeeNoCommText"
+                          ? "ac-employee-search-col-cell-1-related"
+                          : col.key === "EmployeeNoCommUserName2" || col.key === "EmployeeNoCommDate2" || col.key === "EmployeeNoComm2Text"
+                            ? "ac-employee-search-col-cell-2-related"
+                            : col.key === "EmployeeNoCommUserName3" || col.key === "EmployeeNoCommDate3" || col.key === "EmployeeNoComm3Text"
+                              ? "ac-employee-search-col-cell-3-related"
+                              : col.key === "EmployeeNoCommUserName4" || col.key === "EmployeeNoCommDate4" || col.key === "EmployeeNoComm4Text"
+                                ? "ac-employee-search-col-cell-4-related"
                         : col.key === "EmMobilePhoneVerifyText"
                         ? "ac-employee-search-col-cell"
                         : col.key === "EmQualification"
                           ? "ac-employee-search-col-qualification"
                           : col.key === "LicenseExpDateFlag"
                             ? "ac-employee-search-col-license"
+                            : col.key === "Car"
+                              ? "ac-employee-search-col-car"
+                              : col.key === "Spare10"
+                                ? "ac-employee-search-col-black-spacer"
+                              : col.key === "EmployeeContactHistoryUserName" || col.key === "EmployeeContactHistoryDate" || col.key === "EmployeeContactHistoryActionType" || col.key === "EmployeeContactHistoryNote" || col.key === "LicenseIssueDateUserName"
+                                ? "ac-employee-search-col-history"
+                                : col.key === "CallNumberHistory" || col.key === "CallNumberNoteCount" || col.key === "CallNumberIDUserName" || col.key === "CallNumberIDDate" || col.key === "CallNumberIDTime" || col.key === "CallNumber" || col.key === "LastCallUserName" || col.key === "LastCallDate" || col.key === "LastCallNote"
+                                  ? "ac-employee-search-col-call"
+                                  : col.key === "EmployeeFutureCall" || col.key === "EmployeeFutureCallUserName" || col.key === "EmployeeFutureCallUserDate"
+                                    ? "ac-employee-search-col-future-call"
+                                    : col.key === "PostEmployeeAsAvailableText" || col.key === "PostEmployeeAsAvailableUserName" || col.key === "PostEmployeeAsAvailableDate" || col.key === "PostEmployeeAsAvailableNotesHistory"
+                                      ? "ac-employee-search-col-available-man"
+                                      : col.key === "ResumeNumber" || col.key === "InterviewNumber"
+                                        ? "ac-employee-search-col-highlight-yellow"
+                                        : col.key === "EmployeeUserFlag7"
+                                          ? "ac-employee-search-col-user-flag"
                             : col.key === "WeekEndingDate"
                               ? "ac-employee-search-col-week-end"
                               : undefined;
@@ -246,6 +277,9 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
       <div className="ac-recordbar ac-customer-search-recordbar">
         <span className="font-mono">
           Record: {employees.length === 0 ? 0 : first + 1} of {employees.length.toLocaleString()}
+        </span>
+        <span className="text-[#7a7a7a]" aria-label={`${(fetchedCount ?? sourceEmployees.length).toLocaleString()} employee records fetched`}>
+          Fetched: {(fetchedCount ?? sourceEmployees.length).toLocaleString()} records
         </span>
         <span className="text-[#7a7a7a]">{employees.length !== (fetchedCount ?? sourceEmployees.length) ? `Filtered · ${(fetchedCount ?? sourceEmployees.length).toLocaleString()} loaded` : "Unfiltered"}</span>
         <span className="ml-auto text-[#7a7a7a]">{loadTiming ? `Query: ${(loadTiming.queryMs / 1000).toFixed(2)}s · Total load: ${(loadTiming.elapsed / 1000).toFixed(2)}s` : "All employees loaded"}</span>

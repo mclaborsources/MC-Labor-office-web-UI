@@ -1,4 +1,4 @@
-﻿import { queryReadOnly } from "@/lib/db/sql";
+import { queryReadOnly, queryReadOnlyUncached } from "@/lib/db/sql";
 import { loadEmployeeDefaultFields } from "@/lib/employeeSearchDefaultFields";
 import type {
   EmployeeSummary,
@@ -301,6 +301,57 @@ async function loadEmployeeSearchHoldingFields(
   return map;
 }
 
+/** Load the subset of employee search fields required by Views 1 directly from
+ * whichever employee tables actually exist in this database snapshot. */
+async function loadViews1Fields(ids: string[]): Promise<Map<string, Record<string, string>>> {
+  const result = new Map<string, Record<string, string>>();
+  const cleanIds = ids.filter(id => /^\d+$/.test(id));
+  if (!cleanIds.length) return result;
+  const wanted = [
+    "EmEntryDate", "PostEmployeeAsAvailableDate", "PostEmployeeAsAvailableText", "EmployeeOnUnemploymentText",
+    "Cluster", "ClusterName", "ClusterID", "County", "CountyFilter", "WillTravel", "EmployeeWillTravel",
+    "InterviewNumber", "InterviewNumberID", "InterviewDate", "InterviewByDate", "InterviewedByDate",
+    "EmployeeContactHistoryActionType", "EmployeeContactHistoryDate", "LastAction", "CallNumber", "CallDate",
+    "LastCallDate", "CallNote", "CallHistory", "ResumeNumber", "ResumeNumberID", "FirstCallNumber",
+    "FirstCallDate", "EmployeeNotes", "MainPoints", "OnlineJobAppFolder", "JobApplicationStatus_IPG",
+    "Salesman", "SalesmanName",
+    ...Array.from({ length: 8 }, (_, index) => `EmployeeUserFlag${index + 1}`),
+  ];
+  try {
+    const columns = await queryReadOnly<{ tableName: string; columnName: string }>(
+      `SELECT c.TABLE_NAME AS tableName, c.COLUMN_NAME AS columnName
+       FROM INFORMATION_SCHEMA.COLUMNS c
+       WHERE c.TABLE_SCHEMA='dbo' AND c.TABLE_NAME LIKE 'tblEmployee%'
+         AND c.COLUMN_NAME IN (${wanted.map((_, i) => `@field${i}`).join(",")})
+         AND EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS k
+                     WHERE k.TABLE_SCHEMA=c.TABLE_SCHEMA AND k.TABLE_NAME=c.TABLE_NAME AND k.COLUMN_NAME='EmployeeID')`,
+      wanted.map((field, index) => ({ name: `field${index}`, value: field })),
+    );
+    const picked = new Map<string, { tableName: string; columnName: string }>();
+    for (const field of wanted) {
+      const match = columns.find(column => column.columnName === field && column.tableName === (field === "EmEntryDate" ? "tblEmployee" : "tblEmployeeB"))
+        ?? columns.find(column => column.columnName === field);
+      if (match) picked.set(field, match);
+    }
+    if (!picked.size) return result;
+    const selections = [...picked].map(([field, source], index) =>
+      ` (SELECT TOP (1) CONVERT(NVARCHAR(255), v${index}.[${source.columnName}]) FROM dbo.[${source.tableName}] v${index} WITH (NOLOCK) WHERE v${index}.EmployeeID=e.EmployeeID) AS [${field}]`,
+    );
+    const rows = await queryReadOnly<Record<string, unknown>>(
+      `SELECT e.EmployeeID,${selections.join(",")} FROM dbo.tblEmployee e WITH (NOLOCK)
+       WHERE e.EmployeeID IN (SELECT TRY_CAST(value AS INT) FROM STRING_SPLIT(@ids, ','))`,
+      [{ name: "ids", value: cleanIds.join(",") }],
+    );
+    for (const row of rows) {
+      if (row.EmployeeID == null) continue;
+      result.set(String(row.EmployeeID), Object.fromEntries([...picked.keys()].map(key => [key, safeStr(row[key])])));
+    }
+  } catch (error) {
+    console.warn("[employees] Could not load Views 1 employee fields:", error);
+  }
+  return result;
+}
+
 // ---------------------------------------------------------------------------
 // Mapping helpers
 // ---------------------------------------------------------------------------
@@ -396,9 +447,10 @@ export async function getEmployees(
       && (!params.state || safeStr(row.EmState) === params.state));
   const total = filteredRows.length;
   const data = filteredRows.map(toEmployeeSummary);
-  const [defaultFields, holdingFields] = await Promise.all([
+  const [defaultFields, holdingFields, views1Fields] = await Promise.all([
     defaultFieldsPromise,
     loadEmployeeSearchHoldingFields(data.map((employee) => employee.employeeId)),
+    loadViews1Fields(data.map((employee) => employee.employeeId)),
   ]);
   for (const e of data) {
     // frmEmployeeSearch3Holding contains the complete Access search row,
@@ -407,6 +459,7 @@ export async function getEmployees(
     // database-backed value when its Access holding field is unavailable.
     const fields = {
       ...(defaultFields.get(e.employeeId) ?? {}),
+      ...(views1Fields.get(e.employeeId) ?? {}),
       ...(holdingFields.get(e.employeeId) ?? {}),
     };
     e.accessFields = fields;
@@ -439,6 +492,34 @@ export async function getEmployeeQuickSearchOptions(): Promise<Array<Pick<Employ
     const last = safeStr(row.EmLastName);
     return { employeeId: safeStr(row.EmployeeID), fullName: [first, last].filter(Boolean).join(" ") || "Unknown" };
   });
+}
+
+/** Distinct values used by the eight employee user-setting slots. */
+export async function getEmployeeUserFlagOptions(): Promise<FilterOption[][]> {
+  return Promise.all(Array.from({ length: 8 }, async (_, index) => {
+    const column = `EmployeeUserFlag${index + 1}`;
+    // Access stores employee User Flag fields across tblEmployee and tblEmployeeB.
+    // Resolve each actual source column first; a missing field must not silently
+    // make all eight dropdowns look empty.
+    const sources = await queryReadOnlyUncached<{ tableName: string }>(
+      `SELECT TABLE_NAME AS tableName FROM INFORMATION_SCHEMA.COLUMNS
+       WHERE TABLE_SCHEMA='dbo' AND COLUMN_NAME=@column AND TABLE_NAME LIKE 'tblEmployee%'`,
+      [{ name: "column", value: column }],
+    );
+    const tables = sources.map(source => source.tableName).filter(name => /^tblEmployee[A-Za-z0-9_]*$/.test(name));
+    if (!tables.length) return [];
+    const results = await Promise.all(tables.map(tableName => queryReadOnly<{ Value: string | null }>(
+      `SELECT DISTINCT LTRIM(RTRIM(CONVERT(NVARCHAR(255), [${column}]))) AS Value
+       FROM dbo.[${tableName}] WITH (NOLOCK)
+       WHERE NULLIF(LTRIM(RTRIM(CONVERT(NVARCHAR(255), [${column}]))), '') IS NOT NULL`,
+    )));
+    const values = new Map<string, string>();
+    for (const row of results.flat()) {
+      const value = safeStr(row.Value);
+      if (value) values.set(value.toLocaleLowerCase(), value);
+    }
+    return [...values.values()].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" })).map(value => ({ value, label: value }));
+  }));
 }
 
 export async function getEmployeeById(
