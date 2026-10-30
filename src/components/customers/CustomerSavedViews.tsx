@@ -15,7 +15,7 @@ function presetButtonName(slot:number) {
 }
 type ViewsContext = {
   slot:number; select:(slot:number)=>void; views:CustomerSavedView[]; layout:CustomerViewLayout;
-  setLayout:Dispatch<SetStateAction<CustomerViewLayout>>; ready:boolean; busy:boolean; message:string; canRename:boolean;
+  setWidths:Dispatch<SetStateAction<CustomerViewLayout["widths"]>>; setLayout:Dispatch<SetStateAction<CustomerViewLayout>>; ready:boolean; busy:boolean; message:string; canRename:boolean;
   openSave:()=>void; openRename:()=>void; openDelete:()=>void; remove:()=>Promise<void>; retryLoad:()=>void; loadFailed:boolean;
 };
 const Context=createContext<ViewsContext|null>(null);
@@ -23,6 +23,21 @@ export const useCustomerSavedViews = ()=>useContext(Context);
 export function CustomerSavedViewsProvider({children}:{children:ReactNode}) {
   const [slot,setSlot]=useState(1),[views,setViews]=useState<CustomerSavedView[]>([]);
   const [layout,setLayout]=useState(defaultCustomerViewLayout);
+  const [sharedWidths,setWidths]=useState<CustomerViewLayout["widths"]>({});
+  const [widthsReady,setWidthsReady]=useState(false);
+  useEffect(()=>{
+    try {
+      const stored=JSON.parse(localStorage.getItem("customer-search-shared-widths") ?? "{}");
+      const parsed=customerSavedViewSchema.shape.layout.shape.widths.safeParse(stored);
+      if(parsed.success)setWidths(parsed.data);
+    } catch { /* Keep defaults when browser storage is unavailable. */ }
+    setWidthsReady(true);
+  },[]);
+  useEffect(()=>{
+    if(!widthsReady)return;
+    try { localStorage.setItem("customer-search-shared-widths",JSON.stringify(sharedWidths)); } catch { /* Session widths still work. */ }
+  },[sharedWidths,widthsReady]);
+  const effectiveLayout={...layout,widths:{...layout.widths,...sharedWidths}};
   const [ready,setReady]=useState(false),[busy,setBusy]=useState(false),[message,setMessage]=useState("");
   const [loadFailed,setLoadFailed]=useState(false),[loadAttempt,setLoadAttempt]=useState(0);
   const [name,setName]=useState(""),[error,setError]=useState(""),[dialogMode,setDialogMode]=useState<"save"|"rename">("save");
@@ -46,7 +61,7 @@ export function CustomerSavedViewsProvider({children}:{children:ReactNode}) {
   const retryLoad=()=>{setMessage("");setLoadFailed(false);setReady(false);setLoadAttempt(attempt=>attempt+1);};
   const presetLayout=(viewSlot:number)=>viewSlot===1 ? defaultCustomerPresetLayout() : viewSlot===2 ? customerInfoPresetLayout() : viewSlot===3 || viewSlot===4 ? blastEmailPresetLayout() : viewSlot===5 ? siteOfficeVisitPresetLayout() : viewSlot===6 ? coldDormantCallPresetLayout() : viewSlot===7 ? emailMailerPresetLayout() : viewSlot===8 ? viewEightPresetLayout() : viewSlot===9 ? ryanEamonBrianPresetLayout() : viewSlot===10 ? siobhanOnePresetLayout() : viewSlot===11 ? profileTypePresetLayout() : viewSlot===12 ? kickbacksPresetLayout() : viewSlot===13 ? viewThirteenPresetLayout() : viewSlot===14 ? viewFourteenPresetLayout() : viewSlot===15 ? viewFifteenPresetLayout() : viewSlot===16 ? viewSixteenPresetLayout() : viewSlot===17 ? selectProfilePresetLayout() : viewSlot===18 ? siobhanTwoPresetLayout() : isBlankGridCustomerViewSlot(viewSlot) ? viewNineteenPresetLayout() : viewSlot===23 ? testOneScreenPresetLayout() : viewSlot===24 ? testTwoScreenPresetLayout() : viewSlot===25 ? rtsPresetLayout() : viewSlot===26 ? siobhanTwoScreensPresetLayout() : viewSlot===27 ? salesPackagesPresetLayout() : viewSlot===28 ? callListTemplatePresetLayout() : viewSlot===31 ? viewThirtyOnePresetLayout() : viewSlot===32 ? viewThirtyTwoPresetLayout() : defaultCustomerViewLayout();
   const select=(next:number)=>{setSlot(next);setLayout(views.find(view=>view.slot===next)?.layout ?? presetLayout(next));setMessage("");};
-  const openSave=()=>{setDialogMode("save");saveSlot.current=slot;snapshot.current=structuredClone(layout);setName(views.find(view=>view.slot===slot)?.name ?? originalName(slot));setError("");dialog.current?.showModal();};
+  const openSave=()=>{setDialogMode("save");saveSlot.current=slot;snapshot.current=structuredClone(effectiveLayout);setName(views.find(view=>view.slot===slot)?.name ?? originalName(slot));setError("");dialog.current?.showModal();};
   const canRename=Boolean(views.some(view=>view.slot===slot)||presetButtonName(slot));
   const openRename=()=>{
     const saved=views.find(view=>view.slot===slot);
@@ -78,7 +93,7 @@ export function CustomerSavedViewsProvider({children}:{children:ReactNode}) {
       setViews(current=>current.filter(view=>view.slot!==deleteSlot));setLayout(presetLayout(deleteSlot));setMessage("Saved view deleted.");deleteDialog.current?.close();
     }catch(error){setMessage(error instanceof Error ? error.message : "View could not be deleted.");}finally{setBusy(false);}
   }
-  return <Context.Provider value={{slot,select,views,layout,setLayout,ready,busy,message,canRename,openSave,openRename,openDelete,remove,retryLoad,loadFailed}}>
+  return <Context.Provider value={{slot,select,views,layout:effectiveLayout,setLayout,setWidths,ready,busy,message,canRename,openSave,openRename,openDelete,remove,retryLoad,loadFailed}}>
     {children}
     <dialog ref={dialog} className="ac-customer-saved-view-dialog" onCancel={event=>{if(busy)event.preventDefault();}}>
       <form onSubmit={event=>{event.preventDefault();void save();}}>
@@ -112,9 +127,13 @@ export function useCustomerViewField<K extends keyof CustomerViewLayout>(key:K,i
   const context=useCustomerSavedViews();
   const [local,setLocal]=useState(initial);
   const setLayout=context?.setLayout;
+  const setWidths=context?.setWidths;
   const setter=useCallback<Dispatch<SetStateAction<CustomerViewLayout[K]>>>(update=>{
-    if(enabled && setLayout)setLayout(current=>({...current,[key]:typeof update === "function" ? (update as (value:CustomerViewLayout[K])=>CustomerViewLayout[K])(current[key]) : update}));
+    if(enabled && key === "widths" && setWidths) {
+      setWidths(update as SetStateAction<CustomerViewLayout["widths"]>);
+    }
+    else if(enabled && setLayout)setLayout(current=>({...current,[key]:typeof update === "function" ? (update as (value:CustomerViewLayout[K])=>CustomerViewLayout[K])(current[key]) : update}));
     else setLocal(update);
-  },[enabled,setLayout,key]);
+  },[enabled,setLayout,setWidths,key]);
   return [enabled && context ? context.layout[key] : local,setter];
 }

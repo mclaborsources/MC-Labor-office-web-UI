@@ -18,6 +18,7 @@ type EmployeeViewsContext = {
   views: EmployeeSavedView[];
   layout: EmployeeViewLayout;
   setLayout: Dispatch<SetStateAction<EmployeeViewLayout>>;
+  setWidths: Dispatch<SetStateAction<EmployeeViewLayout["widths"]>>;
   ready: boolean;
   busy: boolean;
   message: string;
@@ -36,6 +37,19 @@ export function EmployeeSavedViewsProvider({ children }: { children: ReactNode }
   const [views, setViews] = useState<EmployeeSavedView[]>([]);
   const [presets, setPresets] = useState<EmployeeSearchPreset[]>([]);
   const [layout, setLayout] = useState(defaultEmployeeViewLayout);
+  const [sharedWidths,setWidths]=useState<EmployeeViewLayout["widths"]>({});
+  const [widthsReady,setWidthsReady]=useState(false);
+  useEffect(()=>{
+    try {
+      const parsed=employeeSavedViewSchema.shape.layout.shape.widths.safeParse(JSON.parse(localStorage.getItem("employee-search-shared-widths") ?? "{}"));
+      if(parsed.success)setWidths(parsed.data);
+    } catch { /* Browser storage is optional. */ }
+    setWidthsReady(true);
+  },[]);
+  useEffect(()=>{
+    if(widthsReady)try { localStorage.setItem("employee-search-shared-widths",JSON.stringify(sharedWidths)); } catch { /* Keep session widths. */ }
+  },[sharedWidths,widthsReady]);
+  const effectiveLayout={...layout,widths:{...layout.widths,...sharedWidths}};
   const [ready, setReady] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
@@ -98,7 +112,7 @@ export function EmployeeSavedViewsProvider({ children }: { children: ReactNode }
   };
   const openSave = () => {
     saveSlot.current = slot;
-    snapshot.current = structuredClone(layout);
+    snapshot.current = structuredClone(effectiveLayout);
     setDialogMode("save");
     setName(views.find(view => view.slot === slot)?.name ?? baseName(slot));
     setError("");
@@ -146,7 +160,7 @@ export function EmployeeSavedViewsProvider({ children }: { children: ReactNode }
   }
 
   const canRename = true;
-  return <Context.Provider value={{ slot, select, selectPreset, views, layout, setLayout, ready, busy, message, canRename, openSave, openRename, openDelete, remove }}>
+  return <Context.Provider value={{ slot, select, selectPreset, views, layout:effectiveLayout, setLayout, setWidths, ready, busy, message, canRename, openSave, openRename, openDelete, remove }}>
     {children}
     <dialog ref={dialog} className="ac-customer-saved-view-dialog" onCancel={event => { if (busy) event.preventDefault(); }}>
       <form onSubmit={event => { event.preventDefault(); void save(); }}>

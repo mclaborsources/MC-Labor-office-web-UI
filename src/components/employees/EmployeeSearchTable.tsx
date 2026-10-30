@@ -60,9 +60,15 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
   const [unhideColumnsOpen, setUnhideColumnsOpen] = useState(false);
   const setFilters = (update: typeof filters | ((current: typeof filters) => typeof filters)) => setLayout(current => ({ ...current, filters: typeof update === "function" ? update(current.filters) : update }));
   const setSort = (next: typeof sort) => setLayout(current => ({ ...current, sort: next }));
-  const resizeColumn = (key: EmployeeSearchColumnKey, width: number) => setLayout(current => ({ ...current, widths: { ...current.widths, [key]: Math.max(48, Math.min(1600, Math.round(width))) } }));
-  const resetColumnWidth = (key: EmployeeSearchColumnKey) => setLayout(current => { const widths = { ...current.widths }; delete widths[key]; return { ...current, widths }; });
-  useEffect(() => { setFilters({}); setSort(null); }, [resetVersion]);
+  const resizeColumn = (key: EmployeeSearchColumnKey, width: number) => {
+    const value=Math.max(48,Math.min(1600,Math.round(width)));
+    if(saved)saved.setWidths(current=>({...current,[key]:value}));
+    else setLayout(current=>({...current,widths:{...current.widths,[key]:value}}));
+  };
+  const resetColumnWidth = (key: EmployeeSearchColumnKey) => {
+    if(saved)saved.setWidths(current=>{const next={...current}; delete next[key]; return next;});
+    setLayout(current=>{const widths={...current.widths}; delete widths[key]; return {...current,widths};});
+  };  useEffect(() => { setFilters({}); setSort(null); }, [resetVersion]);
   useEffect(() => { setSort(null); }, [sortResetVersion]);
   function hideColumn(key: EmployeeSearchColumnKey) {
     setLayout(current => current.hidden.length >= EMPLOYEE_SEARCH_COLUMNS.length - 1 || current.hidden.includes(key)

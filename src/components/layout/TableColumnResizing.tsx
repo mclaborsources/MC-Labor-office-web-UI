@@ -15,6 +15,15 @@ export function TableColumnResizing() {
     document.head.appendChild(sheet);
     let drag: { table: HTMLTableElement; index: number; x: number; widths: number[]; state: SavedWidths } | null = null;
     const attached = new Map<HTMLTableElement, SavedWidths>();
+    let trackingWidths: Record<string,number> = {};
+    try {
+      const stored=JSON.parse(localStorage.getItem("tracking-shared-column-widths") ?? "{}");
+      trackingWidths=Object.fromEntries(Object.entries(stored).filter(([,value])=>typeof value === "number" && Number.isFinite(value) && value>=32 && value<=2000)) as Record<string,number>;
+    } catch { /* Width persistence is optional. */ }
+    const signatures=new WeakMap<HTMLTableElement,string>();
+    function trackingKeys(table:HTMLTableElement) {
+      return Array.from(table.querySelectorAll<HTMLTableColElement>(":scope > colgroup > col")).map(col=>col.dataset.columnKey ?? "");
+    }
 
     function tableKey(table: HTMLTableElement) {
       const tables = Array.from(document.querySelectorAll("table"));
@@ -52,6 +61,18 @@ export function TableColumnResizing() {
       let changed = false;
       for (const table of attached.keys()) if (!table.isConnected) { attached.delete(table); changed = true; }
       document.querySelectorAll<HTMLTableElement>("table").forEach(table => {
+        if(table.dataset.sharedWidths === "tracking") {
+          const keys=trackingKeys(table), signature=JSON.stringify(keys);
+          if(attached.has(table) && signatures.get(table)===signature)return;
+          signatures.set(table,signature);
+          const cols=Array.from(table.querySelectorAll<HTMLTableColElement>(":scope > colgroup > col"));
+          const widths=keys.map((key,index)=>trackingWidths[key] ?? (Number.parseFloat(cols[index].style.width)||80));
+          if(keys.some(key=>trackingWidths[key]!==undefined)) {
+            const state={id:`resize-${++nextId}`,widths};
+            table.dataset.columnResizeId=state.id; attached.set(table,state); changed=true;
+          } else if(attached.delete(table)) {delete table.dataset.columnResizeId; changed=true;}
+          return;
+        }
         if (attached.has(table)) return;
         const state = saved.get(tableKey(table));
         if (state) { table.dataset.columnResizeId = state.id; attached.set(table, state); changed = true; }
@@ -63,6 +84,7 @@ export function TableColumnResizing() {
       const cell = event.target.closest<HTMLTableCellElement>("th");
       const table = cell?.closest("table");
       if (!cell || !table || !table.tHead?.contains(cell)) return null;
+      if (cell.querySelector(' [role="separator"][aria-label^="Resize "]')) return null;
       const columns = headerColumns(table);
       const column = columns.find(item => item.cell === cell);
       if (!column) return null;
@@ -98,15 +120,32 @@ export function TableColumnResizing() {
       document.documentElement.classList.add("mc-column-dragging");
       renderStyles();
     }
-    function end() { drag = null; document.documentElement.classList.remove("mc-column-dragging", "mc-column-edge"); }
+    function end() {
+      if(drag?.table.dataset.sharedWidths === "tracking") {
+        const key=trackingKeys(drag.table)[drag.index];
+        if(key) {
+          trackingWidths[key]=drag.state.widths[drag.index];
+          try {localStorage.setItem("tracking-shared-column-widths",JSON.stringify(trackingWidths));} catch { /* Keep session widths. */ }
+          for(const table of attached.keys())if(table.dataset.sharedWidths === "tracking") {attached.delete(table); signatures.delete(table);}
+          restore();
+        }
+      }
+      drag = null;
+      document.documentElement.classList.remove("mc-column-dragging", "mc-column-edge");
+    }
     function click(event: MouseEvent) { if (edge(event)) { event.preventDefault(); event.stopPropagation(); } }
     function reset(event: MouseEvent) {
       const target = edge(event);
       if (!target) return;
       event.preventDefault(); event.stopPropagation();
+      if(target.table.dataset.sharedWidths === "tracking") {
+        delete trackingWidths[trackingKeys(target.table)[target.column.start]];
+        try {localStorage.setItem("tracking-shared-column-widths",JSON.stringify(trackingWidths));} catch { /* Keep session widths. */ }
+        signatures.delete(target.table);
+      }
       saved.delete(tableKey(target.table)); attached.delete(target.table);
       delete target.table.dataset.columnResizeId;
-      renderStyles(); end();
+      drag=null; renderStyles(); end(); restore();
     }
     restore();
     const observer = new MutationObserver(restore);

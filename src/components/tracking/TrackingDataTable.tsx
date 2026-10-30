@@ -22,8 +22,8 @@ const referenceWidths: Record<string, number> = {
 
 export function TrackingDataTable({ columns, children, referenceLayout = false }: { columns: readonly string[]; children: ReactNode; referenceLayout?: boolean }) {
   const sizes = columns.map(label => !label ? 7 : /^(Sat|Sun|Mon|Tue|Wed|Thu|Fri)( S)?$/.test(label) ? 50 : (referenceLayout ? referenceWidths[label] : undefined) ?? widths[label] ?? 85);
-  return <table className="ac-tracking-datasheet" style={{ width: sizes.reduce((sum, width) => sum + width, 0), tableLayout: "fixed" }}>
-    <colgroup>{sizes.map((width, index) => <col key={index} style={{ width }} />)}</colgroup>
+  return <table data-shared-widths="tracking" className="ac-tracking-datasheet" style={{ width: sizes.reduce((sum, width) => sum + width, 0), tableLayout: "fixed" }}>
+    <colgroup>{sizes.map((width, index) => <col key={index} data-column-key={columns[index] || undefined} style={{ width }} />)}</colgroup>
     {children}
   </table>;
 }
