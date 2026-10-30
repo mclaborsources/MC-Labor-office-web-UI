@@ -17979,8 +17979,8 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
 /* Employee Search 3: Access reference layout. */
 .ac-employee-search-page { position:relative; min-width:1918px; font:14px Calibri,Arial,sans-serif; color:#000; background:#ececec; }
 .ac-employee-search-page .ac-customer-search,.ac-employee-search-page .ac-customer-search-body { background:#ececec; font:14px Calibri,Arial,sans-serif; }
-.ac-employee-search-page button[data-action-status]:not(.ac-employee-views3-btn-yellow):not(.ac-employee-views3-btn-new-apps):not(.ac-employee-views3-btn-orange):not(.ac-employee-admin-transfer-main):not(.ac-employee-admin-transfer-recruit):not(.ac-employee-admin-transfer-research):not(.ac-employee-admin-transfer-hold):not(.ac-employee-admin-transfer-health):not(.ac-employee-admin-transfer-profile6):not(.ac-employee-admin-transfer-profile7):not(.ac-employee-admin-transfer-profile8):not(.ac-employee-admin-transfer-profile9):not(.ac-employee-admin-transfer-profile10),
-.ac-employee-search-page .ac-btn:not(.ac-employee-views3-btn-yellow):not(.ac-employee-views3-btn-new-apps):not(.ac-employee-views3-btn-orange):not(.ac-employee-admin-transfer-main):not(.ac-employee-admin-transfer-recruit):not(.ac-employee-admin-transfer-research):not(.ac-employee-admin-transfer-hold):not(.ac-employee-admin-transfer-health):not(.ac-employee-admin-transfer-profile6):not(.ac-employee-admin-transfer-profile7):not(.ac-employee-admin-transfer-profile8):not(.ac-employee-admin-transfer-profile9):not(.ac-employee-admin-transfer-profile10) { background:#efefef!important; color:#000!important; border:1px solid!important; border-color:#fff #777 #777 #fff!important; border-radius:0!important; box-shadow:none!important; font-family:Calibri,Arial,sans-serif!important; font-size:14px!important; font-weight:400; height:29px; min-height:0; padding:1px 7px; }
+.ac-employee-search-page button[data-action-status]:not(:where(.ac-employee-views3-btn-yellow)):not(:where(.ac-employee-views3-btn-new-apps)):not(:where(.ac-employee-views3-btn-orange)):not(:where(.ac-employee-admin-transfer-main)):not(:where(.ac-employee-admin-transfer-recruit)):not(:where(.ac-employee-admin-transfer-research)):not(:where(.ac-employee-admin-transfer-hold)):not(:where(.ac-employee-admin-transfer-health)):not(:where(.ac-employee-admin-transfer-profile6)):not(:where(.ac-employee-admin-transfer-profile7)):not(:where(.ac-employee-admin-transfer-profile8)):not(:where(.ac-employee-admin-transfer-profile9)):not(:where(.ac-employee-admin-transfer-profile10)),
+.ac-employee-search-page .ac-btn:not(:where(.ac-employee-views3-btn-yellow)):not(:where(.ac-employee-views3-btn-new-apps)):not(:where(.ac-employee-views3-btn-orange)):not(:where(.ac-employee-admin-transfer-main)):not(:where(.ac-employee-admin-transfer-recruit)):not(:where(.ac-employee-admin-transfer-research)):not(:where(.ac-employee-admin-transfer-hold)):not(:where(.ac-employee-admin-transfer-health)):not(:where(.ac-employee-admin-transfer-profile6)):not(:where(.ac-employee-admin-transfer-profile7)):not(:where(.ac-employee-admin-transfer-profile8)):not(:where(.ac-employee-admin-transfer-profile9)):not(:where(.ac-employee-admin-transfer-profile10)) { background:#efefef!important; color:#000!important; border:1px solid!important; border-color:#fff #777 #777 #fff!important; border-radius:0!important; box-shadow:none!important; font-family:Calibri,Arial,sans-serif!important; font-size:14px!important; font-weight:400; height:29px; min-height:0; padding:1px 7px; }
 .ac-employee-search-page input,.ac-employee-search-page select { border-radius:0; color:#000; font:14px Calibri,Arial,sans-serif; }
 .ac-employee-search-page .ac-customer-search-titlebar { position:absolute; top:0; left:0; right:0; height:44px; min-height:0; padding:5px 8px; gap:7px; z-index:2; pointer-events:none; background:transparent; }
 .ac-employee-search-page .ac-customer-search-titlebar>* { pointer-events:auto; }
@@ -19395,4 +19395,987 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
 .ac-employee-search-page .ac-employee-search-views-3 .ac-employee-views3-btn-grid > .ac-employee-views3-btn-new-apps.ac-btn[data-action-status]:is(:hover,:focus,:active,:disabled) {
   background:#fff!important;
   background-color:#fff!important;
+}
+
+/* Views 1: preserve the flat Access palette and bevels from the desktop reference. */
+.ac-employee-search-page .ac-employee-search-views-1 {
+  border:1px solid;
+  border-color:#fff #808080 #808080 #fff;
+}
+.ac-employee-search-page .ac-employee-search-views-1 .ac-employee-search-filter-row {
+  left:12px; top:10px; gap:6px;
+}
+.ac-employee-search-page .ac-employee-search-views-1 .ac-select {
+  appearance:auto;
+  border:2px solid;
+  border-color:#808080 #fff #fff #808080;
+  box-shadow:0 0 0 1px #c0c0c0;
+  padding:0 3px;
+  background-color:#fff;
+}
+.ac-employee-search-page .ac-employee-search-views-1 select.ac-employee-search-trade-select {
+  background-color:#a4e6f8;
+  text-align:center;
+}
+.ac-employee-search-page .ac-employee-search-views-1 .ac-employee-search-entry-dt-link {
+  border:1px solid;
+  border-color:#fff #777 #777 #fff;
+  background:#efefef;
+  padding:1px 6px;
+}
+.ac-employee-search-page .ac-employee-search-views-1 > .ac-employee-search-preset-grid {
+  left:11px; right:11px; top:105px;
+  gap:3px 7px;
+}
+.ac-employee-search-page .ac-employee-search-views-1 > .ac-employee-search-preset-grid > button[data-action-status] {
+  color:#000!important;
+  background:#efefef!important;
+  border:1px solid!important;
+  border-color:#fff #777 #777 #fff!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+}
+.ac-employee-search-page .ac-employee-search-views-1 > .ac-employee-search-preset-grid > button.ac-employee-search-btn-warn[data-action-status] {
+  color:#ff0000!important;
+  font-weight:700!important;
+}
+.ac-employee-search-page .ac-employee-search-views-1 > .ac-employee-search-preset-grid > button:nth-child(22) {
+  text-decoration:underline;
+}
+.ac-employee-search-page .ac-employee-search-views-1 > .ac-employee-search-preset-grid > button.ac-employee-search-btn-multi[data-action-status] {
+  color:#000!important;
+  background:#8dc6da!important;
+  border-color:#000!important;
+  font-weight:400!important;
+}
+.ac-employee-search-page .ac-employee-search-views-1 > .ac-employee-search-preset-grid > button:is(:first-child,:nth-child(21)) {
+  border-color:#000!important;
+}
+.ac-employee-search-page .ac-employee-search-views-1 > .ac-employee-search-preset-grid > button[aria-pressed=true] {
+  outline:1px dotted #000;
+  outline-offset:-4px;
+}
+.ac-employee-search-page .ac-employee-search-views-1 .ac-employee-search-call-filter-group {
+  background:#ececec;
+  border:1px solid;
+  border-color:#fff #999 #999 #fff;
+}
+.ac-employee-search-page .ac-employee-search-views-1 input[type=radio] {
+  appearance:auto; width:13px; height:13px; margin:0;
+  accent-color:#000;
+}
+.ac-employee-search-page .ac-employee-search-views-1 .ac-employee-search-v-btn {
+  display:inline-flex; align-items:center; justify-content:center; gap:2px;
+}
+.ac-employee-search-page .ac-employee-search-views-1 .ac-employee-search-v-btn::before {
+  content:'▧'; color:#000080; font:15px/1 Arial,sans-serif;
+}
+
+.ac-employee-search-page .ac-employee-search-views-1 button.ac-employee-search-entry-dt-link[data-action-status] { color:#0000ff!important; }
+
+/* The combined history preset keeps its reference blue in every state. */
+#employee-search-combined-history-preset,
+#employee-search-combined-history-preset:is(:hover,:focus,:active,[aria-pressed=true]) {
+  background:#8dc6da!important;
+  background-image:none!important;
+  color:#000!important;
+}
+
+/* Bold preset labels in both employee search view panels. */
+.ac-employee-search-page .ac-employee-search-views-1 > .ac-employee-search-preset-grid > button.ac-btn[data-action-status],
+.ac-employee-search-page .ac-employee-search-views-2 > .ac-employee-search-preset-grid > button.ac-btn[data-action-status],
+#employee-search-combined-history-preset {
+  font-weight:700!important;
+}
+
+/* Slightly enlarge Views 1 and Views 2 presets without moving the filter row. */
+.ac-employee-search-page :is(.ac-employee-search-views-1,.ac-employee-search-views-2) > .ac-employee-search-preset-grid > button.ac-btn[data-action-status],
+.ac-employee-search-page :is(.ac-employee-search-views-1,.ac-employee-search-views-2) > .ac-employee-search-preset-grid > .ac-customer-search-preset-empty {
+  height:28px!important;
+  min-height:28px!important;
+  max-height:28px;
+  font-size:15px!important;
+  line-height:22px;
+  padding:1px 4px;
+}
+.ac-employee-search-page .ac-employee-search-views-1 > .ac-employee-search-preset-grid {
+  height:90px;
+  grid-template-rows:repeat(3,28px);
+}
+
+/* Softer backgrounds for the Views 1 and Views 2 preset buttons. */
+.ac-employee-search-page :is(.ac-employee-search-views-1,.ac-employee-search-views-2) > .ac-employee-search-preset-grid > button.ac-btn[data-action-status] {
+  background:#f3f3f3!important;
+  background-image:none!important;
+}
+#employee-search-combined-history-preset,
+#employee-search-combined-history-preset:is(:hover,:focus,:active,[aria-pressed=true]) {
+  background:#a6d3e3!important;
+}
+
+/* Slightly stronger borders on the Views 1 and Views 2 presets. */
+.ac-employee-search-page :is(.ac-employee-search-views-1,.ac-employee-search-views-2) > .ac-employee-search-preset-grid > button.ac-btn[data-action-status] {
+  box-sizing:border-box;
+  border-width:2px!important;
+}
+
+/* Keep near-white preset faces through hover, focus and selection. */
+.ac-employee-search-page .ac-employee-search-controls :is(.ac-employee-search-views-1,.ac-employee-search-views-2) > .ac-employee-search-preset-grid > button.ac-btn[data-action-status]:not(:where(#employee-search-combined-history-preset)),
+.ac-employee-search-page .ac-employee-search-controls :is(.ac-employee-search-views-1,.ac-employee-search-views-2) > .ac-employee-search-preset-grid > button.ac-btn[data-action-status]:not(:where(#employee-search-combined-history-preset)):is(:hover,:focus,:active,[aria-pressed=true]) {
+  background:#f3f3f3!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+
+/* Shared command-button treatment throughout the Employee Search tab contents. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body button[data-action-status] {
+  box-sizing:border-box;
+  min-height:28px!important;
+  border-width:2px!important;
+  border-style:solid!important;
+  border-radius:0!important;
+  font-family:Calibri,Arial,sans-serif!important;
+  font-size:15px!important;
+  font-weight:700!important;
+}
+/* Only neutral faces change; colored buttons and colored labels keep their palette. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body button[data-action-status]:not(:where(
+  #employee-search-combined-history-preset,
+  .ac-employee-search-btn-multi,
+  .ac-employee-views3-btn-yellow,
+  .ac-employee-views3-btn-new-apps,
+  .ac-employee-views3-btn-orange,
+  .ac-employee-admin-transfer-main,
+  .ac-employee-admin-transfer-recruit,
+  .ac-employee-admin-transfer-research,
+  .ac-employee-admin-transfer-hold,
+  .ac-employee-admin-transfer-health,
+  .ac-employee-admin-transfer-profile6,
+  .ac-employee-admin-transfer-profile7,
+  .ac-employee-admin-transfer-profile8,
+  .ac-employee-admin-transfer-profile9,
+  .ac-employee-admin-transfer-profile10
+)) {
+  background:#f3f3f3!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+/* Access Dates dropdown: black text strip with a separate light arrow area. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-1 .ac-employee-search-filter-row > select[aria-label="Dates"].ac-select {
+  color:#fff!important;
+  background-color:#fff!important;
+  background-image:linear-gradient(#000,#000)!important;
+  background-repeat:no-repeat!important;
+  background-position:10px center!important;
+  background-size:calc(100% - 39px) 18px!important;
+  padding-left:10px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-1 select[aria-label="Dates"] option {
+  color:#000;
+  background:#fff;
+}
+/* Access-style boxed arrows for every select inside Employee Search tabs. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel select {
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  border-radius:0!important;
+  padding-right:22px!important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='22' viewBox='0 0 18 22'%3E%3Cpath fill='%23f8f8f8' stroke='%23b8b8b8' d='M.5.5h17v21H.5z'/%3E%3Cpath fill='none' stroke='%23fff' d='M1 21V1h16'/%3E%3Cpath fill='none' stroke='%23777777' stroke-width='.8' d='m5 9 4 4 4-4'/%3E%3C/svg%3E")!important;
+  background-repeat:no-repeat!important;
+  background-position:right 1px center!important;
+  background-size:18px 22px!important;
+}
+/* Keep the Dates text strip while using the same boxed arrow. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-1 .ac-employee-search-filter-row > select[aria-label="Dates"].ac-select {
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='22' viewBox='0 0 18 22'%3E%3Cpath fill='%23f8f8f8' stroke='%23b8b8b8' d='M.5.5h17v21H.5z'/%3E%3Cpath fill='none' stroke='%23fff' d='M1 21V1h16'/%3E%3Cpath fill='none' stroke='%23777777' stroke-width='.8' d='m5 9 4 4 4-4'/%3E%3C/svg%3E"),linear-gradient(#000,#000)!important;
+  background-position:right 1px center,10px center!important;
+  background-size:18px 22px,calc(100% - 39px) 18px!important;
+  background-repeat:no-repeat!important;
+}
+/* Views 2 EE SEARCH alone uses a white face. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-search-views-2 .ac-employee-search-preset-grid > button.ac-employee-search-btn-warn-underline.ac-btn[data-action-status],
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-search-views-2 .ac-employee-search-preset-grid > button.ac-employee-search-btn-warn-underline.ac-btn[data-action-status]:is(:hover,:focus,:active,[aria-pressed=true]) {
+  background:#fff!important;
+  background-image:none!important;
+  font-weight:700!important;
+}
+/* Views 3: slightly larger, bold command and filter text. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-3 .ac-employee-views3-btn-grid > button.ac-btn,
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-3 .ac-employee-views3-filters :is(legend,label,span) {
+  font-family:Calibri,Arial,sans-serif!important;
+  font-size:14px!important;
+  font-weight:700!important;
+}
+/* Views 3: give commands and radio options a little more breathing room. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-3 .ac-employee-views3-btn-grid {
+  flex-basis:205px;
+  width:205px;
+  column-gap:11px;
+  row-gap:6px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-3 .ac-employee-views3-filters .ac-customer-search-filter-group-options {
+  gap:6px 17px;
+  flex-wrap:wrap;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-3 .ac-employee-views3-filters .ac-customer-search-radio {
+  gap:6px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-3 .ac-employee-views3-filters .ac-customer-search-filter-group {
+  height:auto;
+  min-height:32px;
+}
+/* Views 4 matches the larger, bold and more spacious Views 3 filters. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-4 :is(legend,label,span) {
+  font-size:14px!important;
+  font-weight:700!important;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-4 .ac-customer-search-filter-group-options {
+  gap:6px 17px;
+  flex-wrap:wrap;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-4 .ac-customer-search-radio {
+  gap:6px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-4 .ac-customer-search-filter-group {
+  height:auto;
+  min-height:32px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-4 > .ac-customer-search-views-filter-row:first-child {
+  height:auto;
+  min-height:32px;
+}
+/* Views 4: a modest increase that keeps the original compact filter bands. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-4 :is(legend,label,span) {
+  font-size:13px!important;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-4 .ac-customer-search-filter-group-options {
+  gap:0 10px;
+  flex-wrap:nowrap;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-4 .ac-customer-search-radio {
+  gap:4px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-4 .ac-customer-search-filter-group,
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-4 > .ac-customer-search-views-filter-row:first-child {
+  height:29px;
+  min-height:29px;
+}
+/* Copy tabs: fit the enlarged labels and keep rows from overlapping. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-copy-tab .ac-employee-copy-main {
+  flex-basis:800px;
+  width:800px;
+  gap:5px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-copy-tab--nh .ac-employee-copy-main {
+  flex-basis:390px;
+  width:390px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-copy-tab .ac-employee-copy-row {
+  height:30px;
+  min-height:30px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-copy-tab .ac-employee-copy-row .ac-employee-copy-primary-btn {
+  flex:0 0 320px;
+  width:320px;
+  min-width:320px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-copy-tab .ac-employee-copy-bar {
+  height:135px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-copy-tab .ac-employee-copy-row button.ac-btn[data-action-status] {
+  height:30px;
+  max-height:30px;
+  border-width:1px 1px 3px!important;
+  border-bottom-color:#777!important;
+  padding:1px 5px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-copy-tab .ac-employee-copy-side-btn {
+  flex-basis:60px;
+  width:60px;
+  min-width:60px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-copy-tab .ac-employee-copy-contact {
+  margin-left:20px;
+}
+/* Copy commands: compact proportions with readable labels and bottom accents. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-copy-tab .ac-employee-copy-main {
+  flex-basis:690px;
+  width:690px;
+  gap:4px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-copy-tab--nh .ac-employee-copy-main {
+  flex-basis:340px;
+  width:340px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-copy-tab .ac-employee-copy-row {
+  height:25px;
+  min-height:25px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-copy-tab .ac-employee-copy-row .ac-employee-copy-primary-btn {
+  flex-basis:270px;
+  width:270px;
+  min-width:270px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-copy-tab button.ac-btn[data-action-status] {
+  height:25px;
+  min-height:25px!important;
+  max-height:25px;
+  font-size:13px!important;
+  line-height:19px;
+  padding:0 4px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-copy-tab .ac-employee-copy-bar {
+  height:112px;
+}
+/* MA tab only: regular-weight command labels. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-copy-tab--ma button.ac-btn[data-action-status] {
+  font-weight:400!important;
+}
+/* NH tab: regular-weight command labels, matching MA. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-copy-tab--nh button.ac-btn[data-action-status] {
+  font-weight:400!important;
+}
+/* Employee Utilities: match the five groups in the Access reference. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-utilities-tab.ac-search-views-tab-pane {
+  display:grid;
+  grid-template-columns:325px 176px 296px 248px minmax(300px,1fr);
+  align-content:start;
+  padding:10px 12px;
+  background:#ececec;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-utilities-tab > .ac-customer-search-utilities-section {
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  width:auto;
+  min-width:0;
+  height:88px;
+  min-height:88px;
+  padding:0 19px;
+  gap:19px;
+  border-right:1px solid #aaa;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-utilities-tab > .ac-customer-search-utilities-section:nth-child(1) {
+  display:grid;
+  grid-template-columns:121px 169px;
+  grid-template-rows:29px 29px;
+  gap:19px 15px;
+  padding:4px 19px 0 0;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-utilities-tab .ac-customer-search-utilities-section:nth-child(1) .ac-btn {
+  margin:0;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-utilities-tab .ac-customer-search-utilities-section:nth-child(1) .ac-btn:last-child {
+  grid-column:1 / -1;
+  justify-self:center;
+  width:185px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-utilities-tab > .ac-customer-search-utilities-section:nth-child(2) {
+  padding-top:4px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-utilities-tab .ac-customer-search-utilities-btn-row {
+  display:flex;
+  gap:15px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-utilities-tab > .ac-customer-search-utilities-section:nth-child(3) {
+  height:144px;
+  padding:16px 19px 0 22px;
+  gap:10px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-utilities-tab .ac-select {
+  height:25px;
+  min-height:25px;
+  font:14px Calibri,Arial,sans-serif;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-utilities-tab select[aria-label="Has not been contacted in"],
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-utilities-tab select[aria-label="Find duplicates"] {
+  text-align:center;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-utilities-tab .ac-employee-utilities-outside-action {
+  display:flex;
+  align-items:center;
+  gap:5px;
+  white-space:nowrap;
+  margin-top:32px;
+  margin-left:-15px;
+  font:14px Calibri,Arial,sans-serif;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-utilities-tab .ac-employee-utilities-outside-action select {
+  width:145px;
+  opacity:1;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-utilities-tab > .ac-customer-search-utilities-section:nth-child(4) {
+  gap:27px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-utilities-tab > .ac-customer-search-utilities-section:nth-child(5) {
+  border-right:0;
+  padding:0 0 0 19px;
+  gap:7px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-utilities-tab .ac-customer-search-utilities-section:nth-child(5) .ac-btn {
+  align-self:center;
+  width:237px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-utilities-tab button.ac-btn[data-action-status] {
+  height:29px;
+  min-height:29px!important;
+  border-width:1px!important;
+  font-size:14px!important;
+  font-weight:400!important;
+  padding:1px 7px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-utilities-tab button.ac-employee-utilities-black-btn.ac-btn[data-action-status] {
+  background:#000!important;
+  color:#fff!important;
+  font-weight:700!important;
+  margin:0;
+}
+/* Admin Utilities: desktop reference layout and transfer palette. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-admin-tab.ac-search-views-tab-pane {
+  display:grid;
+  grid-template-columns:758px minmax(580px,1fr);
+  gap:30px;
+  padding:8px 12px;
+  background:#ececec;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-admin-transfer-grid {
+  grid-template-columns:repeat(5,133px);
+  grid-template-rows:repeat(2,61px);
+  gap:11px 15px;
+  padding:16px 31px 0 0;
+  min-height:205px;
+  border-right:1px solid #aaa;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-admin-transfer-grid > button.ac-btn[data-action-status] {
+  width:133px;
+  height:61px;
+  min-height:61px!important;
+  max-height:61px;
+  border:1px solid #000!important;
+  box-shadow:none!important;
+  color:#000!important;
+  font:400 14px/18px Calibri,Arial,sans-serif!important;
+  padding:3px 5px;
+  overflow-wrap:normal;
+}
+.ac-employee-search-page .ac-employee-admin-transfer-grid .ac-employee-admin-transfer-main { background:#d9d9d9!important; }
+.ac-employee-search-page .ac-employee-admin-transfer-grid .ac-employee-admin-transfer-recruit { background:#fff500!important; }
+.ac-employee-search-page .ac-employee-admin-transfer-grid .ac-employee-admin-transfer-research { background:#87cefa!important; }
+.ac-employee-search-page .ac-employee-admin-transfer-grid .ac-employee-admin-transfer-hold { background:#ffb6b6!important; }
+.ac-employee-search-page .ac-employee-admin-transfer-grid .ac-employee-admin-transfer-health { background:#ffc000!important; }
+.ac-employee-search-page .ac-employee-admin-transfer-grid .ac-employee-admin-transfer-profile6 { background:#b484d6!important; }
+.ac-employee-search-page .ac-employee-admin-transfer-grid .ac-employee-admin-transfer-profile7 { background:#75e394!important; }
+.ac-employee-search-page .ac-employee-admin-transfer-grid .ac-employee-admin-transfer-profile8 { background:#ddc49c!important; }
+.ac-employee-search-page .ac-employee-admin-transfer-grid .ac-employee-admin-transfer-profile9 { background:#d76876!important; }
+.ac-employee-search-page .ac-employee-admin-transfer-grid .ac-employee-admin-transfer-profile10 { background:#8c8c8c!important; }
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-admin-controls {
+  grid-template-columns:267px 145px minmax(90px,1fr);
+  grid-template-rows:46px 25px auto;
+  gap:22px 26px;
+  height:205px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-admin-checks {
+  height:205px;
+  padding-right:20px;
+  gap:2px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-admin-checks .ac-customer-search-check {
+  font:700 14px/18px Calibri,Arial,sans-serif;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-admin-record-group {
+  height:46px;
+  background:#ececec;
+  padding:4px 12px;
+  font:14px Calibri,Arial,sans-serif;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-admin-record-group legend {
+  font-size:14px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-admin-controls > button.ac-btn[data-action-status] {
+  font:400 14px/17px Calibri,Arial,sans-serif!important;
+  border-width:1px!important;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-admin-controls > .ac-btn:not(.ac-employee-admin-multifilter-btn) {
+  justify-self:end;
+  width:58px;
+  height:46px;
+  white-space:normal;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-admin-multifilter-btn.ac-btn {
+  justify-self:center;
+  width:241px;
+  height:25px;
+  min-height:25px!important;
+}
+/* Transfer colors must win over the neutral command-button reset. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-admin-tab .ac-employee-admin-transfer-grid > button.ac-btn.ac-employee-admin-transfer-main[data-action-status] {
+  background:#d9d9d9!important;
+  background-image:none!important;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-admin-tab .ac-employee-admin-transfer-grid > button.ac-btn.ac-employee-admin-transfer-recruit[data-action-status] {
+  background:#fff500!important;
+  background-image:none!important;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-admin-tab .ac-employee-admin-transfer-grid > button.ac-btn.ac-employee-admin-transfer-research[data-action-status] {
+  background:#87cefa!important;
+  background-image:none!important;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-admin-tab .ac-employee-admin-transfer-grid > button.ac-btn.ac-employee-admin-transfer-hold[data-action-status] {
+  background:#ffb6b6!important;
+  background-image:none!important;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-admin-tab .ac-employee-admin-transfer-grid > button.ac-btn.ac-employee-admin-transfer-health[data-action-status] {
+  background:#ffc000!important;
+  background-image:none!important;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-admin-tab .ac-employee-admin-transfer-grid > button.ac-btn.ac-employee-admin-transfer-profile6[data-action-status] {
+  background:#b484d6!important;
+  background-image:none!important;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-admin-tab .ac-employee-admin-transfer-grid > button.ac-btn.ac-employee-admin-transfer-profile7[data-action-status] {
+  background:#75e394!important;
+  background-image:none!important;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-admin-tab .ac-employee-admin-transfer-grid > button.ac-btn.ac-employee-admin-transfer-profile8[data-action-status] {
+  background:#ddc49c!important;
+  background-image:none!important;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-admin-tab .ac-employee-admin-transfer-grid > button.ac-btn.ac-employee-admin-transfer-profile9[data-action-status] {
+  background:#d76876!important;
+  background-image:none!important;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-admin-tab .ac-employee-admin-transfer-grid > button.ac-btn.ac-employee-admin-transfer-profile10[data-action-status] {
+  background:#8c8c8c!important;
+  background-image:none!important;
+}
+
+/* Admin inclusion checkboxes: compact black checks on white, as in Access. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-admin-checks input[type="checkbox"] {
+  appearance:none;
+  -webkit-appearance:none;
+  box-sizing:border-box;
+  flex:0 0 11px;
+  width:11px;
+  height:11px;
+  min-width:11px;
+  padding:0;
+  margin:0;
+  border:1px solid #000;
+  border-radius:0;
+  background:#fff;
+  box-shadow:none;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-admin-checks input[type="checkbox"]:checked {
+  background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'%3E%3Cpath d='m1.5 4.3 2 2.2 4-4.2' fill='none' stroke='%23000' stroke-width='1.2'/%3E%3C/svg%3E") center/9px 9px no-repeat;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-admin-checks input[type="checkbox"]:focus-visible {
+  outline:1px dotted #000;
+  outline-offset:2px;
+}
+/* Ray: four compact Access utility groups. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray-tab.ac-search-views-tab-pane {
+  display:grid;
+  grid-template-columns:198px 204px 468px minmax(480px,1fr);
+  align-content:start;
+  gap:0;
+  padding:10px 14px;
+  background:#ececec;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray-tab .ac-employee-ray-section {
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  width:auto;
+  min-width:0;
+  height:100px;
+  padding:0 27px;
+  gap:7px;
+  border-right:1px solid #aaa;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray-tab .ac-employee-ray-section:nth-child(1) {
+  padding-left:0;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray-tab .ac-employee-ray-section:nth-child(4) {
+  border-right:0;
+  padding-right:12px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray-tab .ac-employee-ray-heading {
+  font:400 14px/18px Calibri,Arial,sans-serif;
+  white-space:nowrap;
+  margin-bottom:2px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray-tab .ac-employee-ray-section:first-child .ac-employee-ray-heading {
+  margin-left:10px;
+  margin-bottom:6px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-ray-tab button.ac-btn[data-action-status] {
+  height:25px;
+  min-height:25px!important;
+  max-height:25px;
+  border-width:1px!important;
+  font:400 14px/20px Calibri,Arial,sans-serif!important;
+  padding:1px 6px;
+  background:#efefef!important;
+  color:#000!important;
+  opacity:1;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray-tab .ac-employee-ray-section:first-child .ac-btn {
+  width:121px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray-tab .ac-employee-ray-section:nth-child(2) :is(.ac-btn,.ac-select) {
+  width:149px;
+  height:25px;
+  min-height:25px;
+  font:14px Calibri,Arial,sans-serif;
+  text-align:center;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray-tab .ac-employee-ray-wide-btn.ac-btn {
+  width:385px;
+  text-align:left;
+  justify-content:flex-start;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray-tab .ac-employee-ray-heading-row {
+  display:block;
+  margin:0;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray-tab .ac-employee-ray-warn {
+  position:absolute;
+  top:0;
+  right:12px;
+  width:215px;
+  text-align:center;
+  color:#f00;
+  font:700 14px/18px Calibri,Arial,sans-serif;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray-tab .ac-employee-ray-phone-row {
+  display:block;
+  margin-top:-7px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray-tab .ac-employee-ray-steps {
+  margin:0;
+  padding:0;
+  list-style:none;
+  counter-reset:ray-step;
+  font:14px/18px Calibri,Arial,sans-serif;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray-tab .ac-employee-ray-steps li {
+  counter-increment:ray-step;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray-tab .ac-employee-ray-steps li::before {
+  content:counter(ray-step) ') ';
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray-tab .ac-employee-ray-phone-btns {
+  position:absolute;
+  top:44px;
+  right:12px;
+  width:165px;
+  gap:4px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray-tab .ac-employee-ray-status {
+  grid-column:1 / -1;
+  margin-top:12px;
+}
+/* Ray 2: warning legend and three compact commands in an Access group box. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray2-tab.ac-search-views-tab-pane {
+  display:block;
+  padding:18px 12px;
+  background:#ececec;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray2-tab .ac-employee-ray2-fieldset {
+  display:flex;
+  align-items:center;
+  width:554px;
+  height:70px;
+  margin:0;
+  padding:10px 16px 15px;
+  gap:15px;
+  border:1px solid;
+  border-color:#999 #fff #fff #999;
+  background:#ececec;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-ray2-tab .ac-employee-ray2-warn {
+  float:none;
+  width:auto;
+  height:auto;
+  margin:0;
+  padding:0 6px;
+  color:#f00;
+  background:#ececec;
+  font:400 14px/18px Calibri,Arial,sans-serif;
+  white-space:nowrap;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-ray2-tab button.ac-btn[data-action-status] {
+  flex:0 0 161px;
+  width:161px;
+  height:25px;
+  min-height:25px!important;
+  padding:1px 6px;
+  border-width:1px!important;
+  background:#efefef!important;
+  font:400 14px/20px Calibri,Arial,sans-serif!important;
+}
+/* Interview: compact Populate command above the horizontal date band. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-interview-tab.ac-search-views-tab-pane {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:flex-start;
+  padding:9px 15px;
+  gap:8px;
+  background:#ececec;
+  border:0;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-interview-tab > button.ac-btn[data-action-status] {
+  flex:0 0 29px;
+  width:81px;
+  height:29px;
+  min-height:29px!important;
+  border-width:1px!important;
+  background:#efefef!important;
+  font:400 14px/20px Calibri,Arial,sans-serif!important;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-interview-tab .ac-customer-search-filter-group {
+  display:flex;
+  flex:0 0 31px;
+  align-items:center;
+  width:max-content;
+  max-width:100%;
+  height:31px;
+  min-height:31px;
+  padding:3px 5px;
+  margin:0;
+  border:1px solid;
+  border-color:#999 #fff #fff #999;
+  background:#ececec;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-interview-tab .ac-customer-search-filter-group legend {
+  float:left;
+  width:auto;
+  margin:0 14px 0 0;
+  padding:0;
+  font:400 14px/22px Calibri,Arial,sans-serif;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-interview-tab .ac-customer-search-filter-group-options {
+  display:flex;
+  flex-wrap:nowrap;
+  gap:16px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-interview-tab .ac-customer-search-radio {
+  gap:6px;
+  white-space:nowrap;
+  font:400 14px/22px Calibri,Arial,sans-serif;
+  color:#000;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-interview-tab .ac-customer-search-radio input {
+  appearance:auto;
+  width:12px;
+  height:12px;
+  margin:0;
+  accent-color:#000;
+}
+/* Call Lists: four Access radio bands with reference widths. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists-tab.ac-search-views-tab-pane {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:flex-start;
+  padding:12px 11px;
+  gap:10px;
+  background:#ececec;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists-tab > .ac-customer-search-filter-group {
+  box-sizing:border-box;
+  flex:0 0 30px;
+  height:30px;
+  min-height:30px;
+  padding:2px 5px;
+  border:1px solid;
+  border-color:#999 #fff #fff #999;
+  background:#ececec;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists-tab > .ac-customer-search-filter-group:nth-child(-n+2) {
+  width:946px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists-tab > .ac-customer-search-filter-group:nth-child(3) {
+  width:1181px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists-tab > .ac-customer-search-filter-group:nth-child(4) {
+  width:253px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists-tab .ac-customer-search-filter-group legend {
+  float:left;
+  width:auto;
+  margin:0 12px 0 0;
+  padding:0;
+  font:400 14px/22px Calibri,Arial,sans-serif;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists-tab > .ac-customer-search-filter-group:nth-child(-n+2) legend {
+  width:80px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists-tab .ac-customer-search-filter-group-options {
+  gap:15px;
+  flex-wrap:nowrap;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists-tab .ac-customer-search-radio {
+  gap:6px;
+  white-space:nowrap;
+  font:400 14px/22px Calibri,Arial,sans-serif;
+  color:#000;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists-tab .ac-customer-search-radio input {
+  appearance:auto;
+  width:12px;
+  height:12px;
+  margin:0;
+  accent-color:#000;
+}
+/* Call Lists 2: reference dropdowns, inset filter panel and bottom preset strip. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-tab.ac-search-views-tab-pane {
+  display:flex;
+  flex-direction:column;
+  padding:12px 14px 10px;
+  gap:7px;
+  background:#ececec;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-filters-row {
+  grid-template-columns:250px repeat(5,154px);
+  gap:6px;
+  height:25px;
+  flex:0 0 25px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-filters-row .ac-select {
+  height:25px;
+  min-height:25px;
+  font:14px Calibri,Arial,sans-serif;
+  text-align:center;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-filters-row .ac-select:first-child {
+  text-align:left;
+  background-color:#ececec;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-body {
+  display:flex;
+  flex:0 0 162px;
+  height:162px;
+  gap:27px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-additional {
+  position:relative;
+  display:flex;
+  flex:1;
+  flex-direction:column;
+  min-width:1000px;
+  height:162px;
+  padding:3px 8px 3px 215px;
+  gap:0;
+  border:1px solid;
+  border-color:#999 #fff #fff #999;
+  background:#ececec;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-additional legend {
+  position:absolute;
+  top:3px;
+  left:8px;
+  font:400 14px/20px Calibri,Arial,sans-serif;
+  color:#999;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-additional > .ac-customer-search-radio:first-of-type {
+  position:absolute;
+  top:3px;
+  left:138px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-additional .ac-customer-search-radio {
+  gap:6px;
+  min-height:20px;
+  font:400 14px/20px Calibri,Arial,sans-serif;
+  color:#999;
+  white-space:nowrap;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-additional .ac-customer-search-check {
+  margin-left:10px;
+  gap:5px;
+  font:400 14px/20px Calibri,Arial,sans-serif;
+  color:#000;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-additional > .ac-customer-search-radio:last-child {
+  margin-top:12px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-additional input {
+  appearance:auto;
+  flex:0 0 12px;
+  width:12px;
+  height:12px;
+  margin:0;
+  accent-color:#000;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-right {
+  display:grid;
+  flex:0 0 238px;
+  width:238px;
+  grid-template-columns:1fr 1fr;
+  grid-template-rows:25px 20px 29px;
+  gap:3px 7px;
+  align-content:end;
+  padding-bottom:4px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-viewmap {
+  display:flex;
+  grid-column:1 / -1;
+  gap:4px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-viewmap .ac-select {
+  width:194px;
+  height:25px;
+  min-height:25px;
+  font:14px Calibri,Arial,sans-serif;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-right .ac-employee-calllists2-hint {
+  grid-column:1 / -1;
+  text-align:center;
+  color:#00f;
+  font:14px/18px Calibri,Arial,sans-serif;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-right > .ac-btn {
+  width:auto;
+  margin:0;
+  justify-self:center;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-footer {
+  display:grid;
+  grid-template-columns:repeat(10,minmax(0,1fr));
+  gap:7px;
+  height:25px;
+  margin-top:4px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-footer .ac-employee-calllists2-spare,
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-footer .ac-employee-calllists2-recruiter {
+  box-sizing:border-box;
+  width:100%;
+  max-width:none;
+  height:25px;
+  min-height:25px;
+  margin:0;
+  padding:1px 4px;
+  border:1px solid;
+  border-color:#fff #777 #777 #fff;
+  background:#efefef;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-calllists2-recruiter {
+  color:#f00;
+  text-align:center;
+  font:400 13px/22px Calibri,Arial,sans-serif;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-calllists2-tab button.ac-btn[data-action-status] {
+  width:auto;
+  min-height:25px!important;
+  height:25px;
+  padding:1px 6px;
+  border-width:1px!important;
+  font:400 14px/21px Calibri,Arial,sans-serif!important;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-body .ac-employee-calllists2-footer button.ac-employee-search-btn-warn.ac-btn[data-action-status] {
+  color:#f00!important;
+  font-weight:700!important;
 }

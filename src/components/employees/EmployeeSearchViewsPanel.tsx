@@ -191,6 +191,7 @@ function PresetGrid({
             return (
               <AccessButton data-action-status="complete"
                 key={`${rowIndex}-${colIndex}-${cell.label}`}
+                id={viewOffset === 0 && rowIndex === 0 && colIndex === 9 ? "employee-search-combined-history-preset" : undefined}
                 xs
                 aria-pressed={saved?.slot === slot}
                 className={`${employeeSearchPresetBtnClass(cell.style) ?? ""} ${saved?.slot === slot ? "ac-employee-search-preset-btn--active" : ""}`}
@@ -411,7 +412,7 @@ function Views4Tab({ filters = {}, onFiltersChange }: { filters?: EmployeeSearch
     settingValue: "",
   });
   return (
-    <div className="ac-employee-search-views-filters ac-search-views-tab-pane">
+    <div className="ac-employee-search-views-filters ac-employee-search-views-4 ac-search-views-tab-pane">
       <div className="ac-customer-search-views-filter-row">
         <FilterRadioGroup legend="Profile:" name="emp-v4-profile" options={EMPLOYEE_VIEWS_4_PROFILE} value={filters.profile ?? ""} onValueChange={value => update("profile", value)} />
         <fieldset className="ac-customer-search-filter-group ac-customer-search-filter-group--user-setting ac-employee-views4-user-setting">
@@ -659,7 +660,7 @@ function UserSettingsTab({ employeeUserFlagOptions = Array.from({ length: 8 }, (
         ))}
       </div>
       <div className="ac-customer-search-user-settings-status" role="status" aria-live="polite">
-        {status || loadError || (userSettingsSelectedCount ? `${userSettingsSelectedCount.toLocaleString()} employee${userSettingsSelectedCount === 1 ? "" : "s"} selected.` : "Select one or more employee rows in the table, then choose a value and click Set or Clear.")}
+        {status || loadError || (userSettingsSelectedCount ? `${userSettingsSelectedCount.toLocaleString()} employee${userSettingsSelectedCount === 1 ? "" : "s"} selected.` : "")}
       </div>
       {pendingFlag && typeof document !== "undefined" && createPortal(<div role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) setPendingFlag(null); }} style={{ position: "fixed", inset: 0, zIndex: 10000, display: "grid", placeItems: "center", padding: 16, background: "rgba(0,0,0,.35)" }}>
         <form role="dialog" aria-modal="true" aria-labelledby="employee-user-flag-password-title" onSubmit={confirmFlagPassword} style={{ width: "min(360px, 100%)", padding: 18, border: "1px solid #777", background: "#eee", boxShadow: "0 8px 28px rgba(0,0,0,.35)", color: "#111" }}>
@@ -766,6 +767,12 @@ function UtilitiesTab({ utilityFilters: filters = {}, onUtilityFiltersChange: on
           <option value="">&lt;Has Not Been Contacted In&gt;</option>
           <LegacyOptions options={LEGACY_DROPDOWN_OPTIONS.contactRanges} />
         </select>
+        <label className="ac-employee-utilities-outside-action">
+          <span>Outside Action | 041:</span>
+          <select className="ac-select" aria-label="Outside Action" disabled title="Outside Action options are not available in the exported data.">
+            <option value="" />
+          </select>
+        </label>
       </div>
       <div className="ac-customer-search-utilities-section ac-employee-utilities-section--stack">
         <AccessButton data-action-status="complete" xs onClick={() => { exportCsv("Employee-Salesman-Records", ["Employee", "Salesman"], rows.map(row => [row.fullName, row.accessFields.Salesman ?? ""])); setMessage(`Exported salesman record list for ${rows.length.toLocaleString()} employees.`); }}>
@@ -1046,10 +1053,9 @@ function RayTab({ employeeRows = [], selectedEmployeeIds = [], onRefresh }: Pick
 function Ray2Tab() {
   return (
     <div className="ac-employee-ray2-tab ac-search-views-tab-pane">
-      <p className="ac-employee-ray2-warn">
-        These will remove the value, user, and date from the profile, and the history | 027
-      </p>
       <fieldset className="ac-employee-ray2-fieldset">
+        <legend className="ac-employee-ray2-warn">These will remove the value, user, and date from the profile, and the history | 027
+      </legend>
         <AccessButton data-action-status="missing" xs>
           Remove All Vax
         </AccessButton>
