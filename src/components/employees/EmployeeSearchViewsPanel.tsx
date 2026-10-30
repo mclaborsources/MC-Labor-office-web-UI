@@ -231,6 +231,7 @@ function PresetGrid({
 }
 
 function Views1Tab({ trades, currentTradeId, onTradeChange, onSort, callNumberFilter = "none", onCallNumberFilterChange, onRefresh, views1Filters = {}, onViews1FiltersChange, employeeRows = [], activeEmployee }: Pick<EmployeeSearchViewsPanelProps, "trades" | "currentTradeId" | "onTradeChange" | "onSort" | "callNumberFilter" | "onCallNumberFilterChange" | "onRefresh" | "views1Filters" | "onViews1FiltersChange" | "employeeRows" | "activeEmployee">) {
+  const saved = useEmployeeSavedViews();
   const updateFilter = (key: keyof EmployeeSearchViews1Filters, value: string) => onViews1FiltersChange?.({ ...views1Filters, [key]: value });
   const clusterOptions = Array.from(new Set(employeeRows.map(row => row.accessFields.Cluster || row.accessFields.ClusterName || row.accessFields.ClusterID || "").filter(Boolean))).sort((a, b) => a.localeCompare(b));
   const openLicenseSearch = () => {
@@ -296,11 +297,11 @@ function Views1Tab({ trades, currentTradeId, onTradeChange, onSort, callNumberFi
       </div>
 
       <div className="ac-employee-search-action-row">
-        <AccessButton data-action-status="complete" xs className="ac-employee-search-action-wide" onClick={() => updateFilter("filter", "Available Manpower")}>
-          Available Manpower
+        <AccessButton data-action-status="complete" xs className="ac-employee-search-action-wide" aria-pressed={saved?.slot === 11} title="View 11" onClick={() => saved?.selectPreset(11, employeeSearchPresetLayoutForSlot(11, "Available Man"))}>
+          {saved?.views.find(view => view.slot === 11)?.name ?? "Available Man"}
         </AccessButton>
-        <AccessButton data-action-status="complete" xs className="ac-employee-search-action-wide" onClick={() => updateFilter("filter", "UI")}>
-          UI
+        <AccessButton data-action-status="complete" xs className="ac-employee-search-action-wide" aria-pressed={saved?.slot === 12} title="View 12" onClick={() => saved?.selectPreset(12, employeeSearchPresetLayoutForSlot(12, "UI"))}>
+          {saved?.views.find(view => view.slot === 12)?.name ?? "UI"}
         </AccessButton>
         <AccessButton data-action-status="missing" xs disabled title="The Access export does not include the Update All routine for this action." className="ac-employee-search-lic-flag-btn">
           Lic Exp Date Flag - Update All | 022

@@ -22122,3 +22122,27 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
 .ac-tracking-page.ac-tracking-reference .ac-tracking-col-detail > .ac-tabs > button.ac-tab:nth-child(7):is(:hover,:focus,:active) {
   color:#000!important;
 }
+/* Salesmen direction controls: fit both complete button labels. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--salesmen {
+  grid-template-columns:265px 577px minmax(260px,1fr);
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--salesmen .ac-tracking-salesmen-left-pane {
+  box-sizing:border-box;
+  width:265px;
+  min-width:265px;
+  max-width:none;
+  overflow:visible;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-salesmen-left-pane .ac-tracking-btn-grid {
+  grid-template-columns:125px 129px;
+  gap:3px 11px;
+  width:265px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--salesmen .ac-tracking-salesmen-left-pane button.ac-btn[data-action-status] {
+  width:100%;
+  min-width:0;
+  white-space:nowrap;
+}
