@@ -598,9 +598,9 @@ export async function getTrackingJobInfo(
       ).catch(() => []),
       queryReadOnly<{ PullDownReferralAgencyID: unknown; ReferralAgencyName: string | null }>(
         `SELECT PullDownReferralAgencyID,
-                ISNULL(PullDownReferralAgencyName, '') AS ReferralAgencyName
-         FROM tblPullDownReferralAgency WITH (NOLOCK)
-         ORDER BY PullDownReferralAgencyName`,
+                ISNULL(PullDownReferralAgency, '') AS ReferralAgencyName
+         FROM tblPullDownReferralAgencies WITH (NOLOCK)
+         ORDER BY PullDownReferralAgency`,
       ).catch(() => []),
     ]);
 
@@ -674,4 +674,26 @@ export async function getTrackingJobInfo(
   } catch {
     return null;
   }
+}
+
+/** Referral choices belong to the tracking form, independent of the selected customer. */
+export async function getTrackingReferralAgencies(): Promise<TrackingReferralAgency[]> {
+  const rows = await queryReadOnly<{ PullDownReferralAgencyID: unknown; ReferralAgencyName: string | null }>(
+    `SELECT PullDownReferralAgencyID, ISNULL(PullDownReferralAgency, '') AS ReferralAgencyName
+     FROM tblPullDownReferralAgencies WITH (NOLOCK)
+     ORDER BY PullDownReferralAgency`,
+  );
+  return rows.filter(row => row.PullDownReferralAgencyID != null && str(row.ReferralAgencyName))
+    .map(row => ({ id: String(row.PullDownReferralAgencyID), name: str(row.ReferralAgencyName) }));
+}
+/** Salesman choices are available before selecting a tracking customer. */
+export async function getTrackingSalesmen(): Promise<TrackingSalesmanOption[]> {
+  const rows = await queryReadOnly<{ PullDownSalesmanID: unknown; SalesmanLabel: string | null }>(
+    `SELECT PullDownSalesmanID,
+       LTRIM(RTRIM(ISNULL(PullDownSalesmanFName, '') + ' ' + ISNULL(PullDownSalesmanLName, ''))) AS SalesmanLabel
+     FROM tblPullDownSalesman WITH (NOLOCK)
+     ORDER BY PullDownSalesmanLName, PullDownSalesmanFName`,
+  );
+  return rows.filter(row => row.PullDownSalesmanID != null && str(row.SalesmanLabel))
+    .map(row => ({ id: String(row.PullDownSalesmanID), name: str(row.SalesmanLabel) }));
 }

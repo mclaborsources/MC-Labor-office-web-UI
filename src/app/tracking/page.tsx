@@ -7,6 +7,8 @@ import {
   getTrackingCustomerOptions,
   getTrackingJobOptions,
   getTrackingJobInfo,
+  getTrackingReferralAgencies,
+  getTrackingSalesmen,
 } from "@/lib/tracking";
 import { getPerDiemDestinations } from "@/lib/operationalReports";
 
@@ -49,7 +51,7 @@ export default async function TrackingPage({ searchParams }: PageProps) {
   const [month, day, year] = week.weekEndingDate.split("/").map(Number);
   const weekEndingDate = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
-  const [preview, customers, jobs, jobInfo, perDiemDestinations] = await Promise.all([
+  const [preview, customers, jobs, jobInfo, perDiemDestinations, referralAgencies, salesmen] = await Promise.all([
     shouldLoadPreview ? getTrackingPreview({
       week: week.assignWeek,
       year: week.assignYear,
@@ -63,6 +65,8 @@ export default async function TrackingPage({ searchParams }: PageProps) {
       ? getTrackingJobInfo(customerId, projectId || undefined, week.assignWeek, week.assignYear, weekEndingDate)
       : Promise.resolve(null),
     getPerDiemDestinations(week.assignWeek, week.assignYear).catch(() => []),
+    getTrackingReferralAgencies().catch(() => []),
+    getTrackingSalesmen().catch(() => []),
   ]);
 
   return (
@@ -75,6 +79,8 @@ export default async function TrackingPage({ searchParams }: PageProps) {
           customers={customers}
           jobs={jobs}
           jobInfo={jobInfo}
+          referralAgencies={referralAgencies}
+          salesmen={salesmen}
           selectedCustomerId={customerId}
           selectedProjectId={projectId}
           userDisplayName={session.user?.displayName}

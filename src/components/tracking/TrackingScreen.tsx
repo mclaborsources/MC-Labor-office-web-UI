@@ -17,6 +17,8 @@ import type {
   TrackingCustomerOption,
   TrackingJobOption,
   TrackingJobInfo,
+  TrackingReferralAgency,
+  TrackingSalesmanOption,
 } from "@/types/tracking";
 import { AccessButton } from "@/components/access/AccessButton";
 import { AccessToolbar, AccessButtonRow, AccessToolbarDivider } from "@/components/access/AccessToolbar";
@@ -39,6 +41,8 @@ interface TrackingScreenProps {
   userDisplayName?: string;
   officeStaffSession?: boolean;
   perDiemDestinations?: PerDiemDestination[];
+  referralAgencies?: TrackingReferralAgency[];
+  salesmen?: TrackingSalesmanOption[];
 }
 
 const TOOLBAR_ALERT_ACTIONS = [
@@ -437,7 +441,7 @@ function JobInfoTabPanel({
 }) {
   const rates = jobInfo?.billRates ?? [];
   const gradeRows = [...rates];
-  while (gradeRows.length < 4) {
+  while (gradeRows.length < 5) {
     gradeRows.push({ grade: "", rate: "" });
   }
 
@@ -478,17 +482,18 @@ function JobInfoTabPanel({
       <section className="ac-tracking-job-info-section ac-tracking-job-info-grade" aria-label="Bill rates">
         <div className="ac-tracking-grade-table ac-tracking-grade-table--job-info">
           <table>
+            <colgroup><col style={{ width: 18 }} /><col style={{ width: 44 }} /><col style={{ width: 66 }} /><col /></colgroup>
             <thead>
               <tr>
-                <th>Grade</th>
-                <th>Rate</th>
+                <th aria-label="Row selector" /><th>Grade</th>
+                <th>Rate</th><th aria-label="Empty column" />
               </tr>
             </thead>
             <tbody>
               {gradeRows.map((r, i) => (
                 <tr key={i}>
-                  <td>{r.grade}</td>
-                  <td className="text-right">{r.rate}</td>
+                  <td /><td>{r.grade}</td>
+                  <td className="text-right">{r.rate}</td><td />
                 </tr>
               ))}
             </tbody>
@@ -506,7 +511,7 @@ function JobInfoTabPanel({
             type="number"
             min="1"
             className="ac-input ac-tracking-grade-record-input"
-            defaultValue="1"
+            defaultValue={rates.length ? "1" : ""}
             aria-label="Record number"
           />
           <span className="ac-tracking-grade-record-nav" aria-hidden>
@@ -532,6 +537,8 @@ export function TrackingScreen({
   userDisplayName = "",
   officeStaffSession = false,
   perDiemDestinations = [],
+  referralAgencies = [],
+  salesmen = [],
 }: TrackingScreenProps) {
   const router = useRouter();
   const [reportMessage, setReportMessage] = useState("");
@@ -845,7 +852,7 @@ export function TrackingScreen({
           {TRACKING_REPORT_OPTIONS.map(option => <option key={option.label} value={option.href}>{option.label}</option>)}
         </select>
         <AccessButton data-action-status="linked" onClick={() => router.push("/employee-health-insurance-by-month")}>Health Ins</AccessButton>
-        <AccessButton data-action-status="linked" className="ac-tracking-toolbar-alert" onClick={() => router.push("/employee-bonus-expense-report")}>Bonus Exp</AccessButton>
+        <AccessButton data-action-status="linked" className="ac-tracking-toolbar-alert ac-tracking-toolbar-bonus" onClick={() => router.push("/employee-bonus-expense-report")}>Bonus Exp</AccessButton>
         <select
           className="ac-select"
           defaultValue=""
@@ -865,7 +872,7 @@ export function TrackingScreen({
         {TOOLBAR_ALERT_ACTIONS.map((label) => (
           <AccessButton data-action-status="linked"
             key={label}
-            className="ac-tracking-toolbar-alert"
+            className={`ac-tracking-toolbar-alert ${["Missing WC", "Expired WC", "Missing GL", "Expired GL"].includes(label) ? "ac-tracking-toolbar-gray" : ""}`}
             onClick={() => {
               if (label === "Job App Problems") router.push("/job-app-problems");
               if (label === "Contracts") router.push("/contract-report");
@@ -998,14 +1005,17 @@ export function TrackingScreen({
               </div>
             ) : (
               <div id="tracking-job-panel" className="ac-tracking-detail-body ac-tracking-detail-body--job-tab" onClick={(event) => { const button = (event.target as HTMLElement).closest("button"); if (button) handleJobPanelAction(button.textContent ?? ""); }} onBlur={persistJobTabDraft}>
-                <TrackingJobTabBody tabId={jobInfoTab} jobInfo={jobInfo} />
+                <TrackingJobTabBody tabId={jobInfoTab} jobInfo={jobInfo} referralAgencies={referralAgencies} salesmen={salesmen} />
               </div>
             )}
           </div>
 
           <aside className="ac-tracking-summary-rail" aria-label="Summary and reports">
             <div className="ac-tracking-users">
+              <input className="ac-tracking-summary-text-field" aria-label="Tracking summary text" type="text" />
+              <span className="sr-only">
               {officeStaffSession ? <OfficeUserPresence /> : <><span className="ac-flabel">Signed in</span><span className="ac-tracking-users-value">{userInitials}</span></>}
+              </span>
             </div>
 
             <div className="ac-tracking-summary-reports">
@@ -1101,6 +1111,7 @@ export function TrackingScreen({
                 ►|
               </AccessButton>
             </div>
+            <div className="ac-tracking-color-command-group">
             <Link href="/customer-menu">
               <AccessButton data-action-status="linked">Customer Menu</AccessButton>
             </Link>
@@ -1109,13 +1120,16 @@ export function TrackingScreen({
                 <span key={c} className="ac-swatch" style={{ background: c }} title="Status color" />
               ))}
             </span>
+            </div>
             <AccessButton data-action-status="complete" onClick={() => setTrackingTab("ts-history")}>History Update</AccessButton>
+            <div className="ac-tracking-color-command-group">
             <AccessButton data-action-status="linked" disabled={!selected} onClick={openEmployee}>Browse</AccessButton>
             <span className="ac-swatches ac-tracking-palette-swatches">
               {PALETTE_SWATCHES.map((c) => (
                 <span key={c} className="ac-swatch" style={{ background: c }} title="Palette" />
               ))}
             </span>
+            </div>
           </AccessButtonRow>
         </div>
       </div>
@@ -1123,7 +1137,7 @@ export function TrackingScreen({
       {trackingTab === "tracking" ? (
         <div className="ac-tracking-grid-shell flex min-h-0 flex-1 flex-col">
           <div className="ac-grid ac-grid-tracking ac-tracking-grouped mc-scroll-smooth min-h-0 flex-1">
-            <TrackingDataTable columns={GRID_COLUMNS.map(headerLabel)}>
+            <TrackingDataTable referenceLayout columns={GRID_COLUMNS.map(headerLabel)}>
               <thead>
                 <tr>
                   {GRID_COLUMNS.map((col, i) => (

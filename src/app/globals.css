@@ -20379,3 +20379,1746 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
   color:#f00!important;
   font-weight:700!important;
 }
+/* Tracking desktop reference: retain the compact, horizontally scrollable form. */
+.ac-tracking-page.ac-tracking-reference {
+  min-width:1918px;
+  color:#000;
+  background:#ececec;
+  font:14px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-filter-panel.ac-panel,
+.ac-tracking-page.ac-tracking-reference .ac-tracking-filter-panel--tall .ac-tracking-job-shell {
+  height:193px;
+  min-height:193px;
+  max-height:193px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-filter-panel--tall .ac-tracking-job-shell {
+  grid-template-columns:375px minmax(1165px,1fr) 360px;
+  gap:6px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-col-assign {
+  padding:6px 7px 8px;
+  gap:7px;
+  overflow:visible;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-top-row {
+  height:29px;
+  flex-wrap:nowrap;
+  gap:7px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-top-field--date { flex:0 0 140px; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-top-field--date input { width:98px; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-top-field--week { flex:0 0 78px; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-top-row .ac-tracking-top-empl {
+  flex:0 0 125px;
+  width:125px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-assigned-customer,
+.ac-tracking-page.ac-tracking-reference .ac-tracking-assigned-job,
+.ac-tracking-page.ac-tracking-reference .ac-tracking-assignment-actions { grid-template-columns:86px minmax(0,1fr); }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-col-assign .ac-tracking-assigned-customer select.ac-select,
+.ac-tracking-page.ac-tracking-reference .ac-tracking-col-assign .ac-tracking-assigned-job select.ac-select {
+  flex:0 0 192px;
+  width:192px;
+  min-width:192px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-assignment-actions > div:last-child,
+.ac-tracking-page.ac-tracking-reference .ac-tracking-assignment-links { flex-wrap:nowrap; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-col-detail > .ac-tabs {
+  height:32px;
+  min-height:32px;
+  flex-wrap:nowrap;
+  padding:5px 0 0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-detail-body--job-info {
+  height:156px;
+  min-height:156px;
+  flex:none;
+  padding:10px 7px 3px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-info {
+  height:137px;
+  min-height:137px;
+  grid-template-columns:250px 340px minmax(220px,1fr) 216px;
+  grid-template-rows:1fr;
+  gap:0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-info-section {
+  padding:0 7px;
+  overflow:visible;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-summary-row { grid-template-columns:90px 145px; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-doc-row { grid-template-columns:88px minmax(60px,1fr) 29px 100px; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-info-mid .ac-tracking-job-doc-row .ac-btn {
+  font-size:14px!important;
+  min-width:0;
+}
+/* Datasheet column boundaries, clipped labels and fine Access row grid. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-datasheet { border-collapse:collapse; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-datasheet th {
+  box-sizing:border-box;
+  height:21px;
+  padding:0;
+  background:#dfe3e9;
+  border:1px solid;
+  border-color:#fff #c1c8d5 #c1c8d5 #fff;
+  font:400 14px/19px Calibri,Arial,sans-serif;
+  text-align:left;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-datasheet td {
+  box-sizing:border-box;
+  height:21px;
+  padding:0 3px;
+  border:1px solid #e2e6f0;
+  font:400 14px/20px Calibri,Arial,sans-serif;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:clip;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-datasheet .ac-column-filter-trigger {
+  display:flex;
+  align-items:center;
+  width:100%;
+  min-width:0;
+  height:19px;
+  padding:0 3px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  color:#000;
+  font:400 14px/19px Calibri,Arial,sans-serif;
+  gap:2px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-datasheet .ac-column-filter-label {
+  min-width:0;
+  overflow:hidden;
+  text-overflow:clip;
+  white-space:nowrap;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-datasheet .ac-column-filter-arrow {
+  flex:none;
+  margin-left:auto;
+  color:#555;
+  font-size:10px;
+}
+/* Tracking toolbar reference: only Bonus Exp uses a red label. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-toolbar-band.ac-toolbar > button.ac-btn[data-action-status] {
+  color:#000!important;
+  font:400 14px/18px Calibri,Arial,sans-serif!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-toolbar-band.ac-toolbar > button.ac-btn.ac-tracking-toolbar-bonus[data-action-status] {
+  color:#f00!important;
+  font-weight:700!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-toolbar-band select.ac-select {
+  color:#000!important;
+  background-color:#d6dfeb!important;
+  font:400 14px/20px Calibri,Arial,sans-serif!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-toolbar-band.ac-toolbar > button.ac-tracking-payroll-report.ac-btn[data-action-status] {
+  font-size:12px!important;
+  line-height:14px!important;
+}
+/* Reference toolbar separates the darker WC/GL controls from light commands. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-toolbar-band.ac-toolbar > button.ac-btn[data-action-status] {
+  background:#efefef!important;
+  background-image:none!important;
+  border:1px solid!important;
+  border-color:#fff #777 #777 #fff!important;
+  box-shadow:none!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-toolbar-band.ac-toolbar > button.ac-btn.ac-tracking-toolbar-gray[data-action-status],
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-toolbar-band.ac-toolbar > button.ac-btn.ac-tracking-toolbar-bonus[data-action-status] {
+  background:#d9d9d9!important;
+  border-color:#000!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-toolbar-band.ac-toolbar > button.ac-btn[data-action-status]:first-of-type {
+  background:#d9d9d9!important;
+  border-color:#000!important;
+}
+/* Tracking view tabs use the same visible bevel as the command buttons. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-actionbar .ac-tabs > button.ac-tab {
+  border:1px solid!important;
+  border-color:#fff #777 #777 #fff!important;
+  border-radius:0!important;
+  background:#efefef!important;
+  box-shadow:1px 1px 0 #aaa!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-actionbar .ac-tabs > button.ac-tab[aria-selected="true"] {
+  border-color:#777 #fff #fff #777!important;
+  outline:1px dotted #555;
+  outline-offset:-4px;
+}
+/* Gray backing strip behind the top Tracking toolbar controls. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-toolbar-band.ac-toolbar {
+  background:#d9d9d9!important;
+  background-image:none!important;
+  border-bottom:1px solid #777;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-toolbar-band.ac-toolbar {
+  border-bottom:2px solid #777!important;
+}
+/* Reports 2 uses the same pale blue-gray face as the reference menu. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-summary-rail select.ac-select[aria-label="Reports 2 menu"] {
+  background-color:#d6dfeb!important;
+  color:#000!important;
+}
+/* Reference summary values sit in gray inset fields. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-summary-rail .ac-tracking-summary-fields .ac-readonly.ac-tracking-field-box {
+  background:#e7e8ea!important;
+  background-image:none!important;
+  color:#000;
+  border:1px solid;
+  border-color:#888 #fff #fff #888;
+  border-radius:0;
+  box-shadow:inset 1px 1px 0 #b9b9b9;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-summary-rail .ac-tracking-users {
+  background:#ececec!important;
+}
+/* Co Contacts: Access datasheet with fixed contact columns and record footer. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-detail-body--job-tab:has(.ac-tracking-co-contacts) {
+  height:156px;
+  min-height:156px;
+  padding:10px 12px 7px;
+  border:1px solid;
+  border-color:#fff #777 #777 #fff;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-co-contacts {
+  height:100%;
+  min-height:0;
+  padding:0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-co-contacts .ac-tracking-subform-grid {
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  min-height:0;
+  padding:0;
+  border:1px solid #b8bec9;
+  background:#fff;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-co-contacts .ac-tracking-subform-table {
+  flex:1;
+  min-height:0;
+  overflow:auto;
+  border:0;
+  background:repeating-linear-gradient(#fff 0,#fff 19px,#edf0f7 19px,#edf0f7 20px);
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-co-contacts table {
+  table-layout:fixed;
+  border-collapse:collapse;
+  width:987px;
+  min-width:987px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-co-contacts th {
+  position:relative;
+  height:20px;
+  padding:0 13px 0 5px;
+  border:1px solid #b8bec9;
+  background:#dfe3e9;
+  color:#000;
+  font:400 14px/19px Calibri,Arial,sans-serif;
+  white-space:nowrap;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-co-contacts th:not(:first-child)::after {
+  content:'';
+  position:absolute;
+  right:4px;
+  top:8px;
+  border:3px solid transparent;
+  border-top-color:#555;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-co-contacts td {
+  height:20px;
+  padding:0 4px;
+  border:1px solid #edf0f7;
+  background:#fff;
+  color:#000;
+  font:400 14px/19px Calibri,Arial,sans-serif;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:clip;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-co-contacts .ac-tracking-subform-recordbar {
+  flex:0 0 17px;
+  height:17px;
+  min-height:17px;
+  gap:5px;
+  padding:0 4px;
+  border-top:1px solid #b8bec9;
+  background:#e7e8ec;
+  color:#777;
+  font:11px/15px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-co-contacts .ac-tracking-subform-recordbar input {
+  height:15px;
+  min-height:15px;
+  padding:0 2px;
+  border:1px solid #aaa;
+  background:#fff;
+  font:11px/13px Calibri,Arial,sans-serif;
+}
+/* Tracking Employees: compact action stacks and two message areas. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-detail-body--job-tab:has(.ac-tracking-job-tab--employees) {
+  height:156px;
+  padding:16px 12px 10px;
+  border:1px solid;
+  border-color:#fff #777 #777 #fff;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--employees {
+  display:grid;
+  grid-template-columns:153px 113px 305px minmax(360px,1fr);
+  gap:10px;
+  height:126px;
+  padding:0;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--employees .ac-tracking-job-tab-col {
+  display:flex;
+  flex-direction:column;
+  width:auto;
+  min-width:0;
+  padding:0;
+  gap:3px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--employees .ac-tracking-btn-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--employees button.ac-btn[data-action-status] {
+  height:29px;
+  min-height:29px;
+  padding:1px 6px;
+  border:1px solid!important;
+  border-color:#fff #777 #777 #fff!important;
+  background:#efefef!important;
+  color:#000!important;
+  font:400 14px/20px Calibri,Arial,sans-serif!important;
+  border-radius:0;
+  box-shadow:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--employees .ac-tracking-job-tab-btn-wide {
+  width:100%;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--employees .ac-tracking-job-tab-btn-bottom {
+  margin-top:auto;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--employees .ac-tracking-message-pane {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  min-width:0;
+  width:auto;
+  padding:0;
+  gap:7px;
+  border:0;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--employees .ac-tracking-message-pane:nth-child(3) {
+  height:106px;
+  padding:7px;
+  border:1px solid;
+  border-color:#999 #fff #fff #999;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--employees .ac-tracking-message-pane:nth-child(3) .ac-tracking-message-label {
+  display:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--employees .ac-tracking-notes-area {
+  flex:none;
+  box-sizing:border-box;
+  width:100%;
+  height:54px;
+  min-height:54px;
+  padding:3px;
+  resize:none;
+  border:1px solid;
+  border-color:#777 #fff #fff #777;
+  border-radius:0;
+  background:#fff;
+  color:#000;
+  font:14px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--employees .ac-tracking-message-pane:last-child .ac-tracking-notes-area {
+  height:65px;
+  min-height:65px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--employees .ac-tracking-message-label {
+  font:400 14px/18px Calibri,Arial,sans-serif;
+  text-align:center;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--employees .ac-tracking-job-tab-btn-center {
+  width:auto;
+  min-width:117px;
+  align-self:center;
+  margin:0;
+}
+/* Salesmen: direction buttons, inset message panel, compact selection grid. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-detail-body--job-tab:has(.ac-tracking-job-tab--salesmen) {
+  height:156px;
+  padding:10px 12px 7px;
+  border:1px solid;
+  border-color:#fff #777 #777 #fff;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--salesmen {
+  display:grid;
+  grid-template-columns:245px 577px minmax(250px,1fr);
+  gap:10px;
+  height:134px;
+  padding:0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-salesmen-left-pane {
+  width:auto;
+  padding:32px 0 0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-salesmen-left-pane .ac-tracking-btn-grid {
+  display:grid;
+  grid-template-columns:117px 117px;
+  gap:3px 11px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-salesmen-center {
+  display:grid;
+  grid-template-columns:305px 257px;
+  gap:15px;
+  padding:0;
+  min-width:0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-salesmen-message {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  width:305px;
+  height:105px;
+  padding:7px;
+  gap:7px;
+  background:#ececec;
+  border:1px solid;
+  border-color:#999 #fff #fff #999;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-salesmen-message textarea {
+  box-sizing:border-box;
+  width:100%;
+  height:54px;
+  min-height:54px;
+  flex:none;
+  background:#fff;
+  border:1px solid;
+  border-color:#777 #fff #fff #777;
+  border-radius:0;
+  resize:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--salesmen button.ac-btn[data-action-status] {
+  height:29px;
+  min-height:29px;
+  padding:1px 6px;
+  border:1px solid!important;
+  border-color:#fff #777 #777 #fff!important;
+  border-radius:0;
+  background:#efefef!important;
+  color:#000!important;
+  font:400 14px/20px Calibri,Arial,sans-serif!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-salesmen-send-btn {
+  width:117px;
+  margin:0;
+  align-self:center;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--salesmen {
+  width:257px;
+  height:134px;
+  min-height:0;
+  border:1px solid #b8bec9;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-table--salesmen {
+  min-height:0;
+  overflow-y:scroll;
+  background:#fff;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-table--salesmen table {
+  width:100%;
+  table-layout:fixed;
+  border-collapse:collapse;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-table--salesmen th,
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-table--salesmen td {
+  height:20px;
+  padding:0 4px;
+  border:1px solid #e2ddd3;
+  font:400 14px/19px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-table--salesmen th { background:#dfe3e9; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-table--salesmen th:last-child { width:67px; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-table--salesmen tbody tr:nth-child(even) td { background:#f2f2f2; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--salesmen .ac-tracking-subform-recordbar {
+  height:17px;
+  min-height:17px;
+  padding:0 3px;
+  gap:3px;
+  background:#e7e8ec;
+  font:11px/15px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--salesmen .ac-tracking-subform-recordbar input {
+  height:15px;
+  min-height:15px;
+  width:48px;
+  padding:0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-salesmen-right-pane {
+  width:auto;
+  padding:0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-salesmen-side-grid {
+  display:grid;
+  grid-template-columns:70px 133px;
+  grid-template-rows:29px 29px 29px;
+  gap:3px 47px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-salesmen-side-grid > :nth-child(1) { grid-column:1; grid-row:1; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-salesmen-side-grid > :nth-child(3) { grid-column:1; grid-row:2; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-salesmen-side-grid > :nth-child(2) { grid-column:2; grid-row:2; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-salesmen-side-grid > :nth-child(4) { grid-column:2; grid-row:3; }
+/* Uniform gray backing across the Salesmen tab. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--salesmen,
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--salesmen .ac-tracking-salesmen-left-pane,
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--salesmen .ac-tracking-salesmen-center,
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--salesmen .ac-tracking-salesmen-right-pane,
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--salesmen .ac-tracking-salesmen-message,
+.ac-tracking-page.ac-tracking-reference .ac-tracking-detail-body--job-tab:has(.ac-tracking-job-tab--salesmen) {
+  background:#ececec!important;
+  background-image:none!important;
+}
+/* Salesman datasheet close-up: selector gutter, header arrows and record strip. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-table--salesmen {
+  scrollbar-width:auto;
+  scrollbar-color:#888 #f0f0f0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-table--salesmen th {
+  position:relative;
+  border:1px solid #b8bec9;
+  padding:0 14px 0 4px;
+  text-align:center;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-table--salesmen th:not(:first-child)::after {
+  content:'';
+  position:absolute;
+  right:5px;
+  top:8px;
+  border:3px solid transparent;
+  border-top-color:#555;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-table--salesmen th:first-child,
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-table--salesmen td.ac-tracking-salesmen-selector {
+  padding:0;
+  background:#dfe3e9!important;
+  border-color:#b8bec9;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-table--salesmen tbody tr:first-child td:not(.ac-tracking-salesmen-selector) {
+  background:#a6cfee!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-table--salesmen .ac-tracking-subform-select-input:not(:checked) {
+  opacity:0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-table--salesmen .ac-tracking-subform-select-input:focus-visible {
+  opacity:1;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-salesmen-recordbar {
+  white-space:nowrap;
+  overflow:hidden;
+  color:#777;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-salesmen-record-count {
+  min-width:51px;
+  height:15px;
+  padding:0 3px;
+  background:#fff;
+  border:1px solid #aaa;
+  color:#000;
+  font:11px/13px Calibri,Arial,sans-serif;
+}
+/* Salesmen has two data columns: Salesman and Select. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-table--salesmen th:first-child {
+  padding:0 14px 0 4px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-table--salesmen th:first-child::after {
+  content:'';
+  position:absolute;
+  right:5px;
+  top:8px;
+  border:3px solid transparent;
+  border-top-color:#555;
+}
+/* Remove the old 11rem cap that clipped the Select column. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--salesmen .ac-tracking-subform-grid--salesmen {
+  box-sizing:border-box;
+  width:257px;
+  min-width:257px;
+  max-width:257px;
+  border-radius:0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--salesmen .ac-tracking-subform-table--salesmen {
+  width:255px;
+  min-width:0;
+  max-width:255px;
+  overflow-x:hidden;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--salesmen .ac-tracking-subform-table--salesmen table {
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%;
+  table-layout:fixed;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--salesmen .ac-tracking-subform-table--salesmen :is(th,td):last-child {
+  width:67px;
+  min-width:0;
+  max-width:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--salesmen .ac-tracking-subform-table--salesmen th {
+  color:#000!important;
+  background:#dfe3e9!important;
+}
+/* Fit the full future-call labels in the Salesmen action area. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--salesmen .ac-tracking-salesmen-right-pane {
+  width:100%;
+  min-width:260px;
+  max-width:none;
+  overflow:visible;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--salesmen .ac-tracking-salesmen-side-grid {
+  width:260px;
+  grid-template-columns:70px 143px;
+  column-gap:47px;
+}
+/* Empty Bill Rates matches the plain gray reference panel. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-detail-body--job-tab:has(.ac-tracking-bill-rates-empty),
+.ac-tracking-page.ac-tracking-reference .ac-tracking-bill-rates-empty {
+  background:#ececec!important;
+  background-image:none!important;
+}
+/* S Admin: saved view row and five compact action columns. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-detail-body--job-tab:has(.ac-tracking-job-tab--s-admin) {
+  height:156px;
+  padding:9px 12px 7px;
+  border:1px solid;
+  border-color:#fff #777 #777 #fff;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--s-admin {
+  position:relative;
+  display:block;
+  height:138px;
+  padding:0;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-s-admin-view-row {
+  position:absolute;
+  top:0;
+  left:0;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  height:29px;
+  padding:0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-s-admin-view-select {
+  width:105px;
+  height:23px;
+  min-height:23px;
+  font:14px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-s-admin-grid {
+  display:grid;
+  grid-template-columns:280px 201px 233px 201px minmax(177px,1fr);
+  gap:11px;
+  height:132px;
+  padding:10px 0 0 8px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-s-admin-col {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:7px;
+  padding:0;
+  min-width:0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-s-admin-col:nth-child(-n+2) {
+  padding-top:32px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-s-admin-col:first-child {
+  align-items:flex-start;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--s-admin button.ac-btn[data-action-status] {
+  height:25px;
+  min-height:25px;
+  padding:1px 6px;
+  border:1px solid!important;
+  border-color:#fff #777 #777 #fff!important;
+  border-radius:0;
+  background:#efefef!important;
+  color:#000!important;
+  font:400 14px/20px Calibri,Arial,sans-serif!important;
+  white-space:nowrap;
+  box-shadow:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-s-admin-col > .ac-btn { width:100%; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-s-admin-col:first-child > .ac-btn { width:auto; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-s-admin-col:nth-child(3) > .ac-btn:nth-child(-n+2) { width:177px; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-s-admin-spacer { height:25px; min-height:25px; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--s-admin button.ac-tracking-s-admin-btn-warn.ac-btn[data-action-status] {
+  width:177px;
+  background:#fff500!important;
+  border-color:#000!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-s-admin-view-row button.ac-btn[data-action-status] {
+  height:29px;
+}
+/* S Admin button accents along the right and bottom edges. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--s-admin button.ac-btn[data-action-status] {
+  border-right:2px solid #888!important;
+  border-bottom:2px solid #777!important;
+}
+/* Tracking Admin: assignment export controls from the Access reference. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-detail-body--job-tab:has(.ac-tracking-job-tab--admin) {
+  height:156px;
+  padding:9px 18px;
+  border:1px solid;
+  border-color:#fff #777 #777 #fff;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--admin {
+  display:grid;
+  grid-template-columns:153px 153px 65px 153px 55px 153px;
+  grid-template-rows:25px 65px;
+  gap:7px 11px;
+  align-content:start;
+  padding:0;
+  height:138px;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-admin-export-label {
+  grid-column:1 / 3;
+  grid-row:1;
+  align-self:center;
+  font:400 14px/20px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-admin-export-all { grid-column:1; grid-row:2; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-admin-export-customer { grid-column:2; grid-row:2; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-admin-select-view { grid-column:4; grid-row:1; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-admin-export-selected { grid-column:4; grid-row:2; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-admin-import-hours { grid-column:6; grid-row:2; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--admin button.ac-btn[data-action-status] {
+  width:153px;
+  height:65px;
+  min-height:65px;
+  padding:3px 5px;
+  white-space:normal;
+  border:1px solid!important;
+  border-color:#fff #777 #777 #fff!important;
+  border-radius:0;
+  background:#efefef!important;
+  color:#000!important;
+  box-shadow:none;
+  font:400 14px/18px Calibri,Arial,sans-serif!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--admin button.ac-tracking-admin-select-view.ac-btn[data-action-status] {
+  height:25px;
+  min-height:25px;
+}
+/* Admin command-button edge accents. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--admin button.ac-btn[data-action-status] {
+  border-right:2px solid #888!important;
+  border-bottom:2px solid #777!important;
+}
+/* Schedule/Timesheet: compact actions, contact datasheet and notes. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-detail-body--job-tab:has(.ac-tracking-job-tab--schedule) {
+  height:156px;
+  padding:9px 12px 7px;
+  border:1px solid;
+  border-color:#fff #777 #777 #fff;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule {
+  display:grid;
+  grid-template-columns:245px minmax(450px,1fr) 253px;
+  gap:11px;
+  height:138px;
+  padding:0;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-schedule-actions-pane {
+  display:grid;
+  grid-template-columns:117px 117px;
+  gap:11px;
+  min-width:0;
+  width:auto;
+  max-width:none;
+  padding:0;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-schedule-group {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:3px;
+  padding:0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-schedule-group-title {
+  width:100%;
+  font:400 14px/16px Calibri,Arial,sans-serif;
+  text-decoration:underline;
+  text-align:center;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--schedule button.ac-btn[data-action-status] {
+  height:25px;
+  min-height:25px;
+  padding:1px 5px;
+  border:1px solid!important;
+  border-color:#fff #777 #777 #fff!important;
+  border-radius:0;
+  background:#efefef!important;
+  color:#000!important;
+  font:400 14px/20px Calibri,Arial,sans-serif!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--schedule .ac-tracking-schedule-report-btn.ac-btn[data-action-status] {
+  color:#f00!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-schedule-group .ac-btn { width:117px; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-schedule-check-row {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font:400 14px/17px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule input {
+  appearance:auto;
+  accent-color:#000;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule input[type=checkbox] {
+  width:11px;
+  height:11px;
+  margin:0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--schedule {
+  width:100%;
+  min-width:0;
+  max-width:none;
+  height:134px;
+  min-height:0;
+  margin-top:5px;
+  border:1px solid #b8bec9;
+  border-radius:0;
+  box-shadow:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--schedule .ac-tracking-subform-table {
+  min-height:0;
+  background:#fff;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--schedule table {
+  width:100%;
+  min-width:0;
+  table-layout:fixed;
+  border-collapse:collapse;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--schedule :is(th,td) {
+  height:20px;
+  padding:0 4px;
+  border:1px solid #edf0f7;
+  color:#000;
+  font:400 14px/19px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--schedule th { background:#dfe3e9; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--schedule th:nth-child(1) { width:18%; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--schedule th:nth-child(2) { width:16%; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--schedule th:nth-child(3) { width:36%; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--schedule th:nth-child(4) { width:14%; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--schedule .ac-tracking-subform-recordbar {
+  height:17px;
+  min-height:17px;
+  padding:0 3px;
+  gap:4px;
+  background:#e7e8ec;
+  font:11px/15px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--schedule .ac-tracking-subform-recordbar input { height:15px; min-height:15px; padding:0; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-schedule-right-pane {
+  display:flex;
+  flex-direction:column;
+  width:253px;
+  min-width:253px;
+  max-width:none;
+  padding:0;
+  gap:3px;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule .ac-tracking-radio-row {
+  display:flex;
+  gap:12px;
+  padding:4px 3px;
+  border:1px solid;
+  border-color:#999 #fff #fff #999;
+  font:14px/20px Calibri,Arial,sans-serif;
+  white-space:nowrap;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule .ac-tracking-radio-label { font:14px/20px Calibri,Arial,sans-serif; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-schedule-notes-header { display:flex; align-items:center; justify-content:space-between; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-schedule-notes-label { font:14px Calibri,Arial,sans-serif; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-schedule-right-pane textarea {
+  box-sizing:border-box;
+  width:100%;
+  height:74px;
+  min-height:74px;
+  border:1px solid;
+  border-color:#777 #fff #fff #777;
+  border-radius:0;
+  resize:none;
+  background:#fff;
+}
+/* Schedule recipient/notes block: precise compact Access proportions. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule .ac-tracking-schedule-right-pane {
+  box-sizing:border-box;
+  display:grid;
+  grid-template-columns:1fr;
+  grid-template-rows:30px 29px 73px;
+  align-content:start;
+  width:253px;
+  min-width:253px;
+  gap:3px;
+  margin:0;
+  padding:0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule .ac-tracking-radio-row {
+  box-sizing:border-box;
+  width:253px;
+  height:30px;
+  margin:0;
+  padding:3px;
+  gap:13px;
+  background:#ececec;
+  border:1px solid;
+  border-color:#999 #fff #fff #999;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule .ac-tracking-radio-label {
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  margin:0;
+  color:#000;
+  font:400 14px/20px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule .ac-tracking-radio-label input {
+  width:12px;
+  height:12px;
+  margin:0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule .ac-tracking-schedule-notes-header {
+  display:grid;
+  grid-template-columns:132px 121px;
+  gap:0;
+  align-items:center;
+  height:29px;
+  margin:0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule .ac-tracking-schedule-notes-label {
+  margin:0;
+  color:#000;
+  font:400 14px/20px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--schedule .ac-tracking-schedule-notes-header button.ac-btn[data-action-status] {
+  box-sizing:border-box;
+  width:121px;
+  height:29px;
+  min-height:29px;
+  margin:0;
+  padding:1px 4px;
+  border-right:2px solid #777!important;
+  border-bottom:2px solid #777!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule .ac-tracking-schedule-right-pane textarea {
+  box-sizing:border-box;
+  display:block;
+  width:253px;
+  height:73px;
+  min-height:73px;
+  max-height:73px;
+  margin:0;
+  padding:2px;
+  overflow-y:scroll;
+  background:#fff;
+  border:2px solid;
+  border-color:#888 #fff #fff #888;
+  box-shadow:none;
+  scrollbar-width:auto;
+  scrollbar-color:#eee #fff;
+}
+/* Keep both Schedule recipients on one line instead of inherited column flow. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule .ac-tracking-radio-row {
+  flex-direction:row;
+  flex-wrap:nowrap;
+  align-items:center;
+  justify-content:flex-start;
+  gap:10px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule .ac-tracking-radio-label {
+  flex:0 0 auto;
+  width:auto;
+  min-width:0;
+  white-space:nowrap;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule .ac-tracking-schedule-right-pane {
+  overflow:visible;
+}
+/* Schedule contact datasheet: white blanks, subtle grid and inset record strip. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule .ac-tracking-subform-grid--schedule .ac-tracking-subform-table {
+  overflow-x:hidden;
+  overflow-y:auto;
+  background:repeating-linear-gradient(#fff 0,#fff 19px,#edf0f7 19px,#edf0f7 20px);
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule .ac-tracking-subform-grid--schedule table th {
+  position:relative;
+  height:20px;
+  padding:0 15px 0 5px;
+  border:1px solid #b8bec9;
+  background:#dfe3e9!important;
+  color:#000!important;
+  text-align:center;
+  font:400 14px/19px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule .ac-tracking-subform-grid--schedule table th::after {
+  content:'';
+  position:absolute;
+  right:5px;
+  top:8px;
+  border:3px solid transparent;
+  border-top-color:#555;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule .ac-tracking-subform-grid--schedule table tbody tr td {
+  height:20px;
+  padding:0 4px;
+  border:1px solid #edf0f7;
+  background:#fff!important;
+  font:400 14px/19px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--schedule .ac-tracking-subform-select-input:not(:checked):not(:focus-visible) {
+  opacity:0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--schedule .ac-tracking-schedule-recordbar {
+  display:flex;
+  flex-direction:row;
+  justify-content:flex-start;
+  align-items:center;
+  height:17px;
+  min-height:17px;
+  gap:5px;
+  padding:0 3px;
+  background:#e7e8ec;
+  color:#888;
+  font:11px/15px Calibri,Arial,sans-serif;
+  white-space:nowrap;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-schedule-recordbar .ac-tracking-subform-filter {
+  margin:0;
+  padding:0 9px;
+  border-left:1px solid #bbb;
+  border-right:1px solid #bbb;
+  font:11px/15px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-schedule-recordbar input {
+  box-sizing:border-box;
+  height:15px;
+  min-height:15px;
+  padding:0 2px;
+  border:1px solid #aaa;
+  border-radius:0;
+  background:#fff;
+  font:11px/13px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-schedule-recordbar .ac-tracking-subform-record-input { width:49px; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-schedule-recordbar .ac-tracking-subform-search-input { width:70px; margin:0; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-schedule-recordbar input::placeholder { color:#000; opacity:1; }
+/* Verify Hours: Access buttons, contact datasheet and wide notes area. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-detail-body--job-tab:has(.ac-tracking-job-tab--verify) {
+  height:156px;
+  padding:10px 12px 7px;
+  border:1px solid;
+  border-color:#fff #777 #777 #fff;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify {
+  display:grid;
+  grid-template-columns:117px minmax(450px,1fr) 362px;
+  gap:24px;
+  height:134px;
+  padding:0;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify .ac-tracking-job-tab-col {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  width:117px;
+  min-width:0;
+  padding:0;
+  gap:3px;
+  border:0;
+  border-radius:0;
+  background:#ececec;
+  box-shadow:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--verify button.ac-btn[data-action-status] {
+  width:117px;
+  height:29px;
+  min-height:29px;
+  padding:1px 5px;
+  border:1px solid!important;
+  border-color:#fff #777 #777 #fff!important;
+  border-radius:0;
+  background:#efefef!important;
+  color:#000!important;
+  font:400 14px/20px Calibri,Arial,sans-serif!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--verify button.ac-btn:nth-child(2) { width:49px; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--verify button.ac-tracking-report-btn.ac-btn[data-action-status] {
+  color:#f00!important;
+  margin-top:8px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify .ac-tracking-subform-grid {
+  width:100%;
+  min-width:0;
+  max-width:none;
+  height:134px;
+  min-height:0;
+  border:1px solid #b8bec9;
+  border-radius:0;
+  box-shadow:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify .ac-tracking-subform-table {
+  min-height:0;
+  background:#fff;
+  overflow:auto;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify table {
+  width:100%;
+  min-width:0;
+  table-layout:fixed;
+  border-collapse:collapse;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify :is(th,td) {
+  height:20px;
+  padding:0 4px;
+  border:1px solid #edf0f7;
+  color:#000;
+  background:#fff;
+  font:400 14px/19px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify th {
+  position:relative;
+  padding-right:14px;
+  background:#dfe3e9;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify th:not(:first-child)::after {
+  content:'';
+  position:absolute;
+  right:4px;
+  top:8px;
+  border:3px solid transparent;
+  border-top-color:#555;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify th:nth-child(1) { width:18px; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify th:nth-child(2) { width:18%; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify th:nth-child(3) { width:16%; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify th:nth-child(4) { width:36%; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify th:nth-child(5) { width:14%; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify .ac-tracking-subform-select-input:not(:checked):not(:focus-visible) { opacity:0; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify .ac-tracking-subform-recordbar {
+  justify-content:flex-start;
+  height:17px;
+  min-height:17px;
+  padding:0 3px;
+  gap:4px;
+  background:#e7e8ec;
+  font:11px/15px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify .ac-tracking-subform-recordbar input { height:15px; min-height:15px; padding:0; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify .ac-tracking-notes-block {
+  display:flex;
+  flex-direction:column;
+  width:362px;
+  min-width:0;
+  max-width:none;
+  padding:0;
+  gap:8px;
+  border:0;
+  border-radius:0;
+  background:#ececec;
+  box-shadow:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify .ac-tracking-notes-block .ac-flabel {
+  font:400 14px/20px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--verify textarea {
+  box-sizing:border-box;
+  width:100%;
+  height:105px;
+  min-height:105px;
+  border:2px solid;
+  border-color:#888 #fff #fff #888;
+  border-radius:0;
+  background:#fff;
+  resize:none;
+  overflow-y:scroll;
+}/* Invoice: matching Access contact datasheet and compact action stack. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-detail-body--job-tab:has(.ac-tracking-job-tab--invoice) {
+  height:156px;
+  padding:10px 12px 7px;
+  border:1px solid;
+  border-color:#fff #777 #777 #fff;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice {
+  display:grid;
+  grid-template-columns:117px minmax(450px,1fr) 385px;
+  gap:12px;
+  height:134px;
+  padding:0;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice .ac-tracking-job-tab-col {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  width:117px;
+  min-width:0;
+  padding:0;
+  gap:3px;
+  border:0;
+  border-radius:0;
+  background:#ececec;
+  box-shadow:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--invoice button.ac-btn[data-action-status] {
+  width:117px;
+  height:29px;
+  min-height:29px;
+  padding:1px 5px;
+  border:1px solid!important;
+  border-color:#fff #777 #777 #fff!important;
+  border-radius:0;
+  background:#efefef!important;
+  color:#000!important;
+  font:400 14px/20px Calibri,Arial,sans-serif!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--invoice button.ac-btn:nth-child(2) { width:49px; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--invoice button.ac-tracking-report-btn.ac-btn[data-action-status] {
+  color:#f00!important;
+  margin-top:8px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice .ac-tracking-subform-grid {
+  width:100%;
+  min-width:0;
+  max-width:none;
+  height:134px;
+  min-height:0;
+  border:1px solid #b8bec9;
+  border-radius:0;
+  box-shadow:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice .ac-tracking-subform-table {
+  min-height:0;
+  background:#fff;
+  overflow:auto;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice table {
+  width:100%;
+  min-width:0;
+  table-layout:fixed;
+  border-collapse:collapse;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice :is(th,td) {
+  height:20px;
+  padding:0 4px;
+  border:1px solid #edf0f7;
+  color:#000;
+  background:#fff;
+  font:400 14px/19px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice th {
+  position:relative;
+  padding-right:14px;
+  background:#dfe3e9;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice th:not(:first-child)::after {
+  content:'';
+  position:absolute;
+  right:4px;
+  top:8px;
+  border:3px solid transparent;
+  border-top-color:#555;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice th:nth-child(1) { width:18px; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice th:nth-child(2) { width:18%; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice th:nth-child(3) { width:16%; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice th:nth-child(4) { width:36%; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice th:nth-child(5) { width:14%; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice .ac-tracking-subform-select-input:not(:checked):not(:focus-visible) { opacity:0; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice .ac-tracking-subform-recordbar {
+  justify-content:flex-start;
+  height:17px;
+  min-height:17px;
+  padding:0 3px;
+  gap:4px;
+  background:#e7e8ec;
+  font:11px/15px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice .ac-tracking-subform-recordbar input { height:15px; min-height:15px; padding:0; }
+
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--invoice button.ac-btn:nth-child(2) { width:117px; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice .ac-tracking-check-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  width:127px;
+  margin:0;
+  font:400 14px/17px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice .ac-tracking-check-row input {
+  appearance:auto;
+  width:11px;
+  height:11px;
+  margin:0;
+  accent-color:#000;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice .ac-tracking-report-btn { order:5; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice .ac-tracking-invoice-right {
+  display:grid;
+  grid-template-rows:72px 1fr;
+  width:385px;
+  min-width:0;
+  max-width:none;
+  height:134px;
+  padding:0;
+  gap:0;
+  border:1px solid #bfbfbf;
+  border-radius:0;
+  background:#d9d9d9;
+  box-shadow:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice .ac-tracking-invoice-right-pane {
+  margin:0;
+  padding:0;
+  min-height:0;
+  border:0;
+  border-radius:0;
+  background:#d9d9d9;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--invoice .ac-tracking-invoice-right-pane:first-child { border-bottom:1px solid #bfbfbf; }
+/* Seamus: two top-left commands on the plain Access gray panel. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-detail-body--job-tab:has(.ac-tracking-job-tab--seamus) {
+  height:156px;
+  padding:18px 12px;
+  border:1px solid;
+  border-color:#fff #777 #777 #fff;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--seamus {
+  display:block;
+  height:100%;
+  padding:0;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--seamus > div {
+  display:flex;
+  flex-direction:row;
+  align-items:flex-start;
+  justify-content:flex-start;
+  gap:11px;
+  padding:0;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--seamus button.ac-btn[data-action-status] {
+  width:117px;
+  height:29px;
+  min-height:29px;
+  padding:1px 6px;
+  border:1px solid!important;
+  border-color:#fff #777 #777 #fff!important;
+  border-radius:0;
+  background:#efefef!important;
+  color:#000!important;
+  box-shadow:none;
+  font:400 14px/20px Calibri,Arial,sans-serif!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--seamus button.ac-btn:nth-child(2) {
+  width:145px;
+}
+/* Estimated Invoice: plain gray panel and compact inset value field. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-detail-body--job-tab:has(.ac-tracking-job-tab--est-invoice) {
+  height:156px;
+  padding:15px 14px;
+  border:1px solid;
+  border-color:#fff #777 #777 #fff;
+  background:#ececec!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--est-invoice {
+  display:block;
+  height:100%;
+  padding:0;
+  background:#ececec!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-est-invoice-field {
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  gap:8px;
+  margin:0;
+  padding:0;
+  border:0;
+  background:#ececec;
+  box-shadow:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-est-invoice-label {
+  margin:0;
+  color:#000;
+  font:400 14px/20px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference input.ac-tracking-est-invoice-input {
+  box-sizing:border-box;
+  width:98px;
+  height:25px;
+  min-height:25px;
+  border:1px solid;
+  border-color:#888 #fff #fff #888;
+  border-radius:0;
+  background:#ececec!important;
+  box-shadow:inset 1px 1px 0 #bbb;
+  font:400 14px/20px Calibri,Arial,sans-serif;
+}
+/* Referral Agencies: Access message box and compact two-column datasheet. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-detail-body--job-tab:has(.ac-tracking-job-tab--referral) {
+  height:156px;
+  padding:16px 12px 7px;
+  border:1px solid;
+  border-color:#fff #777 #777 #fff;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--referral {
+  display:grid;
+  grid-template-columns:245px 305px 353px minmax(70px,1fr);
+  gap:15px;
+  height:134px;
+  padding:0;
+  background:#ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-referral-left-pane,
+.ac-tracking-page.ac-tracking-reference .ac-tracking-referral-right-pane {
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  max-width:none;
+  width:100%;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:#ececec;
+  box-shadow:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-referral-left-pane { align-items:flex-start; gap:39px; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-referral-left-pane > button:nth-child(2) { align-self:flex-end; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--referral button.ac-btn[data-action-status] {
+  width:117px;
+  height:29px;
+  min-height:29px;
+  padding:1px 5px;
+  border:1px solid!important;
+  border-color:#fff #777 #777 #fff!important;
+  border-radius:0;
+  background:#efefef!important;
+  color:#000!important;
+  font:400 14px/20px Calibri,Arial,sans-serif!important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--referral button.ac-tracking-report-btn.ac-btn[data-action-status] { color:#f00!important; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-referral-message-pane {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  box-sizing:border-box;
+  width:305px;
+  min-width:305px;
+  max-width:305px;
+  height:106px;
+  padding:7px;
+  gap:7px;
+  border:1px solid;
+  border-color:#999 #fff #fff #999;
+  border-radius:0;
+  background:#ececec;
+  box-shadow:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-referral-message-pane textarea {
+  box-sizing:border-box;
+  flex:none;
+  width:100%;
+  height:54px;
+  min-height:54px;
+  padding:2px;
+  border:1px solid;
+  border-color:#777 #fff #fff #777;
+  border-radius:0;
+  background:#fff;
+  resize:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--referral {
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  width:353px;
+  min-width:353px;
+  max-width:353px;
+  height:134px;
+  min-height:0;
+  border:1px solid #b8bec9;
+  border-radius:0;
+  box-shadow:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--referral .ac-tracking-subform-table {
+  flex:1;
+  min-height:0;
+  overflow-y:scroll;
+  overflow-x:hidden;
+  background:#fff;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--referral table {
+  width:100%;
+  min-width:0;
+  table-layout:fixed;
+  border-collapse:collapse;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--referral :is(th,td) {
+  height:20px;
+  padding:0 4px;
+  border:1px solid #e2ddd3;
+  color:#000;
+  font:400 14px/19px Calibri,Arial,sans-serif;
+  white-space:nowrap;
+  overflow:hidden;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--referral th {
+  position:relative;
+  padding-right:14px;
+  background:#dfe3e9;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--referral th::after {
+  content:'';
+  position:absolute;
+  right:5px;
+  top:8px;
+  border:3px solid transparent;
+  border-top-color:#555;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--referral th:last-child { width:67px; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--referral tbody tr:nth-child(even) td { background:#f2f2f2; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--referral tbody tr:first-child td { background:#a6cfee; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--referral .ac-tracking-subform-recordbar {
+  flex:0 0 17px;
+  height:17px;
+  min-height:17px;
+  padding:0 3px;
+  gap:4px;
+  background:#e7e8ec;
+  font:11px/15px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--referral .ac-tracking-subform-recordbar input { height:15px; min-height:15px; padding:0; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-referral-side-grid {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:3px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-referral-side-grid button.ac-btn[data-action-status] { width:70px; }
+/* Job Info Hyperlinks: left placement and stronger command edges. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-doc-hyperlinks {
+  display:flex;
+  justify-content:flex-start;
+  text-align:left;
+  padding-left:43px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-info button.ac-tracking-hyperlinks-btn.ac-btn[data-action-status] {
+  width:101px;
+  margin-left:0;
+  font-weight:700!important;
+  border-right:2px solid #888!important;
+  border-bottom:2px solid #777!important;
+}
+/* Refresh command group uses the darker gray Access backing. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-refresh-group {
+  background:#a6a6a6!important;
+  background-image:none!important;
+  border:1px solid #a6a6a6;
+}
+/* Gray frames around Customer Menu/status colors and Browse/palette colors. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-color-command-group {
+  display:flex;
+  flex:none;
+  align-items:center;
+  gap:10px;
+  height:34px;
+  padding:2px 6px;
+  border:1px solid #111;
+  background:#a6a6a6;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-color-command-group .ac-swatches {
+  margin:0;
+  padding:0;
+  border:0;
+  background:transparent;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-color-command-group .ac-swatch {
+  width:25px;
+  height:25px;
+}
+/* Emphasize customer/job shortcut plus signs. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-col-assign button.ac-btn[aria-label="Open customers"][data-action-status],
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-col-assign button.ac-btn[aria-label="Open jobs"][data-action-status] {
+  color:#ff0000!important;
+  font-weight:800!important;
+  font-size:16px!important;
+}
+/* Reference text field above Reports 2. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-summary-rail .ac-tracking-users {
+  display:block;
+  padding:0;
+  border:0;
+  box-shadow:none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-summary-rail input.ac-tracking-summary-text-field {
+  box-sizing:border-box;
+  display:block;
+  width:100%;
+  height:25px;
+  min-height:25px;
+  padding:1px 3px;
+  border:1px solid;
+  border-color:#777 #fff #fff #777;
+  border-radius:0;
+  background:#ececec;
+  color:#000;
+  box-shadow:inset 1px 1px 0 #bbb;
+  font:400 14px/20px Calibri,Arial,sans-serif;
+}
+/* Compact blue navigation triangles beside the customer record field. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-record-nav button.ac-btn:is([aria-label="Previous customer"],[aria-label="Next customer"])[data-action-status] {
+  position:relative;
+  width:29px;
+  min-width:29px;
+  height:29px;
+  padding:0!important;
+  color:#0000ff!important;
+  font-size:0!important;
+  opacity:1;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-record-nav button[aria-label="Previous customer"]::after,
+.ac-tracking-page.ac-tracking-reference .ac-tracking-record-nav button[aria-label="Next customer"]::after {
+  content:'';
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:0;
+  height:0;
+  border-top:4px solid transparent;
+  border-bottom:4px solid transparent;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-record-nav button[aria-label="Previous customer"]::after {
+  border-right:5px solid #0000ff;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-record-nav button[aria-label="Next customer"]::after {
+  border-left:5px solid #0000ff;
+}
+/* Job Info rate subform: narrow Grade/Rate columns and blank Access grid. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-grade-table--job-info {
+  box-sizing:border-box;
+  width:216px;
+  min-width:216px;
+  max-width:216px;
+  height:112px;
+  min-height:112px;
+  overflow:hidden;
+  border:1px solid #b8bec9;
+  background:#fff;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-grade-table--job-info table {
+  width:100%;
+  min-width:0;
+  table-layout:fixed;
+  border-collapse:collapse;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-grade-table--job-info th {
+  position:relative;
+  height:20px;
+  padding:0 13px 0 4px;
+  background:#dfe3e9;
+  color:#000;
+  border:1px solid #b8bec9;
+  font:400 14px/19px Calibri,Arial,sans-serif;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:clip;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-grade-table--job-info th:nth-child(2)::after,
+.ac-tracking-page.ac-tracking-reference .ac-tracking-grade-table--job-info th:nth-child(3)::after {
+  content:'';
+  position:absolute;
+  right:5px;
+  top:8px;
+  border:3px solid transparent;
+  border-top-color:#555;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-grade-table--job-info td {
+  height:20px;
+  padding:0 3px;
+  background:#fff;
+  color:#000;
+  border:1px solid #edf0f7;
+  font:400 14px/19px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-grade-table--job-info td:first-child { background:#f7f8fc; }
+.ac-tracking-page.ac-tracking-reference .ac-tracking-grade-recordbar {
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:4px;
+  width:216px;
+  height:17px;
+  min-height:17px;
+  padding:0 3px;
+  background:#e7e8ec;
+  border:1px solid #b8bec9;
+  color:#999;
+  font:11px/15px Calibri,Arial,sans-serif;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-grade-record-input {
+  width:49px;
+  height:15px;
+  min-height:15px;
+  padding:0;
+  background:#fff;
+  border:1px solid #aaa;
+  border-radius:0;
+}
+/* Tracking Admin tab label stays black in every state. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-col-detail > .ac-tabs > button.ac-tab:nth-child(7),
+.ac-tracking-page.ac-tracking-reference .ac-tracking-col-detail > .ac-tabs > button.ac-tab:nth-child(7):is(:hover,:focus,:active) {
+  color:#000!important;
+}

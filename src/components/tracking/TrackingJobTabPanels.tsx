@@ -92,10 +92,10 @@ function ContactPickerGrid({
             {rows.map((c, i) => (
               <tr key={i}>
                 {!hideSelector && <td />}
-                <td>{[c.firstName, c.lastName].filter(Boolean).join(" ") || "—"}</td>
-                <td>{c.title || "—"}</td>
-                <td className="truncate max-w-[6rem]">{c.email || "—"}</td>
-                <td className="truncate max-w-[5rem]">{c.notes || "—"}</td>
+                <td>{[c.firstName, c.lastName].filter(Boolean).join(" ") || ""}</td>
+                <td>{c.title || ""}</td>
+                <td className="truncate max-w-[6rem]">{c.email || ""}</td>
+                <td className="truncate max-w-[5rem]">{c.notes || ""}</td>
                 {showSelect && (
                   <td className="ac-tracking-subform-select-cell">
                     <input
@@ -114,7 +114,15 @@ function ContactPickerGrid({
           </tbody>
         </table>
       </div>
-      <SubformRecordBar />
+      {gridClassName === "ac-tracking-subform-grid--schedule" ? (
+        <div className="ac-recordbar ac-tracking-subform-recordbar ac-tracking-schedule-recordbar">
+          <span>Record:</span><span aria-hidden="true">|◂ ◂</span>
+          <input className="ac-tracking-subform-record-input" aria-label="Contact record" readOnly value={contacts.length ? "1" : ""} />
+          <span aria-hidden="true">▸ ▸| ▹*</span>
+          <span className="ac-tracking-subform-filter">No Filter</span>
+          <input type="search" placeholder="Search" aria-label="Search contacts" className="ac-tracking-subform-search-input" />
+        </div>
+      ) : <SubformRecordBar />}
     </div>
   );
 }
@@ -145,10 +153,13 @@ export function CoContactsTabPanel({ contacts }: { contacts: TrackingJobContact[
   );
 
   return (
-    <div className="ac-tracking-job-tab ac-tracking-job-tab--full-grid">
+    <div className="ac-tracking-job-tab ac-tracking-job-tab--full-grid ac-tracking-co-contacts">
       <div className="ac-tracking-subform-grid ac-tracking-subform-grid--fill">
         <div className="ac-grid ac-tracking-subform-table">
           <table>
+            <colgroup>
+              {[18, 72, 72, 96, 211, 102, 110, 253, 53].map((width, index) => <col key={index} style={{ width }} />)}
+            </colgroup>
             <thead>
               <tr>
                 <th className="w-6" aria-label="Selector" />
@@ -166,14 +177,14 @@ export function CoContactsTabPanel({ contacts }: { contacts: TrackingJobContact[
               {rows.map((c, i) => (
                 <tr key={i}>
                   <td />
-                  <td>{c.firstName || "—"}</td>
-                  <td>{c.lastName || "—"}</td>
-                  <td>{c.title || "—"}</td>
-                  <td className="truncate max-w-[5rem]">{c.email || "—"}</td>
-                  <td>{c.cell || "—"}</td>
-                  <td>{c.officePhone || "—"}</td>
-                  <td className="truncate max-w-[4rem]">{c.notes || "—"}</td>
-                  <td className="text-center">{c.sort || "—"}</td>
+                  <td>{c.firstName || ""}</td>
+                  <td>{c.lastName || ""}</td>
+                  <td>{c.title || ""}</td>
+                  <td className="truncate max-w-[5rem]">{c.email || ""}</td>
+                  <td>{c.cell || ""}</td>
+                  <td>{c.officePhone || ""}</td>
+                  <td className="truncate max-w-[4rem]">{c.notes || ""}</td>
+                  <td className="text-center">{c.sort || ""}</td>
                 </tr>
               ))}
             </tbody>
@@ -186,6 +197,7 @@ export function CoContactsTabPanel({ contacts }: { contacts: TrackingJobContact[
 }
 
 export function BillRatesTabPanel({ rates }: { rates: { grade: string; rate: string }[] }) {
+  if (rates.length === 0) return <div className="ac-tracking-job-tab ac-tracking-bill-rates-empty" aria-label="Bill Rates" />;
   const rows = padRows(rates, () => ({ grade: "", rate: "" }));
 
   return (
@@ -295,19 +307,21 @@ export function SalesmenTabPanel({
             Text Directions
           </AccessButton>
         </div>
-        <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-center ac-tracking-salesmen-send-btn">
-          Send as Text
-        </AccessButton>
+
       </div>
 
       <div className="ac-tracking-salesmen-center">
         <div className="ac-tracking-salesmen-message">
           <textarea className="ac-tracking-notes-area ac-tracking-notes-area--fill" aria-label="Message" />
+        <AccessButton data-action-status="missing" className="ac-tracking-job-tab-btn-center ac-tracking-salesmen-send-btn">
+          Send as Text
+        </AccessButton>
         </div>
 
         <div className="ac-tracking-subform-grid ac-tracking-subform-grid--fill ac-tracking-subform-grid--salesmen">
           <div className="ac-grid ac-tracking-subform-table ac-tracking-subform-table--salesmen">
             <table>
+              <colgroup><col style={{ width: 165 }} /><col style={{ width: 67 }} /></colgroup>
               <thead>
                 <tr>
                   <th>Salesman</th>
@@ -317,7 +331,7 @@ export function SalesmenTabPanel({
               <tbody>
                 {rows.map((s, i) => (
                   <tr key={s.id || i}>
-                    <td>{s.name || "—"}</td>
+                    <td>{s.name || ""}</td>
                     <td className="ac-tracking-subform-select-cell">
                       <input
                         type="checkbox"
@@ -330,7 +344,11 @@ export function SalesmenTabPanel({
               </tbody>
             </table>
           </div>
-          <SubformRecordBar showSearch={false} />
+          <div className="ac-recordbar ac-tracking-subform-recordbar ac-tracking-salesmen-recordbar">
+            <span>Record:</span><span aria-hidden="true">|◂ ◂</span>
+            <span className="ac-tracking-salesmen-record-count">{salesmen.length ? `1 of ${salesmen.length}` : "0 of 0"}</span>
+            <span aria-hidden="true">▸ ▸| ▹*</span><span className="ac-tracking-subform-filter">No Filter</span>
+          </div>
         </div>
       </div>
 
@@ -610,14 +628,14 @@ function ReferralAgencyGrid({ agencies }: { agencies: TrackingReferralAgency[] }
           <tbody>
             {rows.map((a, i) => (
               <tr key={a.id || i}>
-                <td>{a.name || "—"}</td>
-                <td className="text-center">—</td>
+                <td>{a.name || ""}</td>
+                <td className="text-center" />
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <SubformRecordBar showSearch={false} />
+      <SubformRecordBar />
     </div>
   );
 }
@@ -676,14 +694,18 @@ export function SimpleJobTabPlaceholder({ label }: { label: string }) {
 export function TrackingJobTabBody({
   tabId,
   jobInfo,
+  referralAgencies: loadedReferralAgencies,
+  salesmen: loadedSalesmen,
 }: {
   tabId: string;
   jobInfo?: TrackingJobInfo | null;
+  referralAgencies?: TrackingReferralAgency[];
+  salesmen?: { id: string; name: string }[];
 }) {
   const contacts = jobInfo?.contacts ?? [];
-  const salesmen = jobInfo?.salesmen ?? [];
+  const salesmen = loadedSalesmen?.length ? loadedSalesmen : jobInfo?.salesmen ?? [];
   const billRates = jobInfo?.billRates ?? [];
-  const referralAgencies = jobInfo?.referralAgencies ?? [];
+  const referralAgencies = loadedReferralAgencies?.length ? loadedReferralAgencies : jobInfo?.referralAgencies ?? [];
 
   switch (tabId) {
     case "co-contacts":
@@ -703,7 +725,16 @@ export function TrackingJobTabBody({
     case "invoice":
       return <InvoiceTabPanel contacts={contacts} />;
     case "admin":
-      return <SimpleJobTabPlaceholder label="Admin" />;
+      return (
+        <div className="ac-tracking-job-tab ac-tracking-job-tab--admin">
+          <div className="ac-tracking-admin-export-label">Export Assignments | 039</div>
+          <AccessButton data-action-status="missing" className="ac-tracking-admin-export-all">Export ALL<br />Assignments for the<br />Week</AccessButton>
+          <AccessButton data-action-status="missing" className="ac-tracking-admin-export-customer">Export Customer<br />Assignments for the<br />Week</AccessButton>
+          <AccessButton data-action-status="missing" className="ac-tracking-admin-select-view">Go to Select View</AccessButton>
+          <AccessButton data-action-status="missing" className="ac-tracking-admin-export-selected">Export Selected<br />Assignments for the<br />Week</AccessButton>
+          <AccessButton data-action-status="missing" className="ac-tracking-admin-import-hours">Import Hours</AccessButton>
+        </div>
+      );
     case "seamus":
       return <SeamusTabPanel />;
     case "est-invoice":
