@@ -22146,3 +22146,248 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
   min-width:0;
   white-space:nowrap;
 }
+/* Tracking toolbar: white inset dropdown-arrow boxes. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-toolbar-band.ac-toolbar select.ac-select {
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  padding-right:22px!important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='22' viewBox='0 0 18 22'%3E%3Cpath fill='%23fff' stroke='%23c4c4c4' d='M.5.5h17v21H.5z'/%3E%3Cpath fill='none' stroke='%23fff' d='M1 21V1h16'/%3E%3Cpath fill='none' stroke='%23777777' stroke-width='.8' d='m5 9 4 4 4-4'/%3E%3C/svg%3E")!important;
+  background-position:right 1px center!important;
+  background-repeat:no-repeat!important;
+  background-size:18px 22px!important;
+}
+/* Customer Permits Search: compact Access form and colored datasheet. */
+.ac-permits-page {
+  min-width:1918px;
+  background:#ececec;
+  font:14px Calibri,Arial,sans-serif;
+  border:0;
+}
+.ac-permits-page button.ac-btn[data-action-status] {
+  height:29px;
+  min-height:0;
+  padding:1px 7px;
+  border:1px solid!important;
+  border-color:#fff #777 #777 #fff!important;
+  border-radius:0!important;
+  background:#efefef!important;
+  color:#000!important;
+  box-shadow:none!important;
+  font:400 14px/20px Calibri,Arial,sans-serif!important;
+}
+.ac-permits-page .ac-permits-titlebar {
+  box-sizing:border-box;
+  height:46px;
+  min-height:46px;
+  padding:5px 66px 4px 11px;
+}
+.ac-permits-page .ac-permits-titlebar h1 {
+  flex:0 0 540px;
+  width:540px;
+  font:400 28px/32px Calibri,Arial,sans-serif;
+}
+.ac-permits-page .ac-permits-view-controls .ac-select { width:105px; height:23px; min-height:23px; }
+.ac-permits-page .ac-permits-cancel { right:79px; top:5px; }
+.ac-permits-page .ac-permits-help { top:5px; right:3px; }
+.ac-permits-page .ac-permits-tools { height:84px; min-height:84px; padding:0 11px 5px; gap:182px; }
+.ac-permits-page .ac-permits-search-panel {
+  flex-basis:357px;
+  grid-template-columns:70px 145px 61px 61px;
+  grid-template-rows:17px 27px 29px;
+  gap:2px 5px;
+}
+.ac-permits-page .ac-permits-search-panel > strong { height:17px; background:#bfbfbf; border-color:#000; font:700 12px/15px Calibri,Arial,sans-serif; }
+.ac-permits-page .ac-permits-search-panel > .ac-input { height:25px; min-height:25px; border:2px inset #fff; background:#fff; }
+.ac-permits-page .ac-permits-search-panel fieldset { border:1px solid; border-color:#fff #999 #999 #fff; font:14px Calibri,Arial,sans-serif; }
+.ac-permits-page .ac-permits-search-panel input[type=radio] { appearance:auto; width:12px; height:12px; accent-color:#000; }
+.ac-permits-page .ac-permits-main-tools { padding-top:3px; }
+.ac-permits-page .ac-permits-view-buttons { width:725px; padding:3px 7px; border-color:#fff #999 #999 #fff; }
+.ac-permits-page .ac-permits-view-buttons .ac-btn { height:25px; }
+.ac-permits-page .ac-permits-actions { padding-top:10px; gap:55px; }
+.ac-permits-page .ac-permits-actions .ac-input {
+  width:385px;
+  height:25px;
+  min-height:25px;
+  border:0;
+  border-radius:0;
+  background:#ffffa2;
+  color:#00f;
+  text-align:center;
+  font:14px Calibri,Arial,sans-serif;
+}
+.ac-permits-page .ac-permits-actions button.ac-permits-delete.ac-btn[data-action-status] { background:#f01820!important; border-color:#000!important; }
+.ac-permits-page .ac-permits-actions .ac-btn:last-child { position:absolute; left:1470px; top:71px; margin:0; min-width:97px; }
+.ac-permits-page .ac-permits-grid { margin:0 7px 0 11px; border:1px solid #aaa; }
+.ac-permits-page .ac-permits-grid th {
+  height:20px;
+  padding:0;
+  border:1px solid #b8bec9;
+  background:#dfe3e9;
+  color:#000;
+  font:400 14px/19px Calibri,Arial,sans-serif;
+}
+.ac-permits-page .ac-permits-grid tbody tr,
+.ac-permits-page .ac-permits-grid tbody tr td {
+  box-sizing:border-box;
+  height:20px;
+  padding:0 3px;
+  border:1px solid #e2ddd3;
+  font:400 14px/19px Calibri,Arial,sans-serif;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:clip;
+}
+.ac-permits-page .ac-permits-grid tbody tr:nth-child(odd) td { background:#fff; }
+.ac-permits-page .ac-permits-grid tbody tr:nth-child(even) td { background:#f2f2f2; }
+.ac-permits-page .ac-permits-grid tbody tr:first-child td { background:#a6cfee; }
+.ac-permits-page .ac-permits-grid td.ac-permits-siteVisit { background:#a6ffa6!important; }
+.ac-permits-page .ac-permits-grid td.ac-permits-futureVisit { background:#ffff99!important; }
+.ac-permits-page .ac-permits-grid td.ac-permits-jobStatus { background:#b6e1fc!important; }
+.ac-permits-page .ac-permits-grid td:is(.ac-permits-history,.ac-permits-link) { color:#80af00; text-decoration:underline; }
+.ac-permits-page .ac-permits-recordbar { height:18px; flex-basis:18px; padding:0 4px; background:#e7e8ec; font:11px/16px Calibri,Arial,sans-serif; }
+.ac-permits-page .ac-permits-recordbar button { height:16px; padding:0 3px; border:0; color:#888; }
+.ac-permits-page select.ac-select {
+  appearance:none;
+  padding-right:22px;
+  border:1px solid;
+  border-color:#999 #fff #fff #999;
+  border-radius:0;
+  background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='22'%3E%3Cpath fill='%23fff' stroke='%23ccc' d='M.5.5h17v21H.5z'/%3E%3Cpath fill='none' stroke='%23777' d='m5 9 4 4 4-4'/%3E%3C/svg%3E") right center/18px 22px no-repeat;
+  font:14px Calibri,Arial,sans-serif;
+}
+/* Permits search controls: match the reference coordinates and compact sizing. */
+.ac-permits-page .ac-permits-search-panel {
+  position:relative;
+  display:block;
+  flex:0 0 357px;
+  width:357px;
+  height:80px;
+}
+.ac-permits-page .ac-permits-search-panel > strong {
+  position:absolute;
+  left:0;
+  top:0;
+  box-sizing:border-box;
+  width:221px;
+  height:17px;
+  border:1px solid #000;
+  background:#bfbfbf;
+  font:700 12px/15px Calibri,Arial,sans-serif;
+}
+.ac-permits-page .ac-permits-search-panel > label {
+  position:absolute;
+  left:0;
+  top:21px;
+  font:400 14px/20px Calibri,Arial,sans-serif;
+}
+.ac-permits-page .ac-permits-search-panel > input.ac-input {
+  position:absolute;
+  box-sizing:border-box;
+  left:75px;
+  top:20px;
+  width:145px;
+  height:25px;
+  min-height:25px;
+  padding:1px 3px;
+  border:2px solid;
+  border-color:#888 #fff #fff #888;
+  border-radius:0;
+  background:#fff;
+  font:14px/20px Calibri,Arial,sans-serif;
+}
+.ac-permits-page .ac-permits-search-panel > button.ac-btn:first-of-type {
+  position:absolute;
+  left:228px;
+  top:20px;
+  width:61px;
+  height:25px;
+}
+.ac-permits-page .ac-permits-search-panel > span {
+  position:absolute;
+  left:0;
+  top:53px;
+  font:14px/20px Calibri,Arial,sans-serif;
+}
+.ac-permits-page .ac-permits-search-panel > span + button.ac-btn {
+  position:absolute;
+  left:51px;
+  top:51px;
+  width:45px;
+  height:29px;
+  margin:0;
+}
+.ac-permits-page .ac-permits-search-panel > span + button.ac-btn + button.ac-btn {
+  position:absolute;
+  left:104px;
+  top:51px;
+  width:45px;
+  height:29px;
+  margin:0;
+}
+.ac-permits-page .ac-permits-search-panel fieldset {
+  position:absolute;
+  box-sizing:border-box;
+  left:295px;
+  top:0;
+  width:62px;
+  height:77px;
+  margin:0;
+  padding:1px 10px 4px;
+  border:1px solid;
+  border-color:#fff #999 #999 #fff;
+  background:#ececec;
+}
+.ac-permits-page .ac-permits-search-panel fieldset legend {
+  float:none;
+  width:auto;
+  margin:0;
+  padding:0 4px;
+  text-align:center;
+  font:400 12px/14px Calibri,Arial,sans-serif;
+}
+.ac-permits-page .ac-permits-search-panel fieldset label {
+  display:flex;
+  align-items:center;
+  gap:5px;
+  height:20px;
+  font:400 14px/20px Calibri,Arial,sans-serif;
+}
+.ac-permits-page .ac-permits-search-panel fieldset input { margin:0; }
+.ac-permits-columns-dialog { width:280px; padding:10px; border:1px solid #aaa; border-radius:6px; background:#efefef; color:#000; font:13px Calibri,Arial,sans-serif; }
+.ac-permits-columns-dialog::backdrop { background:#0002; }
+.ac-permits-columns-dialog header { margin-bottom:14px; font-size:15px; }
+.ac-permits-columns-list { height:245px; overflow:auto; padding:2px 5px; border:1px solid #999; background:#fff; }
+.ac-permits-columns-list label { display:flex; align-items:center; gap:4px; height:19px; }
+.ac-permits-columns-list input { margin:0; width:13px; height:13px; }
+.ac-permits-columns-dialog footer { display:flex; justify-content:flex-end; padding-top:12px; }
+/* Site Visit Info colors cover each value, user and date column together. */
+.ac-permits-page[data-view="02"] .ac-permits-grid td:is(.ac-permits-siteVisit,.ac-permits-siteVisitUser,.ac-permits-siteVisitDate) { background:#a6ffa6!important; }
+.ac-permits-page[data-view="02"] .ac-permits-grid td:is(.ac-permits-futureVisit,.ac-permits-futureVisitUser,.ac-permits-futureVisitDate) { background:#ffff99!important; }
+.ac-permits-page[data-view="02"] .ac-permits-grid td:is(.ac-permits-jobStatus,.ac-permits-statusUser,.ac-permits-statusDate) { background:#b6e1fc!important; }
+/* View 03 excludes Select and includes all visit/status detail columns. */
+.ac-permits-page:is([data-view="03"],[data-view="04"],[data-view="05"]) .ac-permits-action-col,
+.ac-permits-page:is([data-view="03"],[data-view="04"],[data-view="05"]) .ac-permits-action { display:none; }
+.ac-permits-page:is([data-view="03"],[data-view="04"],[data-view="05"]) .ac-permits-grid td:is(.ac-permits-siteVisit,.ac-permits-siteVisitUser,.ac-permits-siteVisitDate) { background:#a6ffa6!important; }
+.ac-permits-page:is([data-view="03"],[data-view="04"],[data-view="05"]) .ac-permits-grid td:is(.ac-permits-futureVisit,.ac-permits-futureVisitUser,.ac-permits-futureVisitDate) { background:#ffff99!important; }
+.ac-permits-page:is([data-view="03"],[data-view="04"],[data-view="05"]) .ac-permits-grid td:is(.ac-permits-jobStatus,.ac-permits-statusUser,.ac-permits-statusDate) { background:#b6e1fc!important; }
+/* Permit views use the same column menu and resize handles as Customer Search. */
+.ac-permits-page[data-show-select="false"] .ac-permits-action-col,
+.ac-permits-page[data-show-select="false"] .ac-permits-action { display:none!important; }
+.ac-permits-page[data-show-select="true"] .ac-permits-action-col { display:table-column!important; }
+.ac-permits-page[data-show-select="true"] .ac-permits-action { display:table-cell!important; }
+.ac-permits-page .ac-permits-grid th .ac-column-filter-trigger {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+  height:19px;
+  min-width:0;
+  padding:0 4px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:#000;
+  font:400 14px/19px Calibri,Arial,sans-serif;
+}
+.ac-permits-page .ac-permits-grid th .ac-column-filter-trigger > span:first-child { overflow:hidden; white-space:nowrap; }
+.ac-permits-view-message { position:fixed; right:18px; bottom:28px; z-index:1000; padding:8px 12px; border:1px solid #aaa; background:#fff; color:#000; font:14px Calibri,Arial,sans-serif; }
