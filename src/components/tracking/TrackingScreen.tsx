@@ -4,6 +4,7 @@ import { OfficeUserPresence } from "@/components/tracking/OfficeUserPresence";
 import { TRACKING_JOB_ACTION_ROUTES } from "@/lib/trackingJobActionRoutes";
 
 import Link from "next/link";
+import { CurrentJobsModal } from "@/components/current-jobs/CurrentJobsModal";
 import { CircleHelp } from "lucide-react";
 import { DashboardShortcutsDialog } from "@/components/dashboard/DashboardShortcutsDialog";
 import { useRouter } from "next/navigation";
@@ -542,6 +543,7 @@ export function TrackingScreen({
 }: TrackingScreenProps) {
   const router = useRouter();
   const [reportMessage, setReportMessage] = useState("");
+  const [currentJobsOpen, setCurrentJobsOpen] = useState(false);
   const [jobInfoTab, setJobInfoTab] = useState("job-info");
   const [trackingTab, setTrackingTab] = useState("tracking");
   const [browsedCustomerId, setBrowsedCustomerId] = useState(selectedCustomerId || "");
@@ -767,6 +769,7 @@ export function TrackingScreen({
   }
 
   function navigateSearch(href: string) {
+    if (href === "/current-jobs") { setCurrentJobsOpen(true); return; }
     if (href === "prompt:health-ins") {
       setHealthMinDate("");
       setHealthDateError("");
@@ -1232,6 +1235,7 @@ export function TrackingScreen({
           <p className="ac-tracking-status">{preview === undefined ? "Waiting for a customer selection or refresh · no tracking rows loaded" : preview.source ? `Live SQL · ${preview.source}` : "SQL unavailable"} · {trackingTab === "ts-history" ? "Assignment and message timestamps for the selected week." : "Values from the loaded tracking assignments."}</p>
         </div>
       )}
+      {currentJobsOpen && <CurrentJobsModal onClose={() => setCurrentJobsOpen(false)} />}
       <NewJobApplicationModal
         key={applicationVariant}
         variant={applicationVariant}

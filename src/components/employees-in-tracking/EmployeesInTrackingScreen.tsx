@@ -5,83 +5,68 @@ import { useRouter } from "next/navigation";
 import { AccessButton } from "@/components/access/AccessButton";
 import type { AllEmployeesOnJobRow } from "@/lib/allEmployeesOnJob";
 
-const PRESET_VIEWS = ["Default", "View 02", "View 03", "View 04", "View 05", "View 06"];
-
+const VIEWS = ["View 01", "View 02", "View 03", "View 04", "View 05"];
+function currentFriday() {
+  const date = new Date();
+  date.setDate(date.getDate() + ((5 - date.getDay() + 7) % 7));
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
 export function EmployeesInTrackingScreen({ rows: sourceRows }: { rows: AllEmployeesOnJobRow[] }) {
   const router = useRouter();
-  const [name, setName] = useState("");
   const [customer, setCustomer] = useState("");
-  const [job, setJob] = useState("<ALL>");
-  const [onePerEmployee, setOnePerEmployee] = useState(false);
+  const [employee, setEmployee] = useState("");
+  const [cell, setCell] = useState("");
+  const [useButton, setUseButton] = useState(false);
+  const [committed, setCommitted] = useState({ customer: "", employee: "", cell: "" });
+  const [weekEnding, setWeekEnding] = useState(currentFriday);
   const [view, setView] = useState("View 01");
-  const [messageMode, setMessageMode] = useState<"freehand" | "list">("list");
-  const [messageText, setMessageText] = useState("");
   const [message, setMessage] = useState("");
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [searchCommitted, setSearchCommitted] = useState(false);
-  const jobs = useMemo(() => [...new Set(sourceRows.map(row => row.job).filter(Boolean))].sort((a, b) => a.localeCompare(b)), [sourceRows]);
-  const filteredRows = useMemo(() => {
-    const query = name.trim().toLocaleLowerCase();
-    const filtered = sourceRows.filter(row =>
-      (!query || `${row.first} ${row.middle} ${row.last}`.toLocaleLowerCase().includes(query)) &&
-      (!customer.trim() || row.customer.toLocaleLowerCase().includes(customer.trim().toLocaleLowerCase())) &&
-      (job === "<ALL>" || row.job === job)
-    );
-    if (!onePerEmployee) return filtered;
-    const latestByEmployee = new Map<string, AllEmployeesOnJobRow>();
-    for (const row of filtered) if (!latestByEmployee.has(row.employeeId)) latestByEmployee.set(row.employeeId, row);
-    return [...latestByEmployee.values()];
-  }, [sourceRows, name, customer, job, onePerEmployee]);
-  const visibleRows = searchCommitted ? filteredRows : sourceRows;
-
-  function clearFilters() {
-    setName(""); setCustomer(""); setJob("<ALL>"); setSearchCommitted(false); setMessage("");
-  }
+  const [selected, setSelected] = useState("");
+  const [zero, setZero] = useState(false);
+  const filters = useButton ? committed : { customer, employee, cell };
+  const rows = useMemo(() => sourceRows.filter(row => {
+    if (zero) return false;
+    const date = new Date(row.weekEnding);
+    const week = new Date(`${weekEnding}T00:00:00`);
+    return (!weekEnding || date.toDateString() === week.toDateString()) &&
+      row.customer.toLowerCase().includes(filters.customer.trim().toLowerCase()) &&
+      `${row.first} ${row.middle} ${row.last}`.toLowerCase().includes(filters.employee.trim().toLowerCase()) &&
+      row.cell.replace(/\D/g, "").includes(filters.cell.replace(/\D/g, ""));
+  }), [sourceRows, filters.customer, filters.employee, filters.cell, weekEnding, zero]);
+  function clear() { setCustomer(""); setEmployee(""); setCell(""); setCommitted({ customer: "", employee: "", cell: "" }); setZero(false); setMessage(""); }
+  function search() { setCommitted({ customer, employee, cell }); setZero(false); }
+  function savedViews() { return JSON.parse(localStorage.getItem("employees-in-tracking-menu-views") ?? "{}"); }
   function saveView() {
-    try {
-      const saved = JSON.parse(localStorage.getItem("all-employees-on-job-views") ?? "{}");
-      saved[view] = { name, customer, job, onePerEmployee };
-      localStorage.setItem("all-employees-on-job-views", JSON.stringify(saved));
-      setMessage(`${view} saved.`);
-    } catch { setMessage("Could not save this view in the browser."); }
+    try { const saved = savedViews(); saved[view] = { customer, employee, cell, weekEnding }; localStorage.setItem("employees-in-tracking-menu-views", JSON.stringify(saved)); setMessage(`${view} saved.`); }
+    catch { setMessage("Could not save this view."); }
   }
-  function selectView(next: string) {
-    setView(next);
-    try {
-      const saved = JSON.parse(localStorage.getItem("all-employees-on-job-views") ?? "{}");
-      const state = saved[next];
-      if (state) { setName(state.name ?? ""); setCustomer(state.customer ?? ""); setJob(state.job ?? "<ALL>"); setOnePerEmployee(Boolean(state.onePerEmployee)); setSearchCommitted(true); }
-      else if (next === "Default") clearFilters();
-    } catch { /* Ignore invalid saved local settings. */ }
+  function chooseView(next: string) {
+    setView(next); setZero(false);
+    try { const saved = savedViews()[next]; if (saved) { setCustomer(saved.customer ?? ""); setEmployee(saved.employee ?? ""); setCell(saved.cell ?? ""); setWeekEnding(saved.weekEnding ?? currentFriday()); setCommitted({ customer: saved.customer ?? "", employee: saved.employee ?? "", cell: saved.cell ?? "" }); } else clear(); }
+    catch { setMessage("Could not load this view."); }
   }
   function deleteView() {
-    try {
-      const saved = JSON.parse(localStorage.getItem("all-employees-on-job-views") ?? "{}");
-      delete saved[view]; localStorage.setItem("all-employees-on-job-views", JSON.stringify(saved)); setMessage(`${view} deleted.`);
-    } catch { setMessage("Could not delete this view."); }
+    try { const saved = savedViews(); delete saved[view]; localStorage.setItem("employees-in-tracking-menu-views", JSON.stringify(saved)); setMessage(`${view} deleted.`); }
+    catch { setMessage("Could not delete this view."); }
   }
-  function toggleRow(id: string) {
-    setSelected(current => { const next = new Set(current); if (next.has(id)) next.delete(id); else next.add(id); return next; });
+  function exportView() {
+    const values = [["Employee", "Cell Phone", "Assigned Customer", "Trade"], ...rows.map(row => [`${row.first} ${row.middle} ${row.last}`.replace(/\s+/g, " ").trim(), row.cell, row.customer, row.trade])];
+    const csv = values.map(row => row.map(value => `"${value.replaceAll('"', '""')}"`).join(",")).join("\r\n");
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    const link = document.createElement("a"); link.href = url; link.download = "employees-in-tracking.csv"; link.click(); URL.revokeObjectURL(url);
   }
-  function toggleAll() {
-    setSelected(current => current.size === visibleRows.length ? new Set() : new Set(visibleRows.map(row => row.id)));
-  }
-  function sendText() {
-    const count = visibleRows.filter(row => selected.has(row.id) && row.cell).length;
-    setMessage(count ? `Text sending is not configured in this portal yet. ${count} selected employee${count === 1 ? "" : "s"} have a cell number.` : "Select employees with cell numbers first.");
-  }
-
-  return <section className="aej-screen">
-    <header className="aej-titlebar"><h1>All Employees on a Job</h1><div className="aej-toolbar"><label>View: <select value={view} onChange={event => selectView(event.target.value)}>{["View 01", ...PRESET_VIEWS.slice(1)].map(item => <option key={item}>{item}</option>)}</select></label><AccessButton data-action-status="complete" onClick={saveView}>Save View</AccessButton><AccessButton data-action-status="complete" onClick={deleteView}>Delete View</AccessButton><label>Go To: <select aria-label="Go To" defaultValue=""><option value="" />{visibleRows.map((row, index) => <option key={row.id} value={index + 1}>{index + 1} - {row.first} {row.last}</option>)}</select></label><AccessButton data-action-status="complete" onClick={() => { setSearchCommitted(true); setMessage(""); }}>Refresh</AccessButton><AccessButton data-action-status="complete" onClick={clearFilters}>Zero</AccessButton><AccessButton data-action-status="complete" onClick={() => window.print()}>Export View</AccessButton></div><AccessButton data-action-status="linked" className="aej-cancel" onClick={() => router.push("/reports")}>Cancel</AccessButton></header>
-    <div className="aej-control-area">
-      <div className="aej-search-panel"><div className="aej-search-heading">SEARCH</div><label>Name:<input autoComplete="off" value={name} onChange={event => setName(event.target.value)} onKeyDown={event => { if (event.key === "Enter") setSearchCommitted(true); }} /></label></div>
-      <div className="aej-filter-panel"><label>Customer<input value={customer} onChange={event => setCustomer(event.target.value)} onKeyDown={event => { if (event.key === "Enter") setSearchCommitted(true); }} /></label><div className="aej-like"><label><input type="radio" name="aej-match" defaultChecked />Like</label><label><input type="radio" name="aej-match" />=</label><AccessButton data-action-status="complete" onClick={() => setSearchCommitted(true)}>Search</AccessButton></div><label className="aej-job">Job<select value={job} onChange={event => { setJob(event.target.value); setSearchCommitted(true); }}><option>&lt;ALL&gt;</option>{jobs.map(item => <option key={item}>{item}</option>)}</select></label><label className="aej-records">Records:<span><label><input type="radio" checked={!onePerEmployee} onChange={() => setOnePerEmployee(false)} />All</label><label><input type="radio" checked={onePerEmployee} onChange={() => setOnePerEmployee(true)} />1 Per Employee</label></span></label></div>
-      <div className="aej-views">{PRESET_VIEWS.map((preset, index) => <AccessButton data-action-status="complete" key={preset} className={view === (index === 0 ? "View 01" : preset) ? "is-active" : ""} onClick={() => selectView(index === 0 ? "View 01" : preset)}>{preset}</AccessButton>)}</div>
-      <AccessButton data-action-status="complete" className="aej-clear" onClick={clearFilters}>Clear Filters</AccessButton>
-      <div className="aej-textbox"><div className="aej-textbox-head"><strong>Text:</strong><label><input type="radio" checked={messageMode === "freehand"} onChange={() => setMessageMode("freehand")} />Freehand</label><label><input type="radio" checked={messageMode === "list"} onChange={() => setMessageMode("list")} />Select from List</label><AccessButton data-action-status="partial" disabled={!selected.size} onClick={sendText}>Send Text</AccessButton></div>{messageMode === "freehand" ? <textarea value={messageText} onChange={event => setMessageText(event.target.value)} aria-label="Text message" /> : <select className="aej-message-list" aria-label="Select message" value={messageText} onChange={event => setMessageText(event.target.value)}><option value="" />{["Please call the office when available.", "Your assignment has been updated.", "Please confirm your availability for this job."].map(item => <option key={item}>{item}</option>)}</select>}<small>Placeholders: [Employee First Name], [User First Name], [User Full Name]</small></div>
+  const fillerCount = Math.max(0, 40 - rows.length);
+  return <section className="aej-screen aej-menu">
+    <header className="aej-menu-titlebar"><h1>Employee Menu</h1><div className="aej-menu-toolbar"><label>View: <select aria-label="View" value={view} onChange={event => chooseView(event.target.value)}>{VIEWS.map(item => <option key={item}>{item}</option>)}</select></label><AccessButton onClick={saveView}>Save View</AccessButton><AccessButton onClick={deleteView}>Delete View</AccessButton><AccessButton onClick={() => { setZero(false); router.refresh(); }}>Refresh</AccessButton><AccessButton onClick={() => setZero(true)}>Zero</AccessButton><AccessButton onClick={exportView}>Export View</AccessButton></div><AccessButton className="aej-menu-cancel" onClick={() => router.push("/tracking")}>Cancel</AccessButton></header>
+    <div className="aej-menu-controls">
+      <form className="aej-menu-search" onSubmit={event => { event.preventDefault(); search(); }}><div className="aej-menu-search-label">SEARCH</div><div className="aej-menu-search-fields"><label>Customer:<input value={customer} onChange={event => { setCustomer(event.target.value); setZero(false); }} /></label><label>Employee:<input value={employee} onChange={event => { setEmployee(event.target.value); setZero(false); }} /></label><label>Cell #:<input value={cell} onChange={event => { setCell(event.target.value); setZero(false); }} /></label></div><div className="aej-menu-search-actions"><AccessButton type="submit">Search</AccessButton><fieldset><legend>Use Button</legend><label><input type="radio" name="use-search-button" checked={useButton} onChange={() => setUseButton(true)} />Yes</label><label><input type="radio" name="use-search-button" checked={!useButton} onChange={() => setUseButton(false)} />No</label></fieldset></div></form>
+      <div className="aej-menu-presets">{VIEWS.map((item, index) => <AccessButton key={item} aria-pressed={view === item} onClick={() => chooseView(item)}>{index === 0 ? "Default" : item}</AccessButton>)}</div>
+      <div className="aej-menu-yellow" aria-hidden="true" /><AccessButton className="aej-menu-clear" onClick={clear}>Clear Filters</AccessButton>
+      <div className="aej-menu-week"><label>Week Ending: <input type="date" value={weekEnding} onChange={event => { setWeekEnding(event.target.value); setZero(false); }} /></label><AccessButton onClick={() => { setZero(false); router.refresh(); }}>Refresh</AccessButton></div>
+      <p className="aej-menu-hint">Double-click Assigned Customer to open the customer in Tracking for the selected Week Ending.</p>
+      {message && <span className="aej-menu-status" role="status">{message}</span>}
     </div>
-    <div className="aej-selection"><span>Select:</span><AccessButton data-action-status="complete" onClick={() => setSelected(new Set())}>Clear</AccessButton><AccessButton data-action-status="complete" onClick={toggleAll}>All</AccessButton>{message && <span role="status">{message}</span>}</div>
-    <div className="aej-grid-wrap"><table className="aej-grid"><thead><tr><th className="aej-select-col">Sel</th>{[["customer","Customer"],["job","Job"],["city","Job City"],["state","Job State"],["first","First"],["middle","MI"],["last","Last"],["trade","Trade"],["cell","Cell #"],["status","EE Status"],["weekEnding","Week Ending"],["firstWeek","First Week"],["lastWeek","Last Week"],["text","Text Msg Add"]].map(([key,label]) => <th key={key}>{label}<span>⌄</span></th>)}</tr></thead><tbody>{visibleRows.map(row => <tr key={row.id}><td className="aej-select-col"><input type="checkbox" checked={selected.has(row.id)} onChange={() => toggleRow(row.id)} aria-label={`Select ${row.first} ${row.last}`} /></td><td>{row.customer}</td><td>{row.job}</td><td>{row.city}</td><td>{row.state}</td><td>{row.first}</td><td>{row.middle}</td><td>{row.last}</td><td>{row.trade}</td><td>{row.cell}</td><td>{row.status}</td><td>{row.weekEnding}</td><td>{row.firstWeek}</td><td>{row.lastWeek}</td><td /></tr>)}</tbody></table>{visibleRows.length === 0 && <div className="aej-empty">No employee/job records match these filters.</div>}</div>
-    <footer className="aej-recordbar"><span>Record:</span><button data-action-status="missing" disabled>|◀</button><button data-action-status="missing" disabled>◀</button><input readOnly value={visibleRows.length ? "1" : "0"} aria-label="Current record"/><span>of {visibleRows.length}</span><button data-action-status="missing" disabled>▶</button><button data-action-status="missing" disabled>▶|</button><span>▽ No Filter</span><span>Search</span><div /></footer>
+    <div className="aej-grid-wrap"><table className="aej-menu-grid"><colgroup>{[20,135,100,258,210,134,108,57,375].map((width, index) => <col key={index} style={{ width }} />)}<col /></colgroup><thead><tr><th aria-label="Row" />{["Employee", "Cell Phone", "Assigned Customer", "Referral Agency", "Trade", "Qualification", "Grade", "WCC"].map(label => <th key={label}>{label}<span>⌄</span></th>)}<th /></tr></thead><tbody><tr className="aej-menu-total"><td /><td>Total</td><td colSpan={8} /></tr>{rows.map(row => <tr key={row.id} className={selected === row.id ? "is-selected" : ""} onClick={() => setSelected(row.id)}><td /><td>{`${row.first} ${row.middle} ${row.last}`.replace(/\s+/g, " ").trim()}</td><td>{row.cell}</td><td><button className="aej-menu-customer" onDoubleClick={() => router.push(`/tracking?customerId=${encodeURIComponent(row.customerId)}&projectId=${encodeURIComponent(row.projectId)}&date=${encodeURIComponent(weekEnding)}&load=1`)}>{row.customer}</button></td><td /><td>{row.trade}</td><td /><td /><td /><td /></tr>)}{Array.from({ length: fillerCount }, (_, index) => <tr key={`empty-${index}`} aria-hidden="true">{Array.from({ length: 10 }, (_, col) => <td key={col} />)}</tr>)}</tbody></table></div>
+    <footer className="aej-recordbar"><span>Record:</span><button disabled aria-label="First record">|◀</button><button disabled aria-label="Previous record">◀</button><input readOnly value="Totals" aria-label="Current record" /><span>of {rows.length}</span><button disabled aria-label="Next record">▶</button><button disabled aria-label="Last record">▶|</button><span>▽ No Filter</span><span>Search</span><div /></footer>
   </section>;
 }

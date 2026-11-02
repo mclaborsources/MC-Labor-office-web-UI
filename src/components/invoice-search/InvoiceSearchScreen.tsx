@@ -55,11 +55,11 @@ export function InvoiceSearchScreen({ rows, error = "" }: { rows: OperationalRep
     {message&&<p role="status" className="ac-invoice-view-message">{message}</p>}
     <div className="ac-invoice-selectbar"><span>Select:</span><AccessButton data-action-status="complete" onClick={()=>setSelected([])}>Clear</AccessButton><AccessButton data-action-status="complete" onClick={()=>setSelected(visible.map(row=>String(row.id)))}>All</AccessButton></div>
     <div className="ac-invoice-grid-wrap"><table className="ac-invoice-grid">
-      <colgroup><col style={{width:18}}/><col style={{width:68}}/>{COLUMNS.map(([key,,width])=><col key={key} style={{width}}/>)}</colgroup>
-      <thead><tr><th aria-label="Row selector"/><th>Select<span className="ac-invoice-header-arrow">▾</span></th>{COLUMNS.map(([key,label])=><th key={key}>{label}<span className="ac-invoice-header-arrow">▾</span></th>)}</tr></thead>
-      <tbody>{visible.map(row=><tr key={String(row.id)}><td/><td><input type="checkbox" aria-label={`Select invoice ${row.Invoice}`} checked={selected.includes(String(row.id))} onChange={event=>setSelected(current=>event.target.checked?[...current,String(row.id)]:current.filter(id=>id!==String(row.id)))} /></td>{COLUMNS.map(([key])=><td key={key}>{String(row[key]??"")}</td>)}</tr>)}
-        {Array.from({length:Math.max(0,40-visible.length)},(_,index)=><tr key={`blank-${index}`} aria-hidden="true">{Array.from({length:11},(_,column)=><td key={column}/>)}</tr>)}
+      <colgroup><col style={{width:18}}/><col style={{width:68}}/>{COLUMNS.map(([key,,width])=><col key={key} style={{width}}/>)}{Array.from({length:6},(_,index)=><col key={`spacer-${index}`} style={{width:96}}/>)}<col /></colgroup>
+      <thead><tr><th aria-label="Row selector"/><th>Select<span className="ac-invoice-header-arrow">▾</span></th>{COLUMNS.map(([key,label])=><th key={key}>{label}<span className="ac-invoice-header-arrow">▾</span></th>)}{Array.from({length:7},(_,index)=><th key={`spacer-${index}`} aria-hidden="true" />)}</tr></thead>
+      <tbody>{visible.map(row=><tr key={String(row.id)}><td/><td><input type="checkbox" aria-label={`Select invoice ${row.Invoice}`} checked={selected.includes(String(row.id))} onChange={event=>setSelected(current=>event.target.checked?[...current,String(row.id)]:current.filter(id=>id!==String(row.id)))} /></td>{COLUMNS.map(([key])=><td key={key}>{String(row[key]??"")}</td>)}{Array.from({length:7},(_,index)=><td key={`spacer-${index}`} />)}</tr>)}
+        {Array.from({length:Math.max(0,50-visible.length)},(_,index)=><tr key={`blank-${index}`} aria-hidden="true">{Array.from({length:18},(_,column)=><td key={column}/>)}</tr>)}
       </tbody></table></div>
-    <footer className="ac-invoice-recordbar">{visible.length} invoice records</footer>
+    <footer className="ac-invoice-recordbar"><span>Record:</span><button disabled aria-label="First record">|◀</button><button disabled aria-label="Previous record">◀</button><input readOnly value={visible.length ? "1" : ""} aria-label="Current record" /><button disabled aria-label="Next record">▶</button><button disabled aria-label="Last record">▶|</button><span>▽ No Filter</span><span>Search</span><div /><span aria-label="Invoice count">{visible.length} records</span></footer>
   </section>;
 }

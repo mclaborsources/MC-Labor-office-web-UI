@@ -38,7 +38,7 @@ const SHIFT_COLUMNS: Array<{ key: keyof JobListingRow | "select"; label: string 
 ];
 const VIEWS_KEY = "current-jobs-views";
 
-export function CurrentJobsScreen({ initialPage, kind = "current" }: { initialPage: JobListingPage; kind?: JobListingKind }) {
+export function CurrentJobsScreen({ initialPage, kind = "current", onClose }: { initialPage: JobListingPage; kind?: JobListingKind; onClose?: () => void }) {
   const router = useRouter();
   const title = kind === "employees" ? "Job Employees" : kind === "ocip" ? "OCIP Jobs" : kind === "rate" ? "Rate Jobs" : kind === "shift" ? "Shift Differential Jobs" : "Current Jobs";
   const columns = kind === "ocip" ? OCIP_COLUMNS : kind === "rate" ? RATE_COLUMNS : kind === "shift" ? SHIFT_COLUMNS : CURRENT_COLUMNS;
@@ -125,7 +125,7 @@ export function CurrentJobsScreen({ initialPage, kind = "current" }: { initialPa
           <label htmlFor="current-jobs-go-to">Go To:</label><select id="current-jobs-go-to" defaultValue=""><option value="" />{columns.map((column) => <option key={column.key}>{column.label}</option>)}</select>
           <AccessButton data-action-status="complete" onClick={runSearch}>Refresh</AccessButton><AccessButton data-action-status="complete" onClick={clearFilters}>Zero</AccessButton><AccessButton data-action-status="complete" onClick={() => window.print()}>Export View</AccessButton>
         </div>
-        <div className="ac-current-jobs-closebar"><AccessButton data-action-status="linked" onClick={() => router.push("/reports")}>Cancel</AccessButton><button data-action-status="missing" className="ac-job-app-help" type="button" title="Help" aria-label="Help">?</button></div>
+        <div className="ac-current-jobs-closebar"><AccessButton data-action-status="linked" onClick={() => onClose ? onClose() : router.push("/reports")}>Cancel</AccessButton><button data-action-status="missing" className="ac-job-app-help" type="button" title="Help" aria-label="Help">?</button></div>
       </header>
       <div className="ac-current-jobs-tools">
         <form className="ac-current-jobs-search" onSubmit={(event) => { event.preventDefault(); runSearch(); }}>

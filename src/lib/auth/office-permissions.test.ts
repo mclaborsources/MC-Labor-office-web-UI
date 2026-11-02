@@ -18,6 +18,19 @@ test("authenticated staff can check SQL status without access to connection sett
   assert.equal(officeRouteAllowed("/api/health/other", []), false);
   assert.equal(officeRouteAllowed("/api/admin/connection", []), false);
 });
+test("Employees in Tracking uses the Tracking feature grant", () => {
+  assert.equal(officeRouteAllowed("/employees-in-tracking", [feature("frmTrackingEdit")]), true);
+  assert.equal(officeRouteAllowed("/employees-in-tracking", []), false);
+  assert.equal(officeRouteAllowed("/employees-in-tracking", [feature("frmEmployeeSearch3")]), false);
+});
+test("Current Jobs page and report API use Tracking or Job Search grants", () => {
+  for (const path of ["/current-jobs", "/api/reports/job-listings"]) {
+    assert.equal(officeRouteAllowed(path, [feature("frmTrackingEdit")]), true);
+    assert.equal(officeRouteAllowed(path, [feature("frmProjectSearch")]), true);
+    assert.equal(officeRouteAllowed(path, []), false);
+    assert.equal(officeRouteAllowed(path, [feature("frmCustomerSearch")]), false);
+  }
+});
 test("quick search page and data API use the same Access feature", () => {
   const grants = [feature("frmEmployeeQuickSearch")];
   assert.equal(officeRouteAllowed("/employee-quick-search", grants), true);

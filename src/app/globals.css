@@ -16857,12 +16857,6 @@ button[data-action-status="linked"] {
   color: #14532d !important;
   box-shadow: none;
 }
-button[data-action-status="missing"], button[data-action-status="partial"] {
-  background: #fee2e2 !important;
-  border-color: #dc2626 !important;
-  color: #991b1b !important;
-  box-shadow: none;
-}
 .ac-dashboard-action-legend {
   display: flex;
   flex-wrap: wrap;
@@ -22728,3 +22722,151 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
 .ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--referral :is(th,td) {
   font: 400 13px/19px Arial,sans-serif;
 }
+
+/* Keep employee tab commands fully visible above the action bar. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--employees {
+  grid-template-rows: 126px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-job-tab--employees .ac-tracking-job-tab-col {
+  height: 126px;
+  min-height: 126px;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--employees button.ac-btn[data-action-status] {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--employees button.ac-tracking-job-tab-btn-bottom.ac-btn[data-action-status] {
+  height: 29px;
+  min-height: 29px;
+  max-height: 29px;
+  padding: 1px 4px;
+  font-size: 13px !important;
+  line-height: 25px !important;
+}
+
+/* Employees in Tracking — Employee Menu reference. */
+.aej-screen.aej-menu { padding:0 10px 4px; background:#ececec; font:13px Arial,sans-serif; }
+.aej-menu .ac-btn { box-sizing:border-box; min-height:27px; height:29px; padding:2px 7px; border:1px solid; border-color:#fff #777 #777 #fff; border-radius:0; background:#efefef; color:#000; font:400 13px/20px Arial,sans-serif; box-shadow:1px 1px 0 #bbb; white-space:nowrap; }
+.aej-menu-titlebar { display:flex; align-items:flex-start; height:33px; flex:none; gap:20px; background:#d8d8d8; }
+.aej-menu-titlebar h1 { margin:-3px 0 0 2px; width:400px; flex:0 0 400px; font:400 25px/30px Arial,sans-serif; }
+.aej-menu-toolbar { display:flex; gap:8px; align-items:center; }
+.aej-menu-toolbar label { display:flex; align-items:center; gap:10px; }
+.aej-menu-toolbar select { width:105px; height:23px; background:#fff; border:1px solid #aaa; font:13px Arial,sans-serif; }
+.aej-menu .aej-menu-cancel { margin-left:auto; margin-right:68px; width:76px; }
+.aej-menu-controls { position:relative; flex:0 0 172px; min-width:1160px; }
+.aej-menu-search { position:absolute; left:0; top:7px; display:flex; gap:12px; height:114px; }
+.aej-menu-search-label { box-sizing:border-box; width:25px; border:1px solid #000; background:#c7c7c7; font-weight:bold; text-align:center; padding:3px 5px; overflow-wrap:anywhere; line-height:18px; }
+.aej-menu-search-fields label { display:grid; grid-template-columns:68px 125px; gap:6px; align-items:center; height:28px; }
+.aej-menu-search-fields input { box-sizing:border-box; width:125px; height:26px; border:1px solid; border-color:#777 #fff #fff #777; background:#fff; padding:1px 3px; }
+.aej-menu-search-actions { display:flex; flex-direction:column; gap:3px; width:60px; }
+.aej-menu-search-actions fieldset { border:1px solid #aaa; padding:0 8px 5px; margin:0; }
+.aej-menu-search-actions legend { text-align:center; font-size:12px; }
+.aej-menu-search-actions label { display:flex; align-items:center; gap:5px; line-height:21px; }
+.aej-menu input[type=radio] { width:12px; height:12px; margin:0; accent-color:#000; }
+.aej-menu-presets { position:absolute; top:7px; left:420px; width:725px; height:34px; box-sizing:border-box; border:1px solid; border-color:#999 #fff #fff #999; display:grid; grid-template-columns:repeat(5,1fr); gap:8px; padding:3px 7px; }
+.aej-menu-presets .ac-btn { height:25px; min-height:25px; }
+.aej-menu-yellow { position:absolute; top:72px; left:420px; width:285px; height:25px; background:#ffffa1; }
+.aej-menu .aej-menu-clear { position:absolute; left:1048px; top:72px; width:97px; }
+.aej-menu-week { position:absolute; left:2px; bottom:11px; display:flex; align-items:center; gap:18px; }
+.aej-menu-week label { display:flex; align-items:center; gap:9px; }
+.aej-menu-week input { width:110px; height:25px; box-sizing:border-box; border:1px solid #aaa; background:#fff; font:13px Arial,sans-serif; }
+.aej-menu-hint { position:absolute; left:420px; bottom:17px; margin:0; color:#2323ee; font:13px Arial,sans-serif; }
+.aej-menu-status { position:absolute; left:720px; top:78px; font-size:12px; }
+.aej-menu .aej-grid-wrap { min-height:100px; background:#fff; }
+.aej-menu-grid { width:100%; min-width:1400px; table-layout:fixed; border-collapse:collapse; font:13px/19px Arial,sans-serif; }
+.aej-menu-grid :is(th,td) { box-sizing:border-box; height:20px; padding:0 3px; border:1px solid #f4f4f4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.aej-menu-grid th { position:sticky; top:0; z-index:1; background:#e0e3e8; border-color:#b8bec9; font-weight:400; text-align:center; }
+.aej-menu-grid th span { float:right; color:#666; font-size:11px; }
+.aej-menu-grid :is(th,td):first-child { background:#e4e7eb; }
+.aej-menu-grid .aej-menu-total td { background:#a9cfe9; }
+.aej-menu-grid .aej-menu-total td:nth-child(2) { text-align:right; color:#000; background:#fff; font-weight:bold; }
+.aej-menu-grid tr.is-selected td { background:#a9cfe9; }
+.aej-menu-customer { display:block; width:100%; border:0; padding:0; background:transparent; color:inherit; font:inherit; text-align:left; cursor:pointer; }
+.aej-menu .aej-recordbar input { width:60px; }
+@media(max-width:1250px) { .aej-menu-titlebar h1 { width:250px; flex-basis:250px; } .aej-menu-controls { overflow-x:auto; min-width:0; } .aej-menu .aej-menu-cancel { margin-right:0; } .aej-menu-titlebar { overflow-x:auto; } }
+
+/* Invoice Search: match the Access reference frame and full-width blank grid. */
+.ac-invoice-search { min-width:0; width:100%; overflow:hidden; font:13px Arial,sans-serif; }
+.ac-invoice-search .ac-invoice-header { flex:0 0 50px; height:50px; padding:7px 12px 0; gap:0; overflow-x:auto; }
+.ac-invoice-search .ac-invoice-header h1 { flex:0 0 443px; font:400 25px/32px Arial,sans-serif; }
+.ac-invoice-search .ac-invoice-view { gap:8px; flex-shrink:0; }
+.ac-invoice-search .ac-invoice-view select { height:25px; font:13px Arial,sans-serif; }
+.ac-invoice-search button.ac-btn[data-action-status] { font:400 13px/20px Arial,sans-serif!important; opacity:1; }
+.ac-invoice-search .ac-invoice-controls { flex:0 0 162px; height:162px; }
+.ac-invoice-search .ac-invoice-filters label { font:400 13px/20px Arial,sans-serif; }
+.ac-invoice-search .ac-invoice-filters :is(input,select) { font:400 13px/20px Arial,sans-serif; }
+.ac-invoice-search .ac-invoice-actions { left: min(1175px, calc(100% - 280px)); top:2px; }
+.ac-invoice-search .ac-invoice-actions label { font:400 13px/20px Arial,sans-serif; white-space:nowrap; }
+.ac-invoice-search .ac-invoice-selectbar { flex:0 0 40px; }
+.ac-invoice-search .ac-invoice-grid { width:100%; min-width:1858px; }
+.ac-invoice-search .ac-invoice-grid :is(th,td) { font:400 13px/19px Arial,sans-serif; border-color:#f4f4f4; }
+.ac-invoice-search .ac-invoice-grid th { position:sticky; top:0; border-color:#b8bec9; text-align:center; }
+.ac-invoice-search .ac-invoice-grid th:nth-child(n+12) { background:#f7f7fd; border-color:#f1f1f5; }
+.ac-invoice-search .ac-invoice-recordbar { font:11px/16px Arial,sans-serif; }
+
+/* Current Jobs opens over Tracking as a nearly full-screen Access window. */
+.ac-current-jobs-modal {
+  position:fixed;
+  inset:0;
+  width:calc(100vw - 24px);
+  max-width:none;
+  height:calc(100dvh - 40px);
+  max-height:none;
+  margin:auto;
+  padding:0;
+  border:1px solid #aeb4b9;
+  border-radius:9px;
+  background:#ececec;
+  color:#000;
+  box-shadow:0 8px 28px #0004;
+  overflow:hidden;
+}
+.ac-current-jobs-modal[open] { display:flex; flex-direction:column; }
+.ac-current-jobs-modal::backdrop { background:#0002; }
+.ac-current-jobs-modal-title { display:flex; flex:0 0 30px; align-items:center; justify-content:space-between; padding:0 8px 0 12px; background:#eef5fa; font:12px Arial,sans-serif; }
+.ac-current-jobs-modal-title button { width:28px; height:26px; border:0; background:transparent; font:22px Arial,sans-serif; cursor:pointer; }
+.ac-current-jobs-modal-title button:hover { background:#e81123; color:#fff; }
+.ac-current-jobs-modal .ac-current-jobs { display:flex; flex-direction:column; flex:1; height:auto; min-height:0; padding:0 8px 6px; background:#ececec; }
+.ac-current-jobs-modal .ac-current-jobs-header { flex:0 0 47px; min-height:47px; flex-wrap:nowrap; gap:0; padding:7px 0 0; overflow-x:auto; }
+.ac-current-jobs-modal .ac-current-jobs-header h1 { flex:0 0 303px; font:400 25px/30px Arial,sans-serif; }
+.ac-current-jobs-modal .ac-current-jobs-viewbar { flex:1; flex-wrap:nowrap; gap:8px; white-space:nowrap; }
+.ac-current-jobs-modal .ac-current-jobs-post { margin-right:12px; color:red!important; }
+.ac-current-jobs-modal .ac-current-jobs-viewbar select { width:105px; height:25px; font:13px Arial,sans-serif; }
+.ac-current-jobs-modal .ac-current-jobs-closebar { margin-left:auto; padding-left:12px; }
+.ac-current-jobs-modal .ac-current-jobs-tools { flex:0 0 80px; gap:46px; }
+.ac-current-jobs-modal .ac-current-jobs-search { grid-template-columns:75px 146px; grid-template-rows:18px 28px 28px; width:221px; }
+.ac-current-jobs-modal .ac-current-jobs-search strong { background:#c4c4c4; color:#000; border:1px solid #000; line-height:16px; }
+.ac-current-jobs-modal .ac-current-jobs-search input { box-sizing:border-box; height:26px; border:1px solid; border-color:#777 #fff #fff #777; }
+.ac-current-jobs-modal .ac-current-jobs-tools em { padding-top:38px; padding-left:30%; font:italic 13px Arial,sans-serif; }
+.ac-current-jobs-modal button.ac-btn { border:1px solid; border-color:#fff #777 #777 #fff; border-radius:0; background:#efefef; box-shadow:1px 1px 0 #bbb; color:#000; height:29px; min-height:29px; padding:2px 7px; font:400 13px/20px Arial,sans-serif; white-space:nowrap; }
+.ac-current-jobs-modal .ac-current-jobs-grid-wrap { flex:1; min-height:0; }
+.ac-current-jobs-modal .ac-current-jobs-grid { min-width:1885px; font:13px Arial,sans-serif; }
+.ac-current-jobs-modal .ac-current-jobs-grid th { height:20px; background:#dfe3e8; font-weight:400; }
+.ac-current-jobs-modal .ac-current-jobs-recordbar { flex:0 0 19px; min-height:19px; height:19px; }
+.ac-current-jobs-modal-loading { padding:24px; font:13px Arial,sans-serif; }
+
+/* Phone Number Search reference: compact toolbar, presets, and blank datasheet. */
+.ac-phone-search { display:flex; flex-direction:column; flex:1; min-height:0; background:#ececec; padding:0 10px 4px; font:13px Arial,sans-serif; }
+.ac-phone-search-header { flex:0 0 48px; min-height:48px; height:48px; flex-wrap:nowrap; padding:5px 2px 0; gap:0; overflow-x:auto; }
+.ac-phone-search-header h1 { flex:0 0 432px; font:400 25px/32px Arial,sans-serif; }
+.ac-phone-search-viewbar { flex:1; flex-wrap:nowrap; gap:8px; white-space:nowrap; }
+.ac-phone-search-viewbar select { width:105px; height:25px; font:13px Arial,sans-serif; }
+.ac-phone-search .ac-btn { border:1px solid; border-color:#fff #777 #777 #fff; border-radius:0; background:#efefef; box-shadow:1px 1px 0 #bbb; color:#000; height:29px; min-height:29px; padding:2px 7px; font:400 13px/20px Arial,sans-serif; white-space:nowrap; }
+.ac-phone-search-closebar { padding-left:12px; }
+.ac-phone-search-tools { flex:0 0 66px; flex-wrap:nowrap; padding:0; gap:0; overflow-x:auto; }
+.ac-phone-search-form { flex:0 0 381px; grid-template-columns:128px 180px 73px; grid-template-rows:18px 34px; width:381px; }
+.ac-phone-search-form strong { background:#c4c4c4; border:1px solid #000; line-height:16px; }
+.ac-phone-search-form input { box-sizing:border-box; height:33px; padding:2px 4px; border:1px solid; border-color:#777 #fff #fff #777; }
+.ac-phone-search-form .ac-btn { height:26px; min-height:26px; align-self:center; }
+.ac-phone-search-view-buttons { flex:0 0 586px; box-sizing:border-box; height:34px; margin:7px 0 0 50px; grid-template-columns:repeat(4,minmax(0,1fr)); padding:3px 7px; border-color:#aaa #fff #fff #aaa; }
+.ac-phone-search-view-buttons .ac-btn { height:25px; min-height:25px; }
+.ac-phone-search-view-buttons .ac-btn[aria-pressed=true] { background:#efefef; box-shadow:1px 1px 0 #bbb; }
+.ac-phone-search .ac-phone-search-clear { margin:8px 0 0 15px; }
+.ac-phone-search-grid-wrap { flex:1; min-height:0; }
+.ac-phone-search-grid { min-width:1900px; }
+.ac-phone-search-grid :is(th,td) { box-sizing:border-box; height:20px; padding:0 4px; border-color:#f4f4f4; font:400 13px/19px Arial,sans-serif; }
+.ac-phone-search-grid th { border-color:#b8bec9; background:#dfe3e8; }
+.ac-phone-search-grid th:nth-child(n+6) { background:#f7f7fd; border-color:#f1f1f5; }
+.ac-phone-search-recordbar { flex:0 0 18px; min-height:18px; height:18px; font:11px/16px Arial,sans-serif; }
+.ac-phone-search-recordbar :is(input,button) { height:17px; }
+.ac-phone-search-message { margin:0; padding:3px 8px; font-size:12px; }

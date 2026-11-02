@@ -3,6 +3,8 @@ import { queryReadOnly } from "@/lib/db/sql";
 export interface AllEmployeesOnJobRow {
   id: string;
   employeeId: string;
+  customerId: string;
+  projectId: string;
   customer: string;
   job: string;
   city: string;
@@ -21,7 +23,7 @@ export interface AllEmployeesOnJobRow {
 /** All recorded employee/job assignments, with first/last assignment weeks. */
 export function getAllEmployeesOnJobRows(): Promise<AllEmployeesOnJobRow[]> {
   return queryReadOnly<AllEmployeesOnJobRow>(`WITH history AS (
-    SELECT t.TrackingID,t.EmployeeID,t.CustomerBusName,t.SiteName,
+    SELECT t.TrackingID,t.EmployeeID,t.CustomerID,t.ProjectID,t.CustomerBusName,t.SiteName,
       ISNULL(siteCity.City,'') AS JobCity,ISNULL(siteState.PullDownState,'') AS JobState,
       t.EmFirstName,t.EmMiddle,t.EmLastName,t.EmMobilePhone,t.WeekEndingDate,
       e.EmEmployeeStatusID,e.EmTradeID,
@@ -36,6 +38,8 @@ export function getAllEmployeesOnJobRows(): Promise<AllEmployeesOnJobRow[]> {
   )
   SELECT TOP (10000) CAST(h.TrackingID AS NVARCHAR(30)) id,
     CAST(h.EmployeeID AS NVARCHAR(30)) employeeId,
+    ISNULL(CAST(h.CustomerID AS NVARCHAR(30)),'') customerId,
+    ISNULL(CAST(h.ProjectID AS NVARCHAR(30)),'') projectId,
     ISNULL(h.CustomerBusName,'') customer,ISNULL(h.SiteName,'') job,
     ISNULL(h.JobCity,'') city,ISNULL(h.JobState,'') state,
     ISNULL(h.EmFirstName,'') first,ISNULL(h.EmMiddle,'') middle,ISNULL(h.EmLastName,'') last,
