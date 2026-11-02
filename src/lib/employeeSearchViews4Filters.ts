@@ -54,9 +54,11 @@ function valueForSetting(row: EmployeeSummary, field: string): string {
 function matchesTrade(value: string, choice: string): boolean {
   if (!choice || choice === "All") return true;
   const trade = value.toLocaleLowerCase();
-  if (choice.startsWith("[Elec")) return /electric|\belec\b/.test(trade);
-  if (choice.startsWith("[Plumb")) return /plumb/.test(trade);
-  if (choice.startsWith("[HVAC")) return /hvac|sheet metal/.test(trade);
+  if (/^\[\s*Elec/i.test(choice)) return /electric|\belec\b/.test(trade);
+  if (/^\[\s*Plumb/i.test(choice)) return /plumb/.test(trade);
+  if (/^\[\s*HVAC/i.test(choice)) return /hvac|sheet metal/.test(trade);
+  if (choice.trim() === "Lic") return /journeyman|licensed|\blic\b/.test(trade);
+  if (choice.trim() === "App ]") return /apprentice|\bapp\b/.test(trade);
   return trade === choice.toLocaleLowerCase() || trade.includes(choice.toLocaleLowerCase());
 }
 

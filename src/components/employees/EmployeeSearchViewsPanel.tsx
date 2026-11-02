@@ -27,7 +27,6 @@ import {
   EMPLOYEE_VIEWS_4_PROFILE,
   EMPLOYEE_VIEWS_4_TIME_DURATION,
   EMPLOYEE_VIEWS_4_TIME_FOR,
-  EMPLOYEE_VIEWS_4_TRADE,
   EMPLOYEE_VIEWS_COUNTY_OPTIONS,
   EMPLOYEE_VIEWS_STATE_OPTIONS,
   EMPLOYEE_VIEWS_TIME_FRAME,
@@ -453,7 +452,7 @@ function Views4Tab({ filters = {}, onFiltersChange }: { filters?: EmployeeSearch
         className="ac-customer-search-filter-group--wide ac-customer-search-filter-group--no-legend"
       />
       <div className="ac-customer-search-views-filter-row">
-        <FilterRadioGroup legend="Trade:" name="emp-v4-trade" options={EMPLOYEE_VIEWS_4_TRADE} value={filters.trade ?? ""} onValueChange={value => update("trade", value)} />
+        <FilterRadioGroup legend="Trade:" name="emp-v4-trade" options={EMPLOYEE_VIEWS_TRADE_OPTIONS} value={filters.trade ?? ""} onValueChange={value => update("trade", value)} />
         <FilterRadioGroup legend="State:" name="emp-v4-state" options={EMPLOYEE_VIEWS_STATE_OPTIONS} value={filters.state ?? ""} onValueChange={value => update("state", value)} />
       </div>
       <FilterRadioGroup

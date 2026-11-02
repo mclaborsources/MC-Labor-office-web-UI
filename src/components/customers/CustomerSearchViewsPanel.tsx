@@ -416,6 +416,43 @@ function ViewsTab() {
   );
 }
 
+function DuplicateGroupFilters() {
+  const [profile, setProfile] = useState("All");
+  const [timeFrame, setTimeFrame] = useState("");
+  const [duration, setDuration] = useState("All");
+  const [groupNumber, setGroupNumber] = useState("");
+  return (
+    <section className="ac-customer-search-duplicates-panel" aria-label="Duplicate Group Filters">
+      <div className="ac-customer-search-duplicates-head">
+        <span>Duplicate Group Filters</span>
+        <AccessButton xs data-action-status="complete" onClick={() => { setProfile("All"); setTimeFrame(""); setDuration("All"); setGroupNumber(""); }}>Reset</AccessButton>
+      </div>
+      <div className="ac-customer-search-duplicates-grid">
+        <fieldset className="ac-customer-search-duplicates-group">
+          <legend>Profile Type:</legend>
+          {["All", "One or more Spare 2"].map(value => <label className="ac-customer-search-radio" key={value}><input type="radio" name="duplicate-profile" checked={profile === value} onChange={() => setProfile(value)} /><span>{value}</span></label>)}
+        </fieldset>
+        <fieldset className="ac-customer-search-duplicates-group">
+          <legend>Time Frame for:</legend>
+          {["Last Action Date", "Last Sales H Status Date"].map(value => <label className="ac-customer-search-radio" key={value}><input type="radio" name="duplicate-time-frame" checked={timeFrame === value} onChange={() => setTimeFrame(value)} /><span>{value}</span></label>)}
+        </fieldset>
+        <fieldset className="ac-customer-search-duplicates-group ac-customer-search-duplicates-group--wide">
+          <legend>Time Range</legend>
+          <div className="ac-customer-search-duplicates-range-grid">
+            {["All", "None", "14 - 28 Days ago", "28 - 56 Days ago", ">56 Days ago"].map(value => <label className="ac-customer-search-radio" key={value}><input type="radio" name="duplicate-duration" checked={duration === value} onChange={() => setDuration(value)} /><span>{value}</span></label>)}
+          </div>
+        </fieldset>
+      </div>
+      <div className="ac-customer-search-merge-row">
+        <span>Merge Duplicate Groups | 029</span>
+        <label htmlFor="customer-duplicate-group-number">#</label>
+        <input id="customer-duplicate-group-number" className="ac-input ac-customer-search-merge-input" aria-label="Duplicate group number" inputMode="numeric" value={groupNumber} onChange={event => setGroupNumber(event.target.value.replace(/\D/g, ""))} />
+        <AccessButton xs data-action-status="missing" disabled title="Merging duplicate customer groups is not available yet">Merge</AccessButton>
+      </div>
+    </section>
+  );
+}
+
 function Views2Tab() {
   return (
     <div className="ac-customer-search-views-preset ac-customer-search-views-2 ac-search-views-tab-pane">
@@ -662,7 +699,7 @@ function UserSettingsTab({ customerUserFlagOptions, lastActionUsers, userSetting
           </select>
         </div>
         <div className="ac-customer-search-user-settings-status" role="status" aria-live="polite">
-          {status || (userSettingsSelectedCount ? `${userSettingsSelectedCount.toLocaleString()} customer${userSettingsSelectedCount === 1 ? "" : "s"} selected.` : "Select one or more customer rows in the table, then choose a value and click Set or Clear.")}
+          {status || (userSettingsSelectedCount ? `${userSettingsSelectedCount.toLocaleString()} customer${userSettingsSelectedCount === 1 ? "" : "s"} selected.` : "")}
         </div>
       </div>
       {pendingFlag && typeof document !== "undefined" && createPortal(<div role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) setPendingFlag(null); }}
@@ -782,7 +819,7 @@ function UtilitiesTab({ onGoToColumn, visibleCustomerColumns = [], onExportView,
         <label className="ac-customer-search-utilities-field">
           <span className="ac-flabel">Action | 005:</span>
           <select className="ac-select" value={selectedAction} aria-label="Action 005" disabled={!onCreateCustomerAction || utilityBusy} onChange={event => { setSelectedAction(event.target.value); setUtilityMessage(""); if (event.target.value) { if (!selectedCustomerIds.length) setUtilityMessage("Select one or more customer rows first."); else setActionConfirmOpen(true); } }}>
-            <option value="">Select…</option>
+            <option value="" />
             {actionOptions.map((option) => (
               <option key={option.id} value={option.id}>{option.description}</option>
             ))}
@@ -1004,7 +1041,7 @@ function RayTab({ selectedCustomerIds = [], onRayAction }: Pick<CustomerSearchVi
         <label className="ac-customer-search-ray-field">
           <span className="ac-flabel">Change To:</span>
           <select className="ac-select" value={selectedTitle} onChange={event => setSelectedTitle(event.target.value)} aria-label="Change contact title to">
-            <option value="">Select…</option>
+            <option value="" />
             {contactTitles.map((option) => (
               <option key={option.id} value={option.id}>{option.label}</option>
             ))}
@@ -1040,7 +1077,7 @@ function RayTab({ selectedCustomerIds = [], onRayAction }: Pick<CustomerSearchVi
         <label className="ac-customer-search-ray-field">
           <span className="ac-flabel">Change To:</span>
           <select className="ac-select" value={selectedType} onChange={event => setSelectedType(event.target.value)} aria-label="Change customer type to">
-            <option value="">Select…</option>
+            <option value="" />
             {customerTypes.map((option) => (
               <option key={option.id} value={option.id}>{option.label}</option>
             ))}
@@ -1147,7 +1184,7 @@ export function CustomerSearchViewsPanel(props: CustomerSearchViewsPanelProps) {
         <div className="ac-customer-search-views-tab">
           {showCompactFilter ? props.filterRow ?? <CompactFilterRow {...props} /> : null}
 
-          <div className="ac-customer-search-views-body ac-customer-search-views-body--full">
+          <div className={`ac-customer-search-views-body ac-customer-search-views-body--full${showCompactFilter ? " ac-customer-search-views-body--duplicates" : ""}`}>
             <div className="ac-customer-search-views-left">
               {activeTab === 5 ? <UtilitiesTab
                 onGoToColumn={props.onGoToColumn}
@@ -1180,6 +1217,7 @@ export function CustomerSearchViewsPanel(props: CustomerSearchViewsPanelProps) {
                 onExportView={props.onExportView}
               />}
             </div>
+            {showCompactFilter && <DuplicateGroupFilters />}
           </div>
         </div>
       </div>

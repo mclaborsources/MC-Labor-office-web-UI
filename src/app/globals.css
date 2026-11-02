@@ -18782,6 +18782,7 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
 /* Views 2 has its own preset matrix; keep Deepak visible in the first slot. */
 .ac-customer-search-page .ac-customer-search-views-2 .ac-customer-search-views-2-grid {
   display: grid;
+  width: max(60%, calc(100% - 382px));
   grid-template-columns: repeat(8, minmax(0, 1fr));
   grid-template-rows: repeat(4, 25px);
   grid-auto-rows: 25px;
@@ -18798,10 +18799,11 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
 .ac-customer-search-page .ac-customer-search-views-2-footer {
   display: flex;
   flex: 0 0 auto;
+  margin-top: auto;
   width: 100%;
   min-width: 0;
   padding-top: 4px;
-  padding-bottom: 2px;
+  padding-bottom: 22px;
   justify-content: flex-start;
 }
 .ac-customer-search-page .ac-customer-search-views-2-footer .ac-customer-search-view-controls {
@@ -18887,6 +18889,7 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
 .ac-customer-search-page .ac-customer-search-views-3.ac-search-views-tab-pane {
   box-sizing: border-box;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: 36px 36px 34px 36px 36px 32px;
   gap: 8px;
   align-content: start;
@@ -18941,14 +18944,21 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
   flex: 1 1 auto;
   flex-wrap: nowrap;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 0 4px;
   min-width: 0;
   overflow: hidden;
 }
 .ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-views-filter-row:first-child > .ac-customer-search-filter-group:first-child .ac-customer-search-filter-group-options { margin-left: 64px; }
 .ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-views-filter-row:first-child > .ac-customer-search-filter-group:nth-child(2) .ac-customer-search-filter-group-options { margin-left: 53px; }
-.ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-filter-group--wide:nth-child(2) .ac-customer-search-filter-group-options { margin-left: 105px; }
+.ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-filter-group--wide:nth-child(2) .ac-customer-search-filter-group-options {
+  margin-left: 105px;
+  justify-content: flex-start;
+  column-gap: 10px;
+}
+.ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-filter-group--wide:nth-child(2) :is(legend, .ac-customer-search-radio) {
+  font-weight: 600;
+}
 .ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-views-filter-row:nth-of-type(2) > .ac-customer-search-filter-group:first-child .ac-customer-search-filter-group-options { margin-left: 49px; }
 .ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-views-filter-row:nth-of-type(2) > .ac-customer-search-filter-group:nth-child(2) .ac-customer-search-filter-group-options { margin-left: 49px; }
 .ac-customer-search-page .ac-customer-search-views-3 > .ac-customer-search-filter-group--wide:nth-child(5) .ac-customer-search-filter-group-options { margin-left: 64px; }
@@ -22391,3 +22401,330 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
 }
 .ac-permits-page .ac-permits-grid th .ac-column-filter-trigger > span:first-child { overflow:hidden; white-space:nowrap; }
 .ac-permits-view-message { position:fixed; right:18px; bottom:28px; z-index:1000; padding:8px 12px; border:1px solid #aaa; background:#fff; color:#000; font:14px Calibri,Arial,sans-serif; }
+/* Invoice Search: reference form layout and white Access datasheet. */
+.ac-invoice-search { position:relative; min-width:1858px; background:#ececec; font:14px Calibri,Arial,sans-serif; }
+.ac-invoice-search .ac-invoice-header { box-sizing:border-box; flex:0 0 46px; height:46px; padding:5px 12px 0; }
+.ac-invoice-search .ac-invoice-header h1 { flex:0 0 443px; margin:0; font:400 28px/32px Calibri,Arial,sans-serif; }
+.ac-invoice-search .ac-invoice-view { margin-left:0; gap:8px; }
+.ac-invoice-search .ac-invoice-view select { width:105px; height:25px; }
+.ac-invoice-search button.ac-btn[data-action-status] {
+  box-sizing:border-box; height:29px; min-height:29px; padding:1px 7px;
+  border:1px solid!important; border-color:#fff #777 #777 #fff!important;
+  border-radius:0!important; box-shadow:none!important; background:#efefef!important;
+  color:#000!important; opacity:1; font:400 14px/20px Calibri,Arial,sans-serif!important;
+}
+.ac-invoice-search .ac-invoice-close button.ac-btn { width:76px; height:29px; border:1px solid!important; border-color:#fff #777 #777 #fff!important; border-radius:0; background:#efefef; }
+.ac-invoice-search .ac-invoice-controls { position:relative; flex:0 0 164px; height:164px; padding:0 12px; }
+.ac-invoice-search .ac-invoice-filters { width:445px; gap:3px; padding-top:5px; }
+.ac-invoice-search .ac-invoice-filters label { grid-template-columns:106px 290px; font:14px/20px Calibri,Arial,sans-serif; }
+.ac-invoice-search .ac-invoice-filters :is(input,select) { box-sizing:border-box; height:25px; padding:1px 3px; border:1px solid; border-color:#888 #fff #fff #888; border-radius:0; background-color:#fff; box-shadow:inset 1px 1px 0 #bbb; font:14px/20px Calibri,Arial,sans-serif; }
+.ac-invoice-search select { appearance:none; padding-right:20px!important; border-radius:0; background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='22'%3E%3Cpath fill='%23fff' stroke='%23ccc' d='M.5.5h17v21H.5z'/%3E%3Cpath fill='none' stroke='%23777' d='m5 9 4 4 4-4'/%3E%3C/svg%3E") right center/18px 22px no-repeat; font:14px Calibri,Arial,sans-serif; }
+.ac-invoice-search .ac-invoice-actions { position:absolute; left:1175px; top:2px; width:220px; margin:0; padding:0; gap:19px; }
+.ac-invoice-search .ac-invoice-actions > div { gap:8px; }
+.ac-invoice-search .ac-invoice-actions > .ac-btn { width:209px; }
+.ac-invoice-search .ac-invoice-actions > .ac-btn:last-child { margin-top:28px; }
+.ac-invoice-search .ac-invoice-actions input { appearance:auto; width:12px; height:12px; margin:0 0 0 4px; accent-color:#000; }
+.ac-invoice-search .ac-invoice-selectbar { flex:0 0 40px; height:40px; padding:0 12px 3px; gap:7px; }
+.ac-invoice-search .ac-invoice-grid-wrap { margin:0 0 0 11px; min-height:0; border-color:#aaa; background:#fff; }
+.ac-invoice-search .ac-invoice-grid { width:1184px; min-width:1184px; }
+.ac-invoice-search .ac-invoice-grid :is(th,td) { box-sizing:border-box; height:20px; padding:0 4px; border:1px solid #f1f1f1; font:400 14px/19px Calibri,Arial,sans-serif; }
+.ac-invoice-search .ac-invoice-grid th { position:relative; background:#dfe3e9; border-color:#b8bec9; padding-right:15px; color:#000; }
+.ac-invoice-search .ac-invoice-header-arrow { position:absolute; right:4px; top:0; font-size:10px; color:#555; }
+.ac-invoice-search .ac-invoice-grid tbody tr td { background:#fff; }
+.ac-invoice-search .ac-invoice-grid td:first-child { background:#f7f8fc!important; }
+.ac-invoice-search .ac-invoice-grid-wrap { background:repeating-linear-gradient(#fff 0,#fff 19px,#f1f1f1 19px,#f1f1f1 20px); }
+.ac-invoice-search .ac-invoice-recordbar { flex:0 0 18px; height:18px; margin:0 0 0 11px; padding:0 4px; font:11px/16px Calibri,Arial,sans-serif; }
+.ac-invoice-view-message { position:fixed; right:16px; bottom:28px; padding:6px 10px; border:1px solid #aaa; background:#fff; z-index:1000; }
+/* Keep the View 1 duplicate controls aligned beneath Find Duplicates. */
+.ac-customer-search-page .ac-customer-search-views-body.ac-customer-search-views-body--duplicates {
+  column-gap: 70px;
+}
+.ac-customer-search-page .ac-customer-search-views-body--duplicates > .ac-customer-search-views-left {
+  width: auto;
+  flex: 1 1 0;
+}
+.ac-customer-search-page .ac-customer-search-views-body--duplicates > .ac-customer-search-duplicates-panel {
+  min-height: 0;
+  align-self: flex-start;
+}
+.ac-customer-search-page .ac-customer-search-views-body--duplicates .ac-customer-search-duplicates-panel,
+.ac-customer-search-page .ac-customer-search-views-body--duplicates .ac-customer-search-duplicates-panel :is(legend, .ac-customer-search-radio, .ac-customer-search-merge-row, .ac-btn, .ac-input) {
+  font-weight: 600;
+}
+
+/* Use the same light semibold text throughout Customer Search View 3. */
+.ac-customer-search-page .ac-customer-search-views-3.ac-search-views-tab-pane,
+.ac-customer-search-page .ac-customer-search-views-3.ac-search-views-tab-pane :is(legend, label, span, select, option, input, button) {
+  font-weight: 600;
+}
+
+/* Internet Search County combo matches the centered Access dropdown. */
+.ac-customer-search-page select.ac-customer-search-internet-county {
+  appearance: none;
+  box-sizing: border-box;
+  width: 193px;
+  height: 26px;
+  min-height: 26px;
+  padding: 0 20px 0 2px;
+  border: 1px solid;
+  border-color: #777 #fff #fff #777;
+  border-radius: 0;
+  box-shadow: inset 1px 1px 0 #bbb;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='22'%3E%3Cpath fill='%23fff' stroke='%23ccc' d='M.5.5h17v21H.5z'/%3E%3Cpath fill='none' stroke='%23777' stroke-width='.8' d='m5 9 4 4 4-4'/%3E%3C/svg%3E") right center/18px 22px no-repeat;
+  color: #000;
+  font: 400 13px/22px Arial, sans-serif;
+  text-align: center;
+  text-align-last: center;
+  opacity: 1;
+}
+
+/* Include Profiles: outlined boxes with black checks and no colored fill. */
+.ac-customer-search-page .ac-customer-search-admin-check-grid input[type="checkbox"] {
+  appearance: none;
+  box-sizing: border-box;
+  width: 11px;
+  height: 11px;
+  flex: 0 0 11px;
+  padding: 0;
+  border: 1px solid #000;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.ac-customer-search-page .ac-customer-search-admin-check-grid input[type="checkbox"]:checked {
+  background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'%3E%3Cpath d='m1.5 4.3 2 2.2 4-4.2' fill='none' stroke='%23000' stroke-width='1.2'/%3E%3C/svg%3E") center/9px 9px no-repeat;
+}
+.ac-customer-search-page .ac-customer-search-admin-check-grid input[type="checkbox"]:focus-visible {
+  outline: 1px dotted #000;
+  outline-offset: 2px;
+}
+
+/* Ray tab: Access reference layout, with five compact utility groups. */
+.ac-customer-search-page .ac-customer-search-ray-tab.ac-search-views-tab-pane {
+  display: grid;
+  grid-template-columns: 240px 255px 235px 294px minmax(280px, 1fr);
+  align-content: start;
+  align-items: start;
+  min-height: 244px;
+  padding: 4px 0;
+  border: 0;
+  border-radius: 0;
+  background: #ececec;
+  overflow-x: auto;
+  font: 400 13px/18px Arial, sans-serif;
+}
+.ac-customer-search-page .ac-customer-search-ray-tab .ac-customer-search-ray-section {
+  height: 129px;
+  padding: 0 14px;
+  gap: 4px;
+  border-right: 1px solid #999;
+  align-items: center;
+  overflow: visible;
+}
+.ac-customer-search-page .ac-customer-search-ray-tab .ac-customer-search-ray-section:nth-child(5) { border-right: 0; align-items: flex-start; }
+.ac-customer-search-page .ac-customer-search-ray-tab .ac-customer-search-ray-label {
+  font: italic 13px/20px Arial, sans-serif;
+  color: #0045a0;
+  white-space: nowrap;
+}
+.ac-customer-search-page .ac-customer-search-ray-tab .ac-customer-search-ray-field { flex-direction: row; align-items: center; gap: 7px; width: 100%; }
+.ac-customer-search-page .ac-customer-search-ray-tab .ac-customer-search-ray-field .ac-flabel { font: 400 13px Arial,sans-serif; white-space: nowrap; }
+.ac-customer-search-page .ac-customer-search-ray-tab .ac-customer-search-ray-field select {
+  flex: 1;
+  min-width: 0;
+  height: 25px;
+  min-height: 25px;
+  font: 400 13px Arial,sans-serif;
+  border-radius: 0;
+  background-color: #fff;
+}
+.ac-customer-search-page .ac-customer-search-ray-tab .ac-customer-search-ray-section button.ac-btn {
+  align-self: center;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+  height: 29px;
+  min-height: 29px;
+  max-height: none;
+  padding: 2px 7px;
+  border: 1px solid;
+  border-color: #fff #777 #777 #fff;
+  border-radius: 0;
+  background: #efefef !important;
+  color: #000 !important;
+  font: 400 13px/18px Arial,sans-serif;
+  opacity: 1;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+.ac-customer-search-page .ac-customer-search-ray-tab .ac-customer-search-ray-section .ac-customer-search-ray-large-btn.ac-btn {
+  width: 225px;
+  height: 105px;
+  white-space: normal;
+  padding: 5px 4px;
+}
+.ac-customer-search-page .ac-customer-search-ray-tab .ac-customer-search-ray-section:nth-child(3) > button:first-child {
+  width: 161px;
+  height: 65px;
+  white-space: normal;
+  padding: 3px 12px;
+}
+.ac-customer-search-page .ac-customer-search-ray-tab .ac-customer-search-ray-btn-row { margin-top: auto; width: 100%; justify-content: space-between; gap: 18px; }
+.ac-customer-search-page .ac-customer-search-ray-tab .ac-customer-search-ray-btn-row .ac-btn { flex: 1; }
+.ac-customer-search-page .ac-customer-search-ray-tab .ac-customer-search-ray-bottom-btn { margin-top: auto; }
+.ac-customer-search-page .ac-customer-search-ray-tab .ac-customer-search-ray-delete-row { flex-direction: row; align-items: center; gap: 14px; }
+.ac-customer-search-page .ac-customer-search-ray-tab .ac-customer-search-ray-section:nth-child(5) .ac-customer-search-ray-delete-row { margin-top: 12px; }
+.ac-customer-search-page .ac-customer-search-ray-tab .ac-customer-search-ray-section:nth-child(5) > button:first-child { align-self: flex-start; }
+.ac-customer-search-page .ac-customer-search-ray-tab .ac-customer-search-ray-section button.ac-customer-search-ray-delete-btn.ac-btn {
+  background: #f00018 !important;
+  border-color: #000;
+  color: #fff !important;
+  font-weight: 600;
+}
+.ac-customer-search-page .ac-customer-search-ray-tab .ac-customer-search-ray-message { grid-column: 1 / -1; }
+
+/* Preserve red delete buttons against shared button status styles. */
+.ac-customer-search-page .ac-customer-search-shell .ac-customer-search-controls .ac-customer-search-ray-tab .ac-customer-search-ray-section button.ac-customer-search-ray-delete-btn.ac-btn,
+.ac-customer-search-page .ac-customer-search-shell .ac-customer-search-controls .ac-customer-search-ray-tab .ac-customer-search-ray-section button.ac-customer-search-ray-delete-btn.ac-btn:is(:disabled, :hover, :focus-visible, :active) {
+  background: #f00018 !important;
+  background-color: #f00018 !important;
+  background-image: none !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff;
+  border-color: #000;
+  opacity: 1;
+}
+
+/* Employee Search 3 Views 1: consistent bold text on every button. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-1 button,
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-1 button:is(:hover, :focus-visible, :active, :disabled) {
+  font-weight: 700 !important;
+}
+
+/* Employee Views 3: keep each reference filter band on one line. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-3 .ac-employee-views3-filters :is(legend, label, span) {
+  font-family: Calibri, Arial, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 22px;
+  white-space: nowrap;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-3 .ac-employee-views3-filters .ac-customer-search-filter-group-options {
+  display: flex;
+  flex-wrap: nowrap;
+  column-gap: 14px;
+  row-gap: 0;
+  justify-content: flex-start;
+  overflow-x: auto;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-3 .ac-employee-views3-filters .ac-customer-search-radio {
+  flex: 0 0 auto;
+  gap: 4px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-3 .ac-employee-views3-filters .ac-customer-search-filter-group {
+  height: 30px;
+  min-height: 30px;
+  flex-wrap: nowrap;
+}
+
+/* Employee Views 4: compact Access reference bands and full setting combos. */
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4.ac-search-views-tab-pane {
+  box-sizing: border-box;
+  padding: 0 10px 8px;
+  gap: 7px;
+  background: #ececec;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 :is(legend,label,span) {
+  font: 400 13px/22px Arial,sans-serif !important;
+  white-space: nowrap;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 .ac-customer-search-filter-group {
+  box-sizing: border-box;
+  background: #ececec;
+  border-radius: 0;
+  height: 29px;
+  min-height: 29px;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 .ac-customer-search-filter-group-options {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  overflow-x: auto;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 .ac-customer-search-radio { flex: 0 0 auto; gap: 4px; }
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 > .ac-customer-search-views-filter-row:first-child > fieldset:first-child { flex: 0 0 397px; width: 397px; }
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 .ac-employee-views4-user-setting {
+  position: static;
+  width: 316px;
+  height: 29px !important;
+  min-height: 29px !important;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 .ac-employee-views4-user-setting-fields { gap: 10px; }
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 .ac-employee-views4-setting-select-field { flex: 0 0 73px; }
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 .ac-employee-views4-setting-value-field { flex: 1; gap: 6px; }
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 .ac-employee-views4-user-setting select.ac-select {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  height: 22px;
+  min-height: 22px;
+  margin: 0;
+  background-color: #fff;
+}
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 > .ac-customer-search-filter-group--no-legend { margin-top: -7px; }
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 > .ac-customer-search-views-filter-row:nth-of-type(2) { gap: 19px; }
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 > .ac-customer-search-views-filter-row:nth-of-type(2) > fieldset:first-child { flex: 0 1 64%; width: 64%; min-width: 0; }
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 > .ac-customer-search-views-filter-row:nth-of-type(2) > fieldset:last-child { flex: 1; min-width: 0; }
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 > fieldset:nth-last-of-type(2) { width: 87%; }
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 > fieldset:last-of-type { width: 65%; }
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 .ac-customer-search-views-reset-row { margin-top: 0; padding: 0 0 0 9px; }
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 .ac-customer-search-spare-btn { flex: 1 1 0; width: auto; min-width: 0; height: 25px; min-height: 25px; }
+.ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-views-4 button.ac-customer-search-reset-all-btn.ac-btn {
+  flex: 0 0 97px;
+  margin-left: 5%;
+  background: #f00018 !important;
+  color: #000 !important;
+  border: 1px solid #000;
+  font: 400 13px Arial,sans-serif;
+}
+
+/* Tracking job tabs: compact, single-row Access reference tabs. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-col-detail > .ac-tabs {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: nowrap;
+  gap: 0;
+  height: 32px;
+  min-height: 32px;
+  padding: 8px 0 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: #ececec;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-col-detail > .ac-tabs > button.ac-tab {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: auto;
+  max-width: none;
+  height: 24px;
+  min-height: 24px;
+  padding: 2px 6px;
+  border: 1px solid #e2e2e2;
+  border-bottom: 0;
+  border-radius: 0;
+  background: #f4f4f4 !important;
+  color: #000 !important;
+  font: 600 13px/19px Arial,sans-serif;
+  white-space: nowrap;
+  text-overflow: clip;
+  box-shadow: none;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-col-detail > .ac-tabs > button.ac-tab:is(.ac-tab-active, [aria-selected="true"]) {
+  background: #ececec !important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern .ac-tracking-job-tab--referral button.ac-btn[data-action-status] {
+  font: 400 13px/20px Arial,sans-serif !important;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-subform-grid--referral :is(th,td) {
+  font: 400 13px/19px Arial,sans-serif;
+}
