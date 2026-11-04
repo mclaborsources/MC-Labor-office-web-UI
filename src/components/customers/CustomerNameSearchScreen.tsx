@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { useCustomerViewField } from "./CustomerSavedViews";
+import { useCustomerSavedViews, useCustomerViewField } from "./CustomerSavedViews";
 import { CustomerNameColumnHeader } from "./CustomerNameColumnHeader";
 import { Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -40,6 +40,7 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
   onSelectedCustomerIdsChange?: (ids: string[]) => void;
 }) {
   const router = useRouter();
+  const customerView = useCustomerSavedViews();
   const [columnOrder, setColumnOrder] = useCustomerViewField("order", defaultColumns.map(column => column.key), variant === "customers");
   const [draggedColumn, setDraggedColumn] = useState<SummaryColumnKey | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<SummaryColumnKey | null>(null);
@@ -153,7 +154,7 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
     });
   }
   const summaryGridStyle = {
-    gridTemplateColumns: summaryColumns.map(column => column.key === "customerName" && columnWidths[column.key] === undefined ? "minmax(280px, 1fr)" : (columnWidths[column.key] ?? column.width) + "px").join(" "),
+    gridTemplateColumns: summaryColumns.map(column => (columnWidths[column.key] ?? column.width) + "px").join(" "),
     minWidth: summaryColumns.reduce((total, column) => total + (columnWidths[column.key] ?? column.width), 0) + 20,
     whiteSpace: "nowrap",
   } as const;
@@ -333,7 +334,7 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
         </div>, document.body)}
 
         {allNamesVisible ? (
-          <div ref={allNamesListRef} className="ac-customer-name-search-all-names" aria-label="All customer names" onScroll={(event) => setNamesScrollTop(event.currentTarget.scrollTop)}>
+          <div ref={allNamesListRef} className="ac-customer-name-search-all-names" data-customer-default={variant === "customers" && customerView?.slot === 1 ? "true" : undefined} aria-label="All customer names" onScroll={(event) => setNamesScrollTop(event.currentTarget.scrollTop)}>
             <div className="ac-customer-name-search-summary-header" style={summaryGridStyle}>
               {summaryColumns.map((column, index) => <CustomerNameColumnHeader key={column.key} columnKey={column.key} label={column.label} kind={column.kind}
                 dragging={draggedColumn === column.key} dropTarget={dragOverColumn === column.key && draggedColumn !== column.key}

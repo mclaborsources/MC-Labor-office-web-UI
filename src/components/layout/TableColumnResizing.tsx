@@ -17,7 +17,7 @@ export function TableColumnResizing() {
     const attached = new Map<HTMLTableElement, SavedWidths>();
     let trackingWidths: Record<string,number> = {};
     try {
-      const stored=JSON.parse(localStorage.getItem("tracking-shared-column-widths") ?? "{}");
+      const stored=JSON.parse(localStorage.getItem("tracking-access-view-column-widths-v3") ?? "{}");
       trackingWidths=Object.fromEntries(Object.entries(stored).filter(([,value])=>typeof value === "number" && Number.isFinite(value) && value>=32 && value<=2000)) as Record<string,number>;
     } catch { /* Width persistence is optional. */ }
     const signatures=new WeakMap<HTMLTableElement,string>();
@@ -125,7 +125,7 @@ export function TableColumnResizing() {
         const key=trackingKeys(drag.table)[drag.index];
         if(key) {
           trackingWidths[key]=drag.state.widths[drag.index];
-          try {localStorage.setItem("tracking-shared-column-widths",JSON.stringify(trackingWidths));} catch { /* Keep session widths. */ }
+          try {localStorage.setItem("tracking-access-view-column-widths-v3",JSON.stringify(trackingWidths));} catch { /* Keep session widths. */ }
           for(const table of attached.keys())if(table.dataset.sharedWidths === "tracking") {attached.delete(table); signatures.delete(table);}
           restore();
         }
@@ -140,7 +140,7 @@ export function TableColumnResizing() {
       event.preventDefault(); event.stopPropagation();
       if(target.table.dataset.sharedWidths === "tracking") {
         delete trackingWidths[trackingKeys(target.table)[target.column.start]];
-        try {localStorage.setItem("tracking-shared-column-widths",JSON.stringify(trackingWidths));} catch { /* Keep session widths. */ }
+        try {localStorage.setItem("tracking-access-view-column-widths-v3",JSON.stringify(trackingWidths));} catch { /* Keep session widths. */ }
         signatures.delete(target.table);
       }
       saved.delete(tableKey(target.table)); attached.delete(target.table);

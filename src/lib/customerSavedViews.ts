@@ -5,7 +5,7 @@ const columnKey = z.custom<CustomerNameColumnKey>(value => typeof value === "str
 export const customerViewLayoutSchema = z.object({
   order: z.array(columnKey).max(keys.size).refine(order => order.length === keys.size && new Set(order).size === keys.size, "Every column must appear once."),
   hidden: z.array(columnKey).max(keys.size - 1),
-  widths: z.record(columnKey, z.number().int().min(48).max(1600)),
+  widths: z.record(columnKey, z.number().int().min(12).max(1600)),
   filters: z.record(columnKey, z.array(z.string().max(5000)).max(20000)),
   sort: z.object({key:columnKey, direction:z.enum(["asc","desc"])}).nullable(),
 });
@@ -23,14 +23,14 @@ export function defaultCustomerPresetLayout(): CustomerViewLayout {
     "lastWeekEnding", "firstWeekEnding", "act", "internetSalesReadyUser", "internetSalesReadyDate",
     "internetSalesReady", "lastActionUser", "lastActionDate", "lastAction", "futureCallUser",
     "futureCallUserDate", "futureCallUserTime", "futureCall", "futureCallHistory", "salesHistoryStatus",
-    "contactsLink", "licenseNumber", "licenseIssueDate", "licenseExpireDate", "salesPackageSentFilter",
+    "contactsLink", "basicInfoLink", "licenseNumber", "licenseIssueDate", "licenseExpireDate", "salesPackageSentFilter",
     "salesPackageSentDate", "salesPackageSentUser", "contactCount",
   ];
   const visibleSet = new Set(visible);
   return {
     order: [...visible, ...CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key))],
     hidden: CUSTOMER_NAME_SEARCH_COLUMNS.map(column=>column.key).filter(key=>!visibleSet.has(key)),
-    widths: {}, filters: {}, sort: null,
+    widths: {select:66,customerName:193,noCommunication:15,street:72,city:86,state:57,customerType:79,lastWeekEnding:79,firstWeekEnding:87,act:36,internetSalesReadyUser:37,internetSalesReadyDate:79,internetSalesReady:47,lastActionUser:37,lastActionDate:79,lastAction:106,futureCallUser:37,futureCallUserDate:79,futureCallUserTime:79,futureCall:107,futureCallHistory:142,salesHistoryStatus:347,contactsLink:51,basicInfoLink:96,licenseNumber:128,licenseIssueDate:141,licenseExpireDate:148,salesPackageSentFilter:96,salesPackageSentDate:96,salesPackageSentUser:96,contactCount:115}, filters: {}, sort: null,
   };
 }
 

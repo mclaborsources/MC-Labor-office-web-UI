@@ -37,7 +37,7 @@ export function CustomerSavedViewsProvider({children}:{children:ReactNode}) {
     if(!widthsReady)return;
     try { localStorage.setItem("customer-search-shared-widths",JSON.stringify(sharedWidths)); } catch { /* Session widths still work. */ }
   },[sharedWidths,widthsReady]);
-  const effectiveLayout={...layout,widths:{...layout.widths,...sharedWidths}};
+  const effectiveLayout={...layout,widths:slot === 1 ? {...defaultCustomerPresetLayout().widths,...layout.widths} : {...layout.widths,...sharedWidths}};
   const [ready,setReady]=useState(false),[busy,setBusy]=useState(false),[message,setMessage]=useState("");
   const [loadFailed,setLoadFailed]=useState(false),[loadAttempt,setLoadAttempt]=useState(0);
   const [name,setName]=useState(""),[error,setError]=useState(""),[dialogMode,setDialogMode]=useState<"save"|"rename">("save");
@@ -129,11 +129,11 @@ export function useCustomerViewField<K extends keyof CustomerViewLayout>(key:K,i
   const setLayout=context?.setLayout;
   const setWidths=context?.setWidths;
   const setter=useCallback<Dispatch<SetStateAction<CustomerViewLayout[K]>>>(update=>{
-    if(enabled && key === "widths" && setWidths) {
+    if(enabled && key === "widths" && context?.slot !== 1 && setWidths) {
       setWidths(update as SetStateAction<CustomerViewLayout["widths"]>);
     }
     else if(enabled && setLayout)setLayout(current=>({...current,[key]:typeof update === "function" ? (update as (value:CustomerViewLayout[K])=>CustomerViewLayout[K])(current[key]) : update}));
     else setLocal(update);
-  },[enabled,setLayout,setWidths,key]);
+  },[enabled,setLayout,setWidths,key,context?.slot]);
   return [enabled && context ? context.layout[key] : local,setter];
 }

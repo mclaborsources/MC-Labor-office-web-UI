@@ -5,8 +5,11 @@ import { createPortal } from "react-dom";
 import { CustomerNameColumnHeader } from "../customers/CustomerNameColumnHeader";
 import { compareCustomerNameValues } from "@/lib/customerNameSearchColumns";
 import { EmployeeNameCell } from "./EmployeeNameCell";
-import { EMPLOYEE_SEARCH_DEFAULT_COLUMNS, EMPLOYEE_SEARCH_COLUMNS, type EmployeeSearchColumnKey } from "@/lib/employeeSearchColumns";
-import { defaultEmployeeViewLayout } from "@/lib/employeeSavedViews";
+import { EMPLOYEE_VIEW_COLUMNS } from "@/lib/employeeViewColumns";
+import { EMPLOYEE_VIEW_COLUMN_WIDTHS } from "@/lib/employeeViewColumnWidths";
+import { EMPLOYEE_SEARCH_DEFAULT_WIDTHS } from "@/lib/employeeSearchDefaultWidths";
+import { EMPLOYEE_SEARCH_COLUMNS, type EmployeeSearchColumnKey } from "@/lib/employeeSearchColumns";
+import { employeeSearchDefaultPresetLayout } from "@/lib/employeeSavedViews";
 import { useEmployeeSavedViews } from "./EmployeeSavedViews";
 import type { EmployeeSummary } from "@/types/employee";
 
@@ -44,13 +47,20 @@ export function employeeSearchCellValue(row: EmployeeSummary, key: EmployeeSearc
 
 export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, resetVersion = 0, sortResetVersion = 0, fetchedCount, onActiveEmployeeChange, selectedEmployeeIds = [], onSelectedEmployeeIdsChange }: { employees: EmployeeSummary[]; loadTiming?: { queryMs: number; elapsed: number }; resetVersion?: number; sortResetVersion?: number; fetchedCount?: number; onActiveEmployeeChange?: (employee: EmployeeSummary | undefined) => void; selectedEmployeeIds?: string[]; onSelectedEmployeeIdsChange?: (ids: string[]) => void }) {
   const saved = useEmployeeSavedViews();
-  const [localLayout, setLocalLayout] = useState(defaultEmployeeViewLayout);
+  const [localLayout, setLocalLayout] = useState(employeeSearchDefaultPresetLayout);
   const layout = saved?.layout ?? localLayout;
   const setLayout = saved?.setLayout ?? setLocalLayout;
-  const columns = useMemo(() => layout.order
-    .filter(key => !layout.hidden.includes(key))
-    .map(key => EMPLOYEE_SEARCH_DEFAULT_COLUMNS.find(column => column.key === key) ?? EMPLOYEE_SEARCH_COLUMNS.find(column => column.key === key))
-    .filter((column): column is NonNullable<typeof column> => Boolean(column)), [layout.order, layout.hidden]);
+  const isDefaultView = !saved || saved.slot === 1;
+  const isQualificationsView = saved?.slot === 2;
+  const isFutureCallView = saved?.slot === 9;
+  const isGetHiredView = saved?.slot === 27;
+  const columns = useMemo(() => {
+    const visible = EMPLOYEE_VIEW_COLUMNS[saved?.slot ?? 1]
+      ?? layout.order.filter(key => !layout.hidden.includes(key));
+    return visible
+      .map(key => EMPLOYEE_SEARCH_COLUMNS.find(column => column.key === key))
+      .filter((column): column is NonNullable<typeof column> => Boolean(column));
+  }, [saved?.slot, layout.order, layout.hidden]);
   const [selectedEmployee, setSelectedEmployee] = useState<string>();
   const [flagOverrides, setFlagOverrides] = useState<Record<string, boolean>>({});
   const filters = layout.filters;
@@ -60,14 +70,15 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
   const [unhideColumnsOpen, setUnhideColumnsOpen] = useState(false);
   const setFilters = (update: typeof filters | ((current: typeof filters) => typeof filters)) => setLayout(current => ({ ...current, filters: typeof update === "function" ? update(current.filters) : update }));
   const setSort = (next: typeof sort) => setLayout(current => ({ ...current, sort: next }));
+  const widthFor = (key: EmployeeSearchColumnKey, fallback: number) => layout.widths[key] ?? EMPLOYEE_VIEW_COLUMN_WIDTHS[saved?.slot ?? 1]?.[key] ?? EMPLOYEE_SEARCH_DEFAULT_WIDTHS[key] ?? fallback;
   const resizeColumn = (key: EmployeeSearchColumnKey, width: number) => {
-    const value=Math.max(48,Math.min(1600,Math.round(width)));
-    if(saved)saved.setWidths(current=>({...current,[key]:value}));
-    else setLayout(current=>({...current,widths:{...current.widths,[key]:value}}));
+    const value = Math.max(16, Math.min(1600, Math.round(width)));
+    if (saved) saved.setWidths(current => ({...current, [key]: value}));
+    else setLayout(current => ({...current, widths: {...current.widths, [key]: value}}));
   };
   const resetColumnWidth = (key: EmployeeSearchColumnKey) => {
-    if(saved)saved.setWidths(current=>{const next={...current}; delete next[key]; return next;});
-    setLayout(current=>{const widths={...current.widths}; delete widths[key]; return {...current,widths};});
+    if (saved) saved.setWidths(current => {const next = {...current}; delete next[key]; return next;});
+    else setLayout(current => {const widths = {...current.widths}; delete widths[key]; return {...current, widths};});
   };  useEffect(() => { setFilters({}); setSort(null); }, [resetVersion]);
   useEffect(() => { setSort(null); }, [sortResetVersion]);
   function hideColumn(key: EmployeeSearchColumnKey) {
@@ -133,17 +144,19 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
   return (
     <div className="ac-customer-search-grid-wrap ac-employee-search-grid-wrap">
       <div ref={viewport} onScroll={event => setScrollTop(event.currentTarget.scrollTop)} className="ac-grid ac-grid-tracking ac-customer-search-grid ac-employee-search-grid mc-scroll-smooth">
-        <table data-column-count={columns.length}>
+        <table data-employee-view={isDefaultView ? "default" : isQualificationsView ? "qualifications" : isFutureCallView ? "future-call" : isGetHiredView ? "get-hired" : undefined} data-column-count={columns.length} style={{ width: columns.reduce((sum, col) => sum + (widthFor(col.key, col.width)), 19), minWidth: 0, tableLayout: "fixed" }}>
           <colgroup>
+            <col style={{ width: 19, minWidth: 19 }} />
             {columns.map((col) => (
               <col
                 key={col.key}
-                style={{ width: `${layout.widths[col.key] ?? col.width}px`, minWidth: `${layout.widths[col.key] ?? col.width}px` }}
+                style={{ width: `${widthFor(col.key, col.width)}px`, minWidth: `${widthFor(col.key, col.width)}px` }}
               />
             ))}
           </colgroup>
           <thead>
             <tr>
+              <th aria-label="Record selector" className="ac-employee-record-selector" />
               {columns.map((col) => (
                 <th key={col.key}>
                   <CustomerNameColumnHeader
@@ -155,7 +168,7 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
                     sort={sort?.key === col.key ? sort.direction : undefined}
                     onSort={direction => setSort({ key: col.key, direction })}
                     onFilter={values => setFilters(previous => { const next = { ...previous }; if (values) next[col.key] = values; else delete next[col.key]; return next; })}
-                    width={layout.widths[col.key] ?? col.width}
+                    width={widthFor(col.key, col.width)}
                     onResize={width => resizeColumn(col.key, width)}
                     onResetWidth={() => resetColumnWidth(col.key)}
                     onHide={columns.length > 1 ? () => hideColumn(col.key) : undefined}
@@ -172,11 +185,11 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
             </tr>
           </thead>
           <tbody>
-            {first > 0 && <tr className="ac-customer-search-virtual-spacer" aria-hidden="true"><td colSpan={columns.length}><div style={{ height: first * rowHeight }} /></td></tr>}
+            {first > 0 && <tr className="ac-customer-search-virtual-spacer" aria-hidden="true"><td colSpan={columns.length + 1}><div style={{ height: first * rowHeight }} /></td></tr>}
             {employees.length === 0 ? (
               <tr>
                 <td
-                  colSpan={columns.length}
+                  colSpan={columns.length + 1}
                   className="!whitespace-normal py-6 text-center italic text-[#7a7a7a]"
                 >
                   No employees found. Try adjusting your search or clearing the filters.
@@ -185,25 +198,26 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
             ) : (
               visible.map((row) => (
                 <tr key={row.employeeId} className={activeEmployeeId === row.employeeId ? "is-selected" : undefined} onClick={() => { setSelectedEmployee(row.employeeId); onActiveEmployeeChange?.(row); }}>
+                  <td className="ac-employee-record-selector" aria-hidden>{activeEmployeeId === row.employeeId ? "▸" : ""}</td>
                   {columns.map((col) => {
                     if (col.key === "ActionSelect") {
                       const selected = selectedEmployeeIds.includes(row.employeeId);
                       return (
-                        <td key={col.key} className="ac-employee-search-row-selector">
+                        <td data-employee-column={col.key} key={col.key} className="ac-employee-search-row-selector">
                           {onSelectedEmployeeIdsChange ? <button type="button" aria-label={`${selected ? "Deselect" : "Select"} ${row.fullName}`} aria-pressed={selected} title={`${selected ? "Deselect" : "Select"} ${row.fullName}`} onClick={event => { event.stopPropagation(); onSelectedEmployeeIdsChange(selected ? selectedEmployeeIds.filter(id => id !== row.employeeId) : [...new Set([...selectedEmployeeIds, row.employeeId])]); }} style={{ display: "block", width: "100%", height: "100%", minHeight: 18, padding: 0, border: 0, background: "transparent", color: "#000", font: "700 13px Arial,sans-serif", lineHeight: "18px", cursor: "pointer" }}>{selected ? "X" : ""}</button> : row.employeeId === employees[0]?.employeeId ? "â–¶" : ""}
                         </td>
                       );
                     }
                     if (col.key === "EmFirstName" || col.key === "EmLastName") {
                       return (
-                        <td key={col.key} className="font-semibold">
+                        <td data-employee-column={col.key} key={col.key} className="font-semibold">
                           <EmployeeNameCell employeeId={row.employeeId} name={col.key === "EmFirstName" ? row.firstName : row.lastName} />
                         </td>
                       );
                     }
                     if (col.key === "OnlineJobAppFolder") {
                       return (
-                        <td key={col.key} className="ac-employee-search-col-online">
+                        <td data-employee-column={col.key} key={col.key} className="ac-employee-search-col-online">
                           {employeeSearchCellValue(row, col.key) || "â€”"}
                         </td>
                       );
@@ -212,14 +226,10 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
                     if (col.key === "EmployeeReturnToSender" || col.key === "EmployeeRIP") {
                       const flagId = `${row.employeeId}:${col.key}`;
                       const checked = flagOverrides[flagId] ?? /^(1|true|yes|y|x|-1)$/i.test(value.trim());
-                      return <td key={col.key} className="ac-employee-search-boolean-cell"><input type="checkbox" aria-label={`${col.label} for ${row.firstName} ${row.lastName}`} checked={checked} onChange={event => setFlagOverrides(current => ({ ...current, [flagId]: event.target.checked }))} /></td>;
+                      return <td data-employee-column={col.key} key={col.key} className="ac-employee-search-boolean-cell"><input type="checkbox" aria-label={`${col.label} for ${row.firstName} ${row.lastName}`} checked={checked} onChange={event => setFlagOverrides(current => ({ ...current, [flagId]: event.target.checked }))} /></td>;
                     }
                     const columnClass =
-                      col.key === "PayrollCoOnSiteInitials_IPG"
-                        ? "ac-employee-search-col-ipg"
-                        : col.key === "JobApplicationStatus_IPG"
-                          ? "ac-employee-search-col-ipc"
-                        : col.key === "EmployeeNoCommunicationText"
+                      col.key === "EmployeeNoCommunicationText"
                         ? "ac-employee-search-col-alert"
                         : col.key === "EmployeeNoCommUserName" || col.key === "EmployeeNoCommDate" || col.key === "EmployeeNoCommText"
                           ? "ac-employee-search-col-cell-1-related"
@@ -255,7 +265,7 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
                               ? "ac-employee-search-col-week-end"
                               : undefined;
                     return (
-                      <td key={col.key} className={columnClass}>
+                      <td data-employee-column={col.key} key={col.key} className={columnClass}>
                         {value}
                       </td>
                     );
@@ -263,7 +273,7 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
                 </tr>
               ))
             )}
-            {last < employees.length && <tr className="ac-customer-search-virtual-spacer" aria-hidden="true"><td colSpan={columns.length}><div style={{ height: (employees.length - last) * rowHeight }} /></td></tr>}
+            {last < employees.length && <tr className="ac-customer-search-virtual-spacer" aria-hidden="true"><td colSpan={columns.length + 1}><div style={{ height: (employees.length - last) * rowHeight }} /></td></tr>}
           </tbody>
         </table>
       </div>
@@ -293,4 +303,6 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
     </div>
   );
 }
+
+
 

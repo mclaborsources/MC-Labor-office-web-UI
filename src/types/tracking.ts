@@ -75,6 +75,10 @@ export interface TrackingPreviewRow {
   hlAutoTextUser: string;
   hlAutoTextTimestamp: string;
   parkingPerHr: string;
+  s2?: string;
+  s2User?: string;
+  s2Date?: string;
+  s2History?: string;
   healthInsPerHr?: string;
   travelPerHr?: string;
   vacationPerHr?: string;

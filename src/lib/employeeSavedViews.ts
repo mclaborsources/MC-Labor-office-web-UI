@@ -7,7 +7,7 @@ const columnKey = z.custom<EmployeeSearchColumnKey>(value => typeof value === "s
 export const employeeViewLayoutSchema = z.object({
   order: z.array(columnKey).max(keys.size).refine(order => order.length === keys.size && new Set(order).size === keys.size, "Every employee column must appear once."),
   hidden: z.array(columnKey).max(keys.size - 1),
-  widths: z.record(columnKey, z.number().int().min(48).max(1600)),
+  widths: z.record(columnKey, z.number().int().min(16).max(1600)),
   filters: z.record(columnKey, z.array(z.string().max(5000)).max(20000)),
   sort: z.object({ key: columnKey, direction: z.enum(["asc", "desc"]) }).nullable(),
 });
@@ -38,7 +38,7 @@ export function defaultEmployeeViewLayout(): EmployeeViewLayout {
 }
 
 /** Columns checked in the Employee Search 3 Default preset shown in the reference screenshots. */
-const EMPLOYEE_SEARCH_DEFAULT_PRESET_KEYS: EmployeeSearchColumnKey[] = [
+export const EMPLOYEE_SEARCH_DEFAULT_PRESET_KEYS: EmployeeSearchColumnKey[] = [
   "ActionSelect",
   "PayrollCoOnSiteInitials_IPG",
   "JobApplicationStatus_IPG",
@@ -50,6 +50,7 @@ const EMPLOYEE_SEARCH_DEFAULT_PRESET_KEYS: EmployeeSearchColumnKey[] = [
   "EmFirstName",
   "EmMiddle",
   "EmLastName",
+  "EmStreet",
   "EmCity",
   "EmState",
   "EmployeeNoCommunicationText",
@@ -64,8 +65,8 @@ const EMPLOYEE_SEARCH_DEFAULT_PRESET_KEYS: EmployeeSearchColumnKey[] = [
   "TotalHoursWorked",
   "LicenseExpDateFlag",
   "WeekEndingDate",
-  "EmployeeNotesHistory",
   "PayRate",
+  "EmployeeNotesHistory",
   "SiteName",
   "WeeksAway",
   "CustomerBusName",
@@ -78,13 +79,13 @@ const EMPLOYEE_SEARCH_DEFAULT_PRESET_KEYS: EmployeeSearchColumnKey[] = [
   "SchoolCompleted",
   "IDTitleDriversLicense",
   "IDTitleDriversLicenseOnFile",
-  "Vonage",
+  "Vonage"
 ];
 
 export function employeeSearchDefaultPresetLayout(): EmployeeViewLayout {
   const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_DEFAULT_PRESET_KEYS);
   const base = defaultEmployeeViewLayout();
-  return { ...base, hidden: base.order.filter(key => !visible.has(key)) };
+  return { ...base, order: [...EMPLOYEE_SEARCH_DEFAULT_PRESET_KEYS, ...base.order.filter(key => !visible.has(key))], hidden: base.order.filter(key => !visible.has(key)) };
 }
 
 /** Checked columns from the Views 2 Default preset's Unhide Columns dialog. */

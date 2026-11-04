@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useRef, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
 import { EMPLOYEE_SEARCH_PRESET_GRID, EMPLOYEE_SEARCH_VIEWS_2_GRID } from "@/lib/employeeSearchColumns";
-import { defaultEmployeeViewLayout, employeeSearchPresetSchema, employeeSearchPresetLayoutForName, employeeSavedViewSchema, normalizeEmployeeSavedView, type EmployeeSavedView, type EmployeeSearchPreset, type EmployeeViewLayout } from "@/lib/employeeSavedViews";
+import { defaultEmployeeViewLayout, employeeSearchDefaultPresetLayout, employeeSearchPresetSchema, employeeSearchPresetLayoutForName, employeeSavedViewSchema, normalizeEmployeeSavedView, type EmployeeSavedView, type EmployeeSearchPreset, type EmployeeViewLayout } from "@/lib/employeeSavedViews";
 
 function baseName(slot: number) {
   const grid = slot <= 30 ? EMPLOYEE_SEARCH_PRESET_GRID : EMPLOYEE_SEARCH_VIEWS_2_GRID;
@@ -36,20 +36,28 @@ export function EmployeeSavedViewsProvider({ children }: { children: ReactNode }
   const [slot, setSlot] = useState(1);
   const [views, setViews] = useState<EmployeeSavedView[]>([]);
   const [presets, setPresets] = useState<EmployeeSearchPreset[]>([]);
-  const [layout, setLayout] = useState(defaultEmployeeViewLayout);
-  const [sharedWidths,setWidths]=useState<EmployeeViewLayout["widths"]>({});
-  const [widthsReady,setWidthsReady]=useState(false);
-  useEffect(()=>{
+  const [layout, setLayout] = useState(employeeSearchDefaultPresetLayout);
+  const [viewWidths, setViewWidths] = useState<Record<number, EmployeeViewLayout["widths"]>>({});
+  const [widthsReady, setWidthsReady] = useState(false);
+  useEffect(() => {
     try {
-      const parsed=employeeSavedViewSchema.shape.layout.shape.widths.safeParse(JSON.parse(localStorage.getItem("employee-search-shared-widths") ?? "{}"));
-      if(parsed.success)setWidths(parsed.data);
-    } catch { /* Browser storage is optional. */ }
+      const stored = JSON.parse(localStorage.getItem("employee-per-view-widths-v2") ?? "{}");
+      const loaded: Record<number, EmployeeViewLayout["widths"]> = {};
+      for (const [view, values] of Object.entries(stored)) {
+        const parsed = employeeSavedViewSchema.shape.layout.shape.widths.safeParse(values);
+        if (parsed.success) loaded[Number(view)] = parsed.data;
+      }
+      setViewWidths(loaded);
+    } catch { /* Storage is optional. */ }
     setWidthsReady(true);
-  },[]);
-  useEffect(()=>{
-    if(widthsReady)try { localStorage.setItem("employee-search-shared-widths",JSON.stringify(sharedWidths)); } catch { /* Keep session widths. */ }
-  },[sharedWidths,widthsReady]);
-  const effectiveLayout={...layout,widths:{...layout.widths,...sharedWidths}};
+  }, []);
+  useEffect(() => {
+    if (widthsReady) try { localStorage.setItem("employee-per-view-widths-v2", JSON.stringify(viewWidths)); } catch { /* Keep session widths. */ }
+  }, [viewWidths, widthsReady]);
+  const setWidths: Dispatch<SetStateAction<EmployeeViewLayout["widths"]>> = update => {
+    setViewWidths(current => ({...current, [slot]: typeof update === "function" ? update(current[slot] ?? {}) : update}));
+  };
+  const effectiveLayout = {...layout, widths: viewWidths[slot] ?? {}};
   const [ready, setReady] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
@@ -62,6 +70,27 @@ export function EmployeeSavedViewsProvider({ children }: { children: ReactNode }
   const snapshot = useRef(layout);
   const selectionRevision = useRef(0);
   useEffect(() => {
+    const resetToDefault = () => {
+      selectionRevision.current += 1;
+      setSlot(1);
+      setLayout(employeeSearchDefaultPresetLayout());
+    };
+    const reopen = (event: MouseEvent) => {
+      if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
+      if (!link) return;
+      const url = new URL(link.getAttribute("href")!, window.location.href);
+      if (url.origin === window.location.origin && url.pathname === "/employees") resetToDefault();
+    };
+    const restore = (event: PageTransitionEvent) => { if (event.persisted) resetToDefault(); };
+    document.addEventListener("click", reopen, true);
+    window.addEventListener("pageshow", restore);
+    return () => {
+      document.removeEventListener("click", reopen, true);
+      window.removeEventListener("pageshow", restore);
+    };
+  }, []);
+  useEffect(() => {
     let active = true;
     fetch("/api/employees/saved-views", { cache: "no-store" })
       .then(async response => {
@@ -70,7 +99,7 @@ export function EmployeeSavedViewsProvider({ children }: { children: ReactNode }
         const saved = (data.views as unknown[]).map(normalizeEmployeeSavedView);
         if (active) {
           setViews(saved);
-          if (selectionRevision.current === 0) setLayout(saved.find(view => view.slot === 1)?.layout ?? defaultEmployeeViewLayout());
+          if (selectionRevision.current === 0) setLayout(employeeSearchDefaultPresetLayout());
           setReady(true);
         }
       })
@@ -96,7 +125,7 @@ export function EmployeeSavedViewsProvider({ children }: { children: ReactNode }
     setSlot(next);
     const personalView = views.find(view => view.slot === next);
     const sharedPreset = presets.find(preset => preset.slot === next);
-    setLayout(personalView?.layout ?? sharedPreset?.layout ?? defaultEmployeeViewLayout());
+    setLayout(next === 1 ? employeeSearchDefaultPresetLayout() : personalView?.layout ?? sharedPreset?.layout ?? defaultEmployeeViewLayout());
     setMessage("");
   };
   const selectPreset = (next: number, fallbackLayout: EmployeeViewLayout) => {
@@ -107,7 +136,7 @@ export function EmployeeSavedViewsProvider({ children }: { children: ReactNode }
     // same preset button again, without changing the preset for other users.
     const personalView = views.find(view => view.slot === next);
     const sharedPreset = presets.find(preset => preset.slot === next);
-    setLayout(personalView?.layout ?? sharedPreset?.layout ?? fallbackLayout);
+    setLayout(next === 1 ? employeeSearchDefaultPresetLayout() : personalView?.layout ?? sharedPreset?.layout ?? fallbackLayout);
     setMessage("");
   };
   const openSave = () => {

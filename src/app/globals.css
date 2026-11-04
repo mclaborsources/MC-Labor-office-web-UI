@@ -19564,11 +19564,11 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
   background-image:none!important;
   box-shadow:none!important;
 }
-/* Access Dates dropdown: black text strip with a separate light arrow area. */
+/* Dates dropdown uses a plain white face and dark text. */
 .ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-views-1 .ac-employee-search-filter-row > select[aria-label="Dates"].ac-select {
-  color:#fff!important;
+  color:#000!important;
   background-color:#fff!important;
-  background-image:linear-gradient(#000,#000)!important;
+  background-image:none!important;
   background-repeat:no-repeat!important;
   background-position:10px center!important;
   background-size:calc(100% - 39px) 18px!important;
@@ -19589,11 +19589,11 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
   background-position:right 1px center!important;
   background-size:18px 22px!important;
 }
-/* Keep the Dates text strip while using the same boxed arrow. */
+/* Keep the Dates dropdown boxed arrow on its plain white face. */
 .ac-employee-search-page:not(.ac-job-search-page) .ac-employee-search-controls .ac-employee-search-control-panel .ac-employee-search-views-1 .ac-employee-search-filter-row > select[aria-label="Dates"].ac-select {
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='22' viewBox='0 0 18 22'%3E%3Cpath fill='%23f8f8f8' stroke='%23b8b8b8' d='M.5.5h17v21H.5z'/%3E%3Cpath fill='none' stroke='%23fff' d='M1 21V1h16'/%3E%3Cpath fill='none' stroke='%23777777' stroke-width='.8' d='m5 9 4 4 4-4'/%3E%3C/svg%3E"),linear-gradient(#000,#000)!important;
-  background-position:right 1px center,10px center!important;
-  background-size:18px 22px,calc(100% - 39px) 18px!important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='22' viewBox='0 0 18 22'%3E%3Cpath fill='%23f8f8f8' stroke='%23b8b8b8' d='M.5.5h17v21H.5z'/%3E%3Cpath fill='none' stroke='%23fff' d='M1 21V1h16'/%3E%3Cpath fill='none' stroke='%23777777' stroke-width='.8' d='m5 9 4 4 4-4'/%3E%3C/svg%3E")!important;
+  background-position:right 1px center!important;
+  background-size:18px 22px!important;
   background-repeat:no-repeat!important;
 }
 /* Views 2 EE SEARCH alone uses a white face. */
@@ -22870,3 +22870,378 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
 .ac-phone-search-recordbar { flex:0 0 18px; min-height:18px; height:18px; font:11px/16px Arial,sans-serif; }
 .ac-phone-search-recordbar :is(input,button) { height:17px; }
 .ac-phone-search-message { margin:0; padding:3px 8px; font-size:12px; }
+
+/* Tracking screenshot: the Access record selector occupies 19px before Payroll Co. */
+.ac-tracking-page.ac-tracking-reference .ac-tracking-datasheet td.ac-tracking-record-selector {
+  padding:0!important;
+  background:#f5f6fa;
+}
+.ac-tracking-page.ac-tracking-reference .ac-tracking-datasheet .tracking-selected-row td.ac-tracking-record-selector::after {
+  content:"▸";
+  display:block;
+  text-align:center;
+}
+
+/* Employee Search 3: separate Access record selector from the 16px Select field. */
+.ac-employee-search-page .ac-employee-search-grid .ac-employee-record-selector {
+  width:19px;
+  min-width:19px;
+  max-width:19px;
+  padding:0!important;
+  text-align:center;
+  background:#e3e6e9;
+}
+/* Access column colors stay consistent across every Employee Search view. */
+.ac-employee-search-page .ac-employee-search-grid table td.ac-employee-search-col-alert { background:#ed1c24!important; }
+.ac-employee-search-page .ac-employee-search-grid table td.ac-employee-search-col-cell,
+.ac-employee-search-page .ac-employee-search-grid table td.ac-employee-search-col-license { background:#fff200!important; }
+.ac-employee-search-page .ac-employee-search-grid table td.ac-employee-search-col-qualification { background:#fce6d4!important; }
+/* Employee Search column headings align centrally, with filter arrows at the edge. */
+.ac-employee-search-page .ac-employee-search-grid th { text-align:center; }
+.ac-employee-search-page .ac-employee-search-grid th .ac-column-filter-trigger { position:relative; justify-content:center; text-align:center; }
+.ac-employee-search-page .ac-employee-search-grid th .ac-column-filter-trigger > span:first-child { text-align:center; }
+
+/* Full Access column reference: the same field retains its color in every view. */
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeNoCommunicationText"] { background:#ed1c24!important; }
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmMobilePhoneVerifyText"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="LicenseExpDateFlag"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeNoCommUserName"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeNoCommDate"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="TruePeopleMatch"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="TruePeopleMatchIDUserName"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="TruePeopleMatchIDDate"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeContactHistoryNote"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeSales"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="InterviewNumber"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="ResumeNumber"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="Spare8"] { background:#fff200!important; }
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="Car"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmQualification"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="InterviewedByDate"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="WillTravel"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="PPE"] { background:#fce6d4!important; }
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="PostEmployeeAsAvailableText"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="PostEmployeeAsAvailableUserName"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="PostEmployeeAsAvailableDate"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="PostEmployeeAsAvailableNotesHistory"] { background:#ffff99!important; }
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeNoCommUserName2"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeNoCommDate2"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeNoComm2Text"] { background:#efd3d2!important; }
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeNoCommUserName3"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeNoCommDate3"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeNoComm3Text"] { background:#a2d5df!important; }
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeNoCommUserName4"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeNoCommDate4"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeNoComm4Text"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeUserFlag7"] { background:#c1ffc1!important; }
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeFutureCall"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeFutureCallUserName"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeFutureCallUserDate"] { background:#c5d9f1!important; }
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="CallNumberIDTime"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="CallNumberHistory"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="CallNumberNoteCount"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="CallNumberIDUserName"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="CallNumberIDDate"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="CallNumberID"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="CallNumber"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="LastCallNote"] { background:#d9d9d9!important; }
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeContactHistoryUserName"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeContactHistoryDate"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeContactHistoryActionType"] { background:#fbd5b5!important; }
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeOnUnemploymentText"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeOnUnemploymentUserName"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeOnUnemploymentDate"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeOnUnemploymentNotesHistory"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="EmployeeOnUnemploymentTimestamp"] { background:#c6e0b4!important; }
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="Spare2"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="Spare3"],
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="Spare10"] { background:#000000!important; color:#fff!important; }
+
+.ac-employee-search-page .ac-employee-search-grid table td.ac-employee-search-col-grade { background:transparent!important; }
+
+/* Future Call uses the Access datasheet text scale. */
+.ac-employee-search-page .ac-employee-search-grid table[data-employee-view="future-call"] :is(th,td),
+.ac-employee-search-page .ac-employee-search-grid table[data-employee-view="future-call"] .ac-column-filter-trigger {
+  font:400 14px/20px Calibri,Arial,sans-serif!important;
+}
+.ac-employee-search-page .ac-employee-search-grid table[data-employee-view="future-call"] td.ac-employee-search-col-week-end { font-weight:700!important; }
+
+/* Make the Employee Search view-one toolbar buttons easier to scan. */
+.ac-employee-search-page .ac-employee-search-views-1 .ac-employee-search-filter-row > .ac-employee-search-date-btn.ac-btn,
+.ac-employee-search-page .ac-employee-search-views-1 .ac-employee-search-filter-row > .ac-employee-search-entry-dt-link,
+.ac-employee-search-page .ac-employee-search-views-1 .ac-employee-search-action-row > .ac-btn,
+.ac-employee-search-page .ac-employee-search-views-1 .ac-employee-search-action-row-right > .ac-btn {
+  font-weight:700!important;
+}
+
+.ac-employee-search-page .ac-employee-search-grid table td[data-employee-column="Spare1"] { background:#000!important; color:#fff!important; }
+
+.ac-employee-search-page .ac-employee-search-grid table[data-employee-view="get-hired"] tbody tr:nth-child(odd) td[data-employee-column="Spare1"] { background:#fff!important; color:#000!important; }
+.ac-employee-search-page .ac-employee-search-grid table[data-employee-view="get-hired"] tbody tr:nth-child(even) td[data-employee-column="Spare1"] { background:#f2f2f2!important; color:#000!important; }
+
+/* Employee Search top tabs follow the compact Access tab strip. */
+.ac-employee-search-page .ac-employee-search-view-tabs .ac-tab,
+.ac-employee-search-page .ac-employee-search-view-tabs .ac-tab:hover,
+.ac-employee-search-page .ac-employee-search-view-tabs .ac-tab-active,
+.ac-employee-search-page .ac-employee-search-view-tabs .ac-tab-active:hover {
+  box-sizing:border-box;
+  height:26px;
+  min-height:26px;
+  padding:2px 10px;
+  color:#000;
+  background:#ededed;
+  border:1px solid #d4d4d4;
+  border-bottom-color:#999;
+  border-radius:0;
+  font-size:12px;
+  font-weight:700;
+}
+.ac-employee-search-page .ac-employee-search-view-tabs .ac-tab-active,
+.ac-employee-search-page .ac-employee-search-view-tabs .ac-tab-active:hover {
+  position:relative;
+  top:1px;
+  z-index:2;
+  background:#fff;
+  border-color:#888;
+  border-bottom-color:#fff;
+}
+
+/* Slightly emphasize the Employee Search 3 page title. */
+.ac-employee-search-page .ac-customer-search-title {
+  font-weight:450;
+}
+
+/* Match the Access Employee Search 3 title and left search panel proportions. */
+.ac-employee-search-page .ac-customer-search-titlebar {
+  padding-left:12px;
+  padding-right:12px;
+  gap:7px;
+}
+.ac-employee-search-page .ac-customer-search-title {
+  flex-basis:275px;
+  width:275px;
+  font-size:26px;
+}
+.ac-employee-search-page .ac-customer-search-titlebar .ac-btn:not(.ac-employee-search-cancel-btn) {
+  height:29px;
+  min-height:29px;
+  padding:1px 7px;
+}
+.ac-employee-search-page .ac-customer-search-titlebar .ac-btn:nth-of-type(1) { width:45px; }
+.ac-employee-search-page .ac-customer-search-titlebar .ac-btn:nth-of-type(2) { width:73px; }
+.ac-employee-search-page .ac-customer-search-sidebar {
+  width:428px;
+  min-width:428px;
+  padding:41px 10px 0;
+  gap:11px;
+}
+.ac-employee-search-page .ac-customer-search-screen-size {
+  width:284px;
+  height:51px;
+  min-height:51px;
+  grid-template-columns:80px 53px 1fr;
+  padding:3px;
+  border:1px solid;
+  border-color:#fff #000 #000 #fff;
+}
+.ac-employee-search-page .ac-customer-search-screen-size-label { font-size:12px; }
+.ac-employee-search-page .ac-customer-search-screen-normal.ac-btn { width:53px; height:45px; }
+.ac-employee-search-page .ac-customer-search-screen-grid { grid-template-rows:22px 20px; }
+.ac-employee-search-page .ac-customer-search-screen-num.ac-btn,
+.ac-employee-search-page .ac-customer-search-screen-save.ac-btn {
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  height:22px!important;
+  min-height:22px!important;
+  padding:0 2px;
+  font-size:11px!important;
+  white-space:nowrap;
+}
+.ac-employee-search-page .ac-customer-search-screen-save.ac-btn { height:20px!important; min-height:20px!important; }
+.ac-employee-search-page .ac-customer-search-side-search-wrap { height:174px; }
+.ac-employee-search-page .ac-customer-search-side-label {
+  flex-basis:25px;
+  width:25px;
+  height:137px;
+  margin-top:20px;
+  padding:10px 5px;
+  font-size:14px;
+  font-weight:700;
+  background:#bfbfbf;
+  border:1px solid #000;
+}
+.ac-employee-search-page .ac-customer-search-side-main { padding:0 0 0 7px; gap:10px; }
+.ac-employee-search-page .ac-customer-search-side-grid-area { grid-template-columns:minmax(0,1fr) 62px; gap:10px; }
+.ac-employee-search-page .ac-customer-search-side-grid { grid-template-columns:42px 125px 125px; gap:3px 7px; }
+.ac-employee-search-page .ac-customer-search-side-head { height:17px; min-height:17px; padding:0; font-size:13px; font-weight:700; }
+.ac-employee-search-page .ac-customer-search-side-field-label { font-size:14px; font-weight:400; }
+.ac-employee-search-page .ac-customer-search-side-input { height:25px; min-height:25px; padding:1px 3px; font-size:14px; }
+.ac-employee-search-page .ac-customer-search-side-search-col { width:62px; min-width:62px; padding-top:20px; gap:6px; }
+.ac-employee-search-page .ac-customer-search-side-search-btn.ac-btn { width:62px; height:28px; min-height:28px; padding:1px 4px; }
+.ac-employee-search-page .ac-customer-search-use-button { width:62px; max-width:62px; height:74px; min-height:74px; padding:2px 5px; gap:3px; background:#ececec; border:1px solid #999; }
+
+/* Match the Access saved-view toolbar controls and keep Delete Employee in view. */
+.ac-employee-search-page .ac-employee-search-grid-toolbar {
+  width:100%;
+  box-sizing:border-box;
+  gap:3px;
+}
+.ac-employee-search-page .ac-employee-search-grid-toolbar > .ac-customer-search-view-select-wide {
+  flex-basis:290px;
+  width:290px;
+}
+.ac-employee-search-page .ac-employee-search-grid-toolbar > select.ac-select,
+.ac-employee-search-page .ac-employee-search-grid-toolbar .ac-employee-search-goto-field select.ac-select {
+  appearance:none;
+  -webkit-appearance:none;
+  padding-right:25px;
+  background-color:#fff;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='22' viewBox='0 0 18 22'%3E%3Cpath fill='%23f8f8f8' stroke='%23b8b8b8' d='M.5.5h17v21H.5z'/%3E%3Cpath fill='none' stroke='%23fff' d='M1 21V1h16'/%3E%3Cpath fill='none' stroke='%23777777' stroke-width='.8' d='m5 9 4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 1px center;
+  background-size:18px 22px;
+}
+.ac-employee-search-page .ac-employee-search-grid-toolbar .ac-employee-search-goto-field > input.ac-input {
+  padding-right:25px;
+  background-color:#fff;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='22' viewBox='0 0 18 22'%3E%3Cpath fill='%23f8f8f8' stroke='%23b8b8b8' d='M.5.5h17v21H.5z'/%3E%3Cpath fill='none' stroke='%23fff' d='M1 21V1h16'/%3E%3Cpath fill='none' stroke='%23777777' stroke-width='.8' d='m5 9 4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 1px center;
+  background-size:18px 22px;
+}
+.ac-employee-search-page .ac-employee-search-grid-toolbar > .ac-btn {
+  box-sizing:border-box;
+  height:29px;
+  min-height:29px;
+  padding:1px 7px;
+  color:#000!important;
+  background:#e7e7e7!important;
+  border:1px solid;
+  border-color:#fff #777 #777 #fff;
+  border-radius:0;
+  box-shadow:inset 1px 1px #f7f7f7;
+  font:400 14px Calibri,Arial,sans-serif;
+}
+.ac-employee-search-page .ac-employee-search-grid-toolbar > button.ac-btn.ac-employee-search-delete-employee-btn {
+  flex:0 0 120px;
+  width:120px;
+  margin-left:0;
+  color:#fff!important;
+  background:#f0172d!important;
+  border:1px solid #000;
+  font-weight:700;
+}
+
+/* Access Customer Search View 01 palette. */
+.ac-customer-search-1-results [data-customer-default="true"] .ac-customer-name-search-all-name > [data-column="select"] { background:transparent; }
+.ac-customer-search-1-results [data-customer-default="true"] .ac-customer-name-search-all-name > [data-column="noCommunication"] { background:#ff1b1b; }
+.ac-customer-search-1-results [data-customer-default="true"] .ac-customer-name-search-all-name > [data-column="salesHistoryStatus"] { background:#c5d9f1; }
+.ac-customer-search-1-results [data-customer-default="true"] .ac-customer-name-search-all-name > [data-column^="salesPackageSent"] { background:#ffb9b9; }
+.ac-customer-search-1-results [data-customer-default="true"] .ac-customer-name-search-all-name > [data-column="contactsLink"],
+.ac-customer-search-1-results [data-customer-default="true"] .ac-customer-name-search-all-name > [data-column="basicInfoLink"] { background:#ffff99; color:#80a522; text-decoration:underline; }
+.ac-customer-search-1-results [data-customer-default="true"] .ac-column-filter .ac-column-filter-trigger { background:#e1e3e6; }
+
+/* Customer Search headers form one continuous neutral row above colored cells. */
+.ac-customer-search-1-results .ac-customer-name-search-summary-header {
+  gap:0;
+  background:#e1e3e6;
+}
+.ac-customer-search-1-results .ac-customer-name-search-summary-header > .ac-column-filter {
+  padding:0;
+  margin:0;
+  background:#e1e3e6;
+  border-right:1px solid #b5c4d5;
+}
+.ac-customer-search-1-results .ac-customer-name-search-summary-header > .ac-column-filter .ac-column-filter-trigger {
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:100%;
+  min-height:0;
+  margin:0;
+  padding:0 10px 0 2px;
+  border:0;
+  border-radius:0;
+  background:#e1e3e6;
+  color:#111;
+  text-align:center;
+  box-shadow:none;
+}
+.ac-customer-search-1-results .ac-customer-name-search-summary-header .ac-column-filter-trigger > span:first-child {
+  min-width:0;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:clip;
+  text-align:center;
+}
+.ac-customer-search-1-results .ac-customer-name-search-summary-header .ac-column-filter-trigger > span:last-child {
+  position:absolute;
+  right:2px;
+}
+
+.ac-customer-search-page .ac-customer-search-search-icon-btn {
+  border:1px solid #ff0000;
+}
+.ac-customer-search-page .ac-customer-search-search-icon-btn svg {
+  transform:scaleX(-1);
+}
+
+.ac-customer-search-page button.ac-btn.ac-customer-search-search-icon-btn {
+  border:2px solid #ff0000 !important;
+  border-radius:0;
+  box-shadow:none;
+  box-sizing:border-box;
+  background-clip:padding-box;
+}
+
+.ac-customer-search-page button.ac-btn.ac-customer-search-search-icon-btn {
+  border:3px solid #ff2929 !important;
+  padding:2px;
+  background:#efefef;
+  box-shadow:inset 1px 1px #fff,inset -1px -1px #777;
+}
+.ac-customer-search-page .ac-customer-search-search-icon-btn svg.ac-customer-access-search-icon {
+  transform:none;
+  flex:none;
+}
+
+.ac-customer-search-page .ac-customer-search-duplicates-panel,
+.ac-customer-search-page .ac-customer-search-duplicates-panel * {
+  font-weight:400 !important;
+}
+
+/* Access Customer Search heading and search form proportions. */
+.ac-customer-search-page:not(.ac-employee-search-page) .ac-customer-search-titlebar { display:flex; align-items:center; height:39px; padding:0 10px; gap:0; }
+.ac-customer-search-page:not(.ac-employee-search-page) .ac-customer-search-title { font:400 27px/32px Calibri,"Segoe UI",Arial,sans-serif; flex:0 0 311px; }
+.ac-customer-search-page:not(.ac-employee-search-page) .ac-customer-search-titlebar .ac-btn { width:61px; height:29px; min-height:29px; font-weight:400; }
+.ac-customer-search-page:not(.ac-employee-search-page) .ac-customer-search-screen-size { box-sizing:border-box; width:285px; height:54px; margin:0 10px 11px; }
+.ac-customer-search-page:not(.ac-employee-search-page) .ac-customer-search-screen-grid { display:grid; grid-template-columns:repeat(4,1fr); grid-template-rows:21px 21px; gap:2px; }
+.ac-customer-search-page:not(.ac-employee-search-page) .ac-customer-search-side-grid { grid-template-columns:60px 124px 124px; column-gap:8px; row-gap:3px; }
+.ac-customer-search-page:not(.ac-employee-search-page) .ac-customer-search-side-head { text-align:center; }
+.ac-customer-search-page:not(.ac-employee-search-page) .ac-customer-search-side-field-label { font-size:14px; }
+.ac-customer-search-page:not(.ac-employee-search-page) .ac-customer-search-side-main { padding-left:19px; gap:14px; }
+.ac-customer-search-page:not(.ac-employee-search-page) .ac-customer-search-deselect-btn.ac-btn { margin-left:19px; width:169px; font-weight:400; }
+
+/* Let Customer Search fill the page without an outer inset. */
+.ac-customer-search-page:not(.ac-employee-search-page),
+.ac-customer-search-page:not(.ac-employee-search-page) .ac-customer-search,
+.ac-customer-search-page:not(.ac-employee-search-page) .ac-customer-search-body,
+.ac-customer-search-page:not(.ac-employee-search-page) .ac-customer-search-shell,
+.ac-customer-search-page:not(.ac-employee-search-page) .ac-customer-search-shell-inner,
+.ac-customer-search-page:not(.ac-employee-search-page) .ac-customer-search-results-panel,
+.ac-customer-search-page:not(.ac-employee-search-page) .ac-customer-search-results {
+  padding:0 !important;
+  margin:0 !important;
+  gap:0;
+}
+main:has(.ac-customer-search-page:not(.ac-employee-search-page)) {
+  padding:0 !important;
+}
+
+.ac-customer-search-page .ac-customer-search-side-search-btn.ac-btn {
+  color:#a0a0a0 !important;
+  font-weight:400;
+}

@@ -120,6 +120,10 @@ interface TrackingRow {
   AutoTextTimestamp1: string | Date | null;
   AutoTextUserName2: string | null;
   AutoTextTimestamp2: string | Date | null;
+  S2: string | null;
+  S2IDUserName: string | null;
+  S2IDTimestamp: string | Date | null;
+  S2History: string | null;
   CoExpParkingPerHr: number | null;
   CoExpHealthInsPerHr: number | null;
   CoExpTravelPerHr: number | null;
@@ -157,6 +161,11 @@ const SELECT_COLUMNS = `
   PayRate, BillRate, BillRateOT, HoursNote, AssignmentUserName, AssignmentTimestamp,
   HLinkTimesheetCV, HLinkTimesheetColorCV, SendLiveCheckColor,
   AutoTextUserName1, AutoTextTimestamp1, AutoTextUserName2, AutoTextTimestamp2,
+  (SELECT s.PullDownS2 FROM tblPullDownS2 s WITH (NOLOCK) WHERE s.PullDownS2ID=tblTracking.S2ID) AS S2,
+  S2IDUserName, S2IDTimestamp,
+  (SELECT STRING_AGG(CONVERT(nvarchar(max),CONCAT(CONVERT(varchar(10),n.EmployeeS2NoteTimestamp,101), ' ',n.EmployeeS2NoteUserName,': ',n.EmployeeS2Note)),CHAR(10))
+   WITHIN GROUP (ORDER BY n.EmployeeS2NoteTimestamp DESC,n.EmployeeS2NoteID DESC)
+   FROM tblEmployeeS2Notes n WITH (NOLOCK) WHERE n.EmployeeID=tblTracking.EmployeeID) AS S2History,
   CoExpParkingPerHr, SickTime, CoExpSchoolingPerHr, CoExpToolsPerHr,
   CoExpHealthInsPerHr, CoExpTravelPerHr, CoExpVacationPerHr,
   AccumulatedReferral, AccumulatedReferralStartDate, EmployeeReferralRatePerHr, TrackMarginCostPerHr,
@@ -222,6 +231,10 @@ function mapRow(r: TrackingRow): TrackingPreviewRow {
     hlAutoTextUser: str(r.AutoTextUserName2),
     hlAutoTextTimestamp: ts(r.AutoTextTimestamp2),
     parkingPerHr: money(r.CoExpParkingPerHr),
+    s2: str(r.S2),
+    s2User: str(r.S2IDUserName),
+    s2Date: ts(r.S2IDTimestamp),
+    s2History: str(r.S2History),
     healthInsPerHr: money(r.CoExpHealthInsPerHr),
     travelPerHr: money(r.CoExpTravelPerHr),
     vacationPerHr: money(r.CoExpVacationPerHr),

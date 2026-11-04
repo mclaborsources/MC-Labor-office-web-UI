@@ -184,12 +184,14 @@ const TRACKING_TABS = [
 
 type GridCol =
   | { kind: "spacer" }
+  | { kind: "selector" }
   | { kind: "day"; label: string; hoursKey: keyof TrackingPreviewRow; flagIndex: number }
   | { kind: "payroll" }
   | { kind: "hl" }
   | { kind: "field"; label: string; key: keyof TrackingPreviewRow; align?: "left" | "right" | "center"; mono?: boolean; note?: boolean };
 
 const GRID_COLUMNS: GridCol[] = [
+  { kind: "selector" },
   { kind: "payroll" },
   { kind: "field", label: "Job", key: "jobSite" },
   { kind: "field", label: "Info", key: "infoSent", align: "center" },
@@ -238,6 +240,10 @@ const GRID_COLUMNS: GridCol[] = [
   { kind: "field", label: "HL AutoText User", key: "hlAutoTextUser" },
   { kind: "field", label: "HL AutoText Timestamp", key: "hlAutoTextTimestamp", mono: true },
   { kind: "field", label: "Parking Per Hr", key: "parkingPerHr", align: "right" },
+  { kind: "field", label: "S2", key: "s2" },
+  { kind: "field", label: "S2 User", key: "s2User" },
+  { kind: "field", label: "S2 Date", key: "s2Date", mono: true },
+  { kind: "field", label: "S2 History", key: "s2History", note: true },
 ];
 
 const COL_COUNT = GRID_COLUMNS.length;
@@ -277,6 +283,7 @@ function checkCell(val: string) {
 }
 
 function renderCell(col: GridCol, row: TrackingPreviewRow) {
+  if (col.kind === "selector") return <td className="ac-tracking-record-selector" aria-hidden />;
   if (col.kind === "spacer") {
     return <td className="ac-grid-spacer" aria-hidden />;
   }
@@ -340,7 +347,7 @@ function renderCell(col: GridCol, row: TrackingPreviewRow) {
 }
 
 function headerLabel(col: GridCol): string {
-  if (col.kind === "spacer") return "";
+  if (col.kind === "spacer" || col.kind === "selector") return "";
   if (col.kind === "payroll") return "Payroll Co";
   if (col.kind === "hl") return "HL CV";
   if (col.kind === "day") return col.label;
@@ -361,8 +368,8 @@ function detailFilterColumns(tab: string): TrackingGridColumn<TrackingPreviewRow
   const totals: TrackingGridColumn<TrackingPreviewRow>[] = [
     field("totalHours", "TH", dailyTotal), field("totalHours", "RH", row => Math.min(dailyTotal(row), 40)), field("totalHours", "OT", row => Math.max(dailyTotal(row) - 40, 0)),
   ];
-  if (tab === "hours") return [field("jobSite", "Job"), field("directionsText", "T"), field("payrollCo", "Payroll Co"), field("infoSent", "S1"), field("firstName", "First"), field("middleInitial", "MI"), field("lastName", "Last"), field("cell", "Cell #"), field("city", "City"), field("wccState", "State"), field("wcc", "WCC"), ...days, ...totals, field("payRate", "Pay Rate"), field("billRate", "Bill Rate"), field("billRateOT", "Bill Rate C"), field("employeeId", "Invoice #", () => ""), field("hoursNote", "Hours Note"), field("employeeId", "Time Text Sum", () => "")];
-  if (tab === "hours2") return [field("jobSite", "Job"), field("directionsText", "T"), field("payrollCo", "Payroll Co"), field("infoSent", "S1"), field("firstName", "First"), field("middleInitial", "MI"), field("lastName", "Last"), field("cell", "Cell #"), field("city", "City"), field("wccState", "State"), field("wcc", "WCC"), ...days, ...totals, field("sendAutoText", "S"), field("employeeId", "Select", () => ""), field("employeeId", "HL", () => ""), field("hlCv", "HL CV"), field("hrsAutoTextUser", "Hrs AutoText"), field("hrsAutoTextTimestamp", "Hrs AutoText"), field("hlAutoTextUser", "HL AutoText"), field("hlAutoTextTimestamp", "HL AutoText"), field("hoursNote", "Hours Note")];
+  if (tab === "hours") return [field("jobSite", "Job"), field("directionsText", "T"), field("payrollCo", "Payroll Co"), field("infoSent", "S1"), field("firstName", "First"), field("middleInitial", "MI"), field("lastName", "Last"), field("cell", "Cell #"), field("city", "City"), field("wccState", "State"), field("wcc", "WCC"), ...days, ...totals, field("payRate", "Pay Rate"), field("billRate", "Bill Rate"), field("billRateOT", "Bill Rate C"), field("employeeId", "Invoice #", () => ""), field("hoursNote", "Hours Note"), field("employeeId", "Time Text Summary", () => ""), field("employeeId", "Verify Sent User", () => ""), field("employeeId", "Verify Sent Timestamp", () => ""), field("employeeId", "Emp")];
+  if (tab === "hours2") return [field("jobSite", "Job"), field("directionsText", "T"), field("payrollCo", "Payroll Co"), field("infoSent", "S1"), field("firstName", "First"), field("middleInitial", "MI"), field("lastName", "Last"), field("cell", "Cell #"), field("city", "City"), field("wccState", "State"), field("wcc", "WCC"), ...days, ...totals, field("payRate", "Pay Rate"), field("billRate", "Bill Rate"), field("billRateOT", "Bill Rate C"), field("employeeId", "Invoice #", () => ""), field("hoursNote", "Hours Note"), field("employeeId", "Time Text Summary", () => ""), field("employeeId", "Verify Sent User", () => ""), field("employeeId", "Verify Sent Timestamp", () => ""), field("employeeId", "Emp"), field("jobApp", "J App"), field("perDiem", "Per Diem"), field("healthInsPerHr", "Health Ins")];
   if (tab === "benefits") return [field("jobSite", "Job"), field("payrollCo", "Payroll Co"), field("osha", "OSHA"), field("semus", "S P"), field("firstName", "First"), field("lastName", "Last"), field("city", "City"), field("cell", "Cell #"), field("gradeChange", "Grade"), field("wccState", "State"), field("wcc", "WCC"), field("trackMargin", "%"), field("marginCostPerHr", "$"), field("payRate", "Pay Rate"), field("billRate", "Bill Rate"), field("healthInsPerHr", "Health Ins"), field("travelPerHr", "Travel/Hr"), field("vacationPerHr", "Vac/Hr"), field("sickTime", "Sick Time"), field("schoolingPerHr", "Schooling Per Hr"), field("toolsPerHr", "Tools Per Hr"), field("bonusExpenseRate", "Bonus Exp Rate"), field("bonusExpenseStartDate", "Bonus Exp Start Date"), field("bonusExpenseRecipient", "Bonus Exp to Employee"), field("employeeReferralPerHr", "Em Referral/Hr")];
   return [field("employeeId", "Employee", row => `${row.firstName} ${row.lastName}`), field("jobSite", "Job"), field("weekEnding", "Week Ending"), field("assignmentUser", "Assignment User"), field("assignmentTimestamp", "Assignment Timestamp"), field("hrsAutoTextUser", "Hours AutoText User"), field("hrsAutoTextTimestamp", "Hours AutoText Timestamp"), field("hlAutoTextUser", "HL AutoText User"), field("hlAutoTextTimestamp", "HL AutoText Timestamp")];
 }
@@ -1140,7 +1147,7 @@ export function TrackingScreen({
       {trackingTab === "tracking" ? (
         <div className="ac-tracking-grid-shell flex min-h-0 flex-1 flex-col">
           <div className="ac-grid ac-grid-tracking ac-tracking-grouped mc-scroll-smooth min-h-0 flex-1">
-            <TrackingDataTable referenceLayout columns={GRID_COLUMNS.map(headerLabel)}>
+            <TrackingDataTable rowSelector columns={GRID_COLUMNS.map(headerLabel)}>
               <thead>
                 <tr>
                   {GRID_COLUMNS.map((col, i) => (
@@ -1151,19 +1158,7 @@ export function TrackingScreen({
                 </tr>
               </thead>
               <tbody>
-                {rows.length === 0 ? (
-                  <tr>
-                    <td colSpan={COL_COUNT} className="ac-tracking-empty">
-                      {preview === undefined
-                        ? "No assignments loaded. Select a customer or use Refresh → All to load this week."
-                        : query || employeeFilter
-                          ? "No assignments match your filters."
-                          : `No assignments for week ${week.assignWeek}/${week.assignYear}.`}
-                      {selectedCustomerId ? " Try clearing the customer filter." : ""}
-                    </td>
-                  </tr>
-                ) : (
-                  rows.map((r, i) => (
+                {rows.map((r, i) => (
                     <Fragment key={`${r.employeeId}-${i}`}>
                     {(i === 0 || trackingJobKey(rows[i - 1]) !== trackingJobKey(r)) && <tr className="ac-tracking-job-heading" aria-label={`${r.customer} — ${r.jobSite}`}>
                       {GRID_COLUMNS.map((col, ci) => <td key={ci}>{col.kind === "field" && col.key === "jobSite" ? <span title={`${r.customer} — ${r.jobSite}`}>{r.jobSite || "Unassigned job"}</span> : null}</td>)}
@@ -1178,8 +1173,7 @@ export function TrackingScreen({
                     {i < rows.length - 1 && <tr className="ac-tracking-row-gap" aria-hidden="true"><td colSpan={COL_COUNT} /></tr>}
                     {i < rows.length - 1 && trackingJobKey(r) !== trackingJobKey(rows[i + 1]) && <tr className="ac-tracking-row-gap" aria-hidden="true"><td colSpan={COL_COUNT} /></tr>}
                     </Fragment>
-                  ))
-                )}
+                  ))}
               </tbody>
             </TrackingDataTable>
           </div>
@@ -1207,9 +1201,9 @@ export function TrackingScreen({
       ) : (
         <div className="ac-tracking-grid-shell flex min-h-0 flex-1 flex-col">
           <div className={`ac-grid ac-grid-tracking ac-grid-tracking-detail ac-grid-tracking-${trackingTab} ${["hours", "hours2", "benefits"].includes(trackingTab) ? "ac-tracking-grouped" : ""} min-h-0 flex-1 overflow-auto`}>
-            <TrackingDataTable columns={activeColumns.map(column => column.label)}><thead><tr>{activeColumns.map(column => <th key={column.key}><TrackingColumnFilter column={column} rows={preview?.rows ?? []} activeFilter={columnFilters[column.key]} activeSort={sort?.key === column.key ? sort.direction : undefined} onFilter={setColumnFilter} onSort={setColumnSort} /></th>)}
+            <TrackingDataTable view={trackingTab} columns={activeColumns.map(column => column.label)}><thead><tr>{activeColumns.map(column => <th key={column.key}><TrackingColumnFilter column={column} rows={preview?.rows ?? []} activeFilter={columnFilters[column.key]} activeSort={sort?.key === column.key ? sort.direction : undefined} onFilter={setColumnFilter} onSort={setColumnSort} /></th>)}
             </tr></thead><tbody>{visible.map(({row,index}, rowIndex) => <Fragment key={index}>
-              {["hours", "hours2", "benefits"].includes(trackingTab) && (rowIndex === 0 || trackingJobKey(rows[rowIndex - 1]) !== trackingJobKey(row)) && <tr className="ac-tracking-job-heading" aria-label={`${row.customer} — ${row.jobSite}`}><td><span title={`${row.customer} — ${row.jobSite}`}>{row.jobSite || "Unassigned job"}</span></td><td colSpan={trackingTab === "hours" ? 26 : trackingTab === "hours2" ? 29 : 24} /></tr>}
+              {["hours", "hours2", "benefits"].includes(trackingTab) && (rowIndex === 0 || trackingJobKey(rows[rowIndex - 1]) !== trackingJobKey(row)) && <tr className="ac-tracking-job-heading" aria-label={`${row.customer} — ${row.jobSite}`}><td><span title={`${row.customer} — ${row.jobSite}`}>{row.jobSite || "Unassigned job"}</span></td><td colSpan={trackingTab === "hours" ? activeColumns.length - 1 : trackingTab === "hours2" ? activeColumns.length - 1 : 24} /></tr>}
               <tr id={`tracking-row-${index}`} style={["hours", "hours2"].includes(trackingTab) ? { "--tracking-grade-color": trackingGradeColor(row.grade ?? row.gradeChange) ?? "#000" } as React.CSSProperties : undefined} className={`${selectedSourceIndex === index ? "tracking-selected-row" : ""} ${row.placeholder ? "ac-tracking-row-placeholder" : ""}`} onClick={() => setSelectedIndex(index)} onDoubleClick={() => router.push(`/employees/${encodeURIComponent(row.employeeId)}`)}>{!(["hours", "hours2", "benefits"] as string[]).includes(trackingTab) && <><td className="ac-detail-employee"><Link href={`/employees/${encodeURIComponent(row.employeeId)}`}>{row.firstName} {row.lastName}</Link></td><td className="ac-detail-job">{row.jobSite || "—"}</td></>}
               {trackingTab === "hours" ? <>
                 <td aria-label={`Job: ${row.jobSite}`} />
@@ -1217,19 +1211,19 @@ export function TrackingScreen({
                 {trackingDays.map((key, dayIndex) => {
                   const flag = row.dayFlags[dayIndex] ?? ""; return <Fragment key={key}>{dayCell(String(row[key] ?? ""), flag, dayIndex)}</Fragment>;
                 })}
-                <td className="ac-detail-total">{dailyTotal(row).toFixed(0)}</td><td className="ac-detail-total">{Math.min(dailyTotal(row), 40).toFixed(0)}</td><td className="ac-detail-total">{Math.max(dailyTotal(row) - 40, 0).toFixed(0)}</td><td className="ac-detail-rate">{row.payRate || ""}</td><td className="ac-detail-bill">{row.billRate || ""}</td><td className="ac-detail-bill">{row.billRateOT || ""}</td><td className="ac-hours-unavailable" title="Invoice number is not included in the tracking source query" /><td className="ac-detail-notes" title={row.hoursNote}>{row.hoursNote || ""}</td><td className="ac-hours-unavailable" title="Time Text Sum is not included in the tracking source query" />
+                <td className="ac-detail-total">{dailyTotal(row).toFixed(0)}</td><td className="ac-detail-total">{Math.min(dailyTotal(row), 40).toFixed(0)}</td><td className="ac-detail-total">{Math.max(dailyTotal(row) - 40, 0).toFixed(0)}</td><td className="ac-detail-rate">{row.payRate || ""}</td><td className="ac-detail-bill">{row.billRate || ""}</td><td className="ac-detail-bill">{row.billRateOT || ""}</td><td className="ac-hours-unavailable" title="Invoice number is not included in the tracking source query" /><td className="ac-detail-notes" title={row.hoursNote}>{row.hoursNote || ""}</td><td className="ac-hours-unavailable" title="Time Text Summary is not included in the tracking source query" /><td className="ac-hours-unavailable" /><td className="ac-hours-unavailable" /><td>{row.employeeId || ""}</td>
               </> : trackingTab === "hours2" ? <>
                 <td aria-label={`Job: ${row.jobSite}`} />
                 <td className="ac-hours-check">{row.directionsText || "—"}</td><td className="ac-detail-payroll"><span className="ac-tracking-payroll-badge" style={{ background: row.payrollCoColor }}>{row.payrollCo || "—"}</span></td><td className="ac-hours-sent">{row.infoSent || "—"}</td><td className="ac-hours-person">{row.firstName || "—"}</td><td className="ac-hours-person">{row.middleInitial || "—"}</td><td className="ac-hours-person">{row.lastName || "—"}</td><td className="ac-hours-contact">{row.cell || "—"}</td><td className="ac-hours-location">{row.city || "—"}</td><td className="ac-hours-location">{row.wccState || "—"}</td><td className="ac-hours-wcc">{row.wcc || "—"}</td>
                 {trackingDays.map((key, dayIndex) => <Fragment key={key}>{dayCell(String(row[key] ?? ""), row.dayFlags[dayIndex] ?? "", dayIndex)}</Fragment>)}
-                <td className="ac-detail-total">{dailyTotal(row).toFixed(0)}</td><td className="ac-detail-total">{Math.min(dailyTotal(row),40).toFixed(0)}</td><td className="ac-detail-total">{Math.max(dailyTotal(row)-40,0).toFixed(0)}</td><td className="ac-hours-send-color" style={{ background: row.sendAutoText && HL_CV_COLORS[row.sendAutoText] ? HL_CV_COLORS[row.sendAutoText] : "#ff9800" }}>{row.sendAutoText && !HL_CV_COLORS[row.sendAutoText] ? row.sendAutoText : ""}</td><td className="ac-hours-select" /><td className="ac-hours-unavailable" title="HL link is not included in the tracking source query" /><td className="ac-detail-hl-cell" style={{ background: row.hlCvColor ? HL_CV_COLORS[row.hlCvColor] : undefined }}>{row.hlCv || ""}</td><td className="ac-detail-history-user">{row.hrsAutoTextUser || ""}</td><td className="ac-detail-timestamp">{row.hrsAutoTextTimestamp || ""}</td><td className="ac-detail-history-user">{row.hlAutoTextUser || ""}</td><td className="ac-detail-timestamp">{row.hlAutoTextTimestamp || ""}</td><td className="ac-detail-notes" title={row.hoursNote}>{row.hoursNote || ""}</td>
+                <td className="ac-detail-total">{dailyTotal(row).toFixed(0)}</td><td className="ac-detail-total">{Math.min(dailyTotal(row),40).toFixed(0)}</td><td className="ac-detail-total">{Math.max(dailyTotal(row)-40,0).toFixed(0)}</td><td className="ac-detail-rate">{row.payRate || ""}</td><td className="ac-detail-bill">{row.billRate || ""}</td><td className="ac-detail-bill">{row.billRateOT || ""}</td><td className="ac-hours-unavailable" title="Invoice number is not included in the tracking source query" /><td className="ac-detail-notes" title={row.hoursNote}>{row.hoursNote || ""}</td><td className="ac-hours-unavailable" title="Time Text Summary is not included in the tracking source query" /><td className="ac-hours-unavailable" /><td className="ac-hours-unavailable" /><td>{row.employeeId || ""}</td><td>{row.jobApp || ""}</td><td className="ac-detail-per-diem">{row.perDiem || ""}</td><td className="ac-benefits-health">{row.healthInsPerHr || ""}</td>
               </> : trackingTab === "benefits" ? <>
                 <td aria-label={`Job: ${row.jobSite}`} />
                 <td className="ac-detail-payroll"><span className="ac-tracking-payroll-badge" style={{ background: row.payrollCoColor }}>{row.payrollCo || ""}</span></td><td className="ac-benefits-osha">{row.osha}</td><td className="ac-hours-sent">{row.semus}</td><td className="ac-hours-person">{row.firstName}</td><td className="ac-hours-person">{row.lastName}</td><td className="ac-hours-location">{row.city}</td><td className="ac-hours-contact">{row.cell}</td><td className="ac-benefits-grade">{row.gradeChange}</td><td className="ac-hours-location">{row.wccState}</td><td className="ac-hours-wcc">{row.wcc}</td><td className="ac-detail-margin">{row.trackMargin}</td><td className="ac-benefits-dollar">{row.marginCostPerHr}</td><td className="ac-detail-rate">{row.payRate}</td><td className="ac-detail-bill">{row.billRate}</td><td className="ac-benefits-health">{row.healthInsPerHr}</td><td className="ac-benefits-travel">{row.travelPerHr}</td><td className="ac-benefits-vac">{row.vacationPerHr}</td><td className="ac-benefits-sick">{row.sickTime}</td><td className="ac-benefits-school">{row.schoolingPerHr}</td><td className="ac-benefits-tools">{row.toolsPerHr}</td><td className="ac-benefits-bonus">{row.bonusExpenseRate}</td><td className="ac-benefits-bonus-date">{row.bonusExpenseStartDate}</td><td className="ac-benefits-bonus">{row.bonusExpenseRecipient}</td><td className="ac-benefits-bonus">{row.employeeReferralPerHr}</td>
               </> : <>
                 <td className="ac-detail-date">{row.weekEnding || "—"}</td><td className="ac-detail-history-user">{row.assignmentUser || "—"}</td><td className="ac-detail-timestamp">{row.assignmentTimestamp || "—"}</td><td className="ac-detail-history-user">{row.hrsAutoTextUser || "—"}</td><td className="ac-detail-timestamp">{row.hrsAutoTextTimestamp || "—"}</td><td className="ac-detail-history-user">{row.hlAutoTextUser || "—"}</td><td className="ac-detail-timestamp">{row.hlAutoTextTimestamp || "—"}</td>
               </>}
-            </tr>{rowIndex < visible.length - 1 && <tr className="ac-tracking-row-gap" aria-hidden="true"><td colSpan={trackingTab === "hours" ? 27 : trackingTab === "hours2" ? 30 : trackingTab === "benefits" ? 25 : 9} /></tr>}{["hours", "hours2", "benefits"].includes(trackingTab) && rowIndex < visible.length - 1 && trackingJobKey(row) !== trackingJobKey(rows[rowIndex + 1]) && <tr className="ac-tracking-row-gap" aria-hidden="true"><td colSpan={trackingTab === "hours" ? 27 : trackingTab === "hours2" ? 30 : 25} /></tr>}</Fragment>)}{!rows.length && <tr><td colSpan={trackingTab === "hours" ? 27 : trackingTab === "hours2" ? 30 : trackingTab === "benefits" ? 25 : 11}>{preview === undefined ? "No assignments loaded. Select a customer or use Refresh → All to load this week." : "No assignments match the current week and filters."}</td></tr>}</tbody></TrackingDataTable>
+            </tr>{rowIndex < visible.length - 1 && <tr className="ac-tracking-row-gap" aria-hidden="true"><td colSpan={trackingTab === "hours" || trackingTab === "hours2" ? activeColumns.length : trackingTab === "benefits" ? 25 : 9} /></tr>}{["hours", "hours2", "benefits"].includes(trackingTab) && rowIndex < visible.length - 1 && trackingJobKey(row) !== trackingJobKey(rows[rowIndex + 1]) && <tr className="ac-tracking-row-gap" aria-hidden="true"><td colSpan={trackingTab === "hours" || trackingTab === "hours2" ? activeColumns.length : 25} /></tr>}</Fragment>)}</tbody></TrackingDataTable>
           </div>
           <div className="ac-recordbar"><span>{rows.length} records · {summaryHours.toFixed(2)} daily hours</span><input type="search" aria-label="Filter tracking rows" className="ac-input" value={query} placeholder="Filter rows…" onChange={e => setQuery(e.target.value)} /><AccessButton data-action-status="complete" xs onClick={() => { setQuery(""); setEmployeeFilter(""); }}>Clear Filters</AccessButton></div>
           <p className="ac-tracking-status">{preview === undefined ? "Waiting for a customer selection or refresh · no tracking rows loaded" : preview.source ? `Live SQL · ${preview.source}` : "SQL unavailable"} · {trackingTab === "ts-history" ? "Assignment and message timestamps for the selected week." : "Values from the loaded tracking assignments."}</p>

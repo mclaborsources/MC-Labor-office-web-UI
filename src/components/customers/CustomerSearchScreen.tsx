@@ -684,12 +684,6 @@ export function CustomerSearchScreen({
                   <span className="ac-customer-search-title">{title}</span>
                   <AccessButton data-action-status="missing" xs disabled>New</AccessButton>
                 </div>}
-                headerActions={<>
-                  {(basePath === "/customers" || onRefresh) && <AccessButton data-action-status="complete" xs onClick={onRefresh ?? (() => router.refresh())} title="Reload customer records from the database">
-                    Refresh
-                  </AccessButton>}
-                  {onResetColumnOrder && <AccessButton data-action-status="complete" xs onClick={onResetColumnOrder}>Reset column order</AccessButton>}
-                </>}
                 onSearchChange={onSidebarSearchChange}
                 basePath={basePath}
                 searchValues={{

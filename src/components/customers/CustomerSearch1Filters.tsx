@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Search } from "lucide-react";
+
 import { ClusterMultiSelect } from "./CustomerSearchViewsPanel";
 import type { CustomerNameMatch } from "@/lib/customerNameSearchColumns";
 import type { CustomerSearch1Filters as Filters } from "@/lib/customerSearch1Filters";
@@ -43,7 +43,7 @@ export function CustomerSearch1Filters({ rows, filters, onChange, onClear }: {
     <ClusterMultiSelect value={filters.clusterCities} onChange={value => update("clusterCities", value)} />
     {filters.dateRange === "custom-range" && <div className="ac-customer-search-custom-range"><input className="ac-input" type="date" aria-label="Last week ending from" value={filters.fromDate ?? ""} onChange={event => update("fromDate", event.target.value)} /><input className="ac-input" type="date" aria-label="Last week ending to" value={filters.toDate ?? ""} onChange={event => update("toDate", event.target.value)} /></div>}
     <input type="search" className="ac-input ac-customer-search-search-input" aria-label="Search all loaded customer fields" value={filters.search ?? ""} onChange={event => update("search", event.target.value)} />
-    <button type="button" className="ac-btn ac-customer-search-search-icon-btn" aria-label="Search" onClick={() => onChange({ ...filters })}><Search size={18} /></button>
+    <button type="button" className="ac-btn ac-customer-search-search-icon-btn" aria-label="Search" onClick={() => onChange({ ...filters })}><svg className="ac-customer-access-search-icon" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M8 10.5 3 16" stroke="#000" strokeWidth="2" /><circle cx="10.5" cy="6.5" r="5" fill="#d8ffff" stroke="#000" strokeWidth="1" /><path d="M7.5 5a3.5 3.5 0 0 1 4-1.5" stroke="#fff" strokeWidth="1" /></svg></button>
     <span className="ac-customer-search-filter-label">Filter:</span>
     <select className="ac-select ac-customer-search-filter-input" aria-label="Filter" value={selectedFilter ? JSON.stringify([selectedFilter[0], filters[selectedFilter[0]]]) : ""} onChange={event => {
       if (event.target.value === "clear") { onClear(); return; }
