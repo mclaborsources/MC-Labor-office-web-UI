@@ -83,7 +83,7 @@ test("View 15 preset exposes the extended research columns in screenshot order",
  assert.deepEqual(layout.order.filter(key=>!layout.hidden.includes(key)),[
   "select","customerName","noCommunication","street","city","state","phone","lcu","researchTries","researchUser",
   "researchDate","researchTime","timePerSearch","researchNoteShort","researchBefore","researchAfter","researchUp",
-  "researchWebsite","researchWebsiteB","cannotMakeAssignments","corpS","contactsLink","researchNote",
+  "researchWebsite","researchWebsiteB","researchWebsiteChanged","corpS","contactsLink","researchNote",
  ]);
 });
 test("View 16 preset exposes profile, flags and extended research columns in screenshot order",()=>{

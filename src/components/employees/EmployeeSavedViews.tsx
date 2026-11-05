@@ -1,8 +1,8 @@
 "use client";
 
 import { createContext, useContext, useEffect, useRef, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
-import { EMPLOYEE_SEARCH_PRESET_GRID, EMPLOYEE_SEARCH_VIEWS_2_GRID } from "@/lib/employeeSearchColumns";
-import { defaultEmployeeViewLayout, employeeSearchDefaultPresetLayout, employeeSearchPresetSchema, employeeSearchPresetLayoutForName, employeeSavedViewSchema, normalizeEmployeeSavedView, type EmployeeSavedView, type EmployeeSearchPreset, type EmployeeViewLayout } from "@/lib/employeeSavedViews";
+import { EMPLOYEE_SEARCH_PRESET_GRID, EMPLOYEE_SEARCH_VIEWS_2_GRID, type EmployeeSearchColumnKey } from "@/lib/employeeSearchColumns";
+import { defaultEmployeeViewLayout, employeeSearchDefaultPresetLayout, employeeSearchViews2DefaultPresetLayout, employeeSearchViews2QualificationsPresetLayout, employeeSearchViews2SubTradesPresetLayout, employeeSearchViews2AgeLicenseLevelPresetLayout, employeeSearchViews2CarRtsRipPresetLayout, employeeSearchViews2ResumeNumberPresetLayout, employeeSearchEmergencyNumberPresetLayout, employeeSearchIdDriverLicensePresetLayout, employeeSearchViews2EmailTextPresetLayout, employeeSearchViews2CallHistoryPresetLayout, employeeSearchViews2FutureCallPresetLayout, employeeSearchViews2CustomerJobInfoPresetLayout, employeeSearchViews2TimesheetRequestPresetLayout, employeeSearchViews2AvailableManPresetLayout, employeeSearchViews2UiPresetLayout, employeeSearchViews2EeSearchPresetLayout, employeeSearchViews2View40PresetLayout, employeeSearchViews2View45PresetLayout, employeeSearchViews2View46PresetLayout, employeeSearchViews2View47PresetLayout, employeeSearchViews2View48PresetLayout, employeeSearchViews2View49PresetLayout, employeeSearchViews2View50PresetLayout, employeeSearchViews2View55PresetLayout, employeeSearchViews2View56PresetLayout, employeeSearchViews2View57PresetLayout, employeeSearchViews2View58PresetLayout, employeeSearchViews2View59PresetLayout, employeeSearchViews2View60PresetLayout, employeeSearchPresetSchema, employeeSearchPresetLayoutForName, employeeSavedViewSchema, normalizeEmployeeSavedView, type EmployeeSavedView, type EmployeeSearchPreset, type EmployeeViewLayout } from "@/lib/employeeSavedViews";
 
 function baseName(slot: number) {
   const grid = slot <= 30 ? EMPLOYEE_SEARCH_PRESET_GRID : EMPLOYEE_SEARCH_VIEWS_2_GRID;
@@ -32,6 +32,25 @@ type EmployeeViewsContext = {
 const Context = createContext<EmployeeViewsContext | null>(null);
 export const useEmployeeSavedViews = () => useContext(Context);
 
+
+function normalizeViews2Layout(layout: EmployeeViewLayout): EmployeeViewLayout {
+  const grade: EmployeeSearchColumnKey = "EmGrade";
+  const howRef: EmployeeSearchColumnKey = "EmHowReferred";
+  const trade: EmployeeSearchColumnKey = "EmTrade";
+  const status: EmployeeSearchColumnKey = "EmEmployeeStatus";
+  const visible = (key: EmployeeSearchColumnKey) => !layout.hidden.includes(key);
+  const order: EmployeeSearchColumnKey[] = [...layout.order];
+  if (visible(howRef) && (visible(grade) || visible(trade))) {
+    const existingHowRefIndex = order.findIndex(key => key === howRef);
+    if (existingHowRefIndex >= 0) order.splice(existingHowRefIndex, 1);
+    const gradeIndex = visible(grade) ? order.findIndex(key => key === grade) : -1;
+    const tradeIndex = visible(trade) ? order.findIndex(key => key === trade) : -1;
+    const insertAt = gradeIndex >= 0 ? gradeIndex + 1 : tradeIndex;
+    if (insertAt >= 0) order.splice(insertAt, 0, howRef);
+  }
+  return {...layout, order, widths: visible(status) ? {...layout.widths, [status]:70} : layout.widths};
+}
+
 export function EmployeeSavedViewsProvider({ children }: { children: ReactNode }) {
   const [slot, setSlot] = useState(1);
   const [views, setViews] = useState<EmployeeSavedView[]>([]);
@@ -57,7 +76,11 @@ export function EmployeeSavedViewsProvider({ children }: { children: ReactNode }
   const setWidths: Dispatch<SetStateAction<EmployeeViewLayout["widths"]>> = update => {
     setViewWidths(current => ({...current, [slot]: typeof update === "function" ? update(current[slot] ?? {}) : update}));
   };
-  const effectiveLayout = {...layout, widths: viewWidths[slot] ?? {}};
+  const effectiveBase = slot === 31 ? normalizeViews2Layout(employeeSearchViews2DefaultPresetLayout()) : slot === 32 ? normalizeViews2Layout(employeeSearchViews2QualificationsPresetLayout()) : slot === 33 ? normalizeViews2Layout(employeeSearchViews2SubTradesPresetLayout()) : slot === 34 ? normalizeViews2Layout(employeeSearchViews2AgeLicenseLevelPresetLayout()) : slot === 35 ? normalizeViews2Layout(employeeSearchViews2CarRtsRipPresetLayout()) : slot === 36 ? normalizeViews2Layout(employeeSearchViews2ResumeNumberPresetLayout()) : slot === 37 ? normalizeViews2Layout(employeeSearchEmergencyNumberPresetLayout()) : slot === 38 ? normalizeViews2Layout(employeeSearchIdDriverLicensePresetLayout()) : slot === 39 ? normalizeViews2Layout(employeeSearchViews2EmailTextPresetLayout()) : slot === 41 ? normalizeViews2Layout(employeeSearchViews2CallHistoryPresetLayout()) : slot === 42 ? normalizeViews2Layout(employeeSearchViews2FutureCallPresetLayout()) : slot === 43 ? normalizeViews2Layout(employeeSearchViews2CustomerJobInfoPresetLayout()) : slot === 44 ? normalizeViews2Layout(employeeSearchViews2TimesheetRequestPresetLayout()) : slot === 51 ? normalizeViews2Layout(employeeSearchViews2AvailableManPresetLayout()) : slot === 52 ? normalizeViews2Layout(employeeSearchViews2UiPresetLayout()) : slot === 54 ? normalizeViews2Layout(employeeSearchViews2EeSearchPresetLayout()) : slot === 40 ? normalizeViews2Layout(employeeSearchViews2View40PresetLayout()) : slot === 45 ? normalizeViews2Layout(employeeSearchViews2View45PresetLayout()) : slot === 46 ? normalizeViews2Layout(employeeSearchViews2View46PresetLayout()) : slot === 47 ? normalizeViews2Layout(employeeSearchViews2View47PresetLayout()) : slot === 48 ? normalizeViews2Layout(employeeSearchViews2View48PresetLayout()) : slot === 49 ? normalizeViews2Layout(employeeSearchViews2View49PresetLayout()) : slot === 50 || slot === 53 ? employeeSearchViews2View50PresetLayout() : slot === 55 ? normalizeViews2Layout(employeeSearchViews2View55PresetLayout()) : slot === 56 ? normalizeViews2Layout(employeeSearchViews2View56PresetLayout()) : slot === 57 ? normalizeViews2Layout(employeeSearchViews2View57PresetLayout()) : slot === 58 ? normalizeViews2Layout(employeeSearchViews2View58PresetLayout()) : slot === 59 ? normalizeViews2Layout(employeeSearchViews2View59PresetLayout()) : slot === 60 ? normalizeViews2Layout(employeeSearchViews2View60PresetLayout()) : slot >= 31 && slot <= 60 ? normalizeViews2Layout(layout) : layout;
+  const effectiveWidths = slot === 31 || slot === 32 || slot === 33 || slot === 34 || slot === 35 || slot === 36 || slot === 37 || slot === 38 || slot === 39 || slot === 41 || slot === 42 || slot === 43 || slot === 44 || slot === 51 || slot === 52 || slot === 54 || slot === 40 || slot === 45 || slot === 46 || slot === 47 || slot === 48 || slot === 49 || slot === 50 || slot === 53 || slot === 55 || slot === 56 || slot === 57 || slot === 58 || slot === 59 || slot === 60 ? effectiveBase.widths : viewWidths[slot] ?? {};
+  const effectiveLayout = {...effectiveBase, widths: slot >= 31 && slot <= 60 && !effectiveBase.hidden.includes("EmEmployeeStatus")
+    ? {...effectiveWidths, EmEmployeeStatus:70}
+    : effectiveWidths};
   const [ready, setReady] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
@@ -125,7 +148,8 @@ export function EmployeeSavedViewsProvider({ children }: { children: ReactNode }
     setSlot(next);
     const personalView = views.find(view => view.slot === next);
     const sharedPreset = presets.find(preset => preset.slot === next);
-    setLayout(next === 1 ? employeeSearchDefaultPresetLayout() : personalView?.layout ?? sharedPreset?.layout ?? defaultEmployeeViewLayout());
+    const nextLayout = next === 1 ? employeeSearchDefaultPresetLayout() : next === 31 ? employeeSearchViews2DefaultPresetLayout() : next === 32 ? employeeSearchViews2QualificationsPresetLayout() : personalView?.layout ?? sharedPreset?.layout ?? defaultEmployeeViewLayout();
+    setLayout(next >= 31 && next <= 60 ? normalizeViews2Layout(nextLayout) : nextLayout);
     setMessage("");
   };
   const selectPreset = (next: number, fallbackLayout: EmployeeViewLayout) => {
@@ -136,7 +160,8 @@ export function EmployeeSavedViewsProvider({ children }: { children: ReactNode }
     // same preset button again, without changing the preset for other users.
     const personalView = views.find(view => view.slot === next);
     const sharedPreset = presets.find(preset => preset.slot === next);
-    setLayout(next === 1 ? employeeSearchDefaultPresetLayout() : personalView?.layout ?? sharedPreset?.layout ?? fallbackLayout);
+    const nextLayout = next === 1 ? employeeSearchDefaultPresetLayout() : next === 31 ? employeeSearchViews2DefaultPresetLayout() : next === 32 ? employeeSearchViews2QualificationsPresetLayout() : personalView?.layout ?? sharedPreset?.layout ?? fallbackLayout;
+    setLayout(next >= 31 && next <= 60 ? normalizeViews2Layout(nextLayout) : nextLayout);
     setMessage("");
   };
   const openSave = () => {
@@ -223,3 +248,8 @@ export function EmployeeSavedViewActions() {
     <button type="button" data-action-status="complete" className="ac-btn ac-btn-xs" onClick={state.openDelete} disabled={!state.ready || state.busy || !saved}>Delete</button>
   </>;
 }
+
+
+
+
+

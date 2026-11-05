@@ -526,7 +526,7 @@ function CustomerSearchActionBar({ hoveredColumn, onClearFilters, onShowAllColum
         <AccessButton data-action-status="missing" xs disabled>
           All
         </AccessButton>
-        <AccessButton data-action-status="missing" xs disabled>
+        <AccessButton className="ac-customer-search-select-email" data-action-status="missing" xs disabled>
           Email
         </AccessButton>
         <AccessButton data-action-status="missing" xs disabled>
@@ -566,7 +566,6 @@ function CustomerSearchActionBar({ hoveredColumn, onClearFilters, onShowAllColum
           </section>
         </div>, document.body,
       )}
-      {onShowAllColumns && <AccessButton data-action-status="complete" xs onClick={onShowAllColumns}>Show all columns</AccessButton>}
       <AccessButton data-action-status="complete" xs onClick={onClearFilters}>Clear Filters</AccessButton>
     </div>
   );
@@ -673,7 +672,16 @@ export function CustomerSearchScreen({
     }).filter(([, value]) => Boolean(value)),
   );
   return (
-    <div className="ac-customer-search-page flex min-h-0 flex-1 flex-col">
+    <div className="ac-customer-search-page flex min-h-0 flex-1 flex-col" onMouseOver={event => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const columnElement = target.closest<HTMLElement>("[data-column]");
+      const key = columnElement?.dataset.column;
+      if (!key) return;
+      const column = CUSTOMER_SEARCH_COLUMNS.find(item => item.key === key)
+        ?? CUSTOMER_NAME_SEARCH_COLUMNS.find(item => item.key === key);
+      if (column) setHoveredColumn(column.label || (key === "select" ? "Select" : key));
+    }}>
       <CustomerPlaceholderControls />
       <div className="ac-customer-search ac-tracking--modern flex min-h-0 flex-1 flex-col">
         <div className="ac-customer-search-body min-h-0 flex-1 flex-col">

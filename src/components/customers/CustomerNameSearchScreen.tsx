@@ -63,8 +63,14 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
     setHiddenColumns([]);
   }, [showColumnsVersion, variant, setHiddenColumns]);
   const summaryColumns = useMemo(() => columnOrder.filter(key => !hiddenColumns.includes(key)).map(key => defaultColumns.find(column => column.key === key)!), [columnOrder, hiddenColumns]);
+  const lastReportedColumns = useRef<string | null>(null);
   useEffect(() => {
-    onVisibleColumnsChange?.(summaryColumns.map(column => column.key));
+    if (!onVisibleColumnsChange) return;
+    const keys = summaryColumns.map(column => column.key);
+    const signature = JSON.stringify(keys);
+    if (lastReportedColumns.current === signature) return;
+    lastReportedColumns.current = signature;
+    onVisibleColumnsChange(keys);
   }, [summaryColumns, onVisibleColumnsChange]);
   const handledGoToRequest = useRef<number | null>(null);
   const pendingNavigationKey = useRef<SummaryColumnKey | null>(null);
@@ -153,9 +159,16 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
       return next;
     });
   }
+  function displayedColumnWidth(column: (typeof summaryColumns)[number]) {
+    const width = columnWidths[column.key] ?? column.width;
+    if (variant !== "customers") return width;
+    const minimum = column.key === "noCommunication" ? 22
+      : column.key === "contactsLink" ? 60 : column.key === "street" ? 88 : 0;
+    return Math.max(width, minimum);
+  }
   const summaryGridStyle = {
-    gridTemplateColumns: summaryColumns.map(column => (columnWidths[column.key] ?? column.width) + "px").join(" "),
-    minWidth: summaryColumns.reduce((total, column) => total + (columnWidths[column.key] ?? column.width), 0) + 20,
+    gridTemplateColumns: summaryColumns.map(column => displayedColumnWidth(column) + "px").join(" "),
+    minWidth: summaryColumns.reduce((total, column) => total + displayedColumnWidth(column), 0) + 20,
     whiteSpace: "nowrap",
   } as const;
   const [loadedCustomers, setCustomers] = useState<CustomerNameMatch[]>([]);
@@ -334,9 +347,9 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
         </div>, document.body)}
 
         {allNamesVisible ? (
-          <div ref={allNamesListRef} className="ac-customer-name-search-all-names" data-customer-default={variant === "customers" && customerView?.slot === 1 ? "true" : undefined} aria-label="All customer names" onScroll={(event) => setNamesScrollTop(event.currentTarget.scrollTop)}>
+          <div ref={allNamesListRef} className="ac-customer-name-search-all-names" data-customer-view={variant === "customers" ? customerView?.slot : undefined} data-customer-info={variant === "customers" && customerView?.slot === 2 ? "true" : undefined} data-customer-default={variant === "customers" && customerView?.slot === 1 ? "true" : undefined} aria-label="All customer names" onScroll={(event) => setNamesScrollTop(event.currentTarget.scrollTop)}>
             <div className="ac-customer-name-search-summary-header" style={summaryGridStyle}>
-              {summaryColumns.map((column, index) => <CustomerNameColumnHeader key={column.key} columnKey={column.key} label={column.label} kind={column.kind}
+              {summaryColumns.map((column, index) => <CustomerNameColumnHeader key={column.key} columnKey={column.key} label={variant === "customers" && customerView?.slot === 14 && (column.key === "researchBefore" || column.key === "researchAfter") ? (column.key === "researchBefore" ? "R - Before ISR" : "R - After ISR") : variant === "customers" && customerView?.slot === 15 ? (({researchWebsite:"R - Web Site Before",researchWebsiteB:"R - Web Site After",researchWebsiteChanged:"R - Web Site Changed",researchNote:"Research Notes"} as Record<string,string>)[column.key] ?? column.label) : column.label} kind={column.kind}
                 dragging={draggedColumn === column.key} dropTarget={dragOverColumn === column.key && draggedColumn !== column.key}
                 onDragStart={event => {
                   setDraggedColumn(column.key);
@@ -356,7 +369,7 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
                 onSelect={() => { if (column.key !== "select") onSelectedColumnChange?.(column.key); }}
                 onHide={summaryColumns.length > 1 ? () => hideColumn(column.key) : undefined}
                 onUnhideColumns={() => setUnhideColumnsOpen(true)}
-                width={columnWidths[column.key] ?? column.width} onResize={width => resizeColumn(column.key, width)} onResetWidth={() => resizeColumn(column.key)}
+                width={displayedColumnWidth(column)} onResize={width => resizeColumn(column.key, width)} onResetWidth={() => resizeColumn(column.key)}
                 getValues={() => customers.map(customer => summaryValue(customer, column.key))}
                 selected={columnFilters[column.key]} sort={summarySort?.key === column.key ? summarySort.direction : undefined}
                 onFilter={values => { setColumnFilters(current => { const next = { ...current }; if (values === undefined) delete next[column.key]; else next[column.key] = values; return next; }); resetNamesScroll(); }}
@@ -367,7 +380,10 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
             {visibleAllNames.map((customer) => (
               <div key={customer.customerId} className="ac-customer-name-search-all-name" style={{ ...summaryGridStyle, cursor: "default" }}>
                 {summaryColumns.map(column => {
-                  const value = summaryValue(customer, column.key);
+                  const rawValue = summaryValue(customer, column.key);
+                  const value = variant === "customers" && column.key === "noCommunication"
+                    ? (["y", "yes", "true", "1", "x"].includes(rawValue.trim().toLowerCase()) ? "X" : "")
+                    : rawValue;
                   return <span key={column.key} data-column={column.key} title={value} onClick={() => { if (column.key !== "select") onSelectedColumnChange?.(column.key); }}>
                     {column.key === "select" && onSelectedCustomerIdsChange
                       ? <button type="button" aria-label={`${selectedCustomerIds?.includes(customer.customerId) ? "Deselect" : "Select"} ${customer.customerName}`}

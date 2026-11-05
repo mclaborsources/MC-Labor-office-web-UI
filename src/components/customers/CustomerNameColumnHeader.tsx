@@ -25,6 +25,7 @@ export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getV
   onResize?: (width: number) => void;
   onResetWidth?: () => void;
 }) {
+  const minimumWidth = columnKey?.startsWith("spacer") ? 4 : 48;
   const [open, setOpen] = useState(false);
   const [widthModalOpen, setWidthModalOpen] = useState(false);
   const [widthValue, setWidthValue] = useState(String(width ?? 100));
@@ -68,7 +69,7 @@ export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getV
       <span>{label}{sort ? (sort === "asc" ? " ↑" : " ↓") : ""}{selected ? " •" : ""}</span><span aria-hidden="true">▾</span>
     </button>
     {onResize && <span role="separator" aria-orientation="vertical" aria-label={`Resize ${label} column`} tabIndex={0}
-      aria-valuemin={48} aria-valuemax={1600} aria-valuenow={width}
+      aria-valuemin={minimumWidth} aria-valuemax={1600} aria-valuenow={width}
       title="Drag to resize; double-click to reset width"
       style={{ position: "absolute", right: -3, top: 0, bottom: 0, width: 7, cursor: "col-resize", touchAction: "none", userSelect: "none", zIndex: 2 }}
       onPointerDown={event => {
@@ -77,7 +78,7 @@ export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getV
         drag.current = { x: event.clientX, width: event.currentTarget.parentElement!.getBoundingClientRect().width };
         event.currentTarget.setPointerCapture(event.pointerId);
       }}
-      onPointerMove={event => { if (drag.current) onResize(Math.max(48, Math.min(1600, Math.round(drag.current.width + event.clientX - drag.current.x)))); }}
+      onPointerMove={event => { if (drag.current) onResize(Math.max(minimumWidth, Math.min(1600, Math.round(drag.current.width + event.clientX - drag.current.x)))); }}
       onPointerUp={event => { drag.current = null; if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId); }}
       onLostPointerCapture={() => { drag.current = null; }}
       onPointerCancel={() => { drag.current = null; }}
@@ -85,7 +86,7 @@ export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getV
       onKeyDown={event => {
         if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
           event.preventDefault();
-          onResize(Math.max(48, Math.min(1600, (width ?? 100) + (event.key === "ArrowRight" ? 10 : -10))));
+          onResize(Math.max(minimumWidth, Math.min(1600, (width ?? 100) + (event.key === "ArrowRight" ? 10 : -10))));
         } else if (event.key === "Home") { event.preventDefault(); onResetWidth?.(); }
       }} />}
     {open && createPortal(<div ref={menu} className="ac-column-filter-menu" style={{ position: "fixed", ...position, width: 280, maxHeight: "100vh", overflow: "auto" }} role="dialog" aria-label={`${label} sort and filter`}>
@@ -95,17 +96,17 @@ export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getV
       <form role="dialog" aria-modal="true" aria-labelledby="ac-field-width-title" onSubmit={event => {
         event.preventDefault();
         const parsed = Number(widthValue);
-        if (!Number.isInteger(parsed) || parsed < 48 || parsed > 1600) return;
+        if (!Number.isInteger(parsed) || parsed < minimumWidth || parsed > 1600) return;
         onResize(parsed);
         setWidthModalOpen(false);
       }} style={{ width: 360, maxWidth: "calc(100vw - 32px)", padding: 20, background: "white", borderRadius: 6, boxShadow: "0 12px 36px rgba(0,0,0,.28)" }}>
         <h2 id="ac-field-width-title" style={{ margin: "0 0 14px", fontSize: 18, fontWeight: 600 }}>Field width</h2>
-        <label style={{ display: "grid", gap: 6, fontSize: 14 }}>{label} column width (48–1600 px)
-          <input autoFocus type="number" min={48} max={1600} step={1} value={widthValue} onChange={event => setWidthValue(event.target.value)} style={{ width: "100%", boxSizing: "border-box", padding: 8 }} />
+        <label style={{ display: "grid", gap: 6, fontSize: 14 }}>{label} column width ({minimumWidth}–1600 px)
+          <input autoFocus type="number" min={minimumWidth} max={1600} step={1} value={widthValue} onChange={event => setWidthValue(event.target.value)} style={{ width: "100%", boxSizing: "border-box", padding: 8 }} />
         </label>
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 18 }}>
           <button type="button" onClick={() => setWidthModalOpen(false)}>Cancel</button>
-          <button type="submit" disabled={!Number.isInteger(Number(widthValue)) || Number(widthValue) < 48 || Number(widthValue) > 1600}>Apply</button>
+          <button type="submit" disabled={!Number.isInteger(Number(widthValue)) || Number(widthValue) < minimumWidth || Number(widthValue) > 1600}>Apply</button>
         </div>
       </form>
     </div>, document.body)}

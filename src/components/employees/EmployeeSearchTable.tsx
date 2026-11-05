@@ -51,6 +51,8 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
   const layout = saved?.layout ?? localLayout;
   const setLayout = saved?.setLayout ?? setLocalLayout;
   const isDefaultView = !saved || saved.slot === 1;
+  const isViews2Default = saved?.slot === 31;
+  const isBlankView = saved?.slot === 50 || saved?.slot === 53;
   const isQualificationsView = saved?.slot === 2;
   const isFutureCallView = saved?.slot === 9;
   const isGetHiredView = saved?.slot === 27;
@@ -144,7 +146,7 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
   return (
     <div className="ac-customer-search-grid-wrap ac-employee-search-grid-wrap">
       <div ref={viewport} onScroll={event => setScrollTop(event.currentTarget.scrollTop)} className="ac-grid ac-grid-tracking ac-customer-search-grid ac-employee-search-grid mc-scroll-smooth">
-        <table data-employee-view={isDefaultView ? "default" : isQualificationsView ? "qualifications" : isFutureCallView ? "future-call" : isGetHiredView ? "get-hired" : undefined} data-column-count={columns.length} style={{ width: columns.reduce((sum, col) => sum + (widthFor(col.key, col.width)), 19), minWidth: 0, tableLayout: "fixed" }}>
+        <table data-employee-slot={saved?.slot} data-employee-view={isViews2Default ? "views2-default" : isDefaultView ? "default" : isQualificationsView ? "qualifications" : isFutureCallView ? "future-call" : isGetHiredView ? "get-hired" : undefined} data-column-count={columns.length} style={{ width: columns.reduce((sum, col) => sum + (widthFor(col.key, col.width)), 19), minWidth: 0, tableLayout: "fixed" }}>
           <colgroup>
             <col style={{ width: 19, minWidth: 19 }} />
             {columns.map((col) => (
@@ -160,7 +162,7 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
               {columns.map((col) => (
                 <th key={col.key}>
                   <CustomerNameColumnHeader
-                    label={col.label}
+                    label={isBlankView ? "" : col.label}
                     columnKey={col.key}
                     kind={kind(col.key)}
                     getValues={() => sourceEmployees.map((row) => employeeSearchCellValue(row, col.key))}
@@ -200,6 +202,7 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
                 <tr key={row.employeeId} className={activeEmployeeId === row.employeeId ? "is-selected" : undefined} onClick={() => { setSelectedEmployee(row.employeeId); onActiveEmployeeChange?.(row); }}>
                   <td className="ac-employee-record-selector" aria-hidden>{activeEmployeeId === row.employeeId ? "▸" : ""}</td>
                   {columns.map((col) => {
+                    if (isBlankView) return <td key={col.key} data-employee-column={col.key} />;
                     if (col.key === "ActionSelect") {
                       const selected = selectedEmployeeIds.includes(row.employeeId);
                       return (

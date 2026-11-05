@@ -17,6 +17,7 @@ import type { EmployeeCallNumberFilter } from "@/lib/employeeSearchUtilities";
 import type { EmployeeSearchViews1Filters } from "@/lib/employeeSearchViews1Filters";
 import type { EmployeeSearchCallListFilters } from "@/lib/employeeSearchCallListFilters";
 import type { EmployeeSearchCallLists2Filters } from "@/lib/employeeSearchCallLists2";
+import { EMPLOYEE_SEARCH_COLUMNS } from "@/lib/employeeSearchColumns";
 
 export interface EmployeeSearchScreenProps {
   results?: ReactNode;
@@ -167,7 +168,7 @@ function EmployeeSearchSidebar({ onSearch, resetVersion = 0 }: { onSearch?: (val
   );
 }
 
-function EmployeeGridToolbar({ onClearFilters, onSort }: Pick<EmployeeSearchScreenProps, "onClearFilters" | "onSort">) {
+function EmployeeGridToolbar({ onClearFilters, onSort, hoveredColumn }: Pick<EmployeeSearchScreenProps, "onClearFilters" | "onSort"> & { hoveredColumn: string }) {
   const saved = useEmployeeSavedViews();
   return (
     <div className="ac-employee-search-grid-toolbar shrink-0">
@@ -179,7 +180,7 @@ function EmployeeGridToolbar({ onClearFilters, onSort }: Pick<EmployeeSearchScre
         <AccessButton data-action-status="missing" xs>
           All
         </AccessButton>
-        <AccessButton data-action-status="missing" xs>
+        <AccessButton className="ac-employee-search-email-btn" data-action-status="missing" xs>
           Email
         </AccessButton>
         <AccessButton data-action-status="missing" xs>
@@ -191,12 +192,12 @@ function EmployeeGridToolbar({ onClearFilters, onSort }: Pick<EmployeeSearchScre
         <AccessButton data-action-status="missing" xs>
           Letter
         </AccessButton>
-        <AccessButton data-action-status="missing" xs>
+        <AccessButton className="ac-employee-search-postcard-btn" data-action-status="missing" xs>
           Postcard
         </AccessButton>
       </div>
-      <input readOnly className="ac-input ac-employee-search-yellow-input" aria-label="Selection highlight" />
-      <AccessButton data-action-status="missing" xs>
+      <span className="ac-customer-search-mouse-box ac-employee-search-mouse-box">{hoveredColumn}</span>
+      <AccessButton className="ac-employee-search-update-column-btn" data-action-status="missing" xs>
         Update Column
       </AccessButton>
       <span className="ac-flabel">View:</span>
@@ -274,8 +275,16 @@ function EmployeeSearchScreenContent({
   currentCity,
   currentState,
 }: EmployeeSearchScreenProps) {
+  const [hoveredColumn, setHoveredColumn] = useState("");
   return (
-    <div className="ac-customer-search-page ac-employee-search-page flex min-h-0 flex-1 flex-col">
+    <div className="ac-customer-search-page ac-employee-search-page flex min-h-0 flex-1 flex-col" onMouseOver={event => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const element = target.closest<HTMLElement>("[data-employee-column], .ac-column-filter[data-column]");
+      const key = element?.dataset.employeeColumn ?? element?.dataset.column;
+      const column = EMPLOYEE_SEARCH_COLUMNS.find(item => item.key === key);
+      if (column) setHoveredColumn(column.label);
+    }}>
       <div className="ac-customer-search ac-employee-search ac-tracking--modern flex min-h-0 flex-1 flex-col">
         <div className="ac-customer-search-titlebar ac-employee-search-titlebar shrink-0">
           <span className="ac-customer-search-title">Employee Search 3</span>
@@ -340,7 +349,7 @@ function EmployeeSearchScreenContent({
           </div>
 
           <div className="ac-panel ac-panel-elevated ac-employee-search-grid-panel shrink-0">
-            <EmployeeGridToolbar onClearFilters={onClearFilters} onSort={onSort} />
+            <EmployeeGridToolbar onClearFilters={onClearFilters} onSort={onSort} hoveredColumn={hoveredColumn} />
           </div>
 
           <div className="ac-panel ac-panel-elevated ac-customer-search-results-panel ac-employee-search-results-panel min-h-0 flex-1">

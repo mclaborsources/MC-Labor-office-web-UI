@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { EMPLOYEE_SEARCH_COLUMNS, EMPLOYEE_SEARCH_PRESET_GRID, EMPLOYEE_SEARCH_VIEWS_2_GRID, type EmployeeSearchColumnKey } from "./employeeSearchColumns";
+import { EMPLOYEE_VIEW_COLUMN_WIDTHS } from "./employeeViewColumnWidths";
 
 const keys = new Set<string>(EMPLOYEE_SEARCH_COLUMNS.map(column => column.key));
 const columnKey = z.custom<EmployeeSearchColumnKey>(value => typeof value === "string" && keys.has(value));
@@ -131,7 +132,24 @@ const EMPLOYEE_SEARCH_VIEWS_2_DEFAULT_PRESET_KEYS: EmployeeSearchColumnKey[] = [
 export function employeeSearchViews2DefaultPresetLayout(): EmployeeViewLayout {
   const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_DEFAULT_PRESET_KEYS);
   const base = defaultEmployeeViewLayout();
-  return { ...base, hidden: base.order.filter(key => !visible.has(key)) };
+  const screenshotOrder: EmployeeSearchColumnKey[] = ([
+    "ActionSelect", "PayrollCoOnSiteInitials_IPG", "JobApplicationStatus_IPG", "EmEmployeeStatus",
+    "EmFirstName", "EmMiddle", "EmLastName", "EmStreet", "EmCity", "EmState", "EmployeeNoCommunicationText",
+    "EmMobilePhone", "EmMobilePhoneVerifyText", "EmGrade", "EmHowReferred", "EmTrade", "EmQualification",
+    "AvgHrsWorked", "FirstDateOnJob", "TotalHoursWorked", "LicenseExpDateFlag", "WeekEndingDate",
+    "EmployeeNotesHistory", "PayRate", "SiteName", "WeeksAway", "CustomerBusName", "EmHomePhone",
+    "EmEmail2", "EmEmail3", "EmEmail4", "EmEmail5", "EmEmail6", "SchoolCompleted",
+    "IDTitleDriversLicense", "IDTitleDriversLicenseOnFile",
+  ] as EmployeeSearchColumnKey[]).filter(key => visible.has(key));
+  return { ...base, order: [...screenshotOrder, ...base.order.filter(key => !screenshotOrder.includes(key))], hidden: base.order.filter(key => !visible.has(key)), widths: {
+    ActionSelect:23,PayrollCoOnSiteInitials_IPG:22,JobApplicationStatus_IPG:25,EmEmployeeStatus:70,
+    EmFirstName:87,EmMiddle:27,EmLastName:88,EmStreet:65,EmCity:105,EmState:48,EmployeeNoCommunicationText:23,
+    EmMobilePhone:87,EmMobilePhoneVerifyText:43,EmGrade:52,EmHowReferred:86,EmTrade:111,EmQualification:94,
+    AvgHrsWorked:53,FirstDateOnJob:79,TotalHoursWorked:64,LicenseExpDateFlag:75,WeekEndingDate:79,
+    EmployeeNotesHistory:48,PayRate:81,SiteName:96,WeeksAway:107,CustomerBusName:110,EmHomePhone:58,
+    EmEmail2:155,EmEmail3:155,EmEmail4:155,EmEmail5:155,EmEmail6:155,SchoolCompleted:141,
+    IDTitleDriversLicense:137,IDTitleDriversLicenseOnFile:182,
+ } };
 }
 
 /** Checked columns from the Views 2 Qualifications preset reference. */
@@ -169,7 +187,9 @@ const EMPLOYEE_SEARCH_VIEWS_2_QUALIFICATIONS_PRESET_KEYS: EmployeeSearchColumnKe
 export function employeeSearchViews2QualificationsPresetLayout(): EmployeeViewLayout {
   const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_QUALIFICATIONS_PRESET_KEYS);
   const base = defaultEmployeeViewLayout();
-  return { ...base, hidden: base.order.filter(key => !visible.has(key)) };
+  const viewOneWidths = EMPLOYEE_VIEW_COLUMN_WIDTHS[1] ?? {};
+  const widths = Object.fromEntries(Object.entries(viewOneWidths).filter(([key]) => visible.has(key as EmployeeSearchColumnKey))) as EmployeeViewLayout["widths"];
+  return { ...base, hidden: base.order.filter(key => !visible.has(key)), widths };
 }
 
 /** Checked columns from the Views 2 Sub Trades preset reference. */
@@ -207,7 +227,18 @@ const EMPLOYEE_SEARCH_VIEWS_2_SUB_TRADES_PRESET_KEYS: EmployeeSearchColumnKey[] 
 export function employeeSearchViews2SubTradesPresetLayout(): EmployeeViewLayout {
   const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_SUB_TRADES_PRESET_KEYS);
   const base = defaultEmployeeViewLayout();
-  return { ...base, hidden: base.order.filter(key => !visible.has(key)) };
+  return { ...base,
+    order: [...EMPLOYEE_SEARCH_VIEWS_2_SUB_TRADES_PRESET_KEYS, ...base.order.filter(key => !visible.has(key))],
+    hidden: base.order.filter(key => !visible.has(key)),
+    widths: {
+      ActionSelect:16,PayrollCoOnSiteInitials_IPG:30,JobApplicationStatus_IPG:37,EmEmployeeStatus:70,
+      EmFirstName:86,EmMiddle:30,EmLastName:86,EmStreet:65,EmCity:100,EmState:60,
+      EmployeeNoCommunicationText:23,EmMobilePhone:96,EmMobilePhoneVerifyText:44,EmGrade:50,
+      EmHowReferred:86,EmTrade:110,EmQualification:94,AvgHrsWorked:51,FirstDateOnJob:79,
+      TotalHoursWorked:65,LicenseExpDateFlag:75,WeekEndingDate:79,EmployeeNotesHistory:51,
+      SubTrade1:104,SubTrade2:104,SubTrade3:104,SubTrade4:104,EmHomePhone:58,
+    },
+  };
 }
 
 /** Checked columns from the Views 2 Age, Lic #, Level preset reference. */
@@ -238,14 +269,19 @@ const EMPLOYEE_SEARCH_VIEWS_2_AGE_LICENSE_LEVEL_PRESET_KEYS: EmployeeSearchColum
   "LicenseAge",
   "LicenseIssueDate",
   "LicenseNumber",
-  "CTLevel",
   "EmHomePhone",
+  "CTLevel",
 ];
 
 export function employeeSearchViews2AgeLicenseLevelPresetLayout(): EmployeeViewLayout {
   const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_AGE_LICENSE_LEVEL_PRESET_KEYS);
   const base = defaultEmployeeViewLayout();
-  return { ...base, hidden: base.order.filter(key => !visible.has(key)) };
+  const sharedWidths = employeeSearchViews2SubTradesPresetLayout().widths;
+  return { ...base,
+    order: [...EMPLOYEE_SEARCH_VIEWS_2_AGE_LICENSE_LEVEL_PRESET_KEYS, ...base.order.filter(key => !visible.has(key))],
+    hidden: base.order.filter(key => !visible.has(key)),
+    widths: {...sharedWidths, LicenseAge:58, LicenseIssueDate:111, LicenseNumber:98, CTLevel:114, EmHomePhone:58},
+  };
 }
 
 /** Checked columns from the Views 2 Car, RTS, RIP preset reference. */
@@ -272,6 +308,7 @@ const EMPLOYEE_SEARCH_VIEWS_2_CAR_RTS_RIP_PRESET_KEYS: EmployeeSearchColumnKey[]
   "TotalHoursWorked",
   "LicenseExpDateFlag",
   "WeekEndingDate",
+  "EmployeeNotesHistory",
   "Car",
   "EmployeeReturnToSender",
   "EmployeeRIP",
@@ -281,7 +318,11 @@ const EMPLOYEE_SEARCH_VIEWS_2_CAR_RTS_RIP_PRESET_KEYS: EmployeeSearchColumnKey[]
 export function employeeSearchViews2CarRtsRipPresetLayout(): EmployeeViewLayout {
   const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_CAR_RTS_RIP_PRESET_KEYS);
   const base = defaultEmployeeViewLayout();
-  return { ...base, hidden: base.order.filter(key => !visible.has(key)) };
+  return { ...base,
+    order: [...EMPLOYEE_SEARCH_VIEWS_2_CAR_RTS_RIP_PRESET_KEYS, ...base.order.filter(key => !visible.has(key))],
+    hidden: base.order.filter(key => !visible.has(key)),
+    widths: {...employeeSearchViews2SubTradesPresetLayout().widths, Car:107, EmployeeReturnToSender:107, EmployeeRIP:107, EmHomePhone:58},
+  };
 }
 
 /** Visible columns from the Views 2 Resume # preset grid reference. */
@@ -315,7 +356,11 @@ const EMPLOYEE_SEARCH_VIEWS_2_RESUME_NUMBER_PRESET_KEYS: EmployeeSearchColumnKey
 export function employeeSearchViews2ResumeNumberPresetLayout(): EmployeeViewLayout {
   const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_RESUME_NUMBER_PRESET_KEYS);
   const base = defaultEmployeeViewLayout();
-  return { ...base, hidden: base.order.filter(key => !visible.has(key)) };
+  return { ...base,
+    order: [...EMPLOYEE_SEARCH_VIEWS_2_RESUME_NUMBER_PRESET_KEYS, ...base.order.filter(key => !visible.has(key))],
+    hidden: base.order.filter(key => !visible.has(key)),
+    widths: {...employeeSearchViews2SubTradesPresetLayout().widths, EmEntryDate:70, ResumeNumber:246},
+  };
 }
 
 const EMPLOYEE_SEARCH_QUALIFICATIONS_PRESET_KEYS: EmployeeSearchColumnKey[] = [
@@ -963,7 +1008,20 @@ const EMPLOYEE_SEARCH_EMERGENCY_NUMBER_PRESET_KEYS: EmployeeSearchColumnKey[] = 
 export function employeeSearchEmergencyNumberPresetLayout(): EmployeeViewLayout {
   const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_EMERGENCY_NUMBER_PRESET_KEYS);
   const base = defaultEmployeeViewLayout();
-  return { ...base, hidden: base.order.filter(key => !visible.has(key)) };
+  const order: EmployeeSearchColumnKey[] = [
+    "ActionSelect", "EmEntryDate", "PayrollCoOnSiteInitials_IPG", "JobApplicationStatus_IPG",
+    "EmFirstName", "EmMiddle", "EmLastName", "EmStreet", "EmployeeNoCommunicationText", "WeekEndingDate",
+    "EmCity", "EmState", "EmMobilePhone", "EmMobilePhoneVerifyText", "EmGrade", "EmHowReferred",
+    "AvgHrsWorked", "FirstDateOnJob", "TotalHoursWorked", "LicenseExpDateFlag", "EmployeeNotesHistory",
+    "EmTrade", "EmQualification", "HasEmergencyContact",
+  ];
+  return {...base, order:[...order,...base.order.filter(key=>!visible.has(key))],
+    hidden:base.order.filter(key=>!visible.has(key)),
+    widths:{...employeeSearchViews2SubTradesPresetLayout().widths,
+      EmEntryDate:79,EmFirstName:86,EmMiddle:30,EmLastName:86,EmStreet:65,EmCity:100,
+      WeekEndingDate:79,EmState:60,HasEmergencyContact:171,
+    },
+  };
 }
 
 const EMPLOYEE_SEARCH_ID_DRIVER_LICENSE_PRESET_KEYS: EmployeeSearchColumnKey[] = [
@@ -995,9 +1053,15 @@ const EMPLOYEE_SEARCH_ID_DRIVER_LICENSE_PRESET_KEYS: EmployeeSearchColumnKey[] =
 ];
 
 export function employeeSearchIdDriverLicensePresetLayout(): EmployeeViewLayout {
-  const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_ID_DRIVER_LICENSE_PRESET_KEYS);
   const base = defaultEmployeeViewLayout();
-  return { ...base, hidden: base.order.filter(key => !visible.has(key)) };
+  const emergency = employeeSearchEmergencyNumberPresetLayout();
+  const order: EmployeeSearchColumnKey[] = emergency.order.filter(key => !emergency.hidden.includes(key) && key !== "HasEmergencyContact");
+  order.push("IDTitleDriversLicense", "IDTitleDriversLicenseOnFile");
+  const visible = new Set<EmployeeSearchColumnKey>(order);
+  return {...base, order:[...order,...base.order.filter(key=>!visible.has(key))],
+    hidden:base.order.filter(key=>!visible.has(key)),
+    widths:{...emergency.widths,IDTitleDriversLicense:137,IDTitleDriversLicenseOnFile:182},
+  };
 }
 
 /** Checked columns from the Views 2 Email / Text preset reference. */
@@ -1033,7 +1097,11 @@ const EMPLOYEE_SEARCH_VIEWS_2_EMAIL_TEXT_PRESET_KEYS: EmployeeSearchColumnKey[] 
 export function employeeSearchViews2EmailTextPresetLayout(): EmployeeViewLayout {
   const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_EMAIL_TEXT_PRESET_KEYS);
   const base = defaultEmployeeViewLayout();
-  return { ...base, hidden: base.order.filter(key => !visible.has(key)) };
+  return {...base,
+    order:[...EMPLOYEE_SEARCH_VIEWS_2_EMAIL_TEXT_PRESET_KEYS,...base.order.filter(key=>!visible.has(key))],
+    hidden:base.order.filter(key=>!visible.has(key)),
+    widths:{...employeeSearchViews2SubTradesPresetLayout().widths,EmEmail:242,TextMsgAddress:177,EmHomePhone:58},
+  };
 }
 
 /** Checked columns from the Views 2 Call History preset references. */
@@ -1060,14 +1128,14 @@ const EMPLOYEE_SEARCH_VIEWS_2_CALL_HISTORY_PRESET_KEYS: EmployeeSearchColumnKey[
   "LicenseExpDateFlag",
   "WeekEndingDate",
   "EmployeeNotesHistory",
-  "CallNumberHistory",
   "CallNumberIDUserName",
   "CallNumberIDDate",
   "CallNumber",
   "LastCallNote",
+  "CallNumberHistory",
   "NumActionsCustomText",
-  "EmHomePhone",
   "NumActionsCustomPostcard",
+  "EmHomePhone",
   "LastCallUserName",
   "LastCallDate",
   "InterviewNumber",
@@ -1076,7 +1144,15 @@ const EMPLOYEE_SEARCH_VIEWS_2_CALL_HISTORY_PRESET_KEYS: EmployeeSearchColumnKey[
 export function employeeSearchViews2CallHistoryPresetLayout(): EmployeeViewLayout {
   const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_CALL_HISTORY_PRESET_KEYS);
   const base = defaultEmployeeViewLayout();
-  return { ...base, hidden: base.order.filter(key => !visible.has(key)) };
+  return {...base,
+    order:[...EMPLOYEE_SEARCH_VIEWS_2_CALL_HISTORY_PRESET_KEYS,...base.order.filter(key=>!visible.has(key))],
+    hidden:base.order.filter(key=>!visible.has(key)),
+    widths:{...employeeSearchViews2SubTradesPresetLayout().widths,
+      CallNumberIDUserName:37,CallNumberIDDate:79,CallNumber:58,LastCallNote:128,CallNumberHistory:31,
+      NumActionsCustomText:51,NumActionsCustomPostcard:51,EmHomePhone:58,
+      LastCallUserName:82,LastCallDate:96,InterviewNumber:223,
+    },
+  };
 }
 
 /** Checked columns from the Views 2 Future Call preset references. */
@@ -1103,6 +1179,10 @@ const EMPLOYEE_SEARCH_VIEWS_2_FUTURE_CALL_PRESET_KEYS: EmployeeSearchColumnKey[]
   "TotalHoursWorked",
   "LicenseExpDateFlag",
   "WeekEndingDate",
+  "EmployeeNotesHistory",
+  "EmployeeFutureCallUserName",
+  "EmployeeFutureCallUserDate",
+  "EmHomePhone",
   "EmployeeFutureCall",
   "NumActionsCustomText",
   "NumActionsCustomPostcard",
@@ -1111,7 +1191,14 @@ const EMPLOYEE_SEARCH_VIEWS_2_FUTURE_CALL_PRESET_KEYS: EmployeeSearchColumnKey[]
 export function employeeSearchViews2FutureCallPresetLayout(): EmployeeViewLayout {
   const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_FUTURE_CALL_PRESET_KEYS);
   const base = defaultEmployeeViewLayout();
-  return { ...base, hidden: base.order.filter(key => !visible.has(key)) };
+  return {...base,
+    order:[...EMPLOYEE_SEARCH_VIEWS_2_FUTURE_CALL_PRESET_KEYS,...base.order.filter(key=>!visible.has(key))],
+    hidden:base.order.filter(key=>!visible.has(key)),
+    widths:{...employeeSearchViews2SubTradesPresetLayout().widths,
+      EmployeeFutureCallUserName:65,EmployeeFutureCallUserDate:100,EmHomePhone:58,EmployeeFutureCall:100,
+      NumActionsCustomText:51,NumActionsCustomPostcard:57,
+    },
+  };
 }
 
 /** Checked columns from the Views 2 Customer / Job Info preset references. */
@@ -1149,7 +1236,13 @@ const EMPLOYEE_SEARCH_VIEWS_2_CUSTOMER_JOB_INFO_PRESET_KEYS: EmployeeSearchColum
 export function employeeSearchViews2CustomerJobInfoPresetLayout(): EmployeeViewLayout {
   const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_CUSTOMER_JOB_INFO_PRESET_KEYS);
   const base = defaultEmployeeViewLayout();
-  return { ...base, hidden: base.order.filter(key => !visible.has(key)) };
+  return {...base,
+    order:[...EMPLOYEE_SEARCH_VIEWS_2_CUSTOMER_JOB_INFO_PRESET_KEYS,...base.order.filter(key=>!visible.has(key))],
+    hidden:base.order.filter(key=>!visible.has(key)),
+    widths:{...employeeSearchViews2SubTradesPresetLayout().widths,
+      WeeksAway:87,CustomerBusName:137,SiteName:100,SiteState:76,EmHomePhone:58,
+    },
+  };
 }
 
 /** Checked columns from the Views 2 Time Sheet Req preset references. */
@@ -1187,7 +1280,14 @@ const EMPLOYEE_SEARCH_VIEWS_2_TIMESHEET_REQUEST_PRESET_KEYS: EmployeeSearchColum
 export function employeeSearchViews2TimesheetRequestPresetLayout(): EmployeeViewLayout {
   const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_TIMESHEET_REQUEST_PRESET_KEYS);
   const base = defaultEmployeeViewLayout();
-  return { ...base, hidden: base.order.filter(key => !visible.has(key)) };
+  return {...base,
+    order:[...EMPLOYEE_SEARCH_VIEWS_2_TIMESHEET_REQUEST_PRESET_KEYS,...base.order.filter(key=>!visible.has(key))],
+    hidden:base.order.filter(key=>!visible.has(key)),
+    widths:{...employeeSearchViews2SubTradesPresetLayout().widths,
+      EmHomePhone:58,EmployeeTimesheetRequestText:63,EmployeeTimesheetRequestUserName:87,
+      EmployeeTimesheetRequestDate:92,EmployeeTimesheetRequestHistory:116,
+    },
+  };
 }
 
 /** Checked columns from the Views 2 Available Man preset references. */
@@ -1200,7 +1300,6 @@ const EMPLOYEE_SEARCH_VIEWS_2_AVAILABLE_MAN_PRESET_KEYS: EmployeeSearchColumnKey
   "JobApplicationStatusIDUserName_IPG",
   "JobApplicationStatusIDDate_IPG",
   "EmFirstName",
-  "EmMiddle",
   "EmLastName",
   "EmCity",
   "EmState",
@@ -1216,10 +1315,11 @@ const EMPLOYEE_SEARCH_VIEWS_2_AVAILABLE_MAN_PRESET_KEYS: EmployeeSearchColumnKey
   "EmployeeContactHistoryUserName",
   "EmployeeContactHistoryDate",
   "EmployeeContactHistoryActionType",
+  "EmployeeContactHistoryNote",
   "CallNumberHistory",
   "CallNumberIDUserName",
-  "CallNumberIDDate",
   "CallNumber",
+  "CallNumberIDDate",
   "LastCallNote",
   "PostEmployeeAsAvailableUserName",
   "EmployeeUserFlag1",
@@ -1232,7 +1332,20 @@ const EMPLOYEE_SEARCH_VIEWS_2_AVAILABLE_MAN_PRESET_KEYS: EmployeeSearchColumnKey
 export function employeeSearchViews2AvailableManPresetLayout(): EmployeeViewLayout {
   const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_AVAILABLE_MAN_PRESET_KEYS);
   const base = defaultEmployeeViewLayout();
-  return { ...base, hidden: base.order.filter(key => !visible.has(key)) };
+  return {...base,
+    order:[...EMPLOYEE_SEARCH_VIEWS_2_AVAILABLE_MAN_PRESET_KEYS,...base.order.filter(key=>!visible.has(key))],
+    hidden:base.order.filter(key=>!visible.has(key)),
+    widths:{ActionSelect:16,EmEntryUserName:37,EmEntryDate:79,PayrollCoOnSiteInitials_IPG:30,
+      JobApplicationStatus_IPG:36,JobApplicationStatusIDUserName_IPG:37,JobApplicationStatusIDDate_IPG:79,
+      EmFirstName:72,EmLastName:72,EmCity:84,EmState:42,EmployeeNoCommunicationText:23,
+      EmMobilePhone:98,EmMobilePhoneVerifyText:24,EmGrade:38,EmHowReferred:65,EmTrade:65,EmQualification:80,
+      WeekEndingDate:79,EmployeeNotesHistory:51,EmployeeContactHistoryUserName:37,EmployeeContactHistoryDate:79,
+      EmployeeContactHistoryActionType:79,EmployeeContactHistoryNote:36,CallNumberHistory:37,
+      CallNumberIDUserName:37,CallNumber:44,CallNumberIDDate:79,LastCallNote:79,
+      PostEmployeeAsAvailableUserName:115,EmployeeUserFlag1:95,PostEmployeeAsAvailableDate:79,
+      PostEmployeeAsAvailableText:44,PostEmployeeAsAvailableNotesHistory:37,EmHomePhone:58,
+    },
+  };
 }
 
 /** Checked columns from the Views 2 UI preset references. */
@@ -1270,99 +1383,71 @@ const EMPLOYEE_SEARCH_VIEWS_2_UI_PRESET_KEYS: EmployeeSearchColumnKey[] = [
 export function employeeSearchViews2UiPresetLayout(): EmployeeViewLayout {
   const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_UI_PRESET_KEYS);
   const base = defaultEmployeeViewLayout();
-  return { ...base, hidden: base.order.filter(key => !visible.has(key)) };
+  return {...base,
+    order:[...EMPLOYEE_SEARCH_VIEWS_2_UI_PRESET_KEYS,...base.order.filter(key=>!visible.has(key))],
+    hidden:base.order.filter(key=>!visible.has(key)),
+    widths:{...employeeSearchViews2SubTradesPresetLayout().widths,
+      EmployeeOnUnemploymentUserName:107,EmployeeOnUnemploymentDate:107,EmployeeOnUnemploymentText:91,
+      EmployeeOnUnemploymentNotesHistory:88,EmHomePhone:58,
+    },
+  };
 }
 
 /** Checked columns from the Views 2 EE SEARCH preset references. */
 const EMPLOYEE_SEARCH_VIEWS_2_EE_SEARCH_PRESET_KEYS: EmployeeSearchColumnKey[] = [
-  "ActionSelect",
-  "EmEntryUserName",
-  "EmEntryDate",
-  "PayrollCoOnSiteInitials_IPG",
-  "JobApplicationStatus_IPG",
-  "EmFirstName",
-  "EmLastName",
-  "EmployeeNoCommunicationText",
-  "EmMobilePhone",
-  "EmCity",
-  "EmState",
-  "EmTrade",
-  "FirstDateOnJob",
-  "WeekEndingDate",
-  "S1",
-  "EmployeeProfileType",
-  "CallNumberIDUserName",
-  "CallNumberIDDate",
-  "CallNumber",
-  "JobAppAuditNotes",
-  "InterviewNumber",
-  "EmployeeUserFlag7",
+  "ActionSelect","EmEntryUserName","EmEntryDate","PayrollCoOnSiteInitials_IPG","JobApplicationStatus_IPG",
+  "S1","EmployeeProfileType","EmFirstName","EmLastName","EmployeeNoCommunicationText","EmMobilePhone",
+  "EmCity","EmState","EmTrade","FirstDateOnJob","WeekEndingDate","CallNumberIDUserName","CallNumberIDDate",
+  "CallNumber","TotalHoursWorked","AvgHrsWorked","ResumeNumber","InterviewedBy","JobAppAuditNotes",
+  "InterviewNumber","EmployeeUserFlag7",
 ];
 
 export function employeeSearchViews2EeSearchPresetLayout(): EmployeeViewLayout {
   const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_EE_SEARCH_PRESET_KEYS);
   const base = defaultEmployeeViewLayout();
-  return { ...base, hidden: base.order.filter(key => !visible.has(key)) };
+  return {...base,
+    order:[...EMPLOYEE_SEARCH_VIEWS_2_EE_SEARCH_PRESET_KEYS,...base.order.filter(key=>!visible.has(key))],
+    hidden:base.order.filter(key=>!visible.has(key)),
+    widths:{ActionSelect:23,EmEntryUserName:37,EmEntryDate:79,PayrollCoOnSiteInitials_IPG:37,JobApplicationStatus_IPG:58,
+      S1:48,EmployeeProfileType:47,EmFirstName:58,EmLastName:58,EmployeeNoCommunicationText:27,EmMobilePhone:107,
+      EmCity:79,EmState:48,EmTrade:73,FirstDateOnJob:79,WeekEndingDate:79,CallNumberIDUserName:37,CallNumberIDDate:79,
+      CallNumber:177,TotalHoursWorked:65,AvgHrsWorked:65,ResumeNumber:113,InterviewedBy:79,JobAppAuditNotes:103,
+      InterviewNumber:127,EmployeeUserFlag7:191,
+    },
+  };
 }
 
 /** Visible columns and order from the Views 2 View 40 grid reference. */
 const EMPLOYEE_SEARCH_VIEWS_2_VIEW_40_KEYS: EmployeeSearchColumnKey[] = [
-  "ActionSelect",
-  "EmEntryUserName",
-  "EmEntryDate",
-  "PayrollCoOnSiteInitials_IPG",
-  "JobApplicationStatus_IPG",
-  "JobApplicationStatusIDUserName_IPG",
-  "JobApplicationStatusIDDate_IPG",
-  "WhereEmployeeFound",
-  "EmEmployeeStatus",
-  "EmFirstName",
-  "EmLastName",
-  "EmCity",
-  "EmState",
-  "EmployeeNoCommunicationText",
-  "EmMobilePhone",
-  "EmMobilePhoneVerifyText",
-  "EmGrade",
-  "EmHowReferred",
-  "EmTrade",
-  "EmQualification",
-  "WeekEndingDate",
-  "EmployeeNotesHistory",
-  "EmployeeContactHistoryUserName",
-  "EmployeeContactHistoryDate",
-  "EmployeeContactHistoryActionType",
-  "EmployeeContactHistoryNote",
-  "EmployeeDuplicate",
-  "Car",
-  "CallNumberHistory",
-  "CallNumberIDUserName",
-  "CallNumber",
-  "CallNumberIDDate",
-  "CallNumberIDTime",
-  "LastCallUserName",
-  "LastCallDate",
-  "LastCallNote",
-  "EmployeeFutureCallUserDate",
-  "EmployeeFutureCallUserName",
-  "EmployeeFutureCall",
+  "ActionSelect","EmEntryUserName","EmEntryDate","PayrollCoOnSiteInitials_IPG","JobApplicationStatus_IPG",
+  "WhereEmployeeFound","EmEmployeeStatus","EmFirstName","EmLastName","EmCity","EmState",
+  "EmployeeNoCommunicationText","EmMobilePhone","EmMobilePhoneVerifyText","EmGrade","EmHowReferred",
+  "EmTrade","EmQualification","WeekEndingDate","EmployeeNotesHistory","EmployeeContactHistoryUserName",
+  "EmployeeContactHistoryDate","EmployeeContactHistoryActionType","EmployeeContactHistoryNote",
+  "CallNumberHistory","CallNumberIDUserName","CallNumber","CallNumberIDDate","LastCallNote",
+  "EmployeeFutureCallUserDate","EmployeeFutureCallUserName","EmployeeFutureCall",
 ];
 
 export function employeeSearchViews2View40PresetLayout(): EmployeeViewLayout {
   const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_VIEW_40_KEYS);
   const base = defaultEmployeeViewLayout();
-  return {
-    ...base,
-    order: [...EMPLOYEE_SEARCH_VIEWS_2_VIEW_40_KEYS, ...base.order.filter(key => !visible.has(key))],
-    hidden: base.order.filter(key => !visible.has(key)),
+  return {...base,
+    order:[...EMPLOYEE_SEARCH_VIEWS_2_VIEW_40_KEYS,...base.order.filter(key=>!visible.has(key))],
+    hidden:base.order.filter(key=>!visible.has(key)),
+    widths:{ActionSelect:16,EmEntryUserName:37,EmEntryDate:79,PayrollCoOnSiteInitials_IPG:30,JobApplicationStatus_IPG:54,
+      WhereEmployeeFound:79,EmEmployeeStatus:70,EmFirstName:72,EmLastName:72,EmCity:84,EmState:38,
+      EmployeeNoCommunicationText:23,EmMobilePhone:98,EmMobilePhoneVerifyText:24,EmGrade:38,EmHowReferred:65,
+      EmTrade:65,EmQualification:79,WeekEndingDate:79,EmployeeNotesHistory:31,
+      EmployeeContactHistoryUserName:37,EmployeeContactHistoryDate:79,EmployeeContactHistoryActionType:51,
+      EmployeeContactHistoryNote:37,CallNumberHistory:30,CallNumberIDUserName:37,CallNumber:44,CallNumberIDDate:79,
+      LastCallNote:51,EmployeeFutureCallUserDate:37,EmployeeFutureCallUserName:79,EmployeeFutureCall:79,
+    },
   };
 }
 
 /** Visible columns from the Views 2 View 45 grid references. */
 const EMPLOYEE_SEARCH_VIEWS_2_VIEW_45_KEYS: EmployeeSearchColumnKey[] = [
   "ActionSelect",
-  "EmEntryUserName",
-  "EmEntryDate",
   "PayrollCoOnSiteInitials_IPG",
   "JobApplicationStatus_IPG",
   "EmEmployeeStatus",
@@ -1404,81 +1489,23 @@ export function employeeSearchViews2View45PresetLayout(): EmployeeViewLayout {
     ...base,
     order: [...EMPLOYEE_SEARCH_VIEWS_2_VIEW_45_KEYS, ...base.order.filter(key => !visible.has(key))],
     hidden: base.order.filter(key => !visible.has(key)),
+    widths: {...employeeSearchViews2CallHistoryPresetLayout().widths, Car:37},
   };
 }
 
-/** Visible columns and order from the Views 2 View 46 grid reference. */
-const EMPLOYEE_SEARCH_VIEWS_2_VIEW_46_KEYS: EmployeeSearchColumnKey[] = [
-  "AvgHrsWorked",
-  "FirstDateOnJob",
-  "TotalHoursWorked",
-  "LicenseExpDateFlag",
-  "WeekEndingDate",
-  "EmployeeNotesHistory",
-  "EmployeeFutureCallUserName",
-  "EmployeeFutureCallUserDate",
-  "EmHomePhone",
-  "EmployeeFutureCall",
-  "NumActionsCustomText",
-  "NumActionsCustomPostcard",
-];
-
+/** View 46 shares the complete Future Call reference layout. */
 export function employeeSearchViews2View46PresetLayout(): EmployeeViewLayout {
-  const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_VIEW_46_KEYS);
-  const base = defaultEmployeeViewLayout();
-  return {
-    ...base,
-    order: [...EMPLOYEE_SEARCH_VIEWS_2_VIEW_46_KEYS, ...base.order.filter(key => !visible.has(key))],
-    hidden: base.order.filter(key => !visible.has(key)),
-  };
+  return employeeSearchViews2FutureCallPresetLayout();
 }
 
-/** Visible columns and order from the Views 2 View 47 grid reference. */
-const EMPLOYEE_SEARCH_VIEWS_2_VIEW_47_KEYS: EmployeeSearchColumnKey[] = [
-  "FirstDateOnJob",
-  "TotalHoursWorked",
-  "LicenseExpDateFlag",
-  "WeekEndingDate",
-  "EmployeeNotesHistory",
-  "WeeksAway",
-  "CustomerBusName",
-  "SiteName",
-  "SiteState",
-  "EmHomePhone",
-];
-
+/** View 47 shares the complete Customer / Job Info reference layout. */
 export function employeeSearchViews2View47PresetLayout(): EmployeeViewLayout {
-  const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_VIEW_47_KEYS);
-  const base = defaultEmployeeViewLayout();
-  return {
-    ...base,
-    order: [...EMPLOYEE_SEARCH_VIEWS_2_VIEW_47_KEYS, ...base.order.filter(key => !visible.has(key))],
-    hidden: base.order.filter(key => !visible.has(key)),
-  };
+  return employeeSearchViews2CustomerJobInfoPresetLayout();
 }
 
-/** Visible columns and order from the Views 2 View 48 grid reference. */
-const EMPLOYEE_SEARCH_VIEWS_2_VIEW_48_KEYS: EmployeeSearchColumnKey[] = [
-  "FirstDateOnJob",
-  "TotalHoursWorked",
-  "LicenseExpDateFlag",
-  "WeekEndingDate",
-  "EmployeeNotesHistory",
-  "EmHomePhone",
-  "EmployeeTimesheetRequestText",
-  "EmployeeTimesheetRequestUserName",
-  "EmployeeTimesheetRequestDate",
-  "EmployeeTimesheetRequestHistory",
-];
-
+/** View 48 shares the complete Time Sheet Req reference layout. */
 export function employeeSearchViews2View48PresetLayout(): EmployeeViewLayout {
-  const visible = new Set<EmployeeSearchColumnKey>(EMPLOYEE_SEARCH_VIEWS_2_VIEW_48_KEYS);
-  const base = defaultEmployeeViewLayout();
-  return {
-    ...base,
-    order: [...EMPLOYEE_SEARCH_VIEWS_2_VIEW_48_KEYS, ...base.order.filter(key => !visible.has(key))],
-    hidden: base.order.filter(key => !visible.has(key)),
-  };
+  return employeeSearchViews2TimesheetRequestPresetLayout();
 }
 
 /** Visible columns and order from the Views 2 View 49 grid reference. */
@@ -1515,12 +1542,13 @@ export function employeeSearchViews2View49PresetLayout(): EmployeeViewLayout {
     ...base,
     order: [...EMPLOYEE_SEARCH_VIEWS_2_VIEW_49_KEYS, ...base.order.filter(key => !visible.has(key))],
     hidden: base.order.filter(key => !visible.has(key)),
+    widths: {...employeeSearchViews2SubTradesPresetLayout().widths},
   };
 }
 
 /** Blank grid from the Views 2 View 50 reference: only empty spacer columns show. */
 const EMPLOYEE_SEARCH_VIEWS_2_VIEW_50_KEYS: EmployeeSearchColumnKey[] = [
-  "Spare1", "Spare2", "Spare3", "Spare4", "Spare5", "Spare6", "Spare7",
+  "Spare1",
 ];
 
 export function employeeSearchViews2View50PresetLayout(): EmployeeViewLayout {
@@ -1530,7 +1558,7 @@ export function employeeSearchViews2View50PresetLayout(): EmployeeViewLayout {
     ...base,
     order: [...EMPLOYEE_SEARCH_VIEWS_2_VIEW_50_KEYS, ...base.order.filter(key => !visible.has(key))],
     hidden: base.order.filter(key => !visible.has(key)),
-    widths: { ...base.widths, ...Object.fromEntries(EMPLOYEE_SEARCH_VIEWS_2_VIEW_50_KEYS.map(key => [key, 96])) },
+    widths: { ...base.widths, ...Object.fromEntries(EMPLOYEE_SEARCH_VIEWS_2_VIEW_50_KEYS.map(key => [key, 23])) },
   };
 }
 
@@ -1568,6 +1596,20 @@ export function employeeSearchViews2View55PresetLayout(): EmployeeViewLayout {
     ...base,
     order: [...EMPLOYEE_SEARCH_VIEWS_2_VIEW_55_KEYS, ...base.order.filter(key => !visible.has(key))],
     hidden: base.order.filter(key => !visible.has(key)),
+    widths:{ActionSelect:23,EmEntryUserName:37,EmEntryDate:79,PayrollCoOnSiteInitials_IPG:37,JobApplicationStatus_IPG:58,
+      EmployeeProfileType:63,EmFirstName:58,EmMiddle:42,EmLastName:58,EmTrade:96,WeekEndingDate:79,Car:37,
+      CallNumberIDDate:79,CallNumber:191,InterviewedByDate:102,JobAppAuditNotes:171,ResumeNumber:113,
+      InterviewNumberID:43,InterviewedByIDUserName:37,InterviewedBy:79,InterviewedByLocation:81,
+      InterviewNumber:170,EmployeeUserFlag7:120,
+    },
+  };
+}
+
+/** View 57 interview layout, without the interview date column. */
+export function employeeSearchViews2View57PresetLayout(): EmployeeViewLayout {
+  const base = employeeSearchViews2View55PresetLayout();
+  return {...base, hidden:[...base.hidden,"InterviewedByDate"],
+    widths:{...base.widths,CallNumber:211,JobAppAuditNotes:241},
   };
 }
 
@@ -1609,6 +1651,9 @@ export function employeeSearchViews2View56PresetLayout(): EmployeeViewLayout {
     ...base,
     order: [...EMPLOYEE_SEARCH_VIEWS_2_VIEW_56_KEYS, ...base.order.filter(key => !visible.has(key))],
     hidden: base.order.filter(key => !visible.has(key)),
+    widths:{...employeeSearchViews2SubTradesPresetLayout().widths,
+      EmExperience:97,YearsInTrade:114,EmLicensedIn:175,OSHA10Status:58,InterviewNumber:170,
+    },
   };
 }
 
@@ -1622,8 +1667,8 @@ const EMPLOYEE_SEARCH_VIEWS_2_VIEW_58_KEYS: EmployeeSearchColumnKey[] = [
   "S1",
   "EmployeeProfileType",
   "EmFirstName",
-  "EmMiddle",
   "EmLastName",
+  "EmployeeNoCommunicationText",
   "EmMobilePhone",
   "EmCity",
   "EmState",
@@ -1649,14 +1694,13 @@ export function employeeSearchViews2View58PresetLayout(): EmployeeViewLayout {
     ...base,
     order: [...EMPLOYEE_SEARCH_VIEWS_2_VIEW_58_KEYS, ...base.order.filter(key => !visible.has(key))],
     hidden: base.order.filter(key => !visible.has(key)),
+    widths:{...employeeSearchViews2EeSearchPresetLayout().widths,Car:37,InterviewedByDate:79},
   };
 }
 
 /** Visible columns and order from the Views 2 View 59 grid references. */
 const EMPLOYEE_SEARCH_VIEWS_2_VIEW_59_KEYS: EmployeeSearchColumnKey[] = [
   "ActionSelect",
-  "EmEntryUserName",
-  "EmEntryDate",
   "PayrollCoOnSiteInitials_IPG",
   "JobApplicationStatus_IPG",
   "EmEmployeeStatus",
@@ -1673,7 +1717,6 @@ const EMPLOYEE_SEARCH_VIEWS_2_VIEW_59_KEYS: EmployeeSearchColumnKey[] = [
   "EmHowReferred",
   "EmTrade",
   "EmQualification",
-  "AvgHrsWorked",
   "FirstDateOnJob",
   "TotalHoursWorked",
   "LicenseExpDateFlag",
@@ -1693,12 +1736,10 @@ const EMPLOYEE_SEARCH_VIEWS_2_VIEW_59_KEYS: EmployeeSearchColumnKey[] = [
   "LicenseIssueDate",
   "LicenseIssueDateYear",
   "LicenseNumber",
-  "LicenseIssueDateUserName",
   "EmployeeContactHistoryUserName",
   "EmployeeContactHistoryDate",
   "EmployeeContactHistoryActionType",
   "LastCallUserName",
-  "LastCallDate",
   "CallNumberIDDate",
   "CallNumber",
   "LastCallNote",
@@ -1720,6 +1761,16 @@ export function employeeSearchViews2View59PresetLayout(): EmployeeViewLayout {
     ...base,
     order: [...EMPLOYEE_SEARCH_VIEWS_2_VIEW_59_KEYS, ...base.order.filter(key => !visible.has(key))],
     hidden: base.order.filter(key => !visible.has(key)),
+    widths:{...employeeSearchViews2SubTradesPresetLayout().widths,
+      EmExperience:97,YearsInTrade:115,Car:50,OSHA10Status:57,EmReferredBy:105,Spare10:40,
+      NumActionsCustomPostcard:73,NumActionsCustomText:55,EmployeeReturnToSender:72,EmployeeRIP:101,
+      LicenseAge:70,LicenseIssueDate:111,LicenseIssueDateYear:109,LicenseNumber:79,
+      EmployeeContactHistoryUserName:44,EmployeeContactHistoryDate:79,EmployeeContactHistoryActionType:163,
+      LastCallUserName:44,CallNumberIDDate:79,CallNumber:61,LastCallNote:163,CallNumberHistory:59,
+      EmployeeFutureCallUserDate:37,EmployeeFutureCallUserName:79,EmployeeFutureCall:92,
+      PostEmployeeAsAvailableUserName:44,PostEmployeeAsAvailableDate:79,PostEmployeeAsAvailableText:85,
+      PostEmployeeAsAvailableNotesHistory:65,InterviewNumber:126,
+    },
   };
 }
 
@@ -1737,6 +1788,7 @@ const EMPLOYEE_SEARCH_VIEWS_2_VIEW_60_KEYS: EmployeeSearchColumnKey[] = [
   "EmTrade",
   "WeekEndingDate",
   "EmployeeNoCommunicationText",
+  "CountOfCellNumbers",
   "EmMobilePhone",
   "EmployeeNoCommUserName",
   "EmployeeNoCommDate",
@@ -1765,6 +1817,15 @@ export function employeeSearchViews2View60PresetLayout(): EmployeeViewLayout {
     ...base,
     order: [...EMPLOYEE_SEARCH_VIEWS_2_VIEW_60_KEYS, ...base.order.filter(key => !visible.has(key))],
     hidden: base.order.filter(key => !visible.has(key)),
+    widths:{ActionSelect:23,EmEntryUserName:37,EmEntryDate:79,PayrollCoOnSiteInitials_IPG:34,JobApplicationStatus_IPG:58,
+      EmFirstName:96,EmLastName:92,EmCity:94,EmState:38,EmTrade:65,WeekEndingDate:79,
+      EmployeeNoCommunicationText:23,CountOfCellNumbers:30,EmMobilePhone:100,EmMobilePhone2:100,EmMobilePhone3:100,EmMobilePhone4:100,
+      EmployeeNoCommUserName:30,EmployeeNoCommDate:37,EmployeeNoCommText:79,
+      EmployeeNoCommUserName2:30,EmployeeNoCommDate2:37,EmployeeNoComm2Text:79,
+      EmployeeNoCommUserName3:30,EmployeeNoCommDate3:37,EmployeeNoComm3Text:79,
+      EmployeeNoCommUserName4:30,EmployeeNoCommDate4:37,EmployeeNoComm4Text:79,
+      NumActionsCustomText:58,NumActionsCustomPostcard:59,InterviewNumber:126,
+    },
   };
 }
 
@@ -2340,7 +2401,7 @@ export function employeeSearchPresetLayoutForSlot(slot: number, name: string): E
   if (slot === 53) return employeeSearchViews2View50PresetLayout();
   if (slot === 55) return employeeSearchViews2View55PresetLayout();
   if (slot === 56) return employeeSearchViews2View56PresetLayout();
-  if (slot === 57) return employeeSearchViews2View55PresetLayout();
+  if (slot === 57) return employeeSearchViews2View57PresetLayout();
   if (slot === 58) return employeeSearchViews2View58PresetLayout();
   if (slot === 59) return employeeSearchViews2View59PresetLayout();
   if (slot === 60) return employeeSearchViews2View60PresetLayout();
@@ -2385,3 +2446,6 @@ export function normalizeEmployeeSavedView(value: unknown): EmployeeSavedView {
     layout: raw.layout && typeof raw.layout === "object" ? raw.layout : defaultEmployeeViewLayout(),
   });
 }
+
+
+

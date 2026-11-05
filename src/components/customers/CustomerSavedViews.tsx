@@ -1,6 +1,6 @@
 "use client";
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
-import { blastEmailPresetLayout, callListTemplatePresetLayout, coldDormantCallPresetLayout, customerInfoPresetLayout, customerSavedViewSchema, defaultCustomerPresetLayout, defaultCustomerViewLayout, emailMailerPresetLayout, isBlankGridCustomerViewSlot, kickbacksPresetLayout, normalizeCustomerSavedView, profileTypePresetLayout, ryanEamonBrianPresetLayout, rtsPresetLayout, salesPackagesPresetLayout, selectProfilePresetLayout, siobhanOnePresetLayout, siobhanTwoPresetLayout, siobhanTwoScreensPresetLayout, siteOfficeVisitPresetLayout, testOneScreenPresetLayout, testTwoScreenPresetLayout, viewEightPresetLayout, viewThirteenPresetLayout, viewFourteenPresetLayout, viewFifteenPresetLayout, viewSixteenPresetLayout, viewNineteenPresetLayout, viewThirtyOnePresetLayout, viewThirtyTwoPresetLayout, type CustomerSavedView, type CustomerViewLayout } from "@/lib/customerSavedViews";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
+import { viewThreePresetLayout, callListTemplatePresetLayout, coldDormantCallPresetLayout, customerInfoPresetLayout, customerSavedViewSchema, defaultCustomerPresetLayout, defaultCustomerViewLayout, emailMailerPresetLayout, isBlankGridCustomerViewSlot, kickbacksPresetLayout, normalizeCustomerSavedView, profileTypePresetLayout, ryanEamonBrianPresetLayout, rtsPresetLayout, salesPackagesPresetLayout, selectProfilePresetLayout, siobhanOnePresetLayout, siobhanTwoPresetLayout, siobhanTwoScreensPresetLayout, siteOfficeVisitPresetLayout, testOneScreenPresetLayout, testTwoScreenPresetLayout, viewEightPresetLayout, viewThirteenPresetLayout, viewFourteenPresetLayout, viewFifteenPresetLayout, viewSixteenPresetLayout, viewNineteenPresetLayout, viewThirtyOnePresetLayout, viewThirtyTwoPresetLayout, viewThirtyThreePresetLayout, type CustomerSavedView, type CustomerViewLayout } from "@/lib/customerSavedViews";
 import { CUSTOMER_SEARCH_PRESET_GRID } from "@/lib/customerSearchColumns";
 import { CUSTOMER_SEARCH_VIEWS_2_GRID } from "@/lib/customerSearchViewsLayout";
 function originalName(slot:number) {
@@ -37,7 +37,26 @@ export function CustomerSavedViewsProvider({children}:{children:ReactNode}) {
     if(!widthsReady)return;
     try { localStorage.setItem("customer-search-shared-widths",JSON.stringify(sharedWidths)); } catch { /* Session widths still work. */ }
   },[sharedWidths,widthsReady]);
-  const effectiveLayout={...layout,widths:slot === 1 ? {...defaultCustomerPresetLayout().widths,...layout.widths} : {...layout.widths,...sharedWidths}};
+  // Widths for columns in views that have not received their own reference yet.
+  // Default takes precedence for shared columns; other reviewed views supply
+  // widths for specialized columns absent from Default.
+  const remainingViewWidths=useMemo(()=>({
+    ...callListTemplatePresetLayout().widths,
+    ...testTwoScreenPresetLayout().widths,
+    ...siobhanTwoScreensPresetLayout().widths,
+    ...salesPackagesPresetLayout().widths,
+    ...profileTypePresetLayout().widths,
+    ...ryanEamonBrianPresetLayout().widths,
+    ...siobhanTwoPresetLayout().widths,
+    ...siobhanOnePresetLayout().widths,
+    ...siteOfficeVisitPresetLayout().widths,
+    ...coldDormantCallPresetLayout().widths,
+    ...emailMailerPresetLayout().widths,
+    ...kickbacksPresetLayout().widths,
+    ...customerInfoPresetLayout().widths,
+    ...defaultCustomerPresetLayout().widths,
+  }),[]);
+  const effectiveLayout=useMemo(()=>({...layout,...(slot===28 ? {order:callListTemplatePresetLayout().order,hidden:callListTemplatePresetLayout().hidden} : {}),widths:slot === 1 || slot === 2 || slot === 3 || slot === 4 || slot === 5 || slot === 6 || slot === 7 || slot === 9 || slot === 10 || slot === 11 || slot === 12 || slot === 17 || slot === 18 || slot === 25 || slot === 26 || slot === 27 || slot === 28 || slot === 23 || slot === 24 || slot === 13 || slot === 14 || slot === 15 || slot === 16 || slot === 31 || slot === 32 || (slot >= 33 && slot <= 64) ? {...(slot === 1 ? defaultCustomerPresetLayout() : slot === 2 ? customerInfoPresetLayout() : slot === 5 ? siteOfficeVisitPresetLayout() : slot === 6 ? coldDormantCallPresetLayout() : slot === 7 ? emailMailerPresetLayout() : slot === 9 ? ryanEamonBrianPresetLayout() : slot === 10 ? siobhanOnePresetLayout() : slot === 11 ? profileTypePresetLayout() : slot === 12 ? kickbacksPresetLayout() : slot === 17 ? selectProfilePresetLayout() : slot === 18 ? siobhanTwoPresetLayout() : slot === 25 ? rtsPresetLayout() : slot === 26 ? siobhanTwoScreensPresetLayout() : slot === 27 ? salesPackagesPresetLayout() : slot === 28 ? callListTemplatePresetLayout() : slot === 23 ? testOneScreenPresetLayout() : slot === 24 ? testTwoScreenPresetLayout() : slot === 13 ? viewThirteenPresetLayout() : slot === 14 ? viewFourteenPresetLayout() : slot === 15 ? viewFifteenPresetLayout() : slot === 16 ? viewSixteenPresetLayout() : slot === 31 ? viewThirtyOnePresetLayout() : slot === 32 ? viewThirtyTwoPresetLayout() : slot >= 33 && slot <= 64 ? viewThirtyThreePresetLayout() : viewThreePresetLayout()).widths,...layout.widths,...(slot===28 ? callListTemplatePresetLayout().widths : {})} : {...layout.widths,...sharedWidths,...remainingViewWidths},...(isBlankGridCustomerViewSlot(slot) ? {order:viewEightPresetLayout().order,hidden:viewEightPresetLayout().hidden,widths:{select:23}} : {})}),[layout,slot,sharedWidths,remainingViewWidths]);
   const [ready,setReady]=useState(false),[busy,setBusy]=useState(false),[message,setMessage]=useState("");
   const [loadFailed,setLoadFailed]=useState(false),[loadAttempt,setLoadAttempt]=useState(0);
   const [name,setName]=useState(""),[error,setError]=useState(""),[dialogMode,setDialogMode]=useState<"save"|"rename">("save");
@@ -59,8 +78,19 @@ export function CustomerSavedViewsProvider({children}:{children:ReactNode}) {
     return ()=>{active=false;};
   },[loadAttempt]);
   const retryLoad=()=>{setMessage("");setLoadFailed(false);setReady(false);setLoadAttempt(attempt=>attempt+1);};
-  const presetLayout=(viewSlot:number)=>viewSlot===1 ? defaultCustomerPresetLayout() : viewSlot===2 ? customerInfoPresetLayout() : viewSlot===3 || viewSlot===4 ? blastEmailPresetLayout() : viewSlot===5 ? siteOfficeVisitPresetLayout() : viewSlot===6 ? coldDormantCallPresetLayout() : viewSlot===7 ? emailMailerPresetLayout() : viewSlot===8 ? viewEightPresetLayout() : viewSlot===9 ? ryanEamonBrianPresetLayout() : viewSlot===10 ? siobhanOnePresetLayout() : viewSlot===11 ? profileTypePresetLayout() : viewSlot===12 ? kickbacksPresetLayout() : viewSlot===13 ? viewThirteenPresetLayout() : viewSlot===14 ? viewFourteenPresetLayout() : viewSlot===15 ? viewFifteenPresetLayout() : viewSlot===16 ? viewSixteenPresetLayout() : viewSlot===17 ? selectProfilePresetLayout() : viewSlot===18 ? siobhanTwoPresetLayout() : isBlankGridCustomerViewSlot(viewSlot) ? viewNineteenPresetLayout() : viewSlot===23 ? testOneScreenPresetLayout() : viewSlot===24 ? testTwoScreenPresetLayout() : viewSlot===25 ? rtsPresetLayout() : viewSlot===26 ? siobhanTwoScreensPresetLayout() : viewSlot===27 ? salesPackagesPresetLayout() : viewSlot===28 ? callListTemplatePresetLayout() : viewSlot===31 ? viewThirtyOnePresetLayout() : viewSlot===32 ? viewThirtyTwoPresetLayout() : defaultCustomerViewLayout();
-  const select=(next:number)=>{setSlot(next);setLayout(views.find(view=>view.slot===next)?.layout ?? presetLayout(next));setMessage("");};
+  const presetLayout=(viewSlot:number)=>viewSlot===1 ? defaultCustomerPresetLayout() : viewSlot===2 ? customerInfoPresetLayout() : viewSlot===3 || viewSlot===4 ? viewThreePresetLayout() : viewSlot===5 ? siteOfficeVisitPresetLayout() : viewSlot===6 ? coldDormantCallPresetLayout() : viewSlot===7 ? emailMailerPresetLayout() : viewSlot===8 ? viewEightPresetLayout() : viewSlot===9 ? ryanEamonBrianPresetLayout() : viewSlot===10 ? siobhanOnePresetLayout() : viewSlot===11 ? profileTypePresetLayout() : viewSlot===12 ? kickbacksPresetLayout() : viewSlot===13 ? viewThirteenPresetLayout() : viewSlot===14 ? viewFourteenPresetLayout() : viewSlot===15 ? viewFifteenPresetLayout() : viewSlot===16 ? viewSixteenPresetLayout() : viewSlot===17 ? selectProfilePresetLayout() : viewSlot===18 ? siobhanTwoPresetLayout() : isBlankGridCustomerViewSlot(viewSlot) ? viewNineteenPresetLayout() : viewSlot===23 ? testOneScreenPresetLayout() : viewSlot===24 ? testTwoScreenPresetLayout() : viewSlot===25 ? rtsPresetLayout() : viewSlot===26 ? siobhanTwoScreensPresetLayout() : viewSlot===27 ? salesPackagesPresetLayout() : viewSlot===28 ? callListTemplatePresetLayout() : viewSlot===31 ? viewThirtyOnePresetLayout() : viewSlot===32 ? viewThirtyTwoPresetLayout() : viewSlot>=33 && viewSlot<=64 ? viewThirtyThreePresetLayout() : defaultCustomerViewLayout();
+  const select=(next:number)=>{
+    const selected=views.find(view=>view.slot===next)?.layout ?? presetLayout(next);
+    // Apply each reference layout independently of shared widths and older saves.
+    const reference=next===2 ? customerInfoPresetLayout()
+      : next===3 || next===4 ? viewThreePresetLayout()
+      : next===5 ? siteOfficeVisitPresetLayout() : next===6 ? coldDormantCallPresetLayout() : next===7 ? emailMailerPresetLayout() : next===9 ? ryanEamonBrianPresetLayout() : next===10 ? siobhanOnePresetLayout() : next===11 ? profileTypePresetLayout() : next===12 ? kickbacksPresetLayout() : next===17 ? selectProfilePresetLayout() : next===18 ? siobhanTwoPresetLayout() : next===25 ? rtsPresetLayout() : next===26 ? siobhanTwoScreensPresetLayout() : next===27 ? salesPackagesPresetLayout() : next===28 ? callListTemplatePresetLayout() : next===23 ? testOneScreenPresetLayout() : next===24 ? testTwoScreenPresetLayout() : next===13 ? viewThirteenPresetLayout() : next===14 ? viewFourteenPresetLayout() : next===15 ? viewFifteenPresetLayout() : next===16 ? viewSixteenPresetLayout() : next===31 ? viewThirtyOnePresetLayout() : next===32 ? viewThirtyTwoPresetLayout() : next>=33 && next<=64 ? viewThirtyThreePresetLayout() : null;
+    const nextLayout=reference
+      ? {...selected,widths:{...selected.widths,...reference.widths},
+          ...(next>=3 ? {order:reference.order,hidden:reference.hidden} : {})}
+      : selected;
+    setSlot(next);setLayout(nextLayout);setMessage("");
+  };
   const openSave=()=>{setDialogMode("save");saveSlot.current=slot;snapshot.current=structuredClone(effectiveLayout);setName(views.find(view=>view.slot===slot)?.name ?? originalName(slot));setError("");dialog.current?.showModal();};
   const canRename=Boolean(views.some(view=>view.slot===slot)||presetButtonName(slot));
   const openRename=()=>{
@@ -129,7 +159,7 @@ export function useCustomerViewField<K extends keyof CustomerViewLayout>(key:K,i
   const setLayout=context?.setLayout;
   const setWidths=context?.setWidths;
   const setter=useCallback<Dispatch<SetStateAction<CustomerViewLayout[K]>>>(update=>{
-    if(enabled && key === "widths" && context?.slot !== 1 && setWidths) {
+    if(enabled && key === "widths" && context?.slot !== 1 && context?.slot !== 2 && setWidths) {
       setWidths(update as SetStateAction<CustomerViewLayout["widths"]>);
     }
     else if(enabled && setLayout)setLayout(current=>({...current,[key]:typeof update === "function" ? (update as (value:CustomerViewLayout[K])=>CustomerViewLayout[K])(current[key]) : update}));

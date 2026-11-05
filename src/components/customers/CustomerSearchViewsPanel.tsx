@@ -379,21 +379,25 @@ function ViewsTab() {
     <div className="ac-customer-search-views-preset ac-search-views-tab-pane">
       <PresetGrid grid={CUSTOMER_SEARCH_PRESET_GRID} />
       <div className="ac-customer-search-views-footer shrink-0">
-        <div className="ac-customer-search-profile-type">
-          <span className="ac-flabel">Profile Type:</span>
-          {["All", "Customer Search", "Spare 1", "Spare 2", "Spare 3"].map((label, i) => (
-            <label key={label} className="ac-customer-search-check">
-              <input type="checkbox" disabled defaultChecked={i === 0} />
-              <span>{label}</span>
-            </label>
-          ))}
-          <span className="ac-flabel ac-customer-search-list-label">List:</span>
-          {["None", "1", "2", "3", "4", "5", "6"].map((label, i) => (
-            <label key={label} className="ac-customer-search-radio">
-              <input type="radio" name="cust-list" disabled defaultChecked={i === 0} />
-              <span>{label}</span>
-            </label>
-          ))}
+        <div className="ac-customer-search-filter-box-row">
+          <div className="ac-customer-search-profile-type">
+            <span className="ac-flabel">Profile Type:</span>
+            {["All", "Customer Search", "Spare 1", "Spare 2", "Spare 3"].map((label, i) => (
+              <label key={label} className="ac-customer-search-check">
+                <input type="checkbox" disabled defaultChecked={i === 0} />
+                <span>{label}</span>
+              </label>
+            ))}
+          </div>
+          <div className="ac-customer-search-list-box">
+            <span className="ac-flabel">List:</span>
+            {["None", "1", "2", "3", "4", "5", "6"].map((label, i) => (
+              <label key={label} className="ac-customer-search-radio">
+                <input type="radio" name="cust-list" disabled defaultChecked={i === 0} />
+                <span>{label}</span>
+              </label>
+            ))}
+          </div>
         </div>
         <div className="ac-customer-search-view-controls">
           <div className="ac-customer-search-view-controls-group">
