@@ -13,7 +13,7 @@ export function EmployeeAdjustmentsScreen() {
       <colgroup>{widths.map((width,index)=><col key={index} style={{width}} />)}</colgroup>
       <thead><tr><th aria-label="Record selector" />{columns.map(column=><th key={column}>{column}</th>)}<th /></tr></thead>
       <tbody>
-        <tr className="er-payroll-adjustments-selected"><td />{columns.map(column=><td key={column} />)}<td /></tr>
+        <tr><td />{columns.map(column=><td key={column} />)}<td /></tr>
         <tr className="er-payroll-adjustments-entry"><td>*</td>{columns.map(column=><td key={column}>{!["User Name","Timestamp","Total $"].includes(column) && <input aria-label={column} value={entry[column] ?? ""} onChange={event=>setEntry(current=>({...current,[column]:event.target.value}))} />}</td>)}<td /></tr>
         {Array.from({length:12},(_,row)=><tr key={row}>{widths.map((_,column)=><td key={column} />)}</tr>)}
       </tbody>

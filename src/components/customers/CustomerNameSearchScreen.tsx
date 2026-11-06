@@ -384,7 +384,7 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
                   const value = variant === "customers" && column.key === "noCommunication"
                     ? (["y", "yes", "true", "1", "x"].includes(rawValue.trim().toLowerCase()) ? "X" : "")
                     : rawValue;
-                  return <span key={column.key} data-column={column.key} title={value} onDoubleClick={variant === "customers" && column.key === "customerName" ? () => router.push(`/customers/${customer.customerId}`) : undefined} onClick={() => { if (column.key !== "select") onSelectedColumnChange?.(column.key); }}>
+                  return <span key={column.key} data-column={column.key} style={column.key === "customerName" ? { alignSelf: "stretch", width: "100%", height: "100%", boxSizing: "border-box" } : undefined} title={value} onDoubleClick={column.key === "customerName" ? () => router.push(`/customers/${customer.customerId}`) : undefined} onClick={() => { if (column.key !== "select") onSelectedColumnChange?.(column.key); }}>
                     {column.key === "select" && onSelectedCustomerIdsChange
                       ? <button type="button" aria-label={`${selectedCustomerIds?.includes(customer.customerId) ? "Deselect" : "Select"} ${customer.customerName}`}
                           aria-pressed={selectedCustomerIds?.includes(customer.customerId) ?? false}

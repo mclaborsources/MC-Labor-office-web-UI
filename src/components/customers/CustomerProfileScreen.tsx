@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Home, Search, Copy, FolderOpen, FileText, CircleHelp } from "lucide-react";
+import { Home, Search, FolderOpen, FileText, CircleHelp } from "lucide-react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { AccessDataTable, type AccessColumn } from "@/components/access/AccessDataTable";
 import { AccessTabs } from "@/components/access/AccessTabs";
@@ -53,7 +53,7 @@ function ProfileField({
         if (!value) return;
         if (action === "copy") void navigator.clipboard.writeText(value);
         else { try { const url = new URL(value.includes("://") ? value : `https://${value}`); if (["http:", "https:"].includes(url.protocol)) window.open(url.href, "_blank", "noopener,noreferrer"); } catch { /* Invalid URL. */ } }
-      }}>{action === "copy" ? <Copy size={14} /> : <FolderOpen size={16} />}</button>}
+      }}>{action === "copy" ? <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" shapeRendering="crispEdges"><path d="M1.5 1.5h5l3 3v7h-8z" fill="white" stroke="black"/><path d="M6.5 1.5v3h3M3 4h2M3 6h4M3 8h4M3 10h4" stroke="black"/><path d="M6.5 5.5h5l3 3v6h-8z" fill="white" stroke="#000080"/><path d="M11.5 5.5v3h3M8 8h2M8 10h5M8 12h5" stroke="#000080"/></svg> : <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1.5 5.5h5l1.5 2h6v6H1.5z" fill="#ffff91" stroke="#000"/><path d="m1.5 13.5 3-6h11l-3 6z" fill="#ffff00" stroke="#000"/><path d="M8 5V2.5h4M10.5 1 12 2.5 10.5 4" stroke="#000" strokeWidth="1"/></svg>}</button>}
     </label>
   );
 }
@@ -234,17 +234,6 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
   );
 }
 
-const wccColumns: AccessColumn<CustomerBillRate>[] = [
-  { header: "WC Code", cell: (r) => <DataValue value={r.grade} />, nowrap: true },
-  { header: "User", cell: () => "—", nowrap: true },
-  { header: "Timestamp", cell: () => "—", nowrap: true },
-  {
-    header: "Active",
-    cell: (r) => (r.active ? "Yes" : "No"),
-    nowrap: true,
-  },
-];
-
 function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
   const cityState =
     [customer.city, customer.state].filter(Boolean).join(", ") || "";
@@ -273,7 +262,7 @@ function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
         <div className="ac-customer-profile-col">
           <ProfileField label="Phone" value={customer.phone} action="copy" />
           <ProfileField label="Fax" value={customer.fax} action="copy" />
-          <label className="ac-customer-profile-invoice-email"><span>Invoice Email</span><textarea className="ac-input" aria-label="Invoice Email" defaultValue={customer.email} /><button type="button" className="ac-customer-profile-field-action" aria-label="Copy Invoice Email" onClick={() => { if (customer.email) void navigator.clipboard.writeText(customer.email); }}><Copy size={14} /></button></label>
+          <label className="ac-customer-profile-invoice-email"><span>Invoice Email</span><textarea className="ac-input" aria-label="Invoice Email" defaultValue={customer.email} /><button type="button" className="ac-customer-profile-field-action" aria-label="Copy Invoice Email" onClick={() => { if (customer.email) void navigator.clipboard.writeText(customer.email); }}><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" shapeRendering="crispEdges"><path d="M1.5 1.5h5l3 3v7h-8z" fill="white" stroke="black"/><path d="M6.5 1.5v3h3M3 4h2M3 6h4M3 8h4M3 10h4" stroke="black"/><path d="M6.5 5.5h5l3 3v6h-8z" fill="white" stroke="#000080"/><path d="M11.5 5.5v3h3M8 8h2M8 10h5M8 12h5" stroke="#000080"/></svg></button></label>
           <ProfileField label="Customer Web Site" value={customer.website} wide action="open" />
           <ProfileField label="Corp Web Site" value={customer.corpWebsite} wide action="open" />
           <ProfileField label="LinkedIn Profile" value="" wide action="open" />
@@ -319,13 +308,7 @@ function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
         <div className="ac-customer-profile-wcc">
           <div className="ac-customer-profile-wcc-title">Customer WC Codes (Active)</div>
           <div className="ac-customer-profile-wcc-table">
-            <AccessDataTable
-              columns={wccColumns}
-              rows={customer.billRates.slice(0, 6)}
-              rowKey={(r) => r.billRateId}
-              emptyMessage="No WC codes on record."
-              footer={`Record: |◄ ◄ ${customer.billRates.length === 0 ? 0 : 1} of ${customer.billRates.length} ► ►|`}
-            />
+            <div className="customer-wcc-scroll" style={{height:130,overflow:"hidden",background:"repeating-linear-gradient(#fff 0px,#fff 19px,#f3f3f3 19px,#f3f3f3 20px)"}}><table className="customer-wcc-grid" style={{width:599,tableLayout:"fixed",borderCollapse:"collapse",font:"13px Calibri, Arial, sans-serif"}}><colgroup>{[18,234,98,150,67,32].map((width,index)=><col key={index} style={{width}}/>)}</colgroup><thead><tr>{["","WC Code","User","Timestamp","Active",""].map((label,index)=><th key={index} style={{height:20,padding:"0 4px",border:"1px solid #c5cbd1",background:"#e2e6ec",fontWeight:400,textAlign:"center",position:"relative",paddingRight:label ? 14 : 4}}>{label}{label && <span aria-hidden="true" style={{position:"absolute",right:4,top:8,width:0,height:0,borderLeft:"3px solid transparent",borderRight:"3px solid transparent",borderTop:"4px solid #59626b"}}/>}</th>)}</tr></thead><tbody>{customer.billRates.slice(0,6).map(row=><tr key={row.billRateId}><td/><td>{row.grade}</td><td/><td/><td>{row.active ? "Yes" : "No"}</td><td/></tr>)}{Array.from({length:Math.max(0,6-customer.billRates.length)},(_,index)=><tr key={`blank-${index}`}><td/><td/><td/><td/><td/><td/></tr>)}</tbody></table></div><div className="customer-wcc-footer" style={{display:"flex",alignItems:"center",gap:3,height:17,font:"11px Calibri, Arial, sans-serif",background:"#e8e8ec",borderTop:"1px solid #aaa"}}><span>Record:</span><span>◂| ◂</span><input readOnly style={{width:49,height:16,minHeight:16,padding:"0 2px",border:"1px solid #aaa",flex:"0 0 49px"}} aria-label="WC record position" value={customer.billRates.length ? `1 of ${customer.billRates.length}` : ""}/><span>▸ ▸| ▸*</span><span className="customer-wcc-filter">▽ No Filter</span><input style={{width:69,height:16,minHeight:16,padding:"0 2px",border:"1px solid #aaa",flex:"0 0 69px"}} placeholder="Search" aria-label="Search WC codes"/></div>
           </div>
         </div>
 
@@ -675,6 +658,10 @@ function CustomerSalesTab() {
           label="Allow Contract With"
           options={CUSTOMER_SALES_COMPANIES}
         />
+        <div className="ac-customer-sales-contract-actions">
+          <AccessButton data-action-status="missing" xs>Copy IPG Sales Contract</AccessButton>
+          <AccessButton data-action-status="missing" xs>Populate IPG Sales Contract</AccessButton>
+        </div>
 
         <label className="ac-customer-sales-small-field">
           <span>User</span>
@@ -988,7 +975,7 @@ function CustomerInsuranceCertRequestsTab() {
               <tr key={row.id}>
                 <td aria-hidden />
                 <td>
-                  <input type="date" value={row.requestDate} onChange={(event) => updateInsuranceCertRequest(row.id, "requestDate", event.target.value)} aria-label="Certificate request date" />
+                  <input type={row.requestDate ? "date" : "text"} onFocus={event => { event.currentTarget.type = "date"; }} onBlur={event => { if (!event.currentTarget.value) event.currentTarget.type = "text"; }} value={row.requestDate} onChange={(event) => updateInsuranceCertRequest(row.id, "requestDate", event.target.value)} aria-label="Certificate request date" />
                 </td>
                 <td>
                   <select value={row.state} onChange={(event) => updateInsuranceCertRequest(row.id, "state", event.target.value)} aria-label="Certificate request state">
@@ -1368,14 +1355,14 @@ function CustomerContactsTab({ customer }: { customer: CustomerDetail }) {
       <div className="ac-customer-contacts-guidance">
         <strong>For all Info emails, please select &quot;Info&quot; for the contact&apos;s Title value.</strong>
         <p>To use one of these buttons, highlight one contact row first by clicking the gray bar at the left side of the row.</p>
-        <div><AccessButton data-action-status="complete" disabled={!selected?.email} onClick={() => { if (selected?.email) void navigator.clipboard.writeText(selected.email); }} xs><Copy size={14} /> Copy Contact Email Address</AccessButton><AccessButton data-action-status="complete" disabled={!selected?.email} onClick={() => { if (selected?.email) window.location.href = `mailto:${selected.email}`; }} xs>▣　Send Email to Contact</AccessButton></div>
+        <div><AccessButton data-action-status="complete" disabled={!selected?.email} onClick={() => { if (selected?.email) void navigator.clipboard.writeText(selected.email); }} xs><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" shapeRendering="crispEdges"><path d="M1.5 1.5h5l3 3v7h-8z" fill="white" stroke="black"/><path d="M6.5 1.5v3h3M3 4h2M3 6h4M3 8h4M3 10h4" stroke="black"/><path d="M6.5 5.5h5l3 3v6h-8z" fill="white" stroke="#000080"/><path d="M11.5 5.5v3h3M8 8h2M8 10h5M8 12h5" stroke="#000080"/></svg> Copy Contact Email Address</AccessButton><AccessButton data-action-status="complete" disabled={!selected?.email} onClick={() => { if (selected?.email) window.location.href = `mailto:${selected.email}`; }} xs>▣　Send Email to Contact</AccessButton></div>
       </div>
 
       <div className="ac-customer-permits">
-        <div className="ac-customer-permits-heading"><h2>Permits</h2><AccessButton data-action-status="complete" onClick={() => void navigator.clipboard.writeText(customer.street ?? "")} xs><Copy size={14} /> Copy Street</AccessButton><span>Double-click on City, State to select the state and city.</span></div>
+        <div className="ac-customer-permits-heading"><h2>Permits</h2><AccessButton data-action-status="complete" onClick={() => void navigator.clipboard.writeText(customer.street ?? "")} xs><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" shapeRendering="crispEdges"><path d="M1.5 1.5h5l3 3v7h-8z" fill="white" stroke="black"/><path d="M6.5 1.5v3h3M3 4h2M3 6h4M3 8h4M3 10h4" stroke="black"/><path d="M6.5 5.5h5l3 3v6h-8z" fill="white" stroke="#000080"/><path d="M11.5 5.5v3h3M8 8h2M8 10h5M8 12h5" stroke="#000080"/></svg> Copy Street</AccessButton><span>Double-click on City, State to select the state and city.</span></div>
         <div className="ac-customer-permits-table-wrap">
           <table className="ac-customer-permits-table"><thead><tr><th /><th>Permit Date</th><th>Street</th><th>City, State</th><th>Fee</th><th>Value</th><th>Timestamp</th><th>Permit Search Link</th><th>Link</th><th aria-hidden /><th aria-hidden /></tr></thead>
-          <tbody><tr className="is-selected"><td>*</td><td><input type="date" aria-label="Permit date" /></td><td><input defaultValue={customer.street} aria-label="Permit street" /></td><td><input defaultValue={[customer.city, customer.state].filter(Boolean).join(", ")} aria-label="Permit city and state" /></td><td><input aria-label="Permit fee" /></td><td><input aria-label="Permit value" /></td><td /><td /><td /><td /><td /></tr>
+          <tbody><tr className="is-selected"><td>*</td><td><input type="text" onFocus={event => { event.currentTarget.type = "date"; }} onBlur={event => { if (!event.currentTarget.value) event.currentTarget.type = "text"; }} aria-label="Permit date" /></td><td><input defaultValue={customer.street} aria-label="Permit street" /></td><td><input defaultValue={[customer.city, customer.state].filter(Boolean).join(", ")} aria-label="Permit city and state" /></td><td><input aria-label="Permit fee" /></td><td><input aria-label="Permit value" /></td><td /><td /><td /><td /><td /></tr>
           {Array.from({ length: 8 }, (_, i) => <tr key={`permit-blank-${i}`}><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}</tbody></table>
           <div className="ac-customer-contacts-recordbar">Record:　|◄　◄　<span>1 of 1</span>　►　►|　<em>{permitSearch ? "Filtered" : "No Filter"}</em><input value={permitSearch} onChange={(event) => setPermitSearch(event.target.value)} placeholder="Search" aria-label="Search permits" /></div>
         </div>
@@ -1385,7 +1372,8 @@ function CustomerContactsTab({ customer }: { customer: CustomerDetail }) {
 }
 
 export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) {
-  const [activeTab, setActiveTab] = useState("01-basic");
+  const [customerPanel, setCustomerPanel] = useState("00-blank");
+  const activeTab = customerPanel;
 
   return (
     <div className="ac-customer-search-page ac-customer-profile-page flex min-h-0 flex-1 flex-col">
@@ -1398,13 +1386,14 @@ export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) 
               tabs={[...CUSTOMER_PROFILE_TABS]}
               className="ac-customer-search-view-tabs shrink-0 overflow-x-auto"
               sticky={false}
-              activeId={activeTab}
-              onTabChange={setActiveTab}
+              activeId={customerPanel}
+              onTabChange={setCustomerPanel}
             />
           </div>
 
           <div className="ac-panel ac-panel-elevated ac-customer-profile-content min-h-0 flex-1">
             <div className="ac-customer-profile-body min-h-0 flex-1 overflow-y-auto">
+              {activeTab === "00-blank" ? <div className="ac-customer-profile-blank" aria-label="Blank customer panel" style={{ minHeight: 648 }} /> : <>
               {activeTab === "01-basic" ? <CustomerProfileBasicTab customer={customer} /> : null}
               {activeTab === "02-contacts" ? <CustomerContactsTab customer={customer} /> : null}
               {activeTab === "03-billrates" ? <CustomerBillRatesTab customer={customer} /> : null}
@@ -1417,6 +1406,7 @@ export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) 
               {activeTab === "10-mult" ? <CustomerRateMultipliersTab /> : null}
               {activeTab === "11-jobs" ? <CustomerJobsTab customer={customer} /> : null}
               {activeTab === "12-saleshist" ? <CustomerSalesHistoryTab customer={customer} /> : null}
+              </>}
 
             </div>
           </div>
