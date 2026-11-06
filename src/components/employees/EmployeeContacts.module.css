@@ -61,3 +61,40 @@
 .layout :global(.erc-future-audit) label,.layout :global(.erc-call-audit) label { flex-direction:row; }
 .layout :global(.er-contact-hint) { font-style:normal; }
 .layout :global(.erc-delete-contact),.layout :global(.erc-add-history),.layout :global(.erc-delete-history) { min-width:33px; max-width:33px; min-height:33px; }
+
+/* 02 Contacts: Access reference alignment and contained datasheets. */
+.layout :global(.er-topline) { height:211px; min-height:211px; flex-shrink:0; }
+.layout :global(.er-contacts-screen) { margin-left:6px; min-height:790px; }
+.layout :global(.er-contact-notes) textarea,
+.layout :global(.er-contact-message) textarea { box-sizing:border-box; resize:none; border:2px solid; border-color:#999 #fff #fff #999; }
+.layout :global(.er-contact-message) { width:311px; border-right:0; }
+.layout :global(.er-salesmen) { top:14px; width:333px; height:126px; }
+.layout :global(.er-contact-grid-wrap),
+.layout :global(.er-contact-history-grid) { box-sizing:border-box; overflow-x:hidden; overflow-y:auto; }
+.layout :global(.er-contact-grid) { width:100%; min-width:0; table-layout:fixed; }
+.layout :global(.er-contact-grid) th,
+.layout :global(.er-contact-grid) td { box-sizing:border-box; }
+.layout :global(.er-contact-grid) th:first-child::after { content:none; }
+.layout :global(.er-contact-grid) th:first-child,
+.layout :global(.erc-record-selector) { padding:0; background:#e3e7eb; }
+.layout :global(.er-contact-grid) tbody tr:nth-child(even) td { background:#f2f2f2; }
+.layout :global(.er-contact-grid) tbody tr:first-child td { background:#a6cdeb; }
+.layout :global(.erc-recordbar) { box-sizing:border-box; display:flex; align-items:center; height:17px; min-height:17px; line-height:15px; overflow:hidden; }
+.layout :global(.erc-recordbar) input { flex:0 0 71px; height:16px; min-height:16px; margin:0; padding:0 3px; font:11px/14px Calibri,Arial,sans-serif; }
+.layout :global(.er-contact-history-tools) { box-sizing:border-box; padding:3px 0; }
+.layout :global(.er-contact-history-tools) button { font-weight:400; }
+.layout :global(.er-contact-history-grid) table { width:1366px; min-width:1366px; max-width:1366px; table-layout:fixed; }
+.layout :global(.er-contact-history-grid) th,
+.layout :global(.er-contact-history-grid) td { box-sizing:border-box; }
+.layout :global(.er-contact-footer) { top:546px; }
+.layout :global(.er-contact-footer) input { box-sizing:border-box; height:26px; }
+
+/* Keep the Salesman datasheet structure visible even with no records. */
+.layout :global(.erc-salesmen-datasheet) { width:256px; height:126px; box-sizing:border-box; border:1px solid #aaa; display:flex; flex-direction:column; background:#fff; }
+.layout :global(.erc-salesmen-scroll) { flex:1; min-height:0; overflow-x:hidden; overflow-y:scroll; }
+.layout :global(.erc-salesmen-scroll) table { width:100%; min-width:0; }
+.layout :global(.erc-salesmen-scroll) :is(th,td):first-child { padding:0; background:#e3e7eb; }
+.layout :global(.erc-salesmen-scroll) th:not(:first-child)::after { content:'⌄'; float:right; font-size:11px; }
+.layout :global(.erc-salesmen-scroll) tbody tr:nth-child(even) td:not(:first-child) { background:#f2f2f2; }
+.layout :global(.erc-salesmen-recordbar) { flex:0 0 17px; height:17px; display:flex; align-items:center; overflow:hidden; white-space:nowrap; background:#e8e9ed; border-top:1px solid #aaa; color:#315171; font:11px Calibri,Arial,sans-serif; }
+.layout :global(.erc-salesmen-recordbar) input { width:48px; min-width:48px; height:15px; min-height:15px; padding:0 2px; border:1px solid #aaa; font:11px Calibri,Arial,sans-serif; }

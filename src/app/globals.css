@@ -15496,6 +15496,9 @@ table[data-column-resize-id] > thead > tr > th > a { overflow:hidden; text-overf
 .er-contact-history-tools button { padding:2px 8px; }
 .er-contact-history-tools button:nth-last-child(2) { margin-left:auto; }
 .er-contact-history-grid { grid-column:1/-1; grid-row:5; overflow:hidden; }
+.er-contact-history-grid table { width:1366px; max-width:none; }
+.er-contact-history-grid th { box-sizing:border-box; position:relative; height:21px; padding:1px 14px 1px 4px; border-color:#c5cbd1; background:linear-gradient(#f5f6f8,#dfe3e8); text-align:center; font:400 13px Arial,sans-serif; }
+.er-contact-history-grid th:not(:first-child)::after { content:""; position:absolute; right:4px; top:8px; border-left:3px solid transparent; border-right:3px solid transparent; border-top:4px solid #59626b; }
 .er-contact-history-grid td { height:18px; }
 .er-contact-footer { grid-column:1/-1; grid-row:6; display:flex; align-items:flex-start; gap:16px; }
 .er-contact-footer label { display:flex; flex-direction:column; gap:3px; }
@@ -15548,6 +15551,12 @@ table[data-column-resize-id] > thead > tr > th > a { overflow:hidden; text-overf
 .er-license-links label input { width:65px; }
 .er-license-links label button { padding:0 6px; }
 .er-license-links small input { width:90px; }
+.er-i9-docs input[type=date].is-empty-date::-webkit-datetime-edit { visibility:hidden; }
+.employee-record-screen .er-dd-screen select { appearance:none; padding-right:21px!important; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='22'%3E%3Cpath fill='white' stroke='%23bdbdbd' d='M.5.5h17v21H.5z'/%3E%3Cpath d='m5 9 4 4 4-4' fill='none' stroke='%23777777'/%3E%3C/svg%3E")!important; background-position:right center!important; background-repeat:no-repeat!important; background-size:18px 22px!important; }
+.employee-record-screen .er-dd-bank > button[data-action-status] { display:flex; align-items:center; justify-content:center; padding:0; width:26px; height:26px; }
+.employee-record-screen .er-dd-screen select { appearance:none!important; -webkit-appearance:none!important; }
+.employee-record-screen .er-dd-bank > button[data-action-status] { padding:0!important; }
+.employee-record-screen .er-dd-bank > button svg { display:block; flex:0 0 16px; width:16px!important; height:16px!important; min-width:16px; }
 .er-timesheet-requests { grid-column:4; grid-row:2/4; }
 .er-timesheet-requests h3 { margin:0 0 10px; font-size:14px; }
 .er-timesheet-requests table { width:360px; border-collapse:collapse; table-layout:fixed; background:#fff; }
@@ -15654,6 +15663,77 @@ table[data-column-resize-id] > thead > tr > th > a { overflow:hidden; text-overf
 .er-i9-and { left:318px; top:473px; }
 .er-i9-status { grid-column:2; grid-row:1; }
 .er-w4 { grid-column:3; grid-row:1; width:480px; }
+.employee-record-screen .er-i9-w4-screen { position:relative; grid-template-columns:764px 265px 480px; column-gap:30px; min-width:1567px; font:13px Calibri,"Segoe UI",Arial,sans-serif; }
+.employee-record-screen .er-i9-w4-screen label { font:13px Calibri,"Segoe UI",Arial,sans-serif; }
+.employee-record-screen .er-i9-docs { width:764px; }
+.employee-record-screen .er-i9-docs > label { display:flex; align-items:center; }
+.employee-record-screen .er-i9-docs > label:nth-of-type(4),
+.employee-record-screen .er-i9-docs > label:nth-of-type(8) { display:grid; grid-template-columns:55px 194px 26px; column-gap:0; width:304px; }
+.employee-record-screen .er-i9-docs > label:nth-of-type(4) button,
+.employee-record-screen .er-i9-docs > label:nth-of-type(8) button { margin-left:30px; width:26px; padding:0; }
+.employee-record-screen .er-i9-docs > label:nth-of-type(5) { display:grid; grid-template-columns:59px 98px 26px; }
+.employee-record-screen .er-i9-docs > label:nth-of-type(5) button { margin-left:30px; width:26px; padding:0; }
+.employee-record-screen .er-i9-docs > label:nth-of-type(8) { left:329px; }
+.employee-record-screen .er-i9-docs > .er-i9-banner { top:230px; height:25px; padding:3px; }
+.employee-record-screen .er-i9-list.er-i9-lista { top:264px; }
+.employee-record-screen .er-i9-list.er-i9-listb,
+.employee-record-screen .er-i9-list.er-i9-listc { top:476px; }
+.employee-record-screen .er-i9-list > label:nth-of-type(1),
+.employee-record-screen .er-i9-list > button:nth-of-type(1) { top:36px; }
+.employee-record-screen .er-i9-list > label:nth-of-type(2),
+.employee-record-screen .er-i9-list > button:nth-of-type(2) { top:64px; }
+.employee-record-screen .er-i9-list > label:nth-of-type(3),
+.employee-record-screen .er-i9-list > button:nth-of-type(3) { top:92px; }
+.employee-record-screen .er-i9-list > label:nth-of-type(4),
+.employee-record-screen .er-i9-list > button:nth-of-type(4) { top:120px; }
+.employee-record-screen .er-i9-list > label:nth-of-type(5) { top:160px; }
+.employee-record-screen .er-i9-list legend { left:116px; }
+.employee-record-screen .er-i9-status { padding-left:28px; }
+.employee-record-screen .er-i9-docs > label:nth-of-type(2),
+.employee-record-screen .er-i9-docs > label:nth-of-type(3),
+.employee-record-screen .er-i9-docs > label:nth-of-type(6) { display:block; padding-right:20px; box-sizing:border-box; }
+.employee-record-screen .er-i9-docs > label:nth-of-type(2) input,
+.employee-record-screen .er-i9-docs > label:nth-of-type(3) input,
+.employee-record-screen .er-i9-docs > label:nth-of-type(6) input { position:absolute; left:123px; top:4px; }
+.employee-record-screen .er-i9-docs > label:nth-of-type(4),
+.employee-record-screen .er-i9-docs > label:nth-of-type(5),
+.employee-record-screen .er-i9-docs > label:nth-of-type(8) { display:block; line-height:26px; }
+.employee-record-screen .er-i9-docs > label:nth-of-type(4) input,
+.employee-record-screen .er-i9-docs > label:nth-of-type(8) input { position:absolute; left:55px; top:0; width:194px; }
+.employee-record-screen .er-i9-docs > label:nth-of-type(5) input { position:absolute; left:59px; top:0; width:98px; }
+.employee-record-screen .er-i9-docs > label:nth-of-type(4) button,
+.employee-record-screen .er-i9-docs > label:nth-of-type(8) button { position:absolute; left:279px; top:0; margin:0; width:26px; padding:0; }
+.employee-record-screen .er-i9-docs > label:nth-of-type(5) button { position:absolute; left:187px; top:0; margin:0; width:26px; padding:0; }
+.employee-record-screen .er-i9-docs > label:nth-of-type(7) { display:flex; align-items:center; gap:8px; }
+.employee-record-screen .er-w4 fieldset { gap:2px; }
+.employee-record-screen .er-w4 label { min-height:26px; }
+.employee-record-screen .er-w4 label:has(textarea) { margin-top:10px; gap:5px; }
+.employee-record-screen .er-w4 label textarea { width:482px; height:122px; min-height:122px; }
+.employee-record-screen .er-w4 label:has(input[type=password]) button { width:26px; padding:0; margin-left:0; }
+.employee-record-screen .er-i9-w4-screen .er-i9-status label,
+.employee-record-screen .er-i9-w4-screen .er-w4 label { font:400 15px/22px Calibri,"Segoe UI",Arial,sans-serif; }
+.employee-record-screen .er-i9-w4-screen .er-i9-status input:not([type=checkbox]),
+.employee-record-screen .er-i9-w4-screen .er-w4 input:not([type=checkbox]),
+.employee-record-screen .er-i9-w4-screen .er-w4 select,
+.employee-record-screen .er-i9-w4-screen .er-w4 textarea { font:400 15px/22px Calibri,"Segoe UI",Arial,sans-serif; }
+.employee-record-screen .er-i9-status { gap:4px; }
+.employee-record-screen .er-i9-status label { height:28px; min-height:28px; }
+.employee-record-screen .er-w4 { width:520px; }
+.employee-record-screen .er-w4 fieldset { gap:4px; }
+.employee-record-screen .er-w4 label { grid-template-columns:295px 98px 26px; column-gap:24px; min-height:28px; margin-bottom:0; }
+.employee-record-screen .er-w4 label:has(textarea) { display:flex; margin-top:6px; margin-bottom:4px; gap:6px; }
+.employee-record-screen .er-w4 label textarea { width:520px; height:130px; min-height:130px; padding:5px 7px; }
+.employee-record-screen .er-i9-status::after { height:720px; }
+.employee-record-screen .er-i9-w4-screen { padding-left:8px; }
+.employee-record-screen .er-i9-w4-screen button[data-action-status] { box-sizing:border-box; width:26px; min-width:26px; height:26px; min-height:26px; padding:0!important; display:inline-flex; align-items:center; justify-content:center; }
+.employee-record-screen .er-i9-w4-screen button svg { display:block; flex:none; width:16px; height:16px; }
+.employee-record-screen .er-i9-w4-screen,
+.employee-record-screen .er-i9-w4-screen label,
+.employee-record-screen .er-i9-w4-screen legend,
+.employee-record-screen .er-i9-w4-screen h3,
+.employee-record-screen .er-i9-w4-screen input:not([type=checkbox]):not([type=radio]),
+.employee-record-screen .er-i9-w4-screen select,
+.employee-record-screen .er-i9-w4-screen textarea { font-size:15px; }
 
 /* OSHA + DOT uses the same fixed form measurements as the reference. */
 .employee-record-screen .er-content.er-osha-dot-content { display:block; min-height:656px; padding:0; background:#d8d8d8; }
@@ -15747,6 +15827,38 @@ table[data-column-resize-id] > thead > tr > th > a { overflow:hidden; text-overf
 .employee-record-screen .er-health-quote b { position:absolute; left:647px; top:0; box-sizing:border-box; width:17px; height:26px; background:#000; color:#fff; padding:3px; font:700 14px Arial,sans-serif; }
 .employee-record-screen .er-health-quote button { position:absolute; left:667px; top:0; width:113px; }
 .employee-record-screen .er-health-quote button:last-child { left:807px; }
+.employee-record-screen .er-health-screen label,
+.employee-record-screen .er-health-screen input,
+.employee-record-screen .er-health-screen select,
+.employee-record-screen .er-health-screen textarea,
+.employee-record-screen .er-health-screen button,
+.employee-record-screen .er-health-legend { font-size:15px; font-family:Calibri,"Segoe UI",Arial,sans-serif; }
+.employee-record-screen .er-health-dates a { color:#000080; font:15px/22px Calibri,"Segoe UI",Arial,sans-serif; }
+.employee-record-screen .er-health-dates a { display:flex; align-items:center; gap:8px; min-width:0; }
+.employee-record-screen .er-health-dates a span { flex:1; min-width:0; overflow:hidden; white-space:nowrap; text-align:justify; text-align-last:justify; }
+.employee-record-screen .er-health-dates a u { flex:none; text-decoration:underline; }
+.employee-record-screen .er-health-actions > div { width:453px; height:64px; display:grid; grid-template-columns:190px minmax(0,1fr); grid-template-rows:26px 26px; gap:2px 8px; padding:4px 6px; }
+.employee-record-screen .er-health-actions > div:nth-of-type(2) { top:70px; }
+.employee-record-screen .er-health-actions > div label { grid-column:1; grid-row:1 / 3; width:auto; font:700 15px/18px Calibri,"Segoe UI",Arial,sans-serif; }
+.employee-record-screen .er-health-actions > div select,
+.employee-record-screen .er-health-actions > div button[data-action-status] { position:static; box-sizing:border-box; grid-column:2; width:100%; min-width:0; margin:0; padding:1px 4px; }
+.employee-record-screen .er-health-actions > div select { grid-row:1; }
+.employee-record-screen .er-health-actions > div button { grid-row:2; }
+.employee-record-screen .er-health-dates label { grid-template-columns:154px 98px minmax(0,1fr); }
+.employee-record-screen .er-health-dates label > a { display:grid; grid-template-columns:minmax(0,1fr) 46px; gap:8px; width:calc(100% - 12px); min-width:0; }
+.employee-record-screen .er-health-actions > div { width:453px; height:61px; grid-template-columns:190px minmax(0,1fr); padding:4px; gap:2px 6px; }
+.employee-record-screen .er-health-actions > div:nth-of-type(2) { top:68px; }
+.employee-record-screen .er-health-actions > div label { padding:1px 4px; font:700 13px/18px Arial,sans-serif; }
+.employee-record-screen .er-health-actions > div button[data-action-status] { font:13px Arial,sans-serif; }
+.employee-record-screen .er-health-actions > label { font:13px Arial,sans-serif; gap:8px; }
+.employee-record-screen .er-health-actions > label:first-of-type { top:140px; }
+.employee-record-screen .er-health-actions > label:last-of-type { top:168px; grid-template-columns:134px 145px; }
+.employee-record-screen .er-health-actions select { appearance:none!important; padding-right:20px!important; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='22'%3E%3Cpath fill='white' stroke='%23bdbdbd' d='M.5.5h17v21H.5z'/%3E%3Cpath d='m5 9 4 4 4-4' fill='none' stroke='%23777777'/%3E%3C/svg%3E")!important; background-position:right center!important; background-repeat:no-repeat!important; background-size:18px 22px!important; }
+.employee-record-screen .er-health-actions > div:first-child select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='22'%3E%3Cpath fill='%23ddd' stroke='%23999' d='M.5.5h17v21H.5z'/%3E%3Cpath d='m5 7 4 6 4-6z' fill='black'/%3E%3C/svg%3E")!important; }
+.employee-record-screen .er-health-actions > div { display:block; }
+.employee-record-screen .er-health-actions > div label { position:static; display:block; box-sizing:border-box; width:194px; padding:1px 4px; }
+.employee-record-screen .er-health-actions > div label select { position:absolute; box-sizing:border-box; left:199px; top:4px; width:250px; height:26px; }
+.employee-record-screen .er-health-actions > div button[data-action-status] { position:absolute; left:200px; top:31px; width:249px; height:26px; }
 .er-content.er-job-app-status-content,.er-content.er-job-app-summary-content { display:block; min-height:790px; padding:8px 2px 24px; }
 .er-job-app-status-screen,.er-job-app-summary-screen { min-height:760px; background:#d8d8d8; color:#000; font:13px Arial,sans-serif; }
 .employee-record-screen .er-content.er-job-app-status-content { display:block; min-height:800px; padding:0; background:#d8d8d8; }
@@ -15796,6 +15908,7 @@ table[data-column-resize-id] > thead > tr > th > a { overflow:hidden; text-overf
 .employee-record-screen .er-job-app-summary-actions > label { position:absolute; left:0; top:95px; display:flex; align-items:center; gap:12px; }
 .employee-record-screen .er-job-app-summary-actions > div { position:absolute; left:0; top:166px; display:grid; grid-template-columns:180px 180px; grid-template-rows:26px 26px 26px; column-gap:24px; row-gap:2px; }
 .employee-record-screen .er-job-app-summary-actions > div label { display:flex; align-items:center; gap:8px; }
+.employee-record-screen .er-job-app-summary-actions label > input[type=checkbox] { order:1; flex:none; margin:0; }
 .employee-record-screen .er-job-app-summary-actions > div label:nth-child(n+3) { display:grid; grid-template-columns:42px 98px; gap:0; }
 .employee-record-screen .er-job-app-summary-actions > div input:not([type=checkbox]) { width:98px; }
 .employee-record-screen .er-filed-job-app { position:absolute; left:7px; top:370px; height:26px; display:grid; grid-template-columns:142px 194px; align-items:center; gap:0; }
@@ -15808,8 +15921,9 @@ table[data-column-resize-id] > thead > tr > th > a { overflow:hidden; text-overf
 .employee-record-screen .er-ipg-job-app > button { position:absolute; left:114px; top:50px; width:285px; }
 .employee-record-screen .er-ipg-job-app > button:nth-of-type(2) { top:82px; }
 .employee-record-screen .er-ipg-job-app > label { position:absolute; left:8px; top:122px; display:grid; grid-template-columns:186px 98px; align-items:center; }
-.employee-record-screen .er-ipg-job-app > label:last-child { top:150px; }
+.employee-record-screen .er-ipg-job-app > label:last-child { top:150px; grid-template-columns:186px 98px; }
 .employee-record-screen .er-ipg-job-app > label input { width:98px; }
+.employee-record-screen .er-ipg-job-app > label:last-child input { width:98px; }
 .employee-record-screen .er-job-app-audit { position:absolute; left:554px; top:418px; display:grid; grid-template-columns:135px 370px; align-items:start; gap:0; }
 .employee-record-screen .er-job-app-audit textarea { width:370px; height:130px; min-height:130px; background:#fff; resize:none; }
 .employee-record-screen .er-job-app-hyperlinks { position:absolute; left:1106px; top:475px; display:flex; align-items:flex-start; gap:7px; height:30px; }
@@ -15823,6 +15937,7 @@ table[data-column-resize-id] > thead > tr > th > a { overflow:hidden; text-overf
 .employee-record-screen .er-rates-screen label { margin:0; font:400 13px Arial,sans-serif; white-space:nowrap; }
 .employee-record-screen .er-rates-screen input:not([type=checkbox]), .employee-record-screen .er-rates-screen select, .employee-record-screen .er-rates-screen textarea { box-sizing:border-box; width:98px; min-width:0; height:26px; min-height:26px; border:2px solid; border-color:#888 #fff #fff #888; border-radius:0; box-shadow:none; background:#fff; color:#000; padding:1px 2px; font:400 13px Arial,sans-serif; }
 .employee-record-screen .er-rates-screen textarea { resize:none; }
+.employee-record-screen .er-rates-screen select { appearance:none!important; -webkit-appearance:none!important; padding-right:21px!important; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='22'%3E%3Cpath fill='white' stroke='%23bdbdbd' d='M.5.5h17v21H.5z'/%3E%3Cpath d='m5 9 4 4 4-4' fill='none' stroke='%23777777'/%3E%3C/svg%3E")!important; background-repeat:no-repeat!important; background-position:right center!important; background-size:18px 22px!important; }
 .employee-record-screen .er-rates-screen input[type=checkbox] { appearance:auto; width:13px; height:13px; min-height:0; margin:0; }
 .employee-record-screen .er-rates-screen button { box-sizing:border-box; height:26px; min-height:0; padding:1px 6px; border:2px solid!important; border-color:#fff #777 #777 #fff!important; border-radius:0; background:#f0f0f0!important; color:#000!important; box-shadow:none; opacity:1; font:400 13px Arial,sans-serif; }
 .employee-record-screen .er-rates-left { position:absolute; left:0; top:7px; width:775px; height:481px; border-right:1px solid #fff; padding:0; }
@@ -15853,6 +15968,18 @@ table[data-column-resize-id] > thead > tr > th > a { overflow:hidden; text-overf
 .employee-record-screen .er-rates-screen .er-rate-margin, .employee-record-screen .er-rates-screen .er-rate-clear { height:38px; font:700 11px/14px Arial,sans-serif; }
 .employee-record-screen .er-rate-clear { top:176px; }
 .employee-record-screen .er-vacation-history { position:absolute; left:282px; top:140px; width:57px; }
+.employee-record-screen .er-rates-screen .er-rate-line > button[data-action-status],
+.employee-record-screen .er-rates-screen .er-vacation-history { box-sizing:border-box; width:57px; min-width:57px; padding:1px 4px!important; text-align:center; }
+.employee-record-screen .er-vacation-history::before,
+.employee-record-screen .er-vacation-history::after { content:""; position:absolute; left:-1px; width:28px; height:28px; border-right:1px solid #3535ff; pointer-events:none; }
+.employee-record-screen .er-vacation-history::before { bottom:calc(100% + 12px); border-top:1px solid #3535ff; }
+.employee-record-screen .er-vacation-history::before,
+.employee-record-screen .er-vacation-history::after,
+.employee-record-screen .er-rate-agency::before,
+.employee-record-screen .er-rate-agency::after { border-color:#000080!important; }
+.employee-record-screen .er-vacation-history::after { top:calc(100% + 12px); height:40px; border-bottom:1px solid #3535ff; }
+.employee-record-screen .er-rate-agency::before { content:""; position:absolute; left:282px; top:13px; width:16px; border-top:1px solid #3535ff; }
+.employee-record-screen .er-rate-agency::after { content:""; position:absolute; left:363px; top:13px; width:32px; height:14px; border-top:1px solid #3535ff; border-right:1px solid #3535ff; }
 .employee-record-screen .er-admin-notes { position:absolute; left:-1px; top:408px; width:385px; display:flex; flex-direction:column; align-items:flex-start; gap:7px; }
 .employee-record-screen .er-admin-notes textarea { width:385px; height:98px; min-height:98px; }
 .employee-record-screen .er-rates-extra { position:absolute; left:415px; top:0; width:340px; display:flex; flex-direction:column; gap:2px; }
@@ -16004,6 +16131,27 @@ table[data-column-resize-id] > thead > tr > th > a { overflow:hidden; text-overf
 .employee-record-screen .er-sales-screen .er-sales-address label { grid-template-columns:95px 194px 26px; }
 .employee-record-screen .er-sales-screen .er-sales-address label button { position:static; width:26px; height:26px; padding:0; margin-left:30px; }
 .employee-record-screen .er-sales-screen .er-sales-primary-email { position:absolute; left:416px; top:499px; width:69px; }
+/* Sales reference: preserve the existing panels and refine their internal spacing. */
+.employee-record-screen .er-sales-screen select { appearance:none!important; -webkit-appearance:none!important; padding-right:21px!important; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='22'%3E%3Cpath fill='white' stroke='%23bdbdbd' d='M.5.5h17v21H.5z'/%3E%3Cpath d='m5 9 4 4 4-4' fill='none' stroke='%23777777'/%3E%3C/svg%3E")!important; background-repeat:no-repeat!important; background-position:right center!important; background-size:18px 22px!important; }
+.employee-record-screen .er-sales-screen .er-sales-phone-head,
+.employee-record-screen .er-sales-screen .er-sales-phone-row { grid-template-columns:18px 20px 98px 66px 52px 88px 194px 34px 80px 52px 88px 68px 158px; transform-origin:top left; }
+.employee-record-screen .er-sales-screen .er-sales-phone-row > button,
+.employee-record-screen .er-sales-screen .er-sales-home-row > button { justify-self:end; margin-right:6px; padding:0!important; }
+.employee-record-screen .er-sales-screen .er-sales-phone-row > input:not([type=radio]):not([type=checkbox]) { width:calc(100% - 6px); }
+.employee-record-screen .er-sales-screen .er-sales-homes { top:300px; }
+.employee-record-screen .er-sales-screen .er-sales-home-head,
+.employee-record-screen .er-sales-screen .er-sales-home-row { grid-template-columns:18px 20px 98px 66px 68px 158px; }
+.employee-record-screen .er-sales-screen .er-sales-phone-actions button { padding:1px 2px!important; }
+.employee-record-screen .er-sales-screen .er-sales-text { left:219px; top:144px; }
+.employee-record-screen .er-sales-screen .er-sales-text .er-sales-text-search,
+.employee-record-screen .er-sales-screen .er-sales-text .er-sales-text-copy { position:absolute; top:35px; width:26px; height:26px; padding:0!important; display:flex; align-items:center; justify-content:center; }
+.employee-record-screen .er-sales-screen .er-sales-text .er-sales-text-search { left:398px; }
+.employee-record-screen .er-sales-screen .er-sales-text .er-sales-text-copy { left:430px; }
+.employee-record-screen .er-sales-screen .er-sales-emails button { padding:0!important; }
+.employee-record-screen .er-sales-screen button[aria-label^="Copy"] { padding:0!important; display:inline-flex; align-items:center; justify-content:center; }
+.employee-record-screen .er-sales-screen button[aria-label^="Copy"] svg { width:16px!important; height:16px!important; min-width:16px; flex:none; margin:0; }
+.employee-record-screen .er-sales-screen .er-sales-phones > p::before,
+.employee-record-screen .er-sales-screen .er-sales-homes > p::before { content:""; position:absolute; left:-36px; bottom:6px; width:31px; height:25px; border-left:1px solid #000080; border-bottom:1px solid #000080; }
 
 .employee-record-screen .er-sales-screen .er-sales-phone-actions button { padding:1px 2px; font:400 11px/14px Arial,sans-serif; }
 .employee-record-screen .er-sales-screen .er-sales-address > button { height:66px; padding:4px 6px; white-space:normal; font:400 13px/18px Arial,sans-serif; }
@@ -17859,14 +18007,21 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
 .employee-record-screen .er-view-tabs button.active[data-action-status] { background:#e8e9eb!important; color:#000!important; }
 .employee-record-screen .er-tools { position:relative; height:77px; display:flex; align-items:center; padding:7px 10px; gap:10px; }
 .employee-record-screen .er-audit { width:265px; height:65px; margin-right:17px; background:white; overflow:auto; }
+.employee-record-screen .er-audit { display:flex; overflow:hidden; border:1px solid #999; box-sizing:border-box; }
+.employee-record-screen .er-audit-grid { flex:1; min-width:0; overflow:hidden; }
+.employee-record-screen .er-audit-scrollbar { width:16px; flex:none; display:flex; flex-direction:column; align-items:center; background:#eee; border-left:1px solid #aaa; }
+.employee-record-screen .er-audit-scrollbar span,.employee-record-screen .er-audit-scrollbar i { display:block; width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; }
+.employee-record-screen .er-audit-scrollbar span { margin:3px 0 4px; border-bottom:6px solid #666; }
+.employee-record-screen .er-audit-scrollbar i { margin-top:auto; margin-bottom:3px; border-top:6px solid #666; }
+.employee-record-screen .er-audit-scrollbar::before { content:""; position:absolute; margin-top:17px; width:8px; height:19px; border-radius:5px; background:#777; }
 .employee-record-screen .er-audit th,.employee-record-screen .er-audit td { height:16px; padding:0 4px; border:1px solid #aaa; font:11px/14px Calibri,"Segoe UI",Arial,sans-serif; }
 .employee-record-screen .er-audit th { background:#bfbfbf; font-weight:400; }
 .employee-record-screen .er-tools > button:not(.er-delete) { align-self:center; }
 .employee-record-screen .er-job-application-link { height:25px; padding:2px 10px; border:1px solid; border-color:#fff #777 #777 #fff; background:#eee; color:#000; text-decoration:none; }
-.employee-record-screen .er-copy { position:absolute; left:1020px; top:27px; width:216px; gap:0; }
+.employee-record-screen .er-copy { position:absolute; left:1020px; top:14px; width:216px; gap:2px; z-index:2; }
 .employee-record-screen .er-copy button { width:185px; padding:0 5px; }
-.employee-record-screen .er-copy input { width:216px; background:#e8e9eb; }
-.employee-record-screen .er-delete { position:absolute; right:80px; top:7px; color:red!important; }
+.employee-record-screen .er-copy input { box-sizing:border-box!important; width:216px!important; max-width:none; margin-top:2px; background:#e8e9eb!important; color:#000!important; }
+.employee-record-screen .er-tools > button.er-delete[data-action-status] { position:absolute; right:80px; top:7px; color:#d00!important; }
 .er-header-icons { position:absolute; right:7px; top:7px; display:flex; gap:5px; }
 .employee-record-screen .er-header-icons > button { width:31px; height:31px; padding:0; display:flex; align-items:center; justify-content:center; border:3px solid #20b63c!important; background:#fff!important; }
 .employee-record-screen .er-header-icons > button:last-of-type { border-color:#e5b900!important; color:blue!important; }
@@ -17913,7 +18068,7 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
 .ei-mobile-row > input[type=checkbox],.ei-home-row > input[type=checkbox] { justify-self:center; }
 .ei-mobile-row > b,.ei-home-row > b { display:flex; align-items:center; justify-content:center; height:27px; margin-right:2px; font-weight:400; }
 .ei-mobile-row:first-of-type > b,.ei-home-row:nth-child(3) > b { background:#000; color:#fff; }
-.employee-record-screen .ei-mobile-row > button,.employee-record-screen .ei-home-row > button { width:25px; height:25px; padding:1px; justify-self:end; margin-right:6px; display:flex; align-items:center; justify-content:center; color:navy!important; }
+.employee-record-screen .ei-mobile-row > button,.employee-record-screen .ei-home-row > button { width:25px; height:25px; padding:1px; justify-self:end; margin-right:6px; display:flex; align-items:center; justify-content:center; color:#000!important; }
 .ei-verify { display:flex; align-items:center; gap:6px; }
 .employee-record-screen .ei-verify input:not([type=checkbox]) { min-width:0; width:43px; }
 .ei-phone-actions { position:absolute; left:-60px; top:28px; display:flex; flex-direction:column; gap:17px; width:53px; }
@@ -18407,17 +18562,22 @@ html.mc-column-dragging, html.mc-column-dragging * { user-select: none !importan
 .employee-info-full .eif-address button,.employee-info-full .eif-mail-address button { position:absolute; right:0; top:0; width:26px; height:26px; padding:3px; }
 .employee-info-full .eif-mail-toggle { position:absolute; top:287px; left:7px; display:flex; align-items:center; gap:12px; }
 .employee-info-full .ei-mobile { left:497px; top:6px; }
-.employee-info-full .ei-mobile-head,.employee-info-full .ei-mobile-row { grid-template-columns:14px 20px 98px 60px 45px 82px 194px 26px 80px 45px 82px 50px 158px; }
+.employee-info-full .ei-mobile-head,.employee-info-full .ei-mobile-row { grid-template-columns:14px 20px 98px 60px 45px 82px 194px 26px 80px 45px 82px 50px 183px; }
+.employee-info-full .ei-mobile-head > strong:last-child,
+.employee-info-full .ei-mobile-row > .ei-verify { margin-left:25px; }
 .employee-info-full .ei-mobile-head strong:nth-child(7) { grid-column:7/9; }
 .employee-info-full .ei-mobile-head>span:nth-child(8) { display:none; }
 .employee-info-full .ei-home { left:497px; top:274px; }
+.employee-info-full .ei-mobile > p,
+.employee-info-full .ei-home > p,
+.employee-info-full .eif-text > p { color:navy; }
 .employee-info-full .eif-text { position:absolute; left:713px; top:149px; width:518px; height:102px; padding:4px 7px; border:1px solid; border-color:#fff #999 #999 #fff; }
 .employee-info-full .eif-text header { display:flex; gap:20px; align-items:center; height:23px; }
 .employee-info-full .eif-text header label { display:flex; gap:6px; align-items:center; }
 .employee-info-full .eif-text>div { display:flex; gap:6px; align-items:center; }
 .employee-info-full .eif-text textarea { width:386px; height:42px; resize:none; }
 .employee-info-full .eif-text button { height:26px; padding:1px 6px; white-space:nowrap; }
-.employee-info-full .eif-text p { margin:3px 0 0; color:#243fe1; white-space:nowrap; }
+.employee-info-full .eif-text p { margin:3px 0 0; color:navy; white-space:nowrap; }
 .employee-info-full .eif-no-communication { position:absolute; left:1103px; top:313px; display:flex; align-items:center; gap:10px; }
 .employee-info-full .eif-no-communication>input:not([type=checkbox]) { width:38px; height:26px; }
 .employee-info-full .eif-no-communication>input:last-child { width:82px; }
@@ -23831,3 +23991,85 @@ main:has(.ac-customer-search-page:not(.ac-employee-search-page)) {
   width:120px;
   min-width:120px;
 }
+
+.ac-tracking-page .ac-btn.ac-tracking-health-ins-btn, .ac-tracking-page .ac-btn.ac-tracking-health-ins-btn:hover { color:#f00!important; }
+
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern button.ac-btn.ac-tracking-health-ins-btn[data-action-status],
+.ac-tracking-page.ac-tracking-reference .ac-tracking.ac-tracking--modern button.ac-btn.ac-tracking-health-ins-btn[data-action-status]:is(:hover,:focus,:active,:disabled) {
+  color:#f00!important;
+}
+
+/* Employee profile: Access 01 Empl Info reference proportions. */
+.employee-record-screen:has(.employee-info-full) { font:400 14px Calibri,"Segoe UI",Arial,sans-serif; background:#d8d8d8; }
+.employee-record-screen:has(.employee-info-full) .er-topline { height:216px; min-height:216px; flex-shrink:0; grid-template-columns:447px minmax(1471px,1fr); border-bottom:1px solid #eee; }
+.employee-record-screen:has(.employee-info-full) .er-toolbar { height:188px; }
+.employee-record-screen .employee-info-full { min-height:800px; }
+.employee-info-full .ei-mobile { left:497px; top:6px; }
+.employee-info-full .ei-home { left:497px; top:274px; }
+.employee-info-full .ei-mobile-head > strong:nth-child(3),
+.employee-info-full .ei-home-head > strong:nth-child(3) { grid-column:3 / 5; }
+.employee-info-full .ei-mobile-head > span:nth-child(4),
+.employee-info-full .ei-home-head > span:nth-child(4) { display:none; }
+.employee-info-full .ei-mobile-row > b,
+.employee-info-full .ei-home-row > b { background:transparent; color:#000; }
+.employee-info-full .ei-mobile-row > b.is-primary,
+.employee-info-full .ei-home-row > b.is-primary { background:#000; color:#fff; }
+.employee-record-screen .employee-info-full .ei-phone-actions { left:-63px; }
+.employee-record-screen .employee-info-full .ei-phone-actions button { font:700 12px/14px Calibri,"Segoe UI",Arial,sans-serif; }
+.employee-info-full .ei-mobile-hint,
+.employee-info-full .ei-home > p { position:relative; margin-left:-39px!important; padding-left:35px; }
+.employee-info-full .ei-mobile-hint::before,
+.employee-info-full .ei-home > p::before { content:""; position:absolute; left:0; bottom:7px; width:31px; height:25px; border-left:1px solid #3535ff; border-bottom:1px solid #3535ff; }
+.employee-info-full .eif-address { top:185px; }
+.employee-info-full .eif-mail-toggle { top:287px; }
+.employee-info-full .eif-mail-address { top:313px; }
+.employee-info-full .eif-text { top:149px; }
+.employee-info-full .eif-no-communication { top:313px; }
+.employee-info-full .eif-email { top:421px; }
+.employee-info-full .eif-notes { top:470px; }
+.employee-info-full .eif-notes header button { margin-left:380px; }
+.employee-info-full .eif-folder { top:633px; }
+.employee-info-full input[type=radio], .employee-info-full input[type=checkbox] { accent-color:#000; width:12px; height:12px; min-height:0; padding:0; margin:0; }
+.employee-record-screen .employee-info-full input:not([type=checkbox]):not([type=radio]),
+.employee-record-screen .employee-info-full select,
+.employee-record-screen .employee-info-full textarea { box-sizing:border-box; height:26px; border:2px solid; border-color:#999 #fff #fff #999; border-radius:0; padding:1px 3px; font:400 14px Calibri,"Segoe UI",Arial,sans-serif; color:#000; }
+.employee-record-screen .employee-info-full input.is-muted { background:#d8d8d8; }
+.employee-record-screen .employee-info-full .eif-text textarea { height:42px; }
+.employee-record-screen .employee-info-full .eif-notes footer input { height:16px; font-size:11px; }
+
+/* Keep the employee notes datasheet and record bar inside their panel. */
+.employee-record-screen .employee-info-full .eif-notes-grid {
+  box-sizing:border-box;
+  width:100%;
+  overflow-x:hidden;
+  overflow-y:auto;
+}
+.employee-record-screen .employee-info-full .eif-notes table {
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  table-layout:fixed;
+}
+.employee-record-screen .employee-info-full .eif-notes :is(th,td) { box-sizing:border-box; }
+.employee-record-screen .employee-info-full .eif-notes footer {
+  display:flex;
+  align-items:center;
+  gap:5px;
+  box-sizing:border-box;
+  height:17px;
+  min-height:17px;
+  padding:0 3px;
+  overflow:hidden;
+  white-space:nowrap;
+}
+.employee-record-screen .employee-info-full .eif-notes footer input {
+  flex:0 0 71px;
+  width:71px;
+  height:16px;
+  min-height:16px;
+  margin:0;
+  padding:0 3px;
+  border:1px solid #aaa;
+  font:11px/14px Calibri,Arial,sans-serif;
+}
+.employee-record-screen .employee-info-full .eif-notes-no-filter { color:#999; padding:0 8px; border-left:1px solid #aaa; }

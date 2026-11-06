@@ -861,7 +861,7 @@ export function TrackingScreen({
           <option value="">&lt;Reports&gt;</option>
           {TRACKING_REPORT_OPTIONS.map(option => <option key={option.label} value={option.href}>{option.label}</option>)}
         </select>
-        <AccessButton data-action-status="linked" onClick={() => router.push("/employee-health-insurance-by-month")}>Health Ins</AccessButton>
+        <AccessButton className="ac-tracking-toolbar-alert ac-tracking-health-ins-btn" data-action-status="linked" onClick={() => router.push("/employee-health-insurance-by-month")}><span style={{color:"#ff0000"}}>Health Ins</span></AccessButton>
         <AccessButton data-action-status="linked" className="ac-tracking-toolbar-alert ac-tracking-toolbar-bonus" onClick={() => router.push("/employee-bonus-expense-report")}>Bonus Exp</AccessButton>
         <select
           className="ac-select"

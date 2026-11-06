@@ -685,7 +685,7 @@ export function SimpleJobTabPlaceholder({ label }: { label: string }) {
       <span className="text-[10px] text-slate-500">{label} tools:</span>
       <AccessButton data-action-status="missing">Connection Status</AccessButton>
       <AccessButton data-action-status="missing">Office Staff</AccessButton>
-      <AccessButton data-action-status="missing">Health Ins</AccessButton>
+      <AccessButton className="ac-tracking-health-ins-btn" data-action-status="missing">Health Ins</AccessButton>
       <AccessButton data-action-status="missing">Deleted Employees</AccessButton>
     </div>
   );

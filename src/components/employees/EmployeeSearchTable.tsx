@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import { createPortal } from "react-dom";
+import { useRouter } from "next/navigation";
 import { CustomerNameColumnHeader } from "../customers/CustomerNameColumnHeader";
 import { compareCustomerNameValues } from "@/lib/customerNameSearchColumns";
 import { EmployeeNameCell } from "./EmployeeNameCell";
@@ -50,6 +51,7 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
   const [localLayout, setLocalLayout] = useState(employeeSearchDefaultPresetLayout);
   const layout = saved?.layout ?? localLayout;
   const setLayout = saved?.setLayout ?? setLocalLayout;
+  const router = useRouter();
   const isDefaultView = !saved || saved.slot === 1;
   const isViews2Default = saved?.slot === 31;
   const isBlankView = saved?.slot === 50 || saved?.slot === 53;
@@ -213,7 +215,7 @@ export function EmployeeSearchTable({ employees: sourceEmployees, loadTiming, re
                     }
                     if (col.key === "EmFirstName" || col.key === "EmLastName") {
                       return (
-                        <td data-employee-column={col.key} key={col.key} className="font-semibold">
+                        <td data-employee-column={col.key} key={col.key} className="font-semibold" title="Double-click to open employee" onDoubleClick={() => router.push(`/employees/${row.employeeId}`)}>
                           <EmployeeNameCell employeeId={row.employeeId} name={col.key === "EmFirstName" ? row.firstName : row.lastName} />
                         </td>
                       );

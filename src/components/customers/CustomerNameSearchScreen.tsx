@@ -384,7 +384,7 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
                   const value = variant === "customers" && column.key === "noCommunication"
                     ? (["y", "yes", "true", "1", "x"].includes(rawValue.trim().toLowerCase()) ? "X" : "")
                     : rawValue;
-                  return <span key={column.key} data-column={column.key} title={value} onClick={() => { if (column.key !== "select") onSelectedColumnChange?.(column.key); }}>
+                  return <span key={column.key} data-column={column.key} title={value} onDoubleClick={variant === "customers" && column.key === "customerName" ? () => router.push(`/customers/${customer.customerId}`) : undefined} onClick={() => { if (column.key !== "select") onSelectedColumnChange?.(column.key); }}>
                     {column.key === "select" && onSelectedCustomerIdsChange
                       ? <button type="button" aria-label={`${selectedCustomerIds?.includes(customer.customerId) ? "Deselect" : "Select"} ${customer.customerName}`}
                           aria-pressed={selectedCustomerIds?.includes(customer.customerId) ?? false}
@@ -399,7 +399,6 @@ export function CustomerNameSearchScreen({ initialCustomers, fetchedCount, initi
                       ? <input type="checkbox" aria-label={`${column.label} for ${customer.customerName}`} checked={["true", "1", "yes", "x"].includes(value.toLowerCase())} disabled />
                       : variant === "customers" && column.key === "customerName"
                       ? <span role="link" tabIndex={0} className="ac-customer-name-open" title="Double-click to open customer"
-                          onDoubleClick={() => router.push(`/customers/${customer.customerId}`)}
                           onKeyDown={event => { if (event.key === "Enter") { event.preventDefault(); router.push(`/customers/${customer.customerId}`); } }}>{value}</span>
                       : (column.key === "futureCallHistory" || column.key === "lastActionNote") && value
                       ? <button type="button" style={{ border: 0, padding: 0, background: "transparent", color: "inherit", font: "inherit", cursor: "pointer", maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
