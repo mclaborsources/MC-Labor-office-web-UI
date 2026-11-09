@@ -49,6 +49,13 @@ export function CachedCustomersPage({ scope, params }: {
   }
 
   if (error) return <div><ErrorAlert title="Could not load customers" message={error} /><button type="button" onClick={refresh}>Retry</button></div>;
-  if (!result || result.key !== key) return <Spinner label="Loading customers…" />;
-  return <CustomerSearchScreen {...result.data} onRefresh={refresh} />;
+  if (!result) return <Spinner label="Loading customers…" />;
+  const pending=result.key!==key;
+  const profileType=params.profileType??"All";
+  const listNumber=Number(params.listNumber)||0;
+  return <CustomerSearchScreen {...result.data}
+    currentProfileType={profileType} currentListNumber={listNumber}
+    profileTypeLoading={pending && profileType!==(result.data.currentProfileType??"All")}
+    listLoading={pending && listNumber!==(result.data.currentListNumber??0)}
+    onRefresh={refresh} />;
 }

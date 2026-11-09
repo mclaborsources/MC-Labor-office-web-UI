@@ -72,7 +72,7 @@ function phoneLikePrefixes(value: string | undefined): { raw: string | null; for
 // ---------------------------------------------------------------------------
 
 const CUSTOMER_SEARCH_LIST_SQL = `
-WITH FilteredCustomers AS (
+WITH EligibleCustomers AS (
   SELECT
     c.CustomerID, c.CustBusName, c.CustomerTypeID, c.SalesmanID, c.CustStatusID,
     c.Phone, c.CustEmail, c.Street, c.City, c.State, c.Zip,
@@ -81,7 +81,7 @@ WITH FilteredCustomers AS (
     c.InternetSalesReadyID, c.InternetSalesReadyUserName, c.InternetSalesReadyTimestamp,
     c.SalesHistoryStatusID,
     c.FutureCall, c.FutureCallUserName, c.FutureCallTimestamp,
-    COUNT_BIG(*) OVER () AS TotalCount
+    c.CustomerProfileTypeID AS ListProfileTypeID
   FROM tblCustomer c WITH (NOLOCK)
   WHERE
     (@searchPat IS NULL
@@ -127,6 +127,11 @@ WITH FilteredCustomers AS (
     ))
     AND (@salesmanId     IS NULL OR c.SalesmanID     = @salesmanId)
     AND (@customerTypeId IS NULL OR c.CustomerTypeID = @customerTypeId)
+    AND (@listNumber IS NULL OR (
+      ISNULL(c.CustomerNoCommunication,0)=0
+      AND c.CustomerTypeID NOT IN (13,17,27,36,37,38)
+      AND NOT EXISTS (SELECT 1 FROM tblCustomerWeeks lw WITH (NOLOCK) WHERE lw.CustomerID=c.CustomerID AND lw.WeekEndingDate IS NOT NULL)
+    ))
     AND (@profileType IS NULL OR EXISTS (
       SELECT 1 FROM tblPullDownCustomerProfileTypes pt WITH (NOLOCK)
       WHERE pt.PullDownCustomerProfileTypeID=c.CustomerProfileTypeID
@@ -138,6 +143,13 @@ WITH FilteredCustomers AS (
     __CUSTOMER_ID_FILTER__
     AND LEN(LTRIM(RTRIM(ISNULL(c.CustBusName, '')))) > 1
     AND c.CustBusName NOT IN ('-', '--', '---')
+),
+RankedCustomers AS (
+  SELECT *,ROW_NUMBER() OVER (ORDER BY CAST(FutureCallTimestamp AS DATE),CustBusName,CustomerID) AS ListRank FROM EligibleCustomers
+),
+FilteredCustomers AS (
+  SELECT *,COUNT_BIG(*) OVER () AS TotalCount FROM RankedCustomers
+  WHERE @listNumber IS NULL OR ListRank BETWEEN ((@listNumber-1)*250+1) AND (@listNumber*250)
 )
 SELECT
   c.TotalCount,
@@ -261,9 +273,9 @@ const CUSTOMER_SEARCH_SORT_COLUMNS: Record<string, string> = {
   contactCount: "ContactCount",
 };
 
-function customerSearchSql(sortKey?: string, sortDirection?: string, includeTotal = true, customerIds?: number[]): string {
-  const column = CUSTOMER_SEARCH_SORT_COLUMNS[sortKey ?? ""] ?? "c.CustBusName";
-  const direction = sortDirection === "desc" ? "DESC" : "ASC";
+function customerSearchSql(sortKey?: string, sortDirection?: string, includeTotal = true, customerIds?: number[], listNumber?: number): string {
+  const column = listNumber ? "c.ListRank" : CUSTOMER_SEARCH_SORT_COLUMNS[sortKey ?? ""] ?? "c.CustBusName";
+  const direction = !listNumber && sortDirection === "desc" ? "DESC" : "ASC";
   const order = `${column} ${direction}`;
   let sqlText = CUSTOMER_SEARCH_LIST_SQL
     .replace("__CUSTOMER_SORT__", order)
@@ -638,6 +650,7 @@ function emptyCustomerSearchFields(): Omit<
 
 export interface GetCustomersParams {
   profileType?:string;
+  listNumber?:number;
   search?: string;
   customerName?: string;
   customerPhone?: string;
@@ -714,7 +727,7 @@ export async function getCustomerSearchRows(
   }
 
   const [rows, typeMap, salesmanMap, statusMap] = await Promise.all([
-    queryReadOnly<CustomerSearchListRow>(customerSearchSql(params.sortKey, params.sortDirection, params.includeTotal, customerIds), [
+    queryReadOnly<CustomerSearchListRow>(customerSearchSql(params.sortKey, params.sortDirection, params.includeTotal, customerIds, params.listNumber), [
       { name: "searchPat", value: searchPat },
       { name: "searchId", value: searchId },
       { name: "customerNamePat", value: customerNamePat },
@@ -730,6 +743,7 @@ export async function getCustomerSearchRows(
       { name: "contactTextPat", value: contactTextPat },
       { name: "salesmanId", value: salesmanId },
       { name: "customerTypeId", value: customerTypeId },
+      { name:"listNumber",value:Number.isInteger(params.listNumber) && params.listNumber!>=1 && params.listNumber!<=6 ? params.listNumber : null },
       { name:"profileType",value:params.profileType && params.profileType!=="All" ? params.profileType : null },
       { name: "statusId", value: statusId },
       { name: "city", value: city },

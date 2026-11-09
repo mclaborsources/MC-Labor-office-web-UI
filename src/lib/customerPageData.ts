@@ -6,6 +6,7 @@ export async function loadCustomerPageData(params: Record<string, string | undef
   const page = Math.max(1, Number(params.page) || 1);
   const pageSize = Math.max(1, Math.min(1_000, Number(params.pageSize) || 1_000));
   const filters = {
+    listNumber:Math.max(0,Math.min(6,Math.floor(Number(params.listNumber)||0)))||undefined,
     profileType:params.profileType??"All",
     search: params.search ?? "", salesmanId: params.salesmanId ?? "",
     customerTypeId: params.customerTypeId ?? "", statusId: params.statusId ?? "",
@@ -47,6 +48,7 @@ cities: filterOptions.cities,
 states: filterOptions.states,
 customerUserFlagOptions: customerUserFlagOptions,
 lastActionUsers: lastActionUsers,
+currentListNumber:filters.listNumber??0,
 currentProfileType:filters.profileType,
 currentSearch: filters.search,
 currentSalesmanId: filters.salesmanId,

@@ -24315,6 +24315,12 @@ main:has(.ac-customer-search-page:not(.ac-employee-search-page)) {
   min-width:0;
 }
 
+/* Keep the busy cursor visible over controls as well as the results. */
+.ac-customer-search-page:has([data-filter-loading="true"]),
+.ac-customer-search-page:has([data-filter-loading="true"]) * {
+  cursor:progress!important;
+}
+
 /* Customer profile shell matched to the full Access form reference. */
 .ac-customer-profile-page .ac-customer-sales-history .ac-customer-sales-history-status { box-sizing:border-box; flex:0 0 328px; width:328px; height:181px; padding:0; }
 .ac-customer-profile-page .ac-customer-sales-history .ac-customer-sales-history-status > label:not(:first-child) { position:absolute; left:12px; width:316px; margin:0; }

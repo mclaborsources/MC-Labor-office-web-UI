@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { filterCustomerList } from "@/lib/customerListFilter";
 import { useRouter } from "next/navigation";
 import { CustomerSavedViewsProvider } from "./CustomerSavedViews";
 import { CustomerSearchScreen } from "./CustomerSearchScreen";
@@ -128,7 +129,9 @@ export function CustomerSearch1Screen({ cacheScope = "default", customers: suppl
       && (!activeMultiFilter || activeMultiFilter.has(row.customerId))
       && (allIncluded || includedProfiles.some(profile => profileNamesMatch(profile, row.profileType ?? ""))));
   }, [customers, matchingIds, sidebarValues.customerName, includedProfiles, multiFilterIds]);
-  const [filteredCustomers, setFilteredCustomers] = useState<CustomerNameMatch[]>(candidateCustomers);
+  const [listNumber,setListNumber]=useState(0);
+  const [allFilteredCustomers, setFilteredCustomers] = useState<CustomerNameMatch[]>(candidateCustomers);
+  const filteredCustomers=useMemo(()=>filterCustomerList(allFilteredCustomers,listNumber),[allFilteredCustomers,listNumber]);
   useEffect(() => {
     const topFiltersChanged = previousFilters.current !== filters;
     previousFilters.current = filters;
@@ -153,6 +156,7 @@ export function CustomerSearch1Screen({ cacheScope = "default", customers: suppl
     setViews3UpdateVersion(version => version + 1);
   };
   const clear = () => {
+    setListNumber(0);
     setFilters({});
     setViews3Filters({});
     setSidebarValues({});
@@ -267,6 +271,7 @@ export function CustomerSearch1Screen({ cacheScope = "default", customers: suppl
   return <CustomerSavedViewsProvider><CustomerSearchScreen onShowAllColumns={() => setShowColumnsVersion(value => value + 1)} onResetColumnOrder={() => { resetCustomerColumnOrder("customers"); setResetOrderVersion(value => value + 1); }} onRefresh={() => { void refresh().catch(error => setFetchError(error instanceof Error ? error.message : "Refresh failed.")); }} onUpdateColumn={updateColumnFromDatabase} onUpdateAll={updateAllFromDatabase} selectedCustomerColumn={selectedColumnKey} onGoToColumn={goToColumn} visibleCustomerColumns={visibleCustomerColumns} onExportView={exportCurrentView} title="Customer Search" basePath="/customer-search-1"
     customers={[]} loadError={fetchError || loadError} {...options} customerUserFlagOptions={Array.from({ length: 8 }, () => [])} lastActionUsers={lastActionUsers}
     views3Filters={views3Filters} onViews3FiltersChange={updateViews3Filters}
+    currentListNumber={listNumber} onListNumberChange={setListNumber}
     adminSelectedCount={selectedCustomerIds.length} adminIncludeProfiles={includedProfiles}
     onAdminIncludeProfilesChange={setIncludedProfiles} onAdminTransfer={transferSelectedCustomers}
     selectedCustomerNames={selectedCustomerNames} onApplyMultiFilter={() => setMultiFilterIds([...selectedCustomerIds])}

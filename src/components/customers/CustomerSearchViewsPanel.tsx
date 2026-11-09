@@ -29,6 +29,10 @@ import type { CustomerSearchViews3Filters } from "@/lib/customerSearch1Filters";
 import { CUSTOMER_NAME_SEARCH_COLUMNS } from "@/lib/customerNameSearchColumns";
 
 interface CustomerSearchViewsPanelProps {
+  profileTypeLoading?:boolean;
+  listLoading?:boolean;
+  listNumber?:number;
+  onListNumberChange?:(list:number)=>void;
   profileType?: string;
   onProfileTypeChange?: (profile:string)=>void;
   filterRow?: ReactNode;
@@ -376,13 +380,13 @@ function PresetGrid({
   );
 }
 
-function ViewsTab({profileType="All",onProfileTypeChange}:UserSettingsTabProps) {
+function ViewsTab({profileTypeLoading=false,listLoading=false,listNumber=0,onListNumberChange,profileType="All",onProfileTypeChange}:UserSettingsTabProps) {
   return (
-    <div className="ac-customer-search-views-preset ac-search-views-tab-pane">
+    <div className="ac-customer-search-views-preset ac-search-views-tab-pane" data-filter-loading={profileTypeLoading || listLoading ? "true" : undefined}>
       <PresetGrid grid={CUSTOMER_SEARCH_PRESET_GRID} />
       <div className="ac-customer-search-views-footer shrink-0">
         <div className="ac-customer-search-filter-box-row">
-          <div className="ac-customer-search-profile-type">
+          <div className="ac-customer-search-profile-type" aria-busy={profileTypeLoading}>
             <span className="ac-flabel">Profile Type:</span>
             {["All", "Customer Search", "Spare 1", "Spare 2", "Spare 3"].map((label) => (
               <label key={label} className="ac-customer-search-check">
@@ -391,11 +395,11 @@ function ViewsTab({profileType="All",onProfileTypeChange}:UserSettingsTabProps) 
               </label>
             ))}
           </div>
-          <div className="ac-customer-search-list-box">
+          <div className="ac-customer-search-list-box" aria-busy={listLoading}>
             <span className="ac-flabel">List:</span>
             {["None", "1", "2", "3", "4", "5", "6"].map((label, i) => (
               <label key={label} className="ac-customer-search-radio">
-                <input type="radio" name="cust-list" disabled defaultChecked={i === 0} />
+                <input type="radio" name="cust-list" checked={listNumber === i} onChange={() => onListNumberChange?.(i)} />
                 <span>{label}</span>
               </label>
             ))}
@@ -611,7 +615,7 @@ function InternetSearchTab() {
 
 type UserSettingsTabProps = Pick<
   CustomerSearchViewsPanelProps,
-  "profileType" | "onProfileTypeChange" | "customerUserFlagOptions" | "lastActionUsers" | "views3Filters" | "onViews3FiltersChange" | "userSettingsSelectedCount" | "onApplyUserFlag" | "onGoToColumn" | "visibleCustomerColumns" | "onExportView"
+  "profileTypeLoading" | "listLoading" | "listNumber" | "onListNumberChange" | "profileType" | "onProfileTypeChange" | "customerUserFlagOptions" | "lastActionUsers" | "views3Filters" | "onViews3FiltersChange" | "userSettingsSelectedCount" | "onApplyUserFlag" | "onGoToColumn" | "visibleCustomerColumns" | "onExportView"
 >;
 
 function UserSettingsTab({ customerUserFlagOptions, lastActionUsers, userSettingsSelectedCount = 0, onApplyUserFlag }: UserSettingsTabProps) {
@@ -1212,6 +1216,10 @@ export function CustomerSearchViewsPanel(props: CustomerSearchViewsPanelProps) {
                 onAdminIncludeProfilesChange={props.onAdminIncludeProfilesChange}
                 onAdminTransfer={props.onAdminTransfer}
               /> : activeTab === 7 ? <RayTab selectedCustomerIds={props.selectedCustomerIds} onRayAction={props.onRayAction} /> : TabContent && <TabContent
+                profileTypeLoading={props.profileTypeLoading}
+                listLoading={props.listLoading}
+                listNumber={props.listNumber}
+                onListNumberChange={props.onListNumberChange}
                 profileType={props.profileType}
                 onProfileTypeChange={props.onProfileTypeChange}
                 customerUserFlagOptions={customerUserFlagOptions}

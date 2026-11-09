@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState, useTransition, type ReactNode } from "react";
 import { HelpCircle, Table2 } from "lucide-react";
 import { AccessButton } from "@/components/access/AccessButton";
 import { CustomerSearchViewsPanel } from "@/components/customers/CustomerSearchViewsPanel";
@@ -24,6 +24,10 @@ import { CUSTOMER_ADMIN_INCLUDE_PROFILES } from "@/lib/customerSearchViewsLayout
 import { CUSTOMER_NAME_SEARCH_COLUMNS } from "@/lib/customerNameSearchColumns";
 
 export interface CustomerSearchScreenProps {
+  profileTypeLoading?:boolean;
+  listLoading?:boolean;
+  currentListNumber?:number;
+  onListNumberChange?:(list:number)=>void;
   currentProfileType?:string;
   onRefresh?: () => void;
   onUpdateColumn?: (columnKey: string) => Promise<void> | void;
@@ -650,13 +654,20 @@ export function CustomerSearchScreen({
   onAdminTransfer,
   userSettingsSelectedCount,
   onApplyUserFlag,
+  profileTypeLoading=false,
+  listLoading=false,
+  currentListNumber=0,
+  onListNumberChange,
   currentProfileType="All",
 }: CustomerSearchScreenProps) {
   const router = useRouter();
+  const [profilePending,startProfileTransition]=useTransition();
+  const [listPending,startListTransition]=useTransition();
   const [hoveredColumn, setHoveredColumn] = useState("");
   const [columnFilters, setColumnFilters] = useState<Partial<Record<CustomerSearchColumnKey, string[]>>>({});
   const paginationQuery = Object.fromEntries(
     Object.entries({
+      listNumber:currentListNumber?String(currentListNumber):"",
       profileType:currentProfileType,
       search: currentSearch,
       salesmanId: currentSalesmanId,
@@ -720,11 +731,15 @@ export function CustomerSearchScreen({
               />
 
               <CustomerSearchViewsPanel
+                profileTypeLoading={profileTypeLoading || profilePending}
+                listLoading={listLoading || listPending}
+                listNumber={currentListNumber}
+                onListNumberChange={list=>startListTransition(()=>{if(onListNumberChange){onListNumberChange(list);return;}const url=new URL(window.location.href);if(list)url.searchParams.set("listNumber",String(list));else url.searchParams.delete("listNumber");url.searchParams.delete("page");router.replace(url.pathname+url.search);})}
                 profileType={onAdminIncludeProfilesChange ? (adminIncludeProfiles?.length===1 ? (adminIncludeProfiles[0]==="Cust Search" ? "Customer Search" : adminIncludeProfiles[0]) : "All") : currentProfileType}
-                onProfileTypeChange={profile=>{
+                onProfileTypeChange={profile=>startProfileTransition(()=>{
                   if(onAdminIncludeProfilesChange) {onAdminIncludeProfilesChange(profile==="All" ? CUSTOMER_ADMIN_INCLUDE_PROFILES.flat().filter((name):name is NonNullable<typeof name>=>name!==null) : [profile==="Customer Search"?"Cust Search":profile]);return;}
                   const url=new URL(window.location.href); if(profile==="All")url.searchParams.delete("profileType");else url.searchParams.set("profileType",profile);url.searchParams.delete("page");router.replace(url.pathname+url.search);
-                }}
+                })}
                 filterRow={filterRow}
                 salesmen={salesmen}
                 customerTypes={customerTypes}
