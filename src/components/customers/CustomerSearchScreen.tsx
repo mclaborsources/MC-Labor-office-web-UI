@@ -20,9 +20,11 @@ import {
 import type { CustomerSearchRow } from "@/types/customer";
 import type { FilterOption } from "@/types/search";
 import type { CustomerSearchViews3Filters } from "@/lib/customerSearch1Filters";
+import { CUSTOMER_ADMIN_INCLUDE_PROFILES } from "@/lib/customerSearchViewsLayout";
 import { CUSTOMER_NAME_SEARCH_COLUMNS } from "@/lib/customerNameSearchColumns";
 
 export interface CustomerSearchScreenProps {
+  currentProfileType?:string;
   onRefresh?: () => void;
   onUpdateColumn?: (columnKey: string) => Promise<void> | void;
   onUpdateAll?: () => Promise<void> | void;
@@ -648,12 +650,14 @@ export function CustomerSearchScreen({
   onAdminTransfer,
   userSettingsSelectedCount,
   onApplyUserFlag,
+  currentProfileType="All",
 }: CustomerSearchScreenProps) {
   const router = useRouter();
   const [hoveredColumn, setHoveredColumn] = useState("");
   const [columnFilters, setColumnFilters] = useState<Partial<Record<CustomerSearchColumnKey, string[]>>>({});
   const paginationQuery = Object.fromEntries(
     Object.entries({
+      profileType:currentProfileType,
       search: currentSearch,
       salesmanId: currentSalesmanId,
       customerTypeId: currentCustomerTypeId,
@@ -716,6 +720,11 @@ export function CustomerSearchScreen({
               />
 
               <CustomerSearchViewsPanel
+                profileType={onAdminIncludeProfilesChange ? (adminIncludeProfiles?.length===1 ? (adminIncludeProfiles[0]==="Cust Search" ? "Customer Search" : adminIncludeProfiles[0]) : "All") : currentProfileType}
+                onProfileTypeChange={profile=>{
+                  if(onAdminIncludeProfilesChange) {onAdminIncludeProfilesChange(profile==="All" ? CUSTOMER_ADMIN_INCLUDE_PROFILES.flat().filter((name):name is NonNullable<typeof name>=>name!==null) : [profile==="Customer Search"?"Cust Search":profile]);return;}
+                  const url=new URL(window.location.href); if(profile==="All")url.searchParams.delete("profileType");else url.searchParams.set("profileType",profile);url.searchParams.delete("page");router.replace(url.pathname+url.search);
+                }}
                 filterRow={filterRow}
                 salesmen={salesmen}
                 customerTypes={customerTypes}

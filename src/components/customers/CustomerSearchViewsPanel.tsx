@@ -29,6 +29,8 @@ import type { CustomerSearchViews3Filters } from "@/lib/customerSearch1Filters";
 import { CUSTOMER_NAME_SEARCH_COLUMNS } from "@/lib/customerNameSearchColumns";
 
 interface CustomerSearchViewsPanelProps {
+  profileType?: string;
+  onProfileTypeChange?: (profile:string)=>void;
   filterRow?: ReactNode;
   salesmen: FilterOption[];
   customerTypes: FilterOption[];
@@ -374,7 +376,7 @@ function PresetGrid({
   );
 }
 
-function ViewsTab() {
+function ViewsTab({profileType="All",onProfileTypeChange}:UserSettingsTabProps) {
   return (
     <div className="ac-customer-search-views-preset ac-search-views-tab-pane">
       <PresetGrid grid={CUSTOMER_SEARCH_PRESET_GRID} />
@@ -382,9 +384,9 @@ function ViewsTab() {
         <div className="ac-customer-search-filter-box-row">
           <div className="ac-customer-search-profile-type">
             <span className="ac-flabel">Profile Type:</span>
-            {["All", "Customer Search", "Spare 1", "Spare 2", "Spare 3"].map((label, i) => (
+            {["All", "Customer Search", "Spare 1", "Spare 2", "Spare 3"].map((label) => (
               <label key={label} className="ac-customer-search-check">
-                <input type="checkbox" disabled defaultChecked={i === 0} />
+                <input type="checkbox" checked={profileType === label} onChange={() => onProfileTypeChange?.(label)} />
                 <span>{label}</span>
               </label>
             ))}
@@ -609,7 +611,7 @@ function InternetSearchTab() {
 
 type UserSettingsTabProps = Pick<
   CustomerSearchViewsPanelProps,
-  "customerUserFlagOptions" | "lastActionUsers" | "views3Filters" | "onViews3FiltersChange" | "userSettingsSelectedCount" | "onApplyUserFlag" | "onGoToColumn" | "visibleCustomerColumns" | "onExportView"
+  "profileType" | "onProfileTypeChange" | "customerUserFlagOptions" | "lastActionUsers" | "views3Filters" | "onViews3FiltersChange" | "userSettingsSelectedCount" | "onApplyUserFlag" | "onGoToColumn" | "visibleCustomerColumns" | "onExportView"
 >;
 
 function UserSettingsTab({ customerUserFlagOptions, lastActionUsers, userSettingsSelectedCount = 0, onApplyUserFlag }: UserSettingsTabProps) {
@@ -1210,6 +1212,8 @@ export function CustomerSearchViewsPanel(props: CustomerSearchViewsPanelProps) {
                 onAdminIncludeProfilesChange={props.onAdminIncludeProfilesChange}
                 onAdminTransfer={props.onAdminTransfer}
               /> : activeTab === 7 ? <RayTab selectedCustomerIds={props.selectedCustomerIds} onRayAction={props.onRayAction} /> : TabContent && <TabContent
+                profileType={props.profileType}
+                onProfileTypeChange={props.onProfileTypeChange}
                 customerUserFlagOptions={customerUserFlagOptions}
                 lastActionUsers={props.lastActionUsers}
                 views3Filters={props.views3Filters}

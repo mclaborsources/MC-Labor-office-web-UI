@@ -127,6 +127,11 @@ WITH FilteredCustomers AS (
     ))
     AND (@salesmanId     IS NULL OR c.SalesmanID     = @salesmanId)
     AND (@customerTypeId IS NULL OR c.CustomerTypeID = @customerTypeId)
+    AND (@profileType IS NULL OR EXISTS (
+      SELECT 1 FROM tblPullDownCustomerProfileTypes pt WITH (NOLOCK)
+      WHERE pt.PullDownCustomerProfileTypeID=c.CustomerProfileTypeID
+        AND REPLACE(LOWER(LTRIM(RTRIM(pt.PullDownCustomerProfileType))), 'cust search', 'customer search')=LOWER(@profileType)
+    ))
     AND (@statusId       IS NULL OR c.CustStatusID   = @statusId)
     AND (@city  IS NULL OR c.City  = @city)
     AND (@state IS NULL OR c.State = @state)
@@ -632,6 +637,7 @@ function emptyCustomerSearchFields(): Omit<
 // ---------------------------------------------------------------------------
 
 export interface GetCustomersParams {
+  profileType?:string;
   search?: string;
   customerName?: string;
   customerPhone?: string;
@@ -724,6 +730,7 @@ export async function getCustomerSearchRows(
       { name: "contactTextPat", value: contactTextPat },
       { name: "salesmanId", value: salesmanId },
       { name: "customerTypeId", value: customerTypeId },
+      { name:"profileType",value:params.profileType && params.profileType!=="All" ? params.profileType : null },
       { name: "statusId", value: statusId },
       { name: "city", value: city },
       { name: "state", value: state },
