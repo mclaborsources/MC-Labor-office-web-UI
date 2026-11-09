@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import type { ProfileRecord } from "@/lib/customerProfileFields";
+import { CustomerProfileRuntime, useCustomerProfile, useProfileRows } from "./CustomerProfileRuntime";
+import { CustomerLegacyIcon } from "./CustomerLegacyIcon";
 import { useMemo, useState } from "react";
-import { Home, Search, FolderOpen, FileText, CircleHelp } from "lucide-react";
+import { Search, FileText, CircleHelp } from "lucide-react";
 import { AccessButton } from "@/components/access/AccessButton";
-import { AccessDataTable, type AccessColumn } from "@/components/access/AccessDataTable";
 import { AccessTabs } from "@/components/access/AccessTabs";
-import { DataValue } from "@/components/access/DataValue";
-import { Icon } from "@/components/ui/Icon";
 import {
   CUSTOMER_PROFILE_LINK_ACTIONS,
   CUSTOMER_PROFILE_LINK_ENTITIES,
@@ -103,11 +103,11 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
           </label>
           <div className="ac-customer-profile-search-match">
             <label className="ac-customer-profile-radio">
-              <input type="radio" name="cust-search-match" defaultChecked />
+              <input type="radio" name="cust-search-match" />
               <span>Like</span>
             </label>
             <label className="ac-customer-profile-radio">
-              <input type="radio" name="cust-search-match" />
+              <input type="radio" name="cust-search-match" defaultChecked />
               <span>=</span>
             </label>
           </div>
@@ -143,11 +143,11 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
           <AccessButton data-action-status="missing" xs className="ac-customer-profile-research-btn">
             RE-SEARCH
           </AccessButton>
-          <select size={3} className="ac-select ac-customer-profile-step-list" defaultValue="1">
-            <option value="1">Step 1: Ma Board</option>
-            <option value="2">Step 2: Corporate Lookup</option>
-            <option value="3">Step 3: Google</option>
-          </select>
+          <div className="ac-customer-profile-step-list ac-customer-profile-step-grid" aria-label="Research steps">
+            <span>Step 1</span><span>Ma Board</span>
+            <span>Step 2</span><span>Corporate Lookup</span>
+            <span>Step 3</span><span>Google</span>
+          </div>
           <div className="ac-customer-profile-step-nav">
             <AccessButton data-action-status="missing" xs className="ac-customer-profile-step-arrow">
               ►
@@ -160,9 +160,6 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
       </div>
 
       <div className="ac-customer-profile-row ac-customer-profile-row-2">
-        <AccessButton data-action-status="missing" xs className="ac-customer-profile-spare-btn">
-          Spare 2
-        </AccessButton>
         {CUSTOMER_PROFILE_TOOLBAR_BUTTONS.map((label) => (
           <AccessButton data-action-status="missing" key={label} xs className="ac-customer-profile-toolbar-btn">
             {label}
@@ -172,9 +169,9 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
 
       <div className="ac-customer-profile-row ac-customer-profile-row-3">
         <ProfileField label="Customer" value={customer.customerName} className="ac-customer-profile-customer-name" />
-        <button data-action-status="missing" type="button" className="ac-customer-profile-icon-btn ac-customer-profile-icon-btn--doc" aria-label="Copy" />
+        <button data-action-status="missing" type="button" className="ac-customer-profile-icon-btn ac-customer-profile-icon-btn--doc" aria-label="Copy"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" shapeRendering="crispEdges"><path d="M1.5 1.5h5l3 3v7h-8z" fill="white" stroke="black"/><path d="M6.5 1.5v3h3M3 4h2M3 6h4M3 8h4M3 10h4" stroke="black"/><path d="M6.5 5.5h5l3 3v6h-8z" fill="white" stroke="#000080"/><path d="M11.5 5.5v3h3M8 8h2M8 10h5M8 12h5" stroke="#000080"/></svg></button>
         <button data-action-status="missing" type="button" className="ac-customer-profile-icon-btn" aria-label="Home">
-          <Icon icon={Home} size="xs" />
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" shapeRendering="crispEdges"><path d="m1 7 7-6 7 6" stroke="#000"/><path d="M3.5 6v8.5h9V6L8 2z" fill="#ffffb5" stroke="#000"/><path d="M6.5 9.5h3v5h-3z" fill="#fff" stroke="#000"/><path d="M11 2h2v3" stroke="#000"/></svg>
         </button>
         <button data-action-status="missing" type="button" className="ac-customer-profile-icon-btn ac-customer-profile-icon-btn--g" aria-label="Google">
           G
@@ -235,6 +232,8 @@ function CustomerProfileHeader({ customer }: { customer: CustomerDetail }) {
 }
 
 function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
+  const {data}=useCustomerProfile();
+  const activeWcc=(data.related.wcc??[]).filter(row=>["true","1"].includes(row.CustomerWCCActive));
   const cityState =
     [customer.city, customer.state].filter(Boolean).join(", ") || "";
 
@@ -308,7 +307,7 @@ function CustomerProfileBasicTab({ customer }: { customer: CustomerDetail }) {
         <div className="ac-customer-profile-wcc">
           <div className="ac-customer-profile-wcc-title">Customer WC Codes (Active)</div>
           <div className="ac-customer-profile-wcc-table">
-            <div className="customer-wcc-scroll" style={{height:130,overflow:"hidden",background:"repeating-linear-gradient(#fff 0px,#fff 19px,#f3f3f3 19px,#f3f3f3 20px)"}}><table className="customer-wcc-grid" style={{width:599,tableLayout:"fixed",borderCollapse:"collapse",font:"13px Calibri, Arial, sans-serif"}}><colgroup>{[18,234,98,150,67,32].map((width,index)=><col key={index} style={{width}}/>)}</colgroup><thead><tr>{["","WC Code","User","Timestamp","Active",""].map((label,index)=><th key={index} style={{height:20,padding:"0 4px",border:"1px solid #c5cbd1",background:"#e2e6ec",fontWeight:400,textAlign:"center",position:"relative",paddingRight:label ? 14 : 4}}>{label}{label && <span aria-hidden="true" style={{position:"absolute",right:4,top:8,width:0,height:0,borderLeft:"3px solid transparent",borderRight:"3px solid transparent",borderTop:"4px solid #59626b"}}/>}</th>)}</tr></thead><tbody>{customer.billRates.slice(0,6).map(row=><tr key={row.billRateId}><td/><td>{row.grade}</td><td/><td/><td>{row.active ? "Yes" : "No"}</td><td/></tr>)}{Array.from({length:Math.max(0,6-customer.billRates.length)},(_,index)=><tr key={`blank-${index}`}><td/><td/><td/><td/><td/><td/></tr>)}</tbody></table></div><div className="customer-wcc-footer" style={{display:"flex",alignItems:"center",gap:3,height:17,font:"11px Calibri, Arial, sans-serif",background:"#e8e8ec",borderTop:"1px solid #aaa"}}><span>Record:</span><span>◂| ◂</span><input readOnly style={{width:49,height:16,minHeight:16,padding:"0 2px",border:"1px solid #aaa",flex:"0 0 49px"}} aria-label="WC record position" value={customer.billRates.length ? `1 of ${customer.billRates.length}` : ""}/><span>▸ ▸| ▸*</span><span className="customer-wcc-filter">▽ No Filter</span><input style={{width:69,height:16,minHeight:16,padding:"0 2px",border:"1px solid #aaa",flex:"0 0 69px"}} placeholder="Search" aria-label="Search WC codes"/></div>
+            <div className="customer-wcc-scroll" style={{height:130,overflow:"hidden",background:"repeating-linear-gradient(#fff 0px,#fff 19px,#f3f3f3 19px,#f3f3f3 20px)"}}><table className="customer-wcc-grid" style={{width:599,tableLayout:"fixed",borderCollapse:"collapse",font:"13px Calibri, Arial, sans-serif"}}><colgroup>{[18,234,98,150,67,32].map((width,index)=><col key={index} style={{width}}/>)}</colgroup><thead><tr>{["","WC Code","User","Timestamp","Active",""].map((label,index)=><th key={index} style={{height:20,padding:"0 4px",border:"1px solid #c5cbd1",background:"#e2e6ec",fontWeight:400,textAlign:"center",position:"relative",paddingRight:label ? 14 : 4}}>{label}{label && <span aria-hidden="true" style={{position:"absolute",right:4,top:8,width:0,height:0,borderLeft:"3px solid transparent",borderRight:"3px solid transparent",borderTop:"4px solid #59626b"}}/>}</th>)}</tr></thead><tbody>{activeWcc.slice(0,6).map(row=><tr key={row.CustomerWCCID}><td/><td>{data.lookups.WCCID?.find(option=>option.value===row.WCCID)?.label??row.WCCID}</td><td>{row.CustomerWCCUserName}</td><td>{row.CustomerWCCTimestamp}</td><td>Yes</td><td/></tr>)}{Array.from({length:Math.max(0,6-activeWcc.length)},(_,index)=><tr key={`blank-${index}`}><td/><td/><td/><td/><td/><td/></tr>)}</tbody></table></div><div className="customer-wcc-footer" style={{display:"flex",alignItems:"center",gap:3,height:17,font:"11px Calibri, Arial, sans-serif",background:"#e8e8ec",borderTop:"1px solid #aaa"}}><span>Record:</span><span>◂| ◂</span><input readOnly style={{width:49,height:16,minHeight:16,padding:"0 2px",border:"1px solid #aaa",flex:"0 0 49px"}} aria-label="WC record position" value={activeWcc.length ? `1 of ${activeWcc.length}` : ""}/><span>▸ ▸| ▸*</span><span className="customer-wcc-filter">▽ No Filter</span><input style={{width:69,height:16,minHeight:16,padding:"0 2px",border:"1px solid #aaa",flex:"0 0 69px"}} placeholder="Search" aria-label="Search WC codes"/></div>
           </div>
         </div>
 
@@ -364,14 +363,7 @@ function CustomerBillRatesTab({ customer }: { customer: CustomerDetail }) {
   const [filter, setFilter] = useState<BillRateFilter>("active");
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(customer.billRates[0]?.billRateId ?? null);
-  const [rows, setRows] = useState<EditableBillRate[]>(() =>
-    customer.billRates.map((rate, index) => ({
-      ...rate,
-      userName: "",
-      timestamp: "",
-      sortOrder: index + 1,
-    })),
-  );
+  const [rows,setRows]=useProfileRows<EditableBillRate>("billRates",row=>({billRateId:row.CustomerBillRateID,grade:row.BillRateGrade,billRate:row.BillRate,note:row.BillRateNote,active:row.BillRateActive === "true" || row.BillRateActive === "1",userName:row.BillRateUserName,timestamp:row.BillRateTimestamp,sortOrder:Number(row.BillRateSort)||0}),row=>({id:row.billRateId,changes:{BillRateGrade:row.grade,BillRate:row.billRate,BillRateNote:row.note,BillRateActive:row.active,BillRateSort:row.sortOrder}}));
 
   const visibleRows = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -694,9 +686,7 @@ function CustomerCollectionsTab() {
   const [filter, setFilter] = useState<CollectionFilter>("active");
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState("collection-new");
-  const [rows, setRows] = useState<CollectionNoteRow[]>([
-    { id: "collection-new", note: "", userName: "", timestamp: "", active: true },
-  ]);
+  const [rows, setRows] = useProfileRows<CollectionNoteRow>("collections", row=>({id:row.CustomerNoteID,note:row.CustomerNote,userName:row.CustomerNoteUserName,timestamp:row.CustomerNoteTimestamp,active:row.CustomerNoteActive === "true" || row.CustomerNoteActive === "1"}),row=>({id:row.id,changes:{CustomerNote:row.note,CustomerNoteActive:row.active}}),[{ id:"collection-new",note:"",userName:"",timestamp:"",active:true }]);
 
   const visibleRows = rows.filter((row) => {
     const matchesFilter = filter === "all" || row.active === (filter === "active");
@@ -725,7 +715,7 @@ function CustomerCollectionsTab() {
           disabled={!selectedId}
           aria-label="Delete selected collection note"
         >
-          ×
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" shapeRendering="crispEdges"><path d="m3 3 10 10M13 3 3 13M2 3h3M11 3h3M2 13h3M11 13h3" stroke="#000" /></svg>
         </button>
 
         <div className="ac-customer-collections-grid-wrap">
@@ -793,14 +783,6 @@ function CustomerCollectionsTab() {
   );
 }
 
-const CUSTOMER_WC_CODE_OPTIONS = [
-  "5022 — Masonry",
-  "5183 — Plumbing",
-  "5190 — Electrical Wiring",
-  "5403 — Carpentry",
-  "5537 — HVAC",
-  "5645 — General Construction",
-] as const;
 
 interface CustomerWccRow {
   id: string;
@@ -811,12 +793,11 @@ interface CustomerWccRow {
 }
 
 function CustomerWccTab() {
+  const {data}=useCustomerProfile();
   const [filter, setFilter] = useState<CollectionFilter>("active");
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState("wcc-new");
-  const [rows, setRows] = useState<CustomerWccRow[]>([
-    { id: "wcc-new", wcCode: "", user: "", timestamp: "", active: true },
-  ]);
+  const [rows, setRows] = useProfileRows<CustomerWccRow>("wcc",row=>({id:row.CustomerWCCID,wcCode:row.WCCID,user:row.CustomerWCCUserName,timestamp:row.CustomerWCCTimestamp,active:row.CustomerWCCActive === "true" || row.CustomerWCCActive === "1"}),row=>({id:row.id,changes:{WCCID:row.wcCode,CustomerWCCActive:row.active}}),[{id:"wcc-new",wcCode:"",user:"",timestamp:"",active:true}]);
 
   const visibleRows = rows.filter((row) => {
     const matchesFilter = filter === "all" || row.active === (filter === "active");
@@ -845,7 +826,7 @@ function CustomerWccTab() {
           disabled={!selectedId}
           aria-label="Delete selected customer WC code"
         >
-          ×
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" shapeRendering="crispEdges"><path d="m3 3 10 10M13 3 3 13M2 3h3M11 3h3M2 13h3M11 13h3" stroke="#000" /></svg>
         </button>
 
         <div className="ac-customer-collections-grid-wrap">
@@ -871,8 +852,8 @@ function CustomerWccTab() {
                   <td>
                     <select value={row.wcCode} onFocus={() => setSelectedId(row.id)} onChange={(event) => updateWcc(row.id, "wcCode", event.target.value)} aria-label="WC Code">
                       <option value="">Select…</option>
-                      {CUSTOMER_WC_CODE_OPTIONS.map((option) => (
-                        <option key={option} value={option}>{option}</option>
+                      {(data.lookups.WCCID??[]).map((option) => (
+                        <option key={option.value} value={option.value}>{option.label}</option>
                       ))}
                     </select>
                   </td>
@@ -912,13 +893,6 @@ function CustomerWccTab() {
   );
 }
 
-const INSURANCE_CERT_REQUEST_STATES = [
-  "Pending",
-  "Requested",
-  "Received",
-  "Expired",
-  "Cancelled",
-] as const;
 
 interface InsuranceCertRequestRow {
   id: string;
@@ -929,7 +903,8 @@ interface InsuranceCertRequestRow {
 
 function CustomerInsuranceCertRequestsTab() {
   const [search, setSearch] = useState("");
-  const [rows, setRows] = useState<InsuranceCertRequestRow[]>([]);
+  const {data}=useCustomerProfile();
+  const [rows,setRows]=useProfileRows<InsuranceCertRequestRow>("certificates",row=>({id:row.CustomerInsuranceCertReqID,requestDate:row.CustomerInsuranceCertReqTimestamp.slice(0,10),state:row.CustomerInsuranceCertReqStateID,requestedBy:row.CustomerInsuranceCertReqRequestedBy}),row=>({id:row.id,changes:{CustomerInsuranceCertReqRequestedBy:row.requestedBy,CustomerInsuranceCertReqStateID:row.state,CustomerInsuranceCertReqTimestamp:row.requestDate}}));
 
   const visibleRows = rows.filter((row) => {
     const term = search.trim().toLowerCase();
@@ -942,7 +917,7 @@ function CustomerInsuranceCertRequestsTab() {
       {
         id: `insurance-cert-${Date.now()}`,
         requestDate: new Date().toISOString().slice(0, 10),
-        state: "Pending",
+        state: "",
         requestedBy: "",
       },
     ]);
@@ -979,8 +954,8 @@ function CustomerInsuranceCertRequestsTab() {
                 </td>
                 <td>
                   <select value={row.state} onChange={(event) => updateInsuranceCertRequest(row.id, "state", event.target.value)} aria-label="Certificate request state">
-                    {INSURANCE_CERT_REQUEST_STATES.map((state) => (
-                      <option key={state} value={state}>{state}</option>
+                    {(data.lookups.CustomerInsuranceCertReqStateID??[]).map((state) => (
+                      <option key={state.value} value={state.value}>{state.label}</option>
                     ))}
                   </select>
                 </td>
@@ -1242,18 +1217,18 @@ function CustomerJobsTab({ customer }: { customer: CustomerDetail }) {
   );
 }
 
-const SALES_HISTORY_ACTIONS = ["Profiles", "Sales Call", "Cold Call", "Outlook Email", "Custom Email", "Custom Text", "Custom Letter", "Custom Postcard", "Mailer", "Credit", "LinkedIn"] as const;
+const SALES_HISTORY_ACTIONS = ["Note", "Cold Call", "Sales Call", "Dormant Call", "Outlook Email", "Custom Email", "Custom Text", "Custom Letter", "Custom Postcard", "Mailer", "Credit", "LinkedIn"] as const;
 
 function CustomerSalesHistoryTab({ customer }: { customer: CustomerDetail }) {
+  const [selectedContact, setSelectedContact] = useState(0);
+  const [contactQuery, setContactQuery] = useState("");
   const [actionFilter, setActionFilter] = useState("All");
+  const [selectedHistory, setSelectedHistory] = useState(0);
   const cityState = [customer.city, customer.state].filter(Boolean).join(", ");
-  const historyRows = [
-    ["Profiles", "EOH", "6/10/2026", "[Profiles]. EOH 6/10/2026"],
-    ["Sales Call", "JR", "6/5/2026", "[Sales Call]. JR 6/5/2026"],
-    ["Profiles", "EOH", "5/27/2026", "[Profiles]. EOH 5/27/2026"],
-    ["Profiles", "EOH", "5/1/2026", "[Profiles]. EOH 5/1/2026"],
-    ["Sales Call", "LR", "4/2/2026", "[Sales Call]. LR 4/2/2026"],
-  ].filter((row) => actionFilter === "All" || row[0] === actionFilter);
+  const {data}=useCustomerProfile();
+  const historyRows=(data.related.history??[]).map(row=>[row.actionLabel||row.CustomerSalesHistoryActionTypeID,row.CustomerSalesHistoryUserName,row.CustomerSalesHistoryTimestamp,row.CustomerSalesHistoryNote,row.CustomerSalesHistoryResponseHLink,row.CustomerSalesHistoryResponseUserName,row.CustomerSalesHistoryResponseTimestamp,row.CustomerSalesHistoryID]).filter(row=>actionFilter === "All" || row[0].replace(/[\[\]]/g,"").toLowerCase() === actionFilter.toLowerCase());
+
+  const verificationAudit = (label:string) => <><input className="ac-sales-verify-audit" aria-label={`${label} verification user`} readOnly value="" /><input className="ac-sales-verify-audit ac-sales-verify-audit-date" aria-label={`${label} verification date`} readOnly value="" /></>;
 
   return (
     <section id="12-saleshist" className="ac-customer-sales-history">
@@ -1265,43 +1240,43 @@ function CustomerSalesHistoryTab({ customer }: { customer: CustomerDetail }) {
             ["Street", customer.street],
             ["City, St.", cityState],
             ["Zip", customer.zip],
-          ].map(([label, value]) => <label key={label}><span>{label}</span><input defaultValue={value} /><input type="checkbox" aria-label={`Verify ${label}`} /></label>)}
+          ].map(([label, value]) => <label key={label}><span>{label}</span><input defaultValue={value} /><input type="checkbox" aria-label={`Verify ${label}`} /><input className="ac-sales-verify-audit" aria-label={`Verification user for ${label}`} readOnly value="" /><input className="ac-sales-verify-audit ac-sales-verify-audit-date" aria-label={`Verification date for ${label}`} readOnly value="" /></label>)}
         </div>
         <div className="ac-customer-sales-verify-group ac-customer-sales-mailing">
           <OptionCheck label="Different Mailing Address" />
-          <label><span>Street</span><input defaultValue={customer.mailStreet} /><input type="checkbox" aria-label="Verify mailing street" /></label>
-          <label><span>City, St.</span><input defaultValue={[customer.mailCity, customer.mailState].filter(Boolean).join(", ")} /><input type="checkbox" aria-label="Verify mailing city state" /></label>
-          <label><span>Zip</span><input inputMode="numeric" defaultValue={customer.mailZip} /><input type="checkbox" aria-label="Verify mailing zip" /></label>
+          <label><span>Street</span><input defaultValue={customer.mailStreet} /><input type="checkbox" aria-label="Verify mailing street" />{verificationAudit("mailing street")}</label>
+          <label><span>City, St.</span><input defaultValue={[customer.mailCity, customer.mailState].filter(Boolean).join(", ")} /><input type="checkbox" aria-label="Verify mailing city state" />{verificationAudit("mailing city state")}</label>
+          <label><span>Zip</span><input inputMode="numeric" defaultValue={customer.mailZip} /><input type="checkbox" aria-label="Verify mailing zip" />{verificationAudit("mailing zip")}</label>
         </div>
         <div className="ac-customer-sales-verify-group">
-          <label><span>Phone</span><input type="tel" defaultValue={customer.phone} /><input type="checkbox" aria-label="Verify phone" /></label>
-          <label><span>Fax</span><input type="tel" defaultValue={customer.fax} /><input type="checkbox" aria-label="Verify fax" /></label>
-          <label><span>Cust. Type</span><select defaultValue={customer.customerType}><option>{customer.customerType}</option><option>General Contractor</option><option>Electrical</option><option>Mechanical</option></select><input type="checkbox" aria-label="Verify customer type" /></label>
+          <label><span>Phone</span><input type="tel" defaultValue={customer.phone} /><input type="checkbox" aria-label="Verify phone" />{verificationAudit("phone")}</label>
+          <label><span>Fax</span><input type="tel" defaultValue={customer.fax} /><input type="checkbox" aria-label="Verify fax" />{verificationAudit("fax")}</label>
+          <label><span>Cust. Type</span><select defaultValue={customer.customerType}><option>{customer.customerType}</option><option>General Contractor</option><option>Electrical</option><option>Mechanical</option></select><input type="checkbox" aria-label="Verify customer type" />{verificationAudit("customer type")}</label>
         </div>
         <div className="ac-customer-sales-verify-group ac-customer-sales-web">
-          <label><span>Corp Web Site</span><input type="url" defaultValue={customer.corpWebsite} /><input type="checkbox" aria-label="Verify corporate website" /></label>
-          <label><span>Cust. Web Site</span><input type="url" defaultValue={customer.website} /><input type="checkbox" aria-label="Verify customer website" /></label>
+          <label><span>Corp Web Site</span><input type="url" defaultValue={customer.corpWebsite} /><input type="checkbox" aria-label="Verify corporate website" />{verificationAudit("corporate website")}<span className="ac-sales-web-tools"><button type="button" data-action-status="missing" aria-label="Open corporate website"><CustomerLegacyIcon kind="folder" /></button><button type="button" data-action-status="missing" aria-label="Search corporate website"><CustomerLegacyIcon kind="search" /></button></span></label>
+          <label><span>Cust. Web Site</span><input type="url" defaultValue={customer.website} /><input type="checkbox" aria-label="Verify customer website" />{verificationAudit("customer website")}<span className="ac-sales-web-tools"><button type="button" data-action-status="missing" aria-label="Open customer website"><CustomerLegacyIcon kind="folder" /></button><button type="button" data-action-status="missing" aria-label="Search customer website"><CustomerLegacyIcon kind="search" /></button><button type="button" className="ac-sales-web-copy" data-action-status="missing" aria-label="Copy customer website"><CustomerLegacyIcon kind="copy" /></button></span></label>
         </div>
       </div>
 
       <div className="ac-customer-sales-history-rowblock">
         <div className="ac-customer-sales-vertical">CONTACTS</div>
-        <div className="ac-customer-sales-side-actions"><button data-action-status="missing">↑</button><button data-action-status="missing">↓</button><button data-action-status="missing">×</button></div>
-        <div className="ac-customer-sales-history-table-wrap">
+        <div className="ac-customer-sales-side-actions"><button data-action-status="missing" aria-label="Move contact up"><CustomerLegacyIcon kind="up" /></button><button data-action-status="missing" aria-label="Move contact down"><CustomerLegacyIcon kind="down" /></button><button data-action-status="missing" aria-label="Delete selected row"><CustomerLegacyIcon kind="delete" /></button></div>
+        <div className="ac-customer-sales-history-table-wrap ac-sales-contacts-datasheet"><div className="ac-sales-contacts-scroll">
           <table><colgroup>{[18,72,87,168,233,102,96,202,109,126,122,53,56,170,66].map((width,index)=><col key={index} style={{width}} />)}</colgroup><thead><tr><th /><th>FName</th><th>LName</th><th>Title</th><th>Email</th><th>Cell</th><th>Carrier</th><th>Text Msg Addr</th><th>Office Phone</th><th>LinkedIn Profile</th><th>Notes</th><th>Sort</th><th>User</th><th>Date</th><th>Select</th></tr></thead>
-          <tbody>{customer.contacts.map((contact, index) => <tr key={contact.contactId}><td>{index ? "" : "*"}</td><td>{contact.firstName}</td><td>{contact.lastName}</td><td>{contact.title}</td><td>{contact.email}</td><td>{contact.cellPhone}</td><td /><td /><td>{contact.officePhone}</td><td /><td>{contact.notes}</td><td>{index + 1}</td><td /><td /><td><input type="checkbox" /></td></tr>)}
-          {Array.from({ length: Math.max(0, 5 - customer.contacts.length) }, (_, i) => <tr key={`contact-blank-${i}`}><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}</tbody></table>
-          <div className="ac-customer-sales-history-recordbar">Record:　|◄　◄　1 of {Math.max(1, customer.contacts.length)}　►　►|　 No Filter　<input placeholder="Search" /></div>
+          <tbody>{customer.contacts.filter(contact => !contactQuery || [contact.firstName,contact.lastName,contact.email,contact.title].join(" ").toLowerCase().includes(contactQuery.toLowerCase())).map((contact, index) => <tr className={selectedContact === index ? "is-selected" : undefined} onClick={() => setSelectedContact(index)} key={contact.contactId}><td>{selectedContact === index ? "▸" : ""}</td><td>{contact.firstName}</td><td>{contact.lastName}</td><td>{contact.title}</td><td>{contact.email}</td><td>{contact.cellPhone}</td><td /><td /><td>{contact.officePhone}</td><td /><td>{contact.notes}</td><td>{index + 1}</td><td /><td /><td /></tr>)}
+          {Array.from({ length: Math.max(0, 5 - customer.contacts.length) }, (_, i) => <tr key={`contact-blank-${i}`}><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}</tbody></table></div>
+          <div className="ac-customer-sales-history-recordbar ac-sales-contacts-nav"><span>Record:</span><button type="button" aria-label="First contact" disabled={!customer.contacts.length} onClick={() => setSelectedContact(0)}>|◂</button><button type="button" aria-label="Previous contact" disabled={!customer.contacts.length} onClick={() => setSelectedContact(index => Math.max(0,index-1))}>◂</button><input aria-label="Contact record position" readOnly value={customer.contacts.length ? `${selectedContact+1} of ${customer.contacts.length}` : ""} /><button type="button" aria-label="Next contact" disabled={!customer.contacts.length} onClick={() => setSelectedContact(index => Math.min(customer.contacts.length-1,index+1))}>▸</button><button type="button" aria-label="Last contact" disabled={!customer.contacts.length} onClick={() => setSelectedContact(customer.contacts.length-1)}>▸|</button><span className="ac-sales-contacts-no-filter">▽ No Filter</span><input aria-label="Search sales history contacts" placeholder="Search" value={contactQuery} onChange={event => {setContactQuery(event.target.value);setSelectedContact(0);}} /></div>
           <strong>For all Info emails, please select &quot;Info&quot; for the contact&apos;s Title value.</strong>
         </div>
       </div>
 
       <div className="ac-customer-sales-history-rowblock">
         <div className="ac-customer-sales-vertical">HISTORY</div>
-        <div className="ac-customer-sales-side-actions"><button data-action-status="missing">Add</button><button data-action-status="missing">×</button></div>
+        <div className="ac-customer-sales-side-actions"><button data-action-status="missing">Add</button><button data-action-status="missing" aria-label="Delete selected row"><CustomerLegacyIcon kind="delete" /></button></div>
         <div className="ac-customer-sales-history-center"><div className="ac-sales-response-actions"><AccessButton data-action-status="missing" xs>Browse for Response File</AccessButton><AccessButton data-action-status="missing" xs>Open Response Folder</AccessButton></div>
-          <div className="ac-customer-sales-history-filters"><span>Filter:</span>{[...SALES_HISTORY_ACTIONS, "All"].map((action) => <button data-action-status="complete" key={action} className={actionFilter === action ? "is-active" : ""} onClick={() => setActionFilter(action)}>{action}</button>)}</div>
-          <div className="ac-customer-sales-history-table-wrap ac-customer-sales-action-table"><table><colgroup>{[18,175,56,95,56,145,415,244,56,96].map((width,index)=><col key={index} style={{width}} />)}</colgroup><thead><tr><th /><th>Action Type</th><th>User</th><th>Date</th><th /><th>To</th><th>Notes</th><th>Response HL</th><th>User</th><th>Date</th></tr></thead><tbody>{historyRows.map((row, i) => <tr key={`${row[0]}-${row[2]}`}><td>{i ? "" : "*"}</td><td>[{row[0]}]</td><td>{row[1]}</td><td>{row[2]}</td><td><a>View</a></td><td /><td>{row[3]}</td><td /><td /><td /></tr>)}</tbody></table><div className="ac-customer-sales-history-recordbar">Record:　|◄　◄　1 of {historyRows.length}　►　►|　 No Filter　<input placeholder="Search" /></div></div>
+          <div className="ac-customer-sales-history-filters"><span>Filter:</span>{[...SALES_HISTORY_ACTIONS, "All"].map((action) => <button data-action-status="complete" key={action} className={actionFilter === action ? "is-active" : ""} onClick={() => { setActionFilter(action); setSelectedHistory(0); }}>{action}</button>)}</div>
+          <div className="ac-customer-sales-history-table-wrap ac-customer-sales-action-table"><div className="ac-sales-history-scroll"><table><colgroup>{[18,175,56,95,56,145,415,244,56,96].map((width,index)=><col key={index} style={{width}} />)}</colgroup><thead><tr><th /><th>Action Type</th><th>User</th><th>Date</th><th /><th>To</th><th>Notes</th><th>Response HL</th><th>User</th><th>Date</th></tr></thead><tbody>{historyRows.map((row, i) => <tr className={selectedHistory === i ? "is-selected" : undefined} onClick={() => setSelectedHistory(i)} key={row[7]}><td>{selectedHistory === i ? "▸" : ""}</td><td>[{row[0]}]</td><td>{row[1]}</td><td>{row[2]}</td><td><a>View</a></td><td /><td>{row[3]}</td><td>{row[4]}</td><td>{row[5]}</td><td>{row[6]}</td></tr>)}</tbody></table></div><div className="ac-customer-sales-history-recordbar ac-sales-contacts-nav"><span>Record:</span><button type="button" aria-label="First history record" disabled={!historyRows.length} onClick={() => setSelectedHistory(0)}>|◂</button><button type="button" aria-label="Previous history record" disabled={!historyRows.length} onClick={() => setSelectedHistory(i => Math.max(0,i-1))}>◂</button><input aria-label="History record position" readOnly value={historyRows.length ? `${selectedHistory+1} of ${historyRows.length}` : ""} /><button type="button" aria-label="Next history record" disabled={!historyRows.length} onClick={() => setSelectedHistory(i => Math.min(historyRows.length-1,i+1))}>▸</button><button type="button" aria-label="Last history record" disabled={!historyRows.length} onClick={() => setSelectedHistory(historyRows.length-1)}>▸|</button><span className="ac-sales-contacts-no-filter">▽ No Filter</span><input aria-label="Search history" placeholder="Search" readOnly /></div></div>
         </div>
         <aside className="ac-customer-sales-history-status">
           <label><span>Sales History Status</span><select><option value="" /><option>Active Prospect</option><option>Current Customer</option><option>Dormant</option></select></label>
@@ -1316,7 +1291,7 @@ function CustomerSalesHistoryTab({ customer }: { customer: CustomerDetail }) {
       <div className="ac-customer-sales-research">
         <div className="ac-customer-sales-vertical">SEARCH</div>
         <div className="ac-customer-sales-search-terms"><strong>Search Terms</strong><div>{customer.customerName}<br />{customer.customerName}, {customer.street}, {cityState}<br />{customer.contacts[0]?.firstName} {customer.contacts[0]?.lastName}, {customer.street}, {cityState}</div></div>
-        <div className="ac-customer-sales-search-buttons">{["All", "Customer", "Contact", "City, State", "USA", "Card #", "True P", "Google", "LinkedIn", "Blue B", "Facebook", "BBB", "Corp Lk"].map((x) => <AccessButton data-action-status="missing" key={x} xs>{x}</AccessButton>)}</div>
+        <div className="ac-customer-sales-search-buttons">{["All", "Customer", "Contact", "City, State", "USA", "Card #", "True P", "Google", "LinkedIn", "Blue B", "Facebook", "BBB", "Corp Lk"].map((x) => <AccessButton data-action-status="missing" key={x} xs>{["All", "Customer", "Contact", "City, State", "Card #"].includes(x) && <CustomerLegacyIcon kind="copy" />}{x}</AccessButton>)}</div>
         <label className="ac-customer-sales-research-notes"><span>Customer Research Notes</span><textarea /></label>
         <div className="ac-sales-research-actions"><AccessButton data-action-status="missing" xs>Record</AccessButton><AccessButton data-action-status="missing" xs>Customer Research History</AccessButton><label>Entry User and Date <input readOnly value="" /><input readOnly value="" /></label></div>
         <div className="ac-sales-research-flags">{["Corp Search, Found", "Corp Search, Not Found", "Lic Search, Found", "Lic Search, Not Found"].map(label=><label key={label}><span>{label}</span><input type="checkbox" /><input readOnly value="" /><input readOnly value="" /></label>)}</div>
@@ -1326,14 +1301,18 @@ function CustomerSalesHistoryTab({ customer }: { customer: CustomerDetail }) {
   );
 }
 
-const CUSTOMER_CONTACT_TITLES = ["Info", "Owner", "President", "Project Manager", "Estimator", "Office Manager", "Accounts Payable"] as const;
 
 function CustomerContactsTab({ customer }: { customer: CustomerDetail }) {
+  const {data}=useCustomerProfile();
+  const [contactRows,setContactRows]=useProfileRows<ProfileRecord>("contacts",row=>row,row=>({id:row.CustomerContactID,changes:Object.fromEntries(["CustomerContactFName","CustomerContactLName","CustomerContactTitleID","CustomerContactEmail","CustomerContactCell","CustomerContactOfficePhone","CustomerContactNotes","CustomerContactSort","CustomerContactLinkedInProfile"].map(key=>[key,row[key]]))}));
+  const editContact=(id:string,field:string,value:string)=>setContactRows(rows=>rows.map(row=>row.CustomerContactID===id?{...row,[field]:value}:row));
   const [contactSearch, setContactSearch] = useState("");
   const [selectedContact, setSelectedContact] = useState(customer.contacts[0]?.contactId);
   const selected = customer.contacts.find(contact => contact.contactId === selectedContact);
+  const [permits,setPermits]=useProfileRows<ProfileRecord>("permits",row=>row,row=>({id:row.CustomerPermitID,changes:Object.fromEntries(["CustomerPermitStreet","CustomerPermitCity","CustomerPermitState","CustomerPermitDate","CustomerPermitFee","CustomerPermitValue"].map(key=>[key,row[key]]))}));
+  const editPermit=(id:string,field:string,value:string)=>setPermits(rows=>rows.map(row=>row.CustomerPermitID===id?{...row,[field]:value}:row));
   const [permitSearch, setPermitSearch] = useState("");
-  const contacts = customer.contacts.filter((contact) => {
+  const contacts = contactRows.map(row=>({contactId:row.CustomerContactID,firstName:row.CustomerContactFName??"",lastName:row.CustomerContactLName??"",title:row.CustomerContactTitleID??"",email:row.CustomerContactEmail??"",cellPhone:row.CustomerContactCell??"",officePhone:row.CustomerContactOfficePhone??"",notes:row.CustomerContactNotes??"",sort:row.CustomerContactSort??"",user:row.CustomerContactUserName??"",date:row.CustomerContactTimestamp??"",textAddress:row.CustomerContactTextMsgAddress??"",linkedIn:row.CustomerContactLinkedInProfile??"",carrier:row.CustomerContactCellCarrierID??""})).sort((a,b)=>Number(a.sort)-Number(b.sort)).filter((contact) => {
     const term = contactSearch.trim().toLowerCase();
     return !term || [contact.firstName, contact.lastName, contact.title, contact.email, contact.cellPhone, contact.officePhone, contact.notes].some((value) => value.toLowerCase().includes(term));
   });
@@ -1341,12 +1320,17 @@ function CustomerContactsTab({ customer }: { customer: CustomerDetail }) {
   return (
     <section id="02-contacts" className="ac-customer-contacts-tab">
       <div className="ac-customer-contacts-grid-row">
-        <div className="ac-customer-contacts-side-buttons"><button data-action-status="missing">↑</button><button data-action-status="missing">↓</button><button data-action-status="missing">×</button><button data-action-status="missing" className="ac-customer-copy-icon">▧</button></div>
+        <div className="ac-customer-contacts-side-buttons">
+          <button data-action-status="missing" aria-label="Move contact up"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" shapeRendering="crispEdges"><path d="M3.5 7.5 8 3l4.5 4.5h-3v5h-3v-5z" fill="#008080" stroke="#000" strokeWidth="1" /></svg></button>
+          <button data-action-status="missing" aria-label="Move contact down"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" shapeRendering="crispEdges"><path d="M3.5 8.5 8 13l4.5-4.5h-3v-5h-3v5z" fill="#008080" stroke="#000" strokeWidth="1" /></svg></button>
+          <button data-action-status="missing" aria-label="Delete contact" onClick={() => {if(selectedContact)setContactRows(rows=>rows.filter(row=>row.CustomerContactID!==selectedContact));}}><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" shapeRendering="crispEdges"><path d="m3 3 10 10M13 3 3 13M2 3h3M11 3h3M2 13h3M11 13h3" stroke="#000" /></svg></button>
+          <button data-action-status="missing" className="ac-customer-copy-icon" aria-label="Copy contact" onClick={() => {if(selected)void navigator.clipboard.writeText([selected.fullName,selected.email,selected.cellPhone].filter(Boolean).join("\n"));}}><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" shapeRendering="crispEdges"><path d="M1.5 1.5h5l3 3v7h-8z" fill="white" stroke="black"/><path d="M6.5 1.5v3h3M3 4h2M3 6h4M3 8h4M3 10h4" stroke="black"/><path d="M6.5 5.5h5l3 3v6h-8z" fill="white" stroke="#000080"/><path d="M11.5 5.5v3h3M8 8h2M8 10h5M8 12h5" stroke="#000080"/></svg></button>
+        </div>
         <div className="ac-customer-contacts-table-wrap">
           <table className="ac-customer-contacts-table"><colgroup>{[18,72,87,168,242,102,107,183,109,126,217,53,56,151,20].map((width,index) => <col key={index} style={{width}} />)}</colgroup><thead><tr><th /><th>FName</th><th>LName</th><th>Title</th><th>Email</th><th>Cell</th><th>Carrier</th><th>Text Msg Addr</th><th>Office Phone</th><th>LinkedIn Profile</th><th>Notes</th><th>Sort</th><th>User</th><th>Date</th><th aria-hidden /></tr></thead>
           <tbody>
-            {contacts.map((contact, index) => <tr key={contact.contactId} className={selectedContact === contact.contactId ? "is-selected" : undefined} onClick={() => setSelectedContact(contact.contactId)}><td aria-label="Select contact">{selectedContact === contact.contactId ? "▸" : ""}</td><td>{contact.firstName}</td><td>{contact.lastName}</td><td><select defaultValue={contact.title}><option value={contact.title}>{contact.title}</option>{CUSTOMER_CONTACT_TITLES.filter((title) => title !== contact.title).map((title) => <option key={title}>{title}</option>)}</select></td><td>{contact.email}</td><td>{contact.cellPhone}</td><td /><td /><td>{contact.officePhone}</td><td /><td>{contact.notes}</td><td>{index + 1}</td><td /><td /><td /></tr>)}
-            {Array.from({ length: Math.max(0, 10 - contacts.length) }, (_, i) => <tr key={`contacts-blank-${i}`}><td>{i === 0 ? "*" : ""}</td><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}
+            {contacts.map((contact, index) => <tr key={contact.contactId} className={selectedContact === contact.contactId ? "is-selected" : undefined} onClick={() => setSelectedContact(contact.contactId)}><td aria-label="Select contact">{selectedContact === contact.contactId ? "▸" : ""}</td><td><input aria-label="Contact firstName" value={contact.firstName} onChange={event=>editContact(contact.contactId,"CustomerContactFName",event.target.value)} /></td><td><input aria-label="Contact lastName" value={contact.lastName} onChange={event=>editContact(contact.contactId,"CustomerContactLName",event.target.value)} /></td><td><select aria-label="Contact title" value={contact.title} onChange={event=>editContact(contact.contactId,"CustomerContactTitleID",event.target.value)}><option value="" />{(data.lookups.CustomerContactTitleID??[]).map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</select></td><td><input aria-label="Contact email" value={contact.email} onChange={event=>editContact(contact.contactId,"CustomerContactEmail",event.target.value)} /></td><td><input aria-label="Contact cellPhone" value={contact.cellPhone} onChange={event=>editContact(contact.contactId,"CustomerContactCell",event.target.value)} /></td><td /><td /><td><input aria-label="Contact officePhone" value={contact.officePhone} onChange={event=>editContact(contact.contactId,"CustomerContactOfficePhone",event.target.value)} /></td><td /><td><input aria-label="Contact notes" value={contact.notes} onChange={event=>editContact(contact.contactId,"CustomerContactNotes",event.target.value)} /></td><td>{contact.sort||index+1}</td><td>{contact.user}</td><td>{contact.date}</td><td /></tr>)}
+            {Array.from({ length: Math.max(0, 10 - contacts.length) }, (_, i) => <tr key={`contacts-blank-${i}`}><td>{i === 0 ? <button aria-label="Add contact" onClick={()=>{const id=`new-${Date.now()}`;setContactRows(rows=>[...rows,{CustomerContactID:id,CustomerContactSort:String(rows.length+1)}]);setSelectedContact(id);}}>*</button> : ""}</td><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}
           </tbody></table>
           <div className="ac-customer-contacts-recordbar">Record:　|◄　◄　<span>{contacts.length ? `1 of ${contacts.length}` : ""}</span>　►　►|　<em>{contactSearch ? "Filtered" : "No Filter"}</em><input value={contactSearch} onChange={(event) => setContactSearch(event.target.value)} placeholder="Search" aria-label="Search contacts" /></div>
         </div>
@@ -1362,7 +1346,7 @@ function CustomerContactsTab({ customer }: { customer: CustomerDetail }) {
         <div className="ac-customer-permits-heading"><h2>Permits</h2><AccessButton data-action-status="complete" onClick={() => void navigator.clipboard.writeText(customer.street ?? "")} xs><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" shapeRendering="crispEdges"><path d="M1.5 1.5h5l3 3v7h-8z" fill="white" stroke="black"/><path d="M6.5 1.5v3h3M3 4h2M3 6h4M3 8h4M3 10h4" stroke="black"/><path d="M6.5 5.5h5l3 3v6h-8z" fill="white" stroke="#000080"/><path d="M11.5 5.5v3h3M8 8h2M8 10h5M8 12h5" stroke="#000080"/></svg> Copy Street</AccessButton><span>Double-click on City, State to select the state and city.</span></div>
         <div className="ac-customer-permits-table-wrap">
           <table className="ac-customer-permits-table"><thead><tr><th /><th>Permit Date</th><th>Street</th><th>City, State</th><th>Fee</th><th>Value</th><th>Timestamp</th><th>Permit Search Link</th><th>Link</th><th aria-hidden /><th aria-hidden /></tr></thead>
-          <tbody><tr className="is-selected"><td>*</td><td><input type="text" onFocus={event => { event.currentTarget.type = "date"; }} onBlur={event => { if (!event.currentTarget.value) event.currentTarget.type = "text"; }} aria-label="Permit date" /></td><td><input defaultValue={customer.street} aria-label="Permit street" /></td><td><input defaultValue={[customer.city, customer.state].filter(Boolean).join(", ")} aria-label="Permit city and state" /></td><td><input aria-label="Permit fee" /></td><td><input aria-label="Permit value" /></td><td /><td /><td /><td /><td /></tr>
+          <tbody>{permits.filter(row=>!permitSearch || Object.values(row).join(" ").toLowerCase().includes(permitSearch.toLowerCase())).map(row=><tr key={row.CustomerPermitID}><td /><td><input type="date" aria-label="Permit date" value={(row.CustomerPermitDate??"").slice(0,10)} onChange={event=>editPermit(row.CustomerPermitID,"CustomerPermitDate",event.target.value)} /></td>{["CustomerPermitStreet","CustomerPermitCity","CustomerPermitFee","CustomerPermitValue"].map(field=><td key={field}><input aria-label={field} value={row[field]??""} onChange={event=>editPermit(row.CustomerPermitID,field,event.target.value)} /></td>)}<td>{row.CustomerPermitTimestamp}</td><td /><td /><td /><td /></tr>)}<tr><td><button aria-label="Add permit" onClick={()=>setPermits(rows=>[...rows,{CustomerPermitID:`new-${Date.now()}`,CustomerPermitStreet:customer.street,CustomerPermitCity:customer.city,CustomerPermitState:customer.state}])}>*</button></td>{Array.from({length:10},(_,i)=><td key={i}/>)}</tr>
           {Array.from({ length: 8 }, (_, i) => <tr key={`permit-blank-${i}`}><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /><td /></tr>)}</tbody></table>
           <div className="ac-customer-contacts-recordbar">Record:　|◄　◄　<span>1 of 1</span>　►　►|　<em>{permitSearch ? "Filtered" : "No Filter"}</em><input value={permitSearch} onChange={(event) => setPermitSearch(event.target.value)} placeholder="Search" aria-label="Search permits" /></div>
         </div>
@@ -1371,14 +1355,22 @@ function CustomerContactsTab({ customer }: { customer: CustomerDetail }) {
   );
 }
 
-export function CustomerProfileScreen({ customer }: CustomerProfileScreenProps) {
-  const [customerPanel, setCustomerPanel] = useState("00-blank");
-  const activeTab = customerPanel;
+export function CustomerProfileScreen({customer}:CustomerProfileScreenProps) {
+  const [customerPanel,setCustomerPanel]=useState("00-blank");
+  return <CustomerProfileRuntime customerId={customer.customerId} tab={customerPanel}><CustomerProfileContent customer={customer} customerPanel={customerPanel} setCustomerPanel={setCustomerPanel} /></CustomerProfileRuntime>;
+}
+function CustomerProfileContent({customer:base,customerPanel,setCustomerPanel}:CustomerProfileScreenProps & {customerPanel:string;setCustomerPanel:(tab:string)=>void}) {
+  const {data}=useCustomerProfile();
+  const f=data.fields;
+  const lookup=(key:string)=>data.lookups[key]?.find(option=>option.value===f[key])?.label??"";
+  const customer:CustomerDetail={...base,customerName:f.CustBusName,street:f.Street,city:f.City,state:f.State,zip:f.Zip,phone:f.Phone,email:f.CustEmail,fax:f.CustFaxNum,mailStreet:f.MailStreet,mailCity:f.MailCity,mailState:f.MailState,mailZip:f.MailZip,website:f.CustWebSiteHLink,corpWebsite:f.CustCorpWebSiteHLink,customerNote:f.CustomerNote,invoiceNote:f.InvoiceNote,customerType:lookup("CustomerTypeID"),status:lookup("CustStatusID"),contacts:(data.related.contacts??[]).map(row=>({contactId:row.CustomerContactID,firstName:row.CustomerContactFName,lastName:row.CustomerContactLName,fullName:[row.CustomerContactFName,row.CustomerContactLName].filter(Boolean).join(" "),title:data.lookups.CustomerContactTitleID?.find(option=>option.value===row.CustomerContactTitleID)?.label??"",email:row.CustomerContactEmail,cellPhone:row.CustomerContactCell,officePhone:row.CustomerContactOfficePhone,notes:row.CustomerContactNotes}))};
+  const activeTab=customerPanel;
 
   return (
     <div className="ac-customer-search-page ac-customer-profile-page flex min-h-0 flex-1 flex-col">
       <div className="ac-customer-search ac-customer-profile ac-tracking--modern flex min-h-0 flex-1 flex-col">
         <div className="ac-customer-search-body min-h-0 flex-1 flex-col">
+          <div className="ac-customer-profile-record-selector" aria-hidden="true"><span /></div>
           <div className="ac-panel ac-panel-elevated ac-customer-profile-shell shrink-0">
             <CustomerProfileHeader customer={customer} />
 

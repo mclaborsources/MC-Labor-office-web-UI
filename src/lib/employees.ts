@@ -270,6 +270,21 @@ async function loadLicenseTypeMap(): Promise<Map<string, string>> {
   return map;
 }
 
+// This Access holding table is optional in SQL Server snapshots. Use the same
+// name resolution as the data queries; queryReadOnly caches this metadata check.
+async function hasEmployeeSearchHoldingTable(): Promise<boolean> {
+  const rows = await queryReadOnly<{ objectId: number | null }>(
+    "SELECT OBJECT_ID(N'tblEmployeeSearch3Holding') AS objectId",
+  );
+  return rows[0]?.objectId != null;
+}
+
+function isMissingEmployeeSearchHoldingTable(error: unknown): boolean {
+  const sqlError = error as { number?: number; message?: string } | null;
+  return sqlError?.number === 208 &&
+    (sqlError.message ?? "").includes("tblEmployeeSearch3Holding");
+}
+
 async function loadEmployeeSearchHoldingFields(
   ids: string[],
 ): Promise<Map<string, Record<string, string>>> {
@@ -277,6 +292,7 @@ async function loadEmployeeSearchHoldingFields(
   const cleanIds = ids.filter((id) => /^\d+$/.test(id));
   if (cleanIds.length === 0) return map;
   try {
+    if (!(await hasEmployeeSearchHoldingTable())) return map;
     const rows = await queryReadOnly<Record<string, unknown>>(
       `SELECT *
        FROM tblEmployeeSearch3Holding WITH (NOLOCK)
@@ -296,7 +312,10 @@ async function loadEmployeeSearchHoldingFields(
     // Some older database snapshots do not have the Access holding table.
     // Keep the core employee search available; the remaining fields are
     // supplied by the summary/default-field queries where possible.
-    console.warn("[employees] Could not load Employee Search holding fields:", error);
+    // Also handle the table disappearing between the metadata check and read.
+    if (!isMissingEmployeeSearchHoldingTable(error)) {
+      console.warn("[employees] Could not load Employee Search holding fields:", error);
+    }
   }
   return map;
 }
@@ -311,6 +330,13 @@ async function loadViews1Fields(ids: string[]): Promise<Map<string, Record<strin
     "EmEntryDate", "PostEmployeeAsAvailableDate", "PostEmployeeAsAvailableText", "EmployeeOnUnemploymentText",
     "Cluster", "ClusterName", "ClusterID", "County", "CountyFilter", "WillTravel", "EmployeeWillTravel",
     "InterviewNumber", "InterviewNumberID", "InterviewDate", "InterviewByDate", "InterviewedByDate",
+    "InterviewedBy", "InterviewedByName", "InterviewBy", "InterviewLocation", "InterviewedByLocation",
+    "InterviewNumberUserName", "InterviewNumberDate", "InterviewedByUserName",
+    "ResumeNumberUserName", "ResumeNumberDate", "FirstCallUserName", "FirstCallNumberUserName",
+    "WorkNumber", "WorkNumberID", "WorkNumberUserName", "WorkNumberDate",
+    "UnemploymentText", "EmployeeOnUnemploymentUserName", "EmployeeOnUnemploymentDate",
+    "PostEmployeeAsAvailableUserName", "LeavingNumber", "LeavingNumberID", "LeavingNumberUserName", "LeavingNumberDate",
+    "FirstWeekAssigned", "FirstWeekEndingDate", "LastWeekAssigned", "LastWeekEndingDate",
     "EmployeeContactHistoryActionType", "EmployeeContactHistoryDate", "LastAction", "CallNumber", "CallDate",
     "LastCallDate", "CallNote", "CallHistory", "ResumeNumber", "ResumeNumberID", "FirstCallNumber",
     "FirstCallDate", "EmployeeNotes", "MainPoints", "OnlineJobAppFolder", "JobApplicationStatus_IPG",
@@ -650,6 +676,9 @@ export async function getEmployeeFilterOptions(): Promise<{
 
 export async function getEmployeeLicenseDropdownOptions(): Promise<Record<string, string[]>> {
   const keys = ["CTLevel", "LicenseStatus", "LicenseObtainedByMethod", "LicenseExpDateFlag", "Covid19VaccinationStatus", "SubTrade1", "SubTrade2", "SubTrade3", "SubTrade4"] as const;
+  if (!(await hasEmployeeSearchHoldingTable().catch(() => false))) {
+    return Object.fromEntries(keys.map(key => [key, []]));
+  }
   const entries = await Promise.all(keys.map(async (key) => {
     const rows = await queryReadOnly<{ value: unknown }>(
       `SELECT DISTINCT LTRIM(RTRIM(CONVERT(NVARCHAR(255), ${key}))) AS value FROM tblEmployeeSearch3Holding WITH (NOLOCK) WHERE LEN(LTRIM(RTRIM(ISNULL(CONVERT(NVARCHAR(255), ${key}), '')))) > 0 ORDER BY value`,

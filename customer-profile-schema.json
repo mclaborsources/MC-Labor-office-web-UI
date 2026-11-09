@@ -1,0 +1,6237 @@
+[
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustBusName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "Street",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "StateCityID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "City",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "State",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "Zip",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "Address",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "DifferentMailingAddress",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "MailStreet",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "MailStateCityID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "MailCity",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "MailState",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "MailZip",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "MailAddress",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "Phone",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerAssignedTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerSubType1ID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerSubType2ID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerSubType3ID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerSubType4ID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustEmail",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustFaxNum",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustWebSiteHLink",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustCorpWebSiteHLink",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "SalesmanID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustPaymentStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "InvoiceNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CollectionsNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ContractReportNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "WCxDate",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "GLxDate",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkWCxDate",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkGLxDate",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkW9",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkSalesContract",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "WCxDateHDE",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "GLxDateHDE",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkWCxDateHDE",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkGLxDateHDE",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkW9HDE",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkSalesContractHDE",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "WCxDateIPG",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "GLxDateIPG",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkWCxDateIPG",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkGLxDateIPG",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkW9IPG",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkSalesContractIPG",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "WCxDateISG",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "GLxDateISG",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkWCxDateISG",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkGLxDateISG",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkW9ISG",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkSalesContractISG",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "WCxDateMLS",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "GLxDateMLS",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkWCxDateMLS",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkGLxDateMLS",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkW9MLS",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkSalesContractMLS",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "WCxDateT_R",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "GLxDateT_R",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkWCxDateT_R",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkGLxDateT_R",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkW9T_R",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkSalesContractT_R",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "WCxDateHSG",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "GLxDateHSG",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkWCxDateHSG",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkGLxDateHSG",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkW9HSG",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkSalesContractHSG",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "WCxDateAMP",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "GLxDateAMP",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkWCxDateAMP",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkGLxDateAMP",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkW9AMP",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HLinkSalesContractAMP",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustInsuranceNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "SalesStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ContractOnFile",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustContractWith_PayrollCoID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ContractLocation",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ContractDate",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustEntryUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustEntryTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "BillRateInfoA",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "BillRateInfoB",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "BillRateInfoC",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerFolder",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LaborRateAFrom",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LaborRateATo",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LaborRateBFrom",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LaborRateBTo",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LaborRateCFrom",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LaborRateCTo",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustBatchTransfer",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustFullTransferDone",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "QBCustomerID",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "FutureCall",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "FutureCallUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "FutureCallTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ContractSalesmanID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ExtraVerbiageOnContractID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "UseTextA",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LastAREmailUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LastAREmailTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LastInvoiceNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LastInvoiceNoteUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LastInvoiceNoteTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CreditLimit",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CreditTermLimitID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "BillRateOTMultiplier",
+    "DATA_TYPE": "float"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "PayRateToBillRateMultiplierX1",
+    "DATA_TYPE": "float"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "PayRateToBillRateMultiplierX2",
+    "DATA_TYPE": "float"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "PayRateToBillRateMultiplierX3",
+    "DATA_TYPE": "float"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "AllowContractWith_PayrollCoID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustBusNameVerify",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustBusNameVerifyUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustBusNameVerifyTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "StreetVerify",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "StreetVerifyUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "StreetVerifyTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "StateCityIDVerify",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "StateCityIDVerifyUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "StateCityIDVerifyTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ZipVerify",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ZipVerifyUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ZipVerifyTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "MailStreetVerify",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "MailStreetVerifyUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "MailStreetVerifyTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "MailStateCityIDVerify",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "MailStateCityIDVerifyUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "MailStateCityIDVerifyTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "MailZipVerify",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "MailZipVerifyUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "MailZipVerifyTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "PhoneVerify",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "PhoneVerifyUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "PhoneVerifyTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustFaxNumVerify",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustFaxNumVerifyUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustFaxNumVerifyTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustWebSiteVerify",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustWebSiteVerifyUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustWebSiteVerifyTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustCorpSiteVerify",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustCorpSiteVerifyUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustCorpSiteVerifyTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerTypeIDVerify",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerTypeIDVerifyUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerTypeIDVerifyTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerSubType1IDVerify",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerSubType1IDVerifyUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerSubType1IDVerifyTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerSubType2IDVerify",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerSubType2IDVerifyUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerSubType2IDVerifyTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerSubType3IDVerify",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerSubType3IDVerifyUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerSubType3IDVerifyTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerSubType4IDVerify",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerSubType4IDVerifyUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerSubType4IDVerifyTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "SalesHistoryStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "FutureSales",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "HunterID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "RevenuePerYear",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ImportNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "OnHold",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "InternetSalesReadyID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "InternetSalesReadyUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "InternetSalesReadyTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerCannotMakeAssignments",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerNoCommunication",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerNoCommunicationUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerNoCommunicationTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerUserFlag1",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerUserFlag2",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerUserFlag3",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerUserFlag4",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "TotalByJobInvoice",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "SendTimesheetsWithInvoice",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "SendTimesheetsWithVerify",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LegalStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "PopulateContractUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "PopulateContractTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ARExcludeEmail",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ARCustBusNameColor",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ARLastInvoiceNoteColor",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ARTotalUpTo30Color",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ARTotalOver30Color",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ARTotalOver60Color",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ARTotalOver120Color",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ARInvoiceNotes",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "SmallClaimsFolder",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerIsSetUp",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "UpdatedContract",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "WhereCustomerFoundID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CorpSearchFound",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CorpSearchFoundUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CorpSearchFoundTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CorpSearchNotFound",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CorpSearchNotFoundUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CorpSearchNotFoundTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LicenseSearchFound",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LicenseSearchFoundUsername",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LicenseSearchFoundTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LicenseSearchNotFound",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LicenseSearchNotFoundUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "LicenseSearchNotFoundTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerProfileTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerDescription",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "PPELoanAmount",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "JobsSaved",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "Industry",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerReturnToSender",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerReturnToSenderUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerReturnToSenderTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerProfileTypeIDLast",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerProfileTypeTransferUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerProfileTypeTransferTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "EmployeeSize",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerNOIColor",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerUserFlag5",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerUserFlag6",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerUserFlag7",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerUserFlag8",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "ExcludeFromMarginReport",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerExcludeFromDirections",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "AccountsReceivableShowDueDate",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "AccountsReceivableNote1",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "AccountsReceivableNote2",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "SisterCustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "SisterCustBusName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerLinkedInProfile",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerLicenseNumber",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerLicenseIssueDate",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerLicenseExpDate",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "CustomerShowInTracking",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "FlagshipCustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "AllowSegments",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "AllowMultipleJobsPerSegment",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomer",
+    "COLUMN_NAME": "SegmentNumber",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerAKA",
+    "COLUMN_NAME": "CustomerAKAID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerAKA",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerAKA",
+    "COLUMN_NAME": "CustomerAKA",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerAKA",
+    "COLUMN_NAME": "CustomerAKAUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerAKA",
+    "COLUMN_NAME": "CustomerAKATimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerARNextDateNotes",
+    "COLUMN_NAME": "CustomerARNextDateNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerARNextDateNotes",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerARNextDateNotes",
+    "COLUMN_NAME": "CustomerARNextDateNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerARNextDateNotes",
+    "COLUMN_NAME": "CustomerARNextDateNoteLastActionDate",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerARNextDateNotes",
+    "COLUMN_NAME": "CustomerARNextDateNoteNextActionDate",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerARNextDateNotes",
+    "COLUMN_NAME": "CustomerARNextDateNoteUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerARNextDateNotes",
+    "COLUMN_NAME": "CustomerARNextDateNoteTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerBillRates",
+    "COLUMN_NAME": "CustomerBillRateID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerBillRates",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerBillRates",
+    "COLUMN_NAME": "BillRateGrade",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerBillRates",
+    "COLUMN_NAME": "BillRate",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomerBillRates",
+    "COLUMN_NAME": "BillRateNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerBillRates",
+    "COLUMN_NAME": "BillRateUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerBillRates",
+    "COLUMN_NAME": "BillRateTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerBillRates",
+    "COLUMN_NAME": "BillRateSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerBillRates",
+    "COLUMN_NAME": "BillRateActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCannotMakeAssignmentsNotes",
+    "COLUMN_NAME": "CustomerCannotMakeAssignmentsNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCannotMakeAssignmentsNotes",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCannotMakeAssignmentsNotes",
+    "COLUMN_NAME": "CustomerCannotMakeAssignments",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCannotMakeAssignmentsNotes",
+    "COLUMN_NAME": "CustomerCannotMakeAssignmentsNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCannotMakeAssignmentsNotes",
+    "COLUMN_NAME": "CustomerCannotMakeAssignmentsNoteUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCannotMakeAssignmentsNotes",
+    "COLUMN_NAME": "CustomerCannotMakeAssignmentsNoteTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContactEmailAddressKickbacks",
+    "COLUMN_NAME": "CustomerContactEmailAddressKickbackID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContactEmailAddressKickbacks",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContactEmailAddressKickbacks",
+    "COLUMN_NAME": "CustomerContactID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContactEmailAddressKickbacks",
+    "COLUMN_NAME": "CustomerContactEmail",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContactEmailAddressKickbacks",
+    "COLUMN_NAME": "RemovalStatus",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerContactID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerContactPriority",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerContactLName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerContactFName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerContactTitleID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerContactEmail",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerContactCell",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerContactCellCarrierID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerContactTextMsgAddress",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerContactOfficePhone",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerContactNotes",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerContactSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerContactUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerContactTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerContactKickback",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerContactKickbackTimes",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContacts",
+    "COLUMN_NAME": "CustomerContactLinkedInProfile",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContractSalesmanNotes",
+    "COLUMN_NAME": "CustomerContractSalesmanNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContractSalesmanNotes",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContractSalesmanNotes",
+    "COLUMN_NAME": "CustomerContractSalesmanNoteSalesmanID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContractSalesmanNotes",
+    "COLUMN_NAME": "CustomerContractSalesmanNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContractSalesmanNotes",
+    "COLUMN_NAME": "CustomerContractSalesmanNoteUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerContractSalesmanNotes",
+    "COLUMN_NAME": "CustomerContractSalesmanNoteTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCreditLimitNotes",
+    "COLUMN_NAME": "CustomerCreditLimitNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCreditLimitNotes",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCreditLimitNotes",
+    "COLUMN_NAME": "CustomerCreditLimitNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCreditLimitNotes",
+    "COLUMN_NAME": "CustomerCreditLimitNoteUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCreditLimitNotes",
+    "COLUMN_NAME": "CustomerCreditLimitNoteTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCreditTermLimitNotes",
+    "COLUMN_NAME": "CustomerCreditTermLimitNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCreditTermLimitNotes",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCreditTermLimitNotes",
+    "COLUMN_NAME": "CustomerCreditTermLimitNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCreditTermLimitNotes",
+    "COLUMN_NAME": "CustomerCreditTermLimitNoteUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCreditTermLimitNotes",
+    "COLUMN_NAME": "CustomerCreditTermLimitNoteTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCustBusNameNotes",
+    "COLUMN_NAME": "CustomerCustBusNameNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCustBusNameNotes",
+    "COLUMN_NAME": "CustomerIDOld",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCustBusNameNotes",
+    "COLUMN_NAME": "CustBusNameOld",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCustBusNameNotes",
+    "COLUMN_NAME": "CustomerIDNew",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCustBusNameNotes",
+    "COLUMN_NAME": "CustBusNameNew",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCustBusNameNotes",
+    "COLUMN_NAME": "CustomerCustBusNameNoteUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCustBusNameNotes",
+    "COLUMN_NAME": "CustomerCustBusNameNoteTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCustPaymentStatusNotes",
+    "COLUMN_NAME": "CustomerCustPaymentStatusNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCustPaymentStatusNotes",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCustPaymentStatusNotes",
+    "COLUMN_NAME": "CustomerCustPaymentStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCustPaymentStatusNotes",
+    "COLUMN_NAME": "CustomerCustPaymentStatusNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCustPaymentStatusNotes",
+    "COLUMN_NAME": "CustomerCustPaymentStatusNoteUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerCustPaymentStatusNotes",
+    "COLUMN_NAME": "CustomerCustPaymentStatusNoteTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerForeman",
+    "COLUMN_NAME": "CustomerForemanID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerForeman",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerForeman",
+    "COLUMN_NAME": "CustomerForeman",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerForeman",
+    "COLUMN_NAME": "CustomerForemanPhone",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerForeman",
+    "COLUMN_NAME": "CustomerForemanDefault",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerForeman",
+    "COLUMN_NAME": "CustomerForemanEmail",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerFutureCallNotes",
+    "COLUMN_NAME": "CustomerFutureCallNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerFutureCallNotes",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerFutureCallNotes",
+    "COLUMN_NAME": "CustomerFutureCallNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerFutureCallNotes",
+    "COLUMN_NAME": "CustomerFutureCallNoteUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerFutureCallNotes",
+    "COLUMN_NAME": "CustomerFutureCallNoteTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport2CFields",
+    "COLUMN_NAME": "CustomerImport2CFieldID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport2CFields",
+    "COLUMN_NAME": "DatabaseFieldDescription",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport2CFields",
+    "COLUMN_NAME": "DatabaseFieldSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport2CFields",
+    "COLUMN_NAME": "DefaultImportField",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport2CFields",
+    "COLUMN_NAME": "MatchField",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport2CFields",
+    "COLUMN_NAME": "TableName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport2CFields",
+    "COLUMN_NAME": "FieldName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport2CFields",
+    "COLUMN_NAME": "ImportField",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport2CFields",
+    "COLUMN_NAME": "ControlName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport2CFields",
+    "COLUMN_NAME": "ControlRequired",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport2CFields",
+    "COLUMN_NAME": "ControlHidden",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CFields",
+    "COLUMN_NAME": "CustomerImport3CFieldID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CFields",
+    "COLUMN_NAME": "DatabaseFieldDescription",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CFields",
+    "COLUMN_NAME": "DatabaseFieldSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CFields",
+    "COLUMN_NAME": "DefaultImportField",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CFields",
+    "COLUMN_NAME": "MatchField",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CFields",
+    "COLUMN_NAME": "TableName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CFields",
+    "COLUMN_NAME": "FieldName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CFields",
+    "COLUMN_NAME": "ImportField",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CFields",
+    "COLUMN_NAME": "ControlName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CFields",
+    "COLUMN_NAME": "ControlRequired",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CFields",
+    "COLUMN_NAME": "ControlHidden",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CNewFields",
+    "COLUMN_NAME": "CustomerImport3CNewFieldID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CNewFields",
+    "COLUMN_NAME": "DatabaseFieldDescription",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CNewFields",
+    "COLUMN_NAME": "DatabaseFieldSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CNewFields",
+    "COLUMN_NAME": "DefaultImportField",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CNewFields",
+    "COLUMN_NAME": "MatchField",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CNewFields",
+    "COLUMN_NAME": "TableName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CNewFields",
+    "COLUMN_NAME": "FieldName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CNewFields",
+    "COLUMN_NAME": "ImportField",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CNewFields",
+    "COLUMN_NAME": "ControlName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CNewFields",
+    "COLUMN_NAME": "ControlRequired",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImport3CNewFields",
+    "COLUMN_NAME": "ControlHidden",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportExistingFields",
+    "COLUMN_NAME": "CustomerImportExistingFieldID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportExistingFields",
+    "COLUMN_NAME": "DatabaseFieldDescription",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportExistingFields",
+    "COLUMN_NAME": "DatabaseFieldSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportExistingFields",
+    "COLUMN_NAME": "DefaultImportField",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportExistingFields",
+    "COLUMN_NAME": "MatchField",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportExistingFields",
+    "COLUMN_NAME": "TableName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportExistingFields",
+    "COLUMN_NAME": "FieldName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportExistingFields",
+    "COLUMN_NAME": "ImportField",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportExistingFields",
+    "COLUMN_NAME": "ControlName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportExistingFields",
+    "COLUMN_NAME": "ControlRequired",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportExistingFields",
+    "COLUMN_NAME": "ControlHidden",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportFields",
+    "COLUMN_NAME": "CustomerImportFieldID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportFields",
+    "COLUMN_NAME": "DatabaseFieldDescription",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportFields",
+    "COLUMN_NAME": "DatabaseFieldSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportFields",
+    "COLUMN_NAME": "DefaultImportField",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportFields",
+    "COLUMN_NAME": "MatchField",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportFields",
+    "COLUMN_NAME": "TableName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportFields",
+    "COLUMN_NAME": "FieldName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportFields",
+    "COLUMN_NAME": "ImportField",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportFields",
+    "COLUMN_NAME": "ControlName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportFields",
+    "COLUMN_NAME": "ControlRequired",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportFields",
+    "COLUMN_NAME": "ControlHidden",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportUpdateFields",
+    "COLUMN_NAME": "CustomerImportUpdateFieldID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportUpdateFields",
+    "COLUMN_NAME": "DatabaseFieldDescription",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportUpdateFields",
+    "COLUMN_NAME": "DatabaseFieldSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportUpdateFields",
+    "COLUMN_NAME": "DefaultImportField",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportUpdateFields",
+    "COLUMN_NAME": "MatchField",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportUpdateFields",
+    "COLUMN_NAME": "TableName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportUpdateFields",
+    "COLUMN_NAME": "FieldName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportUpdateFields",
+    "COLUMN_NAME": "ImportField",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportUpdateFields",
+    "COLUMN_NAME": "ControlName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportUpdateFields",
+    "COLUMN_NAME": "ControlRequired",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerImportUpdateFields",
+    "COLUMN_NAME": "ControlHidden",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqRequestedBy",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqStateID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqAuditDateRange",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqAuditDateStart",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqAuditDateEnd",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqGeneralLiability",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqUmbrellaLiability",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqAutoInsurance",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqWaiverOfSubrogationGL",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqCustomerInsured",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqOthersInsured",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqOthersInsuredNames",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqAdditionalVerbiage",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqAdditionalVerbiageText",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqWorkersComp",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqWaiverOfSubrogationWC",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqEstimatedPayroll",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqProjectID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqAltEmployerEndorse",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqAdditionalNote",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqAdditionalNoteText",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInsuranceCertReqs",
+    "COLUMN_NAME": "CustomerInsuranceCertReqContractWith_PayrollCo",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInvoicePayments",
+    "COLUMN_NAME": "CustomerInvoicePaymentID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInvoicePayments",
+    "COLUMN_NAME": "CustomerPaymentID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInvoicePayments",
+    "COLUMN_NAME": "CustomerWeekID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInvoicePayments",
+    "COLUMN_NAME": "CustomerInvoicePayment",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInvoicePayments",
+    "COLUMN_NAME": "InvoiceAdjustment",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInvoicePayments",
+    "COLUMN_NAME": "CustomerInvoicePaymentNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerInvoicePayments",
+    "COLUMN_NAME": "CustomerInvoicePaymentOfficeNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerLegalStatusNotes",
+    "COLUMN_NAME": "CustomerLegalStatusNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerLegalStatusNotes",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerLegalStatusNotes",
+    "COLUMN_NAME": "CustomerLegalStatusNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerLegalStatusNotes",
+    "COLUMN_NAME": "CustomerLegalStatusNoteUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerLegalStatusNotes",
+    "COLUMN_NAME": "CustomerLegalStatusNoteTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerNotes",
+    "COLUMN_NAME": "CustomerNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerNotes",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerNotes",
+    "COLUMN_NAME": "CustomerNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerNotes",
+    "COLUMN_NAME": "CustomerNoteUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerNotes",
+    "COLUMN_NAME": "CustomerNoteTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerNotes",
+    "COLUMN_NAME": "CustomerNoteActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPayments",
+    "COLUMN_NAME": "CustomerPaymentID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPayments",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPayments",
+    "COLUMN_NAME": "CustomerPayment",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPayments",
+    "COLUMN_NAME": "CustomerPaymentDate",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPayments",
+    "COLUMN_NAME": "CustomerPaymentCheckNum",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPayments",
+    "COLUMN_NAME": "CustomerPaymentTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPayments",
+    "COLUMN_NAME": "CustomerPaymentAccountID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPayments",
+    "COLUMN_NAME": "CustomerPaymentApplied",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPayments",
+    "COLUMN_NAME": "CustomerPaymentBalance",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPayments",
+    "COLUMN_NAME": "DepositID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPayments",
+    "COLUMN_NAME": "CustomerPaymentUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPayments",
+    "COLUMN_NAME": "CustomerPaymentTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermitNotes",
+    "COLUMN_NAME": "CustomerPermitNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermitNotes",
+    "COLUMN_NAME": "CustomerPermitID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermitNotes",
+    "COLUMN_NAME": "CustomerPermitNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermitNotes",
+    "COLUMN_NAME": "CustomerPermitNoteUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermitNotes",
+    "COLUMN_NAME": "CustomerPermitNoteTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitStreet",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitStateCityID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitCity",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitState",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitDate",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitFee",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitValue",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitSiteVisit",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitSiteVisitUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitSiteVisitTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitFutureVisit",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitFutureVisitUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitFutureVisitTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitStatusIDUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerPermits",
+    "COLUMN_NAME": "CustomerPermitStatusIDTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerResearchNotes",
+    "COLUMN_NAME": "CustomerResearchNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerResearchNotes",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerResearchNotes",
+    "COLUMN_NAME": "CustomerResearchNoteTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerResearchNotes",
+    "COLUMN_NAME": "CustomerResearchNoteTime",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerResearchNotes",
+    "COLUMN_NAME": "CustomerResearchNoteUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerResearchNotes",
+    "COLUMN_NAME": "CustomerResearchNoteTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerResearchNotes",
+    "COLUMN_NAME": "CustomerResearchNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerResearchNotes",
+    "COLUMN_NAME": "CustomerResearchNoteBeforeInternetSalesReadyID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerResearchNotes",
+    "COLUMN_NAME": "CustomerResearchNoteInternetSalesReadyID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerResearchNotes",
+    "COLUMN_NAME": "CustomerResearchNoteUp",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerResearchNotes",
+    "COLUMN_NAME": "CustomerResearchNoteTimePerSearch",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerResearchNotes",
+    "COLUMN_NAME": "CustomerResearchNoteCustWebSiteHLinkBefore",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerResearchNotes",
+    "COLUMN_NAME": "CustomerResearchNoteCustWebSiteHLink",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerResearchNotes",
+    "COLUMN_NAME": "CustomerResearchNoteCustWebSiteHLinkChange",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistory",
+    "COLUMN_NAME": "CustomerSalesHistoryID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistory",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistory",
+    "COLUMN_NAME": "CustomerSalesHistoryActionTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistory",
+    "COLUMN_NAME": "CustomerSalesHistoryUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistory",
+    "COLUMN_NAME": "CustomerSalesHistoryTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistory",
+    "COLUMN_NAME": "CustomerSalesHistoryNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistory",
+    "COLUMN_NAME": "CustomerSalesHistoryFutureCallDays",
+    "DATA_TYPE": "smallint"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistory",
+    "COLUMN_NAME": "CustomerSalesHistoryContactID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistory",
+    "COLUMN_NAME": "CustomerSalesHistoryAddresses",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistory",
+    "COLUMN_NAME": "CustomerSalesHistoryAddressesCc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistory",
+    "COLUMN_NAME": "CustomerSalesHistoryAddressesBcc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistory",
+    "COLUMN_NAME": "CustomerSalesHistoryResponseHLink",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistory",
+    "COLUMN_NAME": "CustomerSalesHistoryResponseUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistory",
+    "COLUMN_NAME": "CustomerSalesHistoryResponseTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistory",
+    "COLUMN_NAME": "CustomerSalesHistoryContentID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistoryContent",
+    "COLUMN_NAME": "CustomerSalesHistoryContentID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistoryContent",
+    "COLUMN_NAME": "CustomerSalesHistoryContentSubject",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistoryContent",
+    "COLUMN_NAME": "CustomerSalesHistoryContentBody",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistoryContent",
+    "COLUMN_NAME": "CustomerSalesHistoryContentSignaturePath",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistoryContent",
+    "COLUMN_NAME": "CustomerSalesHistoryContentLogoPath",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistoryContent",
+    "COLUMN_NAME": "CustomerSalesHistoryContentCompanyNameID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistoryContent",
+    "COLUMN_NAME": "CustomerSalesHistoryContentContractWithID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistoryContent",
+    "COLUMN_NAME": "CustomerSalesHistoryContentPrintSignature",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistoryContent",
+    "COLUMN_NAME": "CustomerSalesHistoryContentNameAndTitle",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistoryContent",
+    "COLUMN_NAME": "CustomerSalesHistoryContentNameAndAuthorizedAgentOf",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesHistoryContent",
+    "COLUMN_NAME": "CustomerSalesHistoryContentRemoveHeaderAfterPage1",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesmanNotes",
+    "COLUMN_NAME": "CustomerSalesmanNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesmanNotes",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesmanNotes",
+    "COLUMN_NAME": "CustomerSalesmanNoteSalesmanID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesmanNotes",
+    "COLUMN_NAME": "CustomerSalesmanNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesmanNotes",
+    "COLUMN_NAME": "CustomerSalesmanNoteUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesmanNotes",
+    "COLUMN_NAME": "CustomerSalesmanNoteTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesNotes",
+    "COLUMN_NAME": "CustomerSalesNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesNotes",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesNotes",
+    "COLUMN_NAME": "CustomerSalesNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesNotes",
+    "COLUMN_NAME": "CustomerSalesNoteUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesNotes",
+    "COLUMN_NAME": "CustomerSalesNoteTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerSalesNotes",
+    "COLUMN_NAME": "CustomerSalesNoteActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWCCs",
+    "COLUMN_NAME": "CustomerWCCID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWCCs",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWCCs",
+    "COLUMN_NAME": "WCCID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWCCs",
+    "COLUMN_NAME": "CustomerWCCUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWCCs",
+    "COLUMN_NAME": "CustomerWCCTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWCCs",
+    "COLUMN_NAME": "CustomerWCCActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "CustomerWeekID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "CustomerID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "AssignWeek",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "AssignYear",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "WeekEndingDate",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "ReadyToInvoice",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "ReadyToInvoiceUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "ReadyToInvoiceTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "InvoiceSent",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "InvoiceSentUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "InvoiceSentTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "InvoiceYear",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "InvoiceNum",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "AllHoursIn",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "CustColorFlag",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "InvoiceNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "CustomerWeekSalesmanID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "CustomerWeekContractWith_PayrollCoID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "WeekLocked",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "CustomerWeekBillRateOTMultiplier",
+    "DATA_TYPE": "float"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "CustomerWeekPayRateToBillRateMultiplierX1",
+    "DATA_TYPE": "float"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "CustomerWeekPayRateToBillRateMultiplierX2",
+    "DATA_TYPE": "float"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "CustomerWeekPayRateToBillRateMultiplierX3",
+    "DATA_TYPE": "float"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "ScheduleSentTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "VerifySentUserName1",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "VerifySentTimestamp1",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "VerifySentUserName2",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "VerifySentTimestamp2",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "VerifySentUserName3",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "VerifySentTimestamp3",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "InvoiceSentTake",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "InvoiceTotal",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "OpenBalance",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "Paid",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "InvoiceAdjustment",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "InvoiceAdjustmentNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblCustomerWeeks",
+    "COLUMN_NAME": "MissedPaymentDate",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAccounts",
+    "COLUMN_NAME": "PullDownAccountID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAccounts",
+    "COLUMN_NAME": "PullDownAccount",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAccounts",
+    "COLUMN_NAME": "PullDownAccountSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAccounts",
+    "COLUMN_NAME": "PullDownAccountActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAccRefStatus",
+    "COLUMN_NAME": "PullDownAccRefStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAccRefStatus",
+    "COLUMN_NAME": "PullDownAccRefStatus",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAccRefStatus",
+    "COLUMN_NAME": "PullDownAccRefStatusSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownActionTypes",
+    "COLUMN_NAME": "PullDownActionTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownActionTypes",
+    "COLUMN_NAME": "PullDownActionType",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownActionTypes",
+    "COLUMN_NAME": "PullDownActionTypeDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownActionTypes",
+    "COLUMN_NAME": "PullDownActionTypeSendType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownActionTypes",
+    "COLUMN_NAME": "PullDownActionTypeFastAction",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownActionTypes",
+    "COLUMN_NAME": "PullDownActionTypeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAdditionalNotes",
+    "COLUMN_NAME": "PullDownAdditionalNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAdditionalNotes",
+    "COLUMN_NAME": "PullDownAdditionalNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAdditionalNotes",
+    "COLUMN_NAME": "PullDownAdditionalNoteType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAdditionalNotes",
+    "COLUMN_NAME": "PullDownAdditionalNoteSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAging",
+    "COLUMN_NAME": "PullDownAgingID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAging",
+    "COLUMN_NAME": "PullDownAging",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAging",
+    "COLUMN_NAME": "PullDownAgingStartDay",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAging",
+    "COLUMN_NAME": "PullDownAgingEndDay",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAging",
+    "COLUMN_NAME": "PullDownAgingSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAlertTypes",
+    "COLUMN_NAME": "PullDownAlertTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAlertTypes",
+    "COLUMN_NAME": "PullDownAlertType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAlertTypes",
+    "COLUMN_NAME": "PullDownAlertTypeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownAlertTypes",
+    "COLUMN_NAME": "PullDownAlertTypeActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownBankAccountActions",
+    "COLUMN_NAME": "PullDownBankAccountActionID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownBankAccountActions",
+    "COLUMN_NAME": "PullDownBankAccountAction",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownBankAccountActions",
+    "COLUMN_NAME": "PullDownBankAccountActionSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownBankAccountTypes",
+    "COLUMN_NAME": "PullDownBankAccountTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownBankAccountTypes",
+    "COLUMN_NAME": "PullDownBankAccountType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownBankAccountTypes",
+    "COLUMN_NAME": "PullDownBankAccountTypeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownBenefitsStatus",
+    "COLUMN_NAME": "PullDownBenefitsStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownBenefitsStatus",
+    "COLUMN_NAME": "PullDownBenefitsStatus",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownBenefitsStatus",
+    "COLUMN_NAME": "PullDownBenefitsStatusSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCallNumbers",
+    "COLUMN_NAME": "PullDownCallNumberID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCallNumbers",
+    "COLUMN_NAME": "PullDownCallNumber",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCallNumbers",
+    "COLUMN_NAME": "PullDownCallNumberDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCallNumbers",
+    "COLUMN_NAME": "PullDownCallNumberNoVerbal",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCallNumbers",
+    "COLUMN_NAME": "PullDownCallNumberSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCellCarriers",
+    "COLUMN_NAME": "PullDownCellCarrierID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCellCarriers",
+    "COLUMN_NAME": "PullDownCellCarrier",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCellCarriers",
+    "COLUMN_NAME": "PullDownCellCarrierMatch",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCellCarriers",
+    "COLUMN_NAME": "PullDownCellCarrierAddress",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCellCarriers",
+    "COLUMN_NAME": "PullDownCellCarrierUsePrefixOne",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCellCarriers",
+    "COLUMN_NAME": "PullDownCellCarrierNotes",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCellCarriers",
+    "COLUMN_NAME": "PullDownCellCarrierSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCertifiedPayrollTitles",
+    "COLUMN_NAME": "PullDownCertifiedPayrollTitleID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCertifiedPayrollTitles",
+    "COLUMN_NAME": "PullDownCertifiedPayrollTitle",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCertifiedPayrollTitles",
+    "COLUMN_NAME": "PullDownCertifiedPayrollTitleSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownColors",
+    "COLUMN_NAME": "PullDownColorID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownColors",
+    "COLUMN_NAME": "PullDownColorName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownColors",
+    "COLUMN_NAME": "PullDownColorHex",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownColors",
+    "COLUMN_NAME": "PullDownColorR",
+    "DATA_TYPE": "tinyint"
+  },
+  {
+    "TABLE_NAME": "tblPullDownColors",
+    "COLUMN_NAME": "PullDownColorG",
+    "DATA_TYPE": "tinyint"
+  },
+  {
+    "TABLE_NAME": "tblPullDownColors",
+    "COLUMN_NAME": "PullDownColorB",
+    "DATA_TYPE": "tinyint"
+  },
+  {
+    "TABLE_NAME": "tblPullDownColors",
+    "COLUMN_NAME": "PullDownColorLong",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownColors",
+    "COLUMN_NAME": "PullDownColorForeColor",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownColors",
+    "COLUMN_NAME": "PullDownColorSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContactTypes",
+    "COLUMN_NAME": "PullDownContactTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContactTypes",
+    "COLUMN_NAME": "PullDownContactType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContactTypes",
+    "COLUMN_NAME": "PullDownContactTypeSort",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoInitials",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoStreet",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoCity",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoStateID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoZip",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoPhone",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoFaxNum",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoEmail",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoCheckPaidTo",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoDirectionsHeader",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoColorID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoDescription",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoGLInsPolicyMonth",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoGLInsPolicyDay",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoWCInsPolicyMonth",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCo",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoWCInsPolicyDay",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCoOnSite",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoOnSiteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCoOnSite",
+    "COLUMN_NAME": "PullDownContractWith_PayrollCoID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownContractWith_PayrollCoOnSite",
+    "COLUMN_NAME": "PullDownPayrollCoOnSiteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCovid19VaccinationStatus",
+    "COLUMN_NAME": "PullDownCovid19VaccinationStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCovid19VaccinationStatus",
+    "COLUMN_NAME": "PullDownCovid19VaccinationStatus",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCovid19VaccinationStatus",
+    "COLUMN_NAME": "PullDownCovid19VaccinationStatusSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCovid19VaccinationStatus",
+    "COLUMN_NAME": "PullDownCovid19VaccinationStatusActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCreditTermLimits",
+    "COLUMN_NAME": "PullDownCreditTermLimitID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCreditTermLimits",
+    "COLUMN_NAME": "PullDownCreditTermLimit",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCreditTermLimits",
+    "COLUMN_NAME": "PullDownCreditTermLimitSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCreditTermLimits",
+    "COLUMN_NAME": "PullDownCreditTermLimitActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCTLevels",
+    "COLUMN_NAME": "PullDownCTLevelID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCTLevels",
+    "COLUMN_NAME": "PullDownCTLevelTradeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCTLevels",
+    "COLUMN_NAME": "PullDownCTLevel",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCTLevels",
+    "COLUMN_NAME": "PullDownCTLevelDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCTLevels",
+    "COLUMN_NAME": "PullDownCTLevelSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCTLevels",
+    "COLUMN_NAME": "PullDownCTLevelActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerContactTitles",
+    "COLUMN_NAME": "PullDownCustomerContactTitleID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerContactTitles",
+    "COLUMN_NAME": "PullDownCustomerContactTitle",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerContactTitles",
+    "COLUMN_NAME": "PullDownCustomerContactTitleSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerContactTitles",
+    "COLUMN_NAME": "PullDownCustomerContactTitleDivisionID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerPaymentTypes",
+    "COLUMN_NAME": "PullDownCustomerPaymentTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerPaymentTypes",
+    "COLUMN_NAME": "PullDownCustomerPaymentType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerPaymentTypes",
+    "COLUMN_NAME": "PullDownCustomerPaymentTypeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerPaymentTypes",
+    "COLUMN_NAME": "PullDownCustomerPaymentTypeActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerPermitStatus",
+    "COLUMN_NAME": "PullDownCustomerPermitStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerPermitStatus",
+    "COLUMN_NAME": "PullDownCustomerPermitStatus",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerPermitStatus",
+    "COLUMN_NAME": "PullDownCustomerPermitStatusSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerPermitStatus",
+    "COLUMN_NAME": "PullDownCustomerPermitStatusActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerProfileTypes",
+    "COLUMN_NAME": "PullDownCustomerProfileTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerProfileTypes",
+    "COLUMN_NAME": "PullDownCustomerProfileType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerProfileTypes",
+    "COLUMN_NAME": "PullDownCustomerProfileTypeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerProfileTypes",
+    "COLUMN_NAME": "PullDownCustomerProfileTypeActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerResearchNoteTypes",
+    "COLUMN_NAME": "PullDownCustomerResearchNoteTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerResearchNoteTypes",
+    "COLUMN_NAME": "PullDownCustomerResearchNoteType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerResearchNoteTypes",
+    "COLUMN_NAME": "PullDownCustomerResearchNoteTypeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerResearchNoteTypes",
+    "COLUMN_NAME": "PullDownCustomerResearchNoteTypeActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerTypes",
+    "COLUMN_NAME": "PullDownCustomerTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerTypes",
+    "COLUMN_NAME": "PullDownCustomerType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerTypes",
+    "COLUMN_NAME": "PullDownCustomerTypeAKA1",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerTypes",
+    "COLUMN_NAME": "PullDownCustomerTypeAKA2",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerTypes",
+    "COLUMN_NAME": "PullDownCustomerTypeContractWith_PayrollCoID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerTypes",
+    "COLUMN_NAME": "PullDownCustomerTypeDefaultWCCID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerTypes",
+    "COLUMN_NAME": "PullDownCustomerTypeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerTypes",
+    "COLUMN_NAME": "PullDownCustomerTypeDivisionID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerTypeSearchTerms",
+    "COLUMN_NAME": "PullDownCustomerTypeSearchTermID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerTypeSearchTerms",
+    "COLUMN_NAME": "PullDownCustomerTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerTypeSearchTerms",
+    "COLUMN_NAME": "PullDownCustomerTypeSearchTerm",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerTypeSearchTerms",
+    "COLUMN_NAME": "PullDownCustomerTypeSearchTermSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustomerTypeSearchTerms",
+    "COLUMN_NAME": "PullDownCustomerTypeSearchTermActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustPaymentStatus",
+    "COLUMN_NAME": "PullDownCustPaymentStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustPaymentStatus",
+    "COLUMN_NAME": "PullDownCustPaymentStatus",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustPaymentStatus",
+    "COLUMN_NAME": "PullDownCustPaymentStatusSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustStatus",
+    "COLUMN_NAME": "PulldownCustStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustStatus",
+    "COLUMN_NAME": "PulldownCustStatus",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownCustStatus",
+    "COLUMN_NAME": "PulldownCustStatusSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDateAddIntervals",
+    "COLUMN_NAME": "PullDownDateAddIntervalID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDateAddIntervals",
+    "COLUMN_NAME": "PullDownDateAddInterval",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDateAddIntervals",
+    "COLUMN_NAME": "PullDownDateAddIntervalCode",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDateAddIntervals",
+    "COLUMN_NAME": "PullDownDateAddIntervalSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDivisions",
+    "COLUMN_NAME": "PullDownDivisionID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDivisions",
+    "COLUMN_NAME": "PullDownDivision",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDivisions",
+    "COLUMN_NAME": "PullDownDivisionSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDivisions",
+    "COLUMN_NAME": "PullDownDivisionActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDocuments",
+    "COLUMN_NAME": "PullDownDocumentID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDocuments",
+    "COLUMN_NAME": "PullDownDocument",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDocuments",
+    "COLUMN_NAME": "PullDownDocumentHLink",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDocuments",
+    "COLUMN_NAME": "PullDownDocumentSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDocuments",
+    "COLUMN_NAME": "PullDownDocumentActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDOTStatus",
+    "COLUMN_NAME": "PullDownDOTStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDOTStatus",
+    "COLUMN_NAME": "PullDownDOTStatus",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDOTStatus",
+    "COLUMN_NAME": "PullDownDOTStatusDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDOTStatus",
+    "COLUMN_NAME": "PullDownDOTStatusSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDuration",
+    "COLUMN_NAME": "PullDownDurationID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDuration",
+    "COLUMN_NAME": "PullDownDuration",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownDuration",
+    "COLUMN_NAME": "PullDownDurationSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmails",
+    "COLUMN_NAME": "PullDownEmailID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmails",
+    "COLUMN_NAME": "PullDownEmailType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmails",
+    "COLUMN_NAME": "PullDownEmailSubject",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmails",
+    "COLUMN_NAME": "PullDownEmail",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmails",
+    "COLUMN_NAME": "PullDownEmailDisplay",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmails",
+    "COLUMN_NAME": "PullDownEmailSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmailUsers",
+    "COLUMN_NAME": "PullDownEmailUserID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmailUsers",
+    "COLUMN_NAME": "PullDownEmailUserType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmailUsers",
+    "COLUMN_NAME": "OfficeStaffID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmailUsers",
+    "COLUMN_NAME": "PullDownEmailUserEmail",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmailUsers",
+    "COLUMN_NAME": "PullDownEmailUserSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmailUsers",
+    "COLUMN_NAME": "PullDownEmailUserActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeAdjustmentTypes",
+    "COLUMN_NAME": "PullDownEmployeeAdjustmentTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeAdjustmentTypes",
+    "COLUMN_NAME": "PullDownEmployeeAdjustmentType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeAdjustmentTypes",
+    "COLUMN_NAME": "PullDownEmployeeAdjustmentTypeQuantity",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeAdjustmentTypes",
+    "COLUMN_NAME": "PullDownEmployeeAdjustmentTypeOvertimeHours",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeAdjustmentTypes",
+    "COLUMN_NAME": "PullDownEmployeeAdjustmentTypeAmount",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeAdjustmentTypes",
+    "COLUMN_NAME": "PullDownEmployeeAdjustmentTypeTravelRate",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeAdjustmentTypes",
+    "COLUMN_NAME": "PullDownEmployeeAdjustmentTypeTotalHours",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeAdjustmentTypes",
+    "COLUMN_NAME": "PullDownEmployeeAdjustmentTypeSiteStateID",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeAdjustmentTypes",
+    "COLUMN_NAME": "PullDownEmployeeAdjustmentTypeHide",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeAdjustmentTypes",
+    "COLUMN_NAME": "PullDownEmployeeAdjustmentTypeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeBioNotes",
+    "COLUMN_NAME": "PullDownEmployeeBioNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeBioNotes",
+    "COLUMN_NAME": "PullDownEmployeeBioNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeBioNotes",
+    "COLUMN_NAME": "PullDownEmployeeBioNoteSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeContactTitles",
+    "COLUMN_NAME": "PullDownEmployeeContactTitleID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeContactTitles",
+    "COLUMN_NAME": "PullDownEmployeeContactTitle",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeContactTitles",
+    "COLUMN_NAME": "PullDownEmployeeContactTitleSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeFirstCallNumbers",
+    "COLUMN_NAME": "PullDownEmployeeFirstCallNumberID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeFirstCallNumbers",
+    "COLUMN_NAME": "PullDownEmployeeFirstCallNumber",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeFirstCallNumbers",
+    "COLUMN_NAME": "PullDownEmployeeFirstCallNumberDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeFirstCallNumbers",
+    "COLUMN_NAME": "PullDownEmployeeFirstCallNumberSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeHistoryStatus",
+    "COLUMN_NAME": "PullDownEmployeeHistoryStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeHistoryStatus",
+    "COLUMN_NAME": "PullDownEmployeeHistoryStatus",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeHistoryStatus",
+    "COLUMN_NAME": "PullDownEmployeeHistoryStatusDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeHistoryStatus",
+    "COLUMN_NAME": "PullDownEmployeeHistoryStatusSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeNoteTypes",
+    "COLUMN_NAME": "PullDownEmployeeNoteTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeNoteTypes",
+    "COLUMN_NAME": "PullDownEmployeeNoteType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeNoteTypes",
+    "COLUMN_NAME": "PullDownEmployeeNoteTypeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeProfileTypes",
+    "COLUMN_NAME": "PullDownEmployeeProfileTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeProfileTypes",
+    "COLUMN_NAME": "PullDownEmployeeProfileType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeProfileTypes",
+    "COLUMN_NAME": "PullDownEmployeeProfileTypeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeProfileTypes",
+    "COLUMN_NAME": "PullDownEmployeeProfileTypeActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeQuestions",
+    "COLUMN_NAME": "PullDownEmployeeQuestionID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeQuestions",
+    "COLUMN_NAME": "PullDownEmployeeQuestionTradeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeQuestions",
+    "COLUMN_NAME": "PullDownEmployeeQuestionGroupDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeQuestions",
+    "COLUMN_NAME": "PullDownEmployeeQuestion",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeQuestions",
+    "COLUMN_NAME": "PullDownEmployeeQuestionAnswer",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeQuestions",
+    "COLUMN_NAME": "PullDownEmployeeQuestionComment",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeQuestions",
+    "COLUMN_NAME": "PullDownEmployeeQuestionUseYesNo",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeQuestions",
+    "COLUMN_NAME": "PullDownEmployeeQuestionUseOneToTen",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeQuestions",
+    "COLUMN_NAME": "PullDownEmployeeQuestionSize01",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeQuestions",
+    "COLUMN_NAME": "PullDownEmployeeQuestionSize02",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeQuestions",
+    "COLUMN_NAME": "PullDownEmployeeQuestionSize03",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeQuestions",
+    "COLUMN_NAME": "PullDownEmployeeQuestionSize04",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeQuestions",
+    "COLUMN_NAME": "PullDownEmployeeQuestionSize05",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeQuestions",
+    "COLUMN_NAME": "PullDownEmployeeQuestionSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeQuestions",
+    "COLUMN_NAME": "PullDownEmployeeQuestionActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeResearchNoteTypes",
+    "COLUMN_NAME": "PullDownEmployeeResearchNoteTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeResearchNoteTypes",
+    "COLUMN_NAME": "PullDownEmployeeResearchNoteType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeResearchNoteTypes",
+    "COLUMN_NAME": "PullDownEmployeeResearchNoteTypeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeResearchNoteTypes",
+    "COLUMN_NAME": "PullDownEmployeeResearchNoteTypeActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeResearchTypes",
+    "COLUMN_NAME": "PullDownEmployeeResearchTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeResearchTypes",
+    "COLUMN_NAME": "PullDownEmployeeResearchType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeResearchTypes",
+    "COLUMN_NAME": "PullDownEmployeeResearchTypeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeReviewTypes",
+    "COLUMN_NAME": "PullDownEmployeeReviewTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeReviewTypes",
+    "COLUMN_NAME": "PullDownEmployeeReviewType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeReviewTypes",
+    "COLUMN_NAME": "PullDownEmployeeReviewTypeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeReviewTypes",
+    "COLUMN_NAME": "PullDownEmployeeReviewTypeActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeStatus",
+    "COLUMN_NAME": "PullDownEmployeeStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeStatus",
+    "COLUMN_NAME": "PullDownEmployeeStatus",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeStatus",
+    "COLUMN_NAME": "PullDownEmployeeStatusSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeToolLists",
+    "COLUMN_NAME": "PullDownEmployeeToolListID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeToolLists",
+    "COLUMN_NAME": "PullDownEmployeeToolListTradeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeToolLists",
+    "COLUMN_NAME": "PullDownEmployeeToolListGroupDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeToolLists",
+    "COLUMN_NAME": "PullDownEmployeeToolList",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeToolLists",
+    "COLUMN_NAME": "PullDownEmployeeToolListSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmployeeToolLists",
+    "COLUMN_NAME": "PullDownEmployeeToolListActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmStateVsSiteStateFilters",
+    "COLUMN_NAME": "PullDownEmStateVsSiteStateFilterID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmStateVsSiteStateFilters",
+    "COLUMN_NAME": "PullDownEmStateVsSiteStateFilter",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmStateVsSiteStateFilters",
+    "COLUMN_NAME": "PullDownEmStateVsSiteStateFilterSQL",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownEmStateVsSiteStateFilters",
+    "COLUMN_NAME": "PullDownEmStateVsSiteStateFilterSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownExpenseTypes",
+    "COLUMN_NAME": "PullDownExpenseTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownExpenseTypes",
+    "COLUMN_NAME": "PullDownExpenseType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownExpenseTypes",
+    "COLUMN_NAME": "PullDownExpenseTypeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownExpenseTypes",
+    "COLUMN_NAME": "PullDownExpenseTypeActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownExperience",
+    "COLUMN_NAME": "PullDownExperienceID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownExperience",
+    "COLUMN_NAME": "PullDownExperience",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownExperience",
+    "COLUMN_NAME": "PullDownExperienceSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownExtraVerbiageOnContract",
+    "COLUMN_NAME": "PullDownExtraVerbiageOnContractID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownExtraVerbiageOnContract",
+    "COLUMN_NAME": "PullDownExtraVerbiageOnContract",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownExtraVerbiageOnContract",
+    "COLUMN_NAME": "PullDownExtraVerbiageOnContractSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownGCVerifyMethods",
+    "COLUMN_NAME": "PullDownGCVerifyMethodID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownGCVerifyMethods",
+    "COLUMN_NAME": "PullDownGCVerifyMethod",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownGCVerifyMethods",
+    "COLUMN_NAME": "PullDownGCVerifyMethodSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownGeneralContractors",
+    "COLUMN_NAME": "PullDownGeneralContractorID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownGeneralContractors",
+    "COLUMN_NAME": "PullDownGeneralContractorName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownGeneralContractors",
+    "COLUMN_NAME": "PullDownGeneralContractorStreet",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownGeneralContractors",
+    "COLUMN_NAME": "PullDownGeneralContractorStateCityID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownGeneralContractors",
+    "COLUMN_NAME": "PullDownGeneralContractorZip",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownGeneralContractors",
+    "COLUMN_NAME": "PullDownGeneralContractorNotes",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownGrades",
+    "COLUMN_NAME": "PullDownGradeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownGrades",
+    "COLUMN_NAME": "PullDownGrade",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownGrades",
+    "COLUMN_NAME": "PullDownGradeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurance",
+    "COLUMN_NAME": "PullDownHealthInsuranceID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurance",
+    "COLUMN_NAME": "PullDownHealthInsurance",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurance",
+    "COLUMN_NAME": "PullDownHealthInsuranceDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurance",
+    "COLUMN_NAME": "PullDownHealthInsuranceSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownHealthInsuranceCompanyContactID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownHealthInsuranceCompany",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownHealthInsuranceCompanyContactFName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownHealthInsuranceCompanyContactLName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownHealthInsuranceCompanyContactStreet",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownHealthInsuranceCompanyContactCity",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownHealthInsuranceCompanyContactStateID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownHealthInsuranceCompanyContactZip",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownHealthInsuranceCompanyContactPhone",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownHealthInsuranceCompanyContactFaxNum",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownHealthInsuranceCompanyContactEmail",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownHealthInsuranceCompanyContactSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownHealthInsuranceCompanyContactNotes",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownHealthInsuranceCompanyContactActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceFlags",
+    "COLUMN_NAME": "PullDownHealthInsuranceFlagID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceFlags",
+    "COLUMN_NAME": "PullDownHealthInsuranceFlag",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceFlags",
+    "COLUMN_NAME": "PullDownHealthInsuranceFlagSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePolicies",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePolicies",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyContractWith_PayrollCoID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePolicies",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePolicies",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyLegalName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePolicies",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyCostFamily",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePolicies",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyCostIndividual",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePolicies",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyCostIndividualAndSpouse",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePolicies",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyHLink",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePolicies",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyCostIndividualAndChild",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePoliciesAudit",
+    "COLUMN_NAME": "PullDownHealthInsurancePoliciesAuditID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePoliciesAudit",
+    "COLUMN_NAME": "AuditTimestamp",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePoliciesAudit",
+    "COLUMN_NAME": "AuditType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePoliciesAudit",
+    "COLUMN_NAME": "AuditUserName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePoliciesAudit",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePoliciesAudit",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyContractWith_PayrollCoID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePoliciesAudit",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePoliciesAudit",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyLegalName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePoliciesAudit",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyCostFamily",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePoliciesAudit",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyCostIndividual",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePoliciesAudit",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyCostIndividualAndSpouse",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePoliciesAudit",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyHLink",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsurancePoliciesAudit",
+    "COLUMN_NAME": "PullDownHealthInsurancePolicyCostIndividualAndChild",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceRates",
+    "COLUMN_NAME": "PullDownHealthInsuranceRateID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceRates",
+    "COLUMN_NAME": "PullDownHealthInsuranceRate",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceRates",
+    "COLUMN_NAME": "PullDownHealthInsuranceRatePerHr",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHealthInsuranceRates",
+    "COLUMN_NAME": "PullDownHealthInsuranceRateSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHowReferred",
+    "COLUMN_NAME": "PullDownHowReferredID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHowReferred",
+    "COLUMN_NAME": "PullDownHowReferred",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHowReferred",
+    "COLUMN_NAME": "PullDownHowReferredStateID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHowReferred",
+    "COLUMN_NAME": "PullDownHowReferredSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownHowReferred",
+    "COLUMN_NAME": "PullDownHowReferredActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownIDTitles",
+    "COLUMN_NAME": "PullDownIDTitleID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownIDTitles",
+    "COLUMN_NAME": "PullDownIDTitle",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownIDTitles",
+    "COLUMN_NAME": "PullDownIDTitleSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownIDTitles",
+    "COLUMN_NAME": "PullDownIDTitleRequiresExpDate",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownInsuranceCompanyContactID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownInsuranceCompany",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownInsuranceCompanyContactFName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownInsuranceCompanyContactLName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownInsuranceCompanyContactStreet",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownInsuranceCompanyContactCity",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownInsuranceCompanyContactStateID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownInsuranceCompanyContactZip",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownInsuranceCompanyContactPhone",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownInsuranceCompanyContactFaxNum",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownInsuranceCompanyContactEmail",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownInsuranceCompanyContactSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownInsuranceCompanyContactNotes",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInsuranceCompanyContacts",
+    "COLUMN_NAME": "PullDownInsuranceCompanyContactActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInternetSalesReady",
+    "COLUMN_NAME": "PullDownInternetSalesReadyID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInternetSalesReady",
+    "COLUMN_NAME": "PullDownInternetSalesReady",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInternetSalesReady",
+    "COLUMN_NAME": "PullDownInternetSalesReadyDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInternetSalesReady",
+    "COLUMN_NAME": "PullDownInternetSalesReadySort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInterviewLocations",
+    "COLUMN_NAME": "PullDownInterviewLocationID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInterviewLocations",
+    "COLUMN_NAME": "PullDownInterviewLocation",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInterviewLocations",
+    "COLUMN_NAME": "PullDownInterviewLocationSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInterviewNumbers",
+    "COLUMN_NAME": "PullDownInterviewNumberID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInterviewNumbers",
+    "COLUMN_NAME": "PullDownInterviewNumber",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInterviewNumbers",
+    "COLUMN_NAME": "PullDownInterviewNumberDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownInterviewNumbers",
+    "COLUMN_NAME": "PullDownInterviewNumberSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownJobApplicationStatus",
+    "COLUMN_NAME": "PullDownJobApplicationStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownJobApplicationStatus",
+    "COLUMN_NAME": "PullDownJobApplicationStatus",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownJobApplicationStatus",
+    "COLUMN_NAME": "PullDownJobApplicationStatusDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownJobApplicationStatus",
+    "COLUMN_NAME": "PullDownJobApplicationStatusSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLegalStatus",
+    "COLUMN_NAME": "PullDownLegalStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLegalStatus",
+    "COLUMN_NAME": "PullDownLegalStatus",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLegalStatus",
+    "COLUMN_NAME": "PullDownLegalStatusSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLicenseExpDateFlags",
+    "COLUMN_NAME": "PullDownLicenseExpDateFlagID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLicenseExpDateFlags",
+    "COLUMN_NAME": "PullDownLicenseExpDateFlag",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLicenseExpDateFlags",
+    "COLUMN_NAME": "PullDownLicenseExpDateFlagSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLicenseExpDateFlags",
+    "COLUMN_NAME": "PullDownLicenseExpDateFlagActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLicenseObtainedByMethods",
+    "COLUMN_NAME": "PullDownLicenseObtainedByMethodID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLicenseObtainedByMethods",
+    "COLUMN_NAME": "PullDownLicenseObtainedByMethod",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLicenseObtainedByMethods",
+    "COLUMN_NAME": "PullDownLicenseObtainedByMethodSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLicenseObtainedByMethods",
+    "COLUMN_NAME": "PullDownLicenseObtainedByMethodActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLicenseStatus",
+    "COLUMN_NAME": "PullDownLicenseStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLicenseStatus",
+    "COLUMN_NAME": "PullDownLicenseStatus",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLicenseStatus",
+    "COLUMN_NAME": "PullDownLicenseStatusSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLicenseStatus",
+    "COLUMN_NAME": "PullDownLicenseStatusActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLicenseTypes",
+    "COLUMN_NAME": "PullDownLicenseTypeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLicenseTypes",
+    "COLUMN_NAME": "PullDownLicenseType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLicenseTypes",
+    "COLUMN_NAME": "PullDownLicenseTypeSwitch",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLicenseTypes",
+    "COLUMN_NAME": "PullDownLicenseTypeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownLicenseTypes",
+    "COLUMN_NAME": "PullDownLicenseTypeActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownMaps",
+    "COLUMN_NAME": "PullDownMapID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownMaps",
+    "COLUMN_NAME": "PullDownMap",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownMaps",
+    "COLUMN_NAME": "PullDownMapHLink",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownMaps",
+    "COLUMN_NAME": "PullDownMapSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownMaps",
+    "COLUMN_NAME": "PullDownMapActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownMonths",
+    "COLUMN_NAME": "PullDownMonthID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownMonths",
+    "COLUMN_NAME": "PullDownMonth",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownMonths",
+    "COLUMN_NAME": "PullDownMonthNum",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownMonths",
+    "COLUMN_NAME": "PullDownMonthDays",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOfficeStaffLoginNoteReasons",
+    "COLUMN_NAME": "PullDownOfficeStaffLoginNoteReasonID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOfficeStaffLoginNoteReasons",
+    "COLUMN_NAME": "PullDownOfficeStaffLoginNoteReason",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOfficeStaffLoginNoteReasons",
+    "COLUMN_NAME": "PullDownOfficeStaffLoginNoteReasonSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOfficeStaffLoginNoteReasons",
+    "COLUMN_NAME": "PullDownOfficeStaffLoginNoteReasonActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOSHA10Status",
+    "COLUMN_NAME": "PullDownOSHA10StatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOSHA10Status",
+    "COLUMN_NAME": "PullDownOSHA10Status",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOSHA10Status",
+    "COLUMN_NAME": "PullDownOSHA10StatusDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOSHA10Status",
+    "COLUMN_NAME": "PullDownOSHA10StatusSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOtherLetterheads",
+    "COLUMN_NAME": "PullDownOtherLetterheadID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOtherLetterheads",
+    "COLUMN_NAME": "PullDownOtherLetterheadName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOtherLetterheads",
+    "COLUMN_NAME": "PullDownOtherLetterheadInitials",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOtherLetterheads",
+    "COLUMN_NAME": "PullDownOtherLetterheadStreet",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOtherLetterheads",
+    "COLUMN_NAME": "PullDownOtherLetterheadCity",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOtherLetterheads",
+    "COLUMN_NAME": "PullDownOtherLetterheadStateID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOtherLetterheads",
+    "COLUMN_NAME": "PullDownOtherLetterheadZip",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOtherLetterheads",
+    "COLUMN_NAME": "PullDownOtherLetterheadPhone",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOtherLetterheads",
+    "COLUMN_NAME": "PullDownOtherLetterheadFaxNum",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOtherLetterheads",
+    "COLUMN_NAME": "PullDownOtherLetterheadEmail",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOtherLetterheads",
+    "COLUMN_NAME": "PullDownOtherLetterheadSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownOtherLetterheads",
+    "COLUMN_NAME": "PullDownOtherLetterheadDescription",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPaymentMethod",
+    "COLUMN_NAME": "PullDownPaymentMethodID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPaymentMethod",
+    "COLUMN_NAME": "PullDownPaymentMethod",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPaymentMethod",
+    "COLUMN_NAME": "PullDownPaymentMethodSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollAdjustmentNotes",
+    "COLUMN_NAME": "PullDownPayrollAdjustmentNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollAdjustmentNotes",
+    "COLUMN_NAME": "PullDownPayrollAdjustmentNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollAdjustmentNotes",
+    "COLUMN_NAME": "PullDownPayrollAdjustmentNoteSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollCheckNotes",
+    "COLUMN_NAME": "PullDownPayrollCheckNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollCheckNotes",
+    "COLUMN_NAME": "PullDownPayrollCheckNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollCheckNotes",
+    "COLUMN_NAME": "PullDownPayrollCheckNoteSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollCoOnSite",
+    "COLUMN_NAME": "PullDownPayrollCoOnSiteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollCoOnSite",
+    "COLUMN_NAME": "PullDownPayrollCoOnSiteName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollCoOnSite",
+    "COLUMN_NAME": "PullDownPayrollCoOnSiteInitials",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollCoOnSite",
+    "COLUMN_NAME": "PullDownPayrollCoOnSiteStreet",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollCoOnSite",
+    "COLUMN_NAME": "PullDownPayrollCoOnSiteCity",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollCoOnSite",
+    "COLUMN_NAME": "PullDownPayrollCoOnSiteStateID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollCoOnSite",
+    "COLUMN_NAME": "PullDownPayrollCoOnSiteZip",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollCoOnSite",
+    "COLUMN_NAME": "PullDownPayrollCoOnSitePhone",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollCoOnSite",
+    "COLUMN_NAME": "PullDownPayrollCoOnSiteFaxNum",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollCoOnSite",
+    "COLUMN_NAME": "PullDownPayrollCoOnSiteEmail",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollCoOnSite",
+    "COLUMN_NAME": "PullDownPayrollCoOnSiteColorID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollCoOnSite",
+    "COLUMN_NAME": "PullDownPayrollCoOnSiteSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollCoOnSite",
+    "COLUMN_NAME": "PullDownPayrollCoOnSiteDescription",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownPayrollCoOnSite",
+    "COLUMN_NAME": "PullDownPayrollCoOnSiteActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjectAccidentReportContactHistoryNotes",
+    "COLUMN_NAME": "PullDownProjectAccidentReportContactHistoryNoteID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjectAccidentReportContactHistoryNotes",
+    "COLUMN_NAME": "PullDownProjectAccidentReportContactHistoryNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjectAccidentReportContactHistoryNotes",
+    "COLUMN_NAME": "PullDownProjectAccidentReportContactHistoryNoteSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjectAccidentReportHistoryStatus",
+    "COLUMN_NAME": "PullDownProjectAccidentReportHistoryStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjectAccidentReportHistoryStatus",
+    "COLUMN_NAME": "PullDownProjectAccidentReportHistoryStatus",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjectAccidentReportHistoryStatus",
+    "COLUMN_NAME": "PullDownProjectAccidentReportHistoryStatusDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjectAccidentReportHistoryStatus",
+    "COLUMN_NAME": "PullDownProjectAccidentReportHistoryStatusSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjectLengths",
+    "COLUMN_NAME": "PullDownProjectLengthID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjectLengths",
+    "COLUMN_NAME": "PullDownProjectLengthNumberIntervals",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjectLengths",
+    "COLUMN_NAME": "DateAddIntervalID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjectLengths",
+    "COLUMN_NAME": "PullDownProjectLength",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjectLengths",
+    "COLUMN_NAME": "PullDownProjectLengthSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjectNOIFlags",
+    "COLUMN_NAME": "PullDownProjectNOIFlagID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjectNOIFlags",
+    "COLUMN_NAME": "PullDownProjectNOIFlag",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjectNOIFlags",
+    "COLUMN_NAME": "PullDownProjectNOIFlagSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjectNOIFlags",
+    "COLUMN_NAME": "PullDownProjectNOIFlagActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjStatus",
+    "COLUMN_NAME": "PullDownProjStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjStatus",
+    "COLUMN_NAME": "PullDownProjStatus",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownProjStatus",
+    "COLUMN_NAME": "PullDownProjStatusSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownQualifications",
+    "COLUMN_NAME": "PullDownQualificationID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownQualifications",
+    "COLUMN_NAME": "PullDownQualification",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownQualifications",
+    "COLUMN_NAME": "PullDownQualificationSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownQualifications",
+    "COLUMN_NAME": "PullDownQualificationDivisionID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownRaces",
+    "COLUMN_NAME": "PullDownRaceID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownRaces",
+    "COLUMN_NAME": "PullDownRace",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownRaces",
+    "COLUMN_NAME": "PullDownRaceSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReasonForLeavingNumbers",
+    "COLUMN_NAME": "PullDownReasonForLeavingNumberID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReasonForLeavingNumbers",
+    "COLUMN_NAME": "PullDownReasonForLeavingNumber",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReasonForLeavingNumbers",
+    "COLUMN_NAME": "PullDownReasonForLeavingNumberDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReasonForLeavingNumbers",
+    "COLUMN_NAME": "PullDownReasonForLeavingNumberSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownRecordRanges",
+    "COLUMN_NAME": "PullDownRecordRangeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownRecordRanges",
+    "COLUMN_NAME": "PullDownRecordRangeType",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownRecordRanges",
+    "COLUMN_NAME": "PullDownRecordRange",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownRecordRanges",
+    "COLUMN_NAME": "PullDownRecordRangeStart",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownRecordRanges",
+    "COLUMN_NAME": "PullDownRecordRangeEnd",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownRecordRanges",
+    "COLUMN_NAME": "PullDownRecordRangeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgency",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencySort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyStreet",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyCity",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyStateID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyZip",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyPhone",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyPrintName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyPositionAtCompany",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyEmail",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyInvoiceNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyBankName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyCellCarrierID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyTextMsgAddress",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyWCxDate",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyHLinkWCxDate",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyGLxDate",
+    "DATA_TYPE": "datetime2"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyHLinkGLxDate",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReferralAgencies",
+    "COLUMN_NAME": "PullDownReferralAgencyFolder",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownRegMailResponses",
+    "COLUMN_NAME": "PullDownRegMailResponseID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownRegMailResponses",
+    "COLUMN_NAME": "PullDownRegMailResponse",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownRegMailResponses",
+    "COLUMN_NAME": "PullDownRegMailResponseSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReportMenus",
+    "COLUMN_NAME": "PullDownReportMenuID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReportMenus",
+    "COLUMN_NAME": "PullDownReportMenu",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReportMenus",
+    "COLUMN_NAME": "PullDownReportMenuNote",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReportMenus",
+    "COLUMN_NAME": "PullDownReportMenuSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownReportMenus",
+    "COLUMN_NAME": "PullDownReportMenuActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownResearch",
+    "COLUMN_NAME": "PullDownResearchID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownResearch",
+    "COLUMN_NAME": "PullDownResearchObjectName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownResearch",
+    "COLUMN_NAME": "PullDownResearch",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownResearch",
+    "COLUMN_NAME": "PullDownResearchDescription",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownResearch",
+    "COLUMN_NAME": "PullDownResearchAddress",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownResearch",
+    "COLUMN_NAME": "PullDownResearchSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownResearch",
+    "COLUMN_NAME": "PullDownResearchActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownResumeNumbers",
+    "COLUMN_NAME": "PullDownResumeNumberID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownResumeNumbers",
+    "COLUMN_NAME": "PullDownResumeNumber",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownResumeNumbers",
+    "COLUMN_NAME": "PullDownResumeNumberDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownResumeNumbers",
+    "COLUMN_NAME": "PullDownResumeNumberSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownS1",
+    "COLUMN_NAME": "PullDownS1ID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownS1",
+    "COLUMN_NAME": "PullDownS1",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownS1",
+    "COLUMN_NAME": "PullDownS1Sort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownS1",
+    "COLUMN_NAME": "PullDownS1Active",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownS2",
+    "COLUMN_NAME": "PullDownS2ID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownS2",
+    "COLUMN_NAME": "PullDownS2",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownS2",
+    "COLUMN_NAME": "PullDownS2Sort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownS2",
+    "COLUMN_NAME": "PullDownS2Active",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesHistoryStatus",
+    "COLUMN_NAME": "PullDownSalesHistoryStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesHistoryStatus",
+    "COLUMN_NAME": "PullDownSalesHistoryStatus",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesHistoryStatus",
+    "COLUMN_NAME": "PullDownSalesHistoryStatusDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesHistoryStatus",
+    "COLUMN_NAME": "PullDownSalesHistoryStatusSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanFName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanLName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanTitle",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanCell",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanCellCarrierID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanEmail",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanTextMsgAddress",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanFaxNum",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "OfficeStaffID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanCommissionable",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanBaseSalary",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanPercentCommission",
+    "DATA_TYPE": "float"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanRecordsCustomers",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanRecordsEmployees",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanCommissionsMainView",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanView",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanHelper",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesman",
+    "COLUMN_NAME": "PullDownSalesmanSeeCustomersID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanClusters",
+    "COLUMN_NAME": "PullDownSalesmanClusterID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanClusters",
+    "COLUMN_NAME": "PullDownSalesmanID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanClusters",
+    "COLUMN_NAME": "ClusterID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanClusters",
+    "COLUMN_NAME": "PullDownSalesmanClusterPercentCommission",
+    "DATA_TYPE": "float"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanClusters",
+    "COLUMN_NAME": "PullDownSalesmanClusterBaseSalary",
+    "DATA_TYPE": "money"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanClusters",
+    "COLUMN_NAME": "PullDownSalesmanClusterSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanClusters",
+    "COLUMN_NAME": "PullDownSalesmanClusterActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanCommissionForHelper",
+    "COLUMN_NAME": "PullDownSalesmanCommissionForHelperID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanCommissionForHelper",
+    "COLUMN_NAME": "PullDownSalesmanID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanCommissionForHelper",
+    "COLUMN_NAME": "PullDownSalesmanForHelperID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanCommissionForHelper",
+    "COLUMN_NAME": "PullDownSalesmanPercentCommissionForHelper",
+    "DATA_TYPE": "float"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanCommissionForHelper",
+    "COLUMN_NAME": "PullDownSalesmanCommissionForHelperSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanCommissionForHelper",
+    "COLUMN_NAME": "PullDownSalesmanCommissionForHelperActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanCommissionOnOthers",
+    "COLUMN_NAME": "PullDownSalesmanCommissionOnOtherID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanCommissionOnOthers",
+    "COLUMN_NAME": "PullDownSalesmanID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanCommissionOnOthers",
+    "COLUMN_NAME": "PullDownSalesmanOtherID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanCommissionOnOthers",
+    "COLUMN_NAME": "PullDownSalesmanPercentCommissionOnOther",
+    "DATA_TYPE": "float"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanCommissionOnOthers",
+    "COLUMN_NAME": "PullDownSalesmanCommissionOnOtherSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanCommissionOnOthers",
+    "COLUMN_NAME": "PullDownSalesmanCommissionOnOtherActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanScheduleReportOthers",
+    "COLUMN_NAME": "PullDownSalesmanScheduleReportOtherID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanScheduleReportOthers",
+    "COLUMN_NAME": "PullDownSalesmanID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanScheduleReportOthers",
+    "COLUMN_NAME": "PullDownSalesmanOtherID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanScheduleReportOthers",
+    "COLUMN_NAME": "PullDownSalesmanScheduleReportOtherSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanScheduleReportOthers",
+    "COLUMN_NAME": "PullDownSalesmanScheduleReportOtherActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanSeeOtherSalesmen",
+    "COLUMN_NAME": "PullDownSalesmanSeeOtherSalesmenID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanSeeOtherSalesmen",
+    "COLUMN_NAME": "PullDownSalesmanID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanSeeOtherSalesmen",
+    "COLUMN_NAME": "PullDownSalesmanOtherID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanSeeOtherSalesmen",
+    "COLUMN_NAME": "PullDownSalesmanSeeOtherSalesmenSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesmanSeeOtherSalesmen",
+    "COLUMN_NAME": "PullDownSalesmanSeeOtherSalesmenActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesStatus",
+    "COLUMN_NAME": "PullDownSalesStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesStatus",
+    "COLUMN_NAME": "PullDownSalesStatus",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSalesStatus",
+    "COLUMN_NAME": "PullDownSalesStatusSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSchoolCompleted",
+    "COLUMN_NAME": "PullDownSchoolCompletedID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSchoolCompleted",
+    "COLUMN_NAME": "PullDownSchoolCompleted",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSchoolCompleted",
+    "COLUMN_NAME": "PullDownSchoolCompletedSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSchoolCompleted",
+    "COLUMN_NAME": "PullDownSchoolCompletedActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSeeCustomers",
+    "COLUMN_NAME": "PullDownSeeCustomersID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSeeCustomers",
+    "COLUMN_NAME": "PullDownSeeCustomers",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSeeCustomers",
+    "COLUMN_NAME": "PullDownSeeCustomersSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownSeeCustomers",
+    "COLUMN_NAME": "PullDownSeeCustomersActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStateCities",
+    "COLUMN_NAME": "PullDownStateCityID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStateCities",
+    "COLUMN_NAME": "StateID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStateCities",
+    "COLUMN_NAME": "City",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStateCities",
+    "COLUMN_NAME": "PullDownStateCitySort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStateCities",
+    "COLUMN_NAME": "PullDownStateCityValidated",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStateCities",
+    "COLUMN_NAME": "PullDownStateCityNotes",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStateCities",
+    "COLUMN_NAME": "PullDownStateCityActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStateCities",
+    "COLUMN_NAME": "PullDownStateCityPermitSearchHLink",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStateCounties",
+    "COLUMN_NAME": "PullDownStateCountyID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStateCounties",
+    "COLUMN_NAME": "StateID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStateCounties",
+    "COLUMN_NAME": "PullDownStateCounty",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStateCounties",
+    "COLUMN_NAME": "PullDownStateCountySort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStateCounties",
+    "COLUMN_NAME": "PullDownStateCountyActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStates",
+    "COLUMN_NAME": "PullDownStateID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStates",
+    "COLUMN_NAME": "PullDownState",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStates",
+    "COLUMN_NAME": "PullDownStateName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStates",
+    "COLUMN_NAME": "PullDownStateWorkHoursFor1SickTimeHour",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStates",
+    "COLUMN_NAME": "PullDownStateValidated",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStates",
+    "COLUMN_NAME": "PullDownStateSalesTaxPercent",
+    "DATA_TYPE": "real"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStates",
+    "COLUMN_NAME": "PullDownStateSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStatusFlag",
+    "COLUMN_NAME": "PullDownStatusFlagID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStatusFlag",
+    "COLUMN_NAME": "PullDownStatusFlag",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStatusFlag",
+    "COLUMN_NAME": "PullDownStatusFlagDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStatusFlag",
+    "COLUMN_NAME": "PullDownStatusFlagSort",
+    "DATA_TYPE": "smallint"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStatusFlag",
+    "COLUMN_NAME": "PullDownStatusFlagNotifyText",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStatusOfNOC",
+    "COLUMN_NAME": "PullDownStatusOfNOCID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStatusOfNOC",
+    "COLUMN_NAME": "PullDownStatusOfNOC",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStatusOfNOC",
+    "COLUMN_NAME": "PullDownStatusOfNOCSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStatusOfNOI",
+    "COLUMN_NAME": "PullDownStatusOfNOIID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStatusOfNOI",
+    "COLUMN_NAME": "PullDownStatusOfNOI",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStatusOfNOI",
+    "COLUMN_NAME": "PullDownStatusOfNOISort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownStatusOfNOI",
+    "COLUMN_NAME": "PullDownStatusOfNOICustPaymentStatusID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTimes",
+    "COLUMN_NAME": "PullDownTimeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTimes",
+    "COLUMN_NAME": "PullDownTime",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTimes",
+    "COLUMN_NAME": "PullDownTimeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTimeTexts",
+    "COLUMN_NAME": "PullDownTimeTextID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTimeTexts",
+    "COLUMN_NAME": "PullDownTimeText",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTimeTexts",
+    "COLUMN_NAME": "PullDownTimeTextDisplay",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTimeTexts",
+    "COLUMN_NAME": "PullDownTimeTextSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTrackingReports",
+    "COLUMN_NAME": "PullDownTrackingReportID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTrackingReports",
+    "COLUMN_NAME": "PullDownTrackingReportMenuID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTrackingReports",
+    "COLUMN_NAME": "PullDownTrackingReport",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTrackingReports",
+    "COLUMN_NAME": "PullDownTrackingReportDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTrackingReports",
+    "COLUMN_NAME": "PullDownTrackingReportFunction",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTrackingReports",
+    "COLUMN_NAME": "PullDownTrackingReportSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTrackingReports",
+    "COLUMN_NAME": "PullDownTrackingReportActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTrade",
+    "COLUMN_NAME": "PullDownTradeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTrade",
+    "COLUMN_NAME": "PullDownTrade",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTrade",
+    "COLUMN_NAME": "PullDownTradeSwitch",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTrade",
+    "COLUMN_NAME": "PullDownTradeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTrade",
+    "COLUMN_NAME": "PullDownTradeDivisionID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTruePeopleMatches",
+    "COLUMN_NAME": "PullDownTruePeopleMatchID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTruePeopleMatches",
+    "COLUMN_NAME": "PullDownTruePeopleMatch",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTruePeopleMatches",
+    "COLUMN_NAME": "PullDownTruePeopleMatchSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownTruePeopleMatches",
+    "COLUMN_NAME": "PullDownTruePeopleMatchActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestContacts",
+    "COLUMN_NAME": "PullDownUnemploymentRequestContactID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestContacts",
+    "COLUMN_NAME": "PullDownUnemploymentRequestCompany",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestContacts",
+    "COLUMN_NAME": "PullDownUnemploymentRequestContactFName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestContacts",
+    "COLUMN_NAME": "PullDownUnemploymentRequestContactLName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestContacts",
+    "COLUMN_NAME": "PullDownUnemploymentRequestContactStreet",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestContacts",
+    "COLUMN_NAME": "PullDownUnemploymentRequestContactCity",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestContacts",
+    "COLUMN_NAME": "PullDownUnemploymentRequestContactStateID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestContacts",
+    "COLUMN_NAME": "PullDownUnemploymentRequestContactZip",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestContacts",
+    "COLUMN_NAME": "PullDownUnemploymentRequestContactPhone",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestContacts",
+    "COLUMN_NAME": "PullDownUnemploymentRequestContactFaxNum",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestContacts",
+    "COLUMN_NAME": "PullDownUnemploymentRequestContactEmail",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestContacts",
+    "COLUMN_NAME": "PullDownUnemploymentRequestContactSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestContacts",
+    "COLUMN_NAME": "PullDownUnemploymentRequestContactNotes",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestContacts",
+    "COLUMN_NAME": "PullDownUnemploymentRequestContactActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestReasonCont",
+    "COLUMN_NAME": "PullDownUnemploymentRequestReasonContID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestReasonCont",
+    "COLUMN_NAME": "PullDownUnemploymentRequestReasonCont",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestReasonCont",
+    "COLUMN_NAME": "PullDownUnemploymentRequestReasonContSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestReasons",
+    "COLUMN_NAME": "PullDownUnemploymentRequestReasonID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestReasons",
+    "COLUMN_NAME": "PullDownUnemploymentRequestReason",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownUnemploymentRequestReasons",
+    "COLUMN_NAME": "PullDownUnemploymentRequestReasonSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWCC",
+    "COLUMN_NAME": "PullDownWCCID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWCC",
+    "COLUMN_NAME": "PullDownWCC",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWCC",
+    "COLUMN_NAME": "PullDownWCCDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWCC",
+    "COLUMN_NAME": "PullDownWCCSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWCC",
+    "COLUMN_NAME": "PullDownWCCActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWCC",
+    "COLUMN_NAME": "PullDownWCCDivisionID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWhereCustomerFound",
+    "COLUMN_NAME": "PullDownWhereCustomerFoundID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWhereCustomerFound",
+    "COLUMN_NAME": "PullDownWhereCustomerFound",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWhereCustomerFound",
+    "COLUMN_NAME": "PullDownWhereCustomerFoundSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWhereCustomerFound",
+    "COLUMN_NAME": "PullDownWhereCustomerFoundActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWhereEmployeeFound",
+    "COLUMN_NAME": "PullDownWhereEmployeeFoundID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWhereEmployeeFound",
+    "COLUMN_NAME": "PullDownWhereEmployeeFound",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWhereEmployeeFound",
+    "COLUMN_NAME": "PullDownWhereEmployeeFoundSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWhereEmployeeFound",
+    "COLUMN_NAME": "PullDownWhereEmployeeFoundActive",
+    "DATA_TYPE": "bit"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWorkNumbers",
+    "COLUMN_NAME": "PullDownWorkNumberID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWorkNumbers",
+    "COLUMN_NAME": "PullDownWorkNumber",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWorkNumbers",
+    "COLUMN_NAME": "PullDownWorkNumberDesc",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownWorkNumbers",
+    "COLUMN_NAME": "PullDownWorkNumberSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownYearsInTrade",
+    "COLUMN_NAME": "PullDownYearsInTradeID",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "tblPullDownYearsInTrade",
+    "COLUMN_NAME": "PullDownYearsInTrade",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "tblPullDownYearsInTrade",
+    "COLUMN_NAME": "PullDownYearsInTradeSort",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "WebCustomerSavedView",
+    "COLUMN_NAME": "UserKey",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "WebCustomerSavedView",
+    "COLUMN_NAME": "Slot",
+    "DATA_TYPE": "int"
+  },
+  {
+    "TABLE_NAME": "WebCustomerSavedView",
+    "COLUMN_NAME": "ViewName",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "WebCustomerSavedView",
+    "COLUMN_NAME": "LayoutJson",
+    "DATA_TYPE": "nvarchar"
+  },
+  {
+    "TABLE_NAME": "WebCustomerSavedView",
+    "COLUMN_NAME": "UpdatedAt",
+    "DATA_TYPE": "datetime2"
+  }
+]

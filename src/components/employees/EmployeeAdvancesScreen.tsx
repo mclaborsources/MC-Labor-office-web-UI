@@ -4,7 +4,7 @@ const advanceColumns = ["Advance Date", "Advance Amount", "Repayment Amount", "S
 const adjustmentColumns = ["Week Ending Date", "Amount (use - for deduction)", "Adjustment Note", "User Name", "Timestamp", "Balance", "Gross Payroll"];
 
 function EmptyGrid({ columns, widths, rows = 7 }: { columns: string[]; widths: number[]; rows?: number }) {
-  return <div className="er-advance-grid-wrap is-empty"><table><colgroup>{widths.map((width,index)=><col key={index} style={{width}} />)}</colgroup><thead><tr><th aria-label="Record selector" />{columns.map(column => <th key={column}>{column}</th>)}{widths.slice(columns.length+1).map((_,index)=><th key={`extra-${index}`} />)}</tr></thead><tbody>{Array.from({ length: rows }, (_, index) => <tr key={index}>{widths.map((_,columnIndex)=><td key={columnIndex} />)}</tr>)}</tbody></table></div>;
+  return <div className="er-advance-grid-wrap is-empty"><table><colgroup>{widths.map((width,index)=><col key={index} style={{width}} />)}</colgroup><thead><tr><th aria-label="Record selector" />{columns.map(column => <th key={column}>{column}</th>)}{widths.slice(columns.length+1).map((_,index)=><th key={`extra-${index}`} />)}</tr></thead><tbody>{Array.from({ length: rows }, (_, index) => <tr key={index}>{widths.map((_,columnIndex)=><td key={columnIndex}>{"\u00a0"}</td>)}</tr>)}</tbody></table></div>;
 }
 
 export function EmployeeAdvancesScreen() {
