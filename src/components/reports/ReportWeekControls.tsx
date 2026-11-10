@@ -27,9 +27,9 @@ export function ReportWeekControls({ date, onChange, onRefresh }: { date: string
       onChange(`${selected.getFullYear()}-${String(selected.getMonth() + 1).padStart(2, "0")}-${String(selected.getDate()).padStart(2, "0")}`);
     }} /></label>
     <div className="report-week-nav"><i>(click date first)</i><div>
-      <button data-action-status="complete" type="button" aria-label="Previous week" onClick={() => move(-7)}>←</button>
-      <button data-action-status="complete" type="button" aria-label="Current week" onClick={() => onChange(initialReportDate())}>▣</button>
-      <button data-action-status="complete" type="button" aria-label="Next week" onClick={() => move(7)}>→</button>
+      <button data-action-status="complete" type="button" aria-label="Previous week" onClick={() => move(-7)}><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="navy" d="M1 8 8 1v4h7v6H8v4z"/></svg></button>
+      <button data-action-status="complete" type="button" aria-label="Current week" onClick={() => onChange(initialReportDate())}><svg width="16" height="18" viewBox="0 0 16 18" aria-hidden="true"><path fill="white" stroke="#333" d="M1.5 2.5h13v14h-13z"/><path fill="#777" d="M2 3h12v4H2z"/><path stroke="#333" d="M5 0v5M11 0v5"/><path fill="red" d="M8 9h4v4H8z"/></svg></button>
+      <button data-action-status="complete" type="button" aria-label="Next week" onClick={() => move(7)}><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="navy" d="m15 8-7-7v4H1v6h7v4z"/></svg></button>
     </div></div>
     <label>Start and End Days of Report<output>{long(start)}</output><output>{long(ending)}</output></label>
     <label>Payroll Chk Day<output>{long(payday)}</output></label>

@@ -1,4 +1,5 @@
 "use client";
+import { CUSTOMER_DUPLICATE_OPTIONS } from "@/lib/customerDuplicateOptions";
 
 import { useMemo } from "react";
 
@@ -56,7 +57,7 @@ export function CustomerSearch1Filters({ rows, filters, onChange, onClear }: {
       {exactFields.map(([key, label]) => <optgroup key={key} label={label}>{(options[key] ?? []).map(value => <option key={value} value={JSON.stringify([key, value])}>{label}: {value}</option>)}</optgroup>)}
     </select>
     <select className="ac-select ac-customer-search-duplicates-select" aria-label="Find Duplicates" value={filters.duplicates ?? ""} onChange={event => update("duplicates", event.target.value)}>
-      <option value="">&lt;Find Duplicates&gt;</option><option value="customerName">Customer name</option><option value="street">Street</option><option value="ctcEmail">Contact email</option><option value="ctcCell">Contact cell</option>
+      <option value="">&lt;Find Duplicates&gt;</option>{CUSTOMER_DUPLICATE_OPTIONS.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}
     </select>
   </div>;
 }

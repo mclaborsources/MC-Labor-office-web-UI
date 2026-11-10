@@ -1,0 +1,2 @@
+import {loadEnvConfig} from '@next/env';loadEnvConfig(process.cwd());
+async function main(){const {getCustomerSearchRows}=await import('../src/lib/customers');const {closePool}=await import('../src/lib/db/sql');try{const result=await getCustomerSearchRows({profileType:'Spare 1',duplicates:'name',pageSize:10});console.log(JSON.stringify({total:result.total,returned:result.data.length,expected:2129}));if(result.total!==2129)throw new Error('Unexpected duplicate total');}finally{await closePool();}}main().catch(e=>{console.error(e.message);process.exitCode=1;});

@@ -1,4 +1,5 @@
 "use client";
+import { CUSTOMER_DUPLICATE_OPTIONS } from "@/lib/customerDuplicateOptions";
 
 import { Suspense, createContext, useContext, useEffect, useMemo, useState, type ComponentType, type ReactNode } from "react";
 import { createPortal } from "react-dom";
@@ -29,6 +30,8 @@ import type { CustomerSearchViews3Filters } from "@/lib/customerSearch1Filters";
 import { CUSTOMER_NAME_SEARCH_COLUMNS } from "@/lib/customerNameSearchColumns";
 
 interface CustomerSearchViewsPanelProps {
+  duplicateFilter?:string;
+  onDuplicateFilterChange?:(value:string)=>void;
   profileTypeLoading?:boolean;
   listLoading?:boolean;
   listNumber?:number;
@@ -267,32 +270,9 @@ function CompactFilterRow(props: CustomerSearchViewsPanelProps) {
           <option key={option.value} value={option.value}>{option.label}</option>
         ))}
       </select>
-      <select className="ac-select ac-customer-search-duplicates-select" defaultValue="" aria-label="Find Duplicates">
+      <select className="ac-select ac-customer-search-duplicates-select" value={props.duplicateFilter??""} onChange={event=>props.onDuplicateFilterChange?.(event.target.value)} aria-label="Find Duplicates">
         <option value="">&lt;Find Duplicates&gt;</option>
-        <option value="name">Name</option>
-        <option value="name-backwards">Name, Backwards</option>
-        <option value="street">Street</option>
-        <option value="street-backwards">Street, Backwards</option>
-        <option value="phone">Phone</option>
-        <option value="phone-backwards">Phone, Backwards</option>
-        <option value="contact-first-last">Ctc First + Ctc Last</option>
-        <option value="contact-first-last-backwards">Ctc First + Ctc Last, Backwards</option>
-        <option value="contact-email">Ctc Email</option>
-        <option value="contact-email-backwards">Ctc Email, Backwards</option>
-        <option value="contact-cell">Ctc Cell</option>
-        <option value="contact-cell-backwards">Ctc Cell, Backwards</option>
-        <option value="name-street">Name + Street</option>
-        <option value="name-street-backwards">Name + Street, Backwards</option>
-        <option value="name-street-city">Name + Street + City</option>
-        <option value="name-street-city-backwards">Name + Street + City, Backwards</option>
-        <option value="name-street-city-phone">Name + Street + City + Phone</option>
-        <option value="name-street-city-phone-backwards">Name + Street + City + Phone, Backwards</option>
-        <option value="name-city">Name + City</option>
-        <option value="name-state">Name + State</option>
-        <option value="street-city">Street + City</option>
-        <option value="name-city-last-week-ending">Name + City;w/ Last Week Ending</option>
-        <option value="name-state-last-week-ending">Name + State;w/ Last Week Ending</option>
-        <option value="street-city-last-week-ending">Street + City;w/ Last Week Ending</option>
+        {CUSTOMER_DUPLICATE_OPTIONS.map(option=><option key={option.value} value={option.value}>{option.label}</option>)}
       </select>
     </div>
   );
@@ -390,7 +370,7 @@ function ViewsTab({profileTypeLoading=false,listLoading=false,listNumber=0,onLis
             <span className="ac-flabel">Profile Type:</span>
             {["All", "Customer Search", "Spare 1", "Spare 2", "Spare 3"].map((label) => (
               <label key={label} className="ac-customer-search-check">
-                <input type="checkbox" checked={profileType === label} onChange={() => onProfileTypeChange?.(label)} />
+                <input type="checkbox" checked={label === "All" ? profileType === "All" : profileType.split(",").includes(label)} onChange={() => onProfileTypeChange?.(label)} />
                 <span>{label}</span>
               </label>
             ))}

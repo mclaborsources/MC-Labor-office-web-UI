@@ -15,11 +15,11 @@ export default async function AccountsReceivablePage({ searchParams }: { searchP
     let customerError = "";
     try { [customers, salesmen] = await Promise.all([getAccountsReceivableRows(), getAccountsReceivableSalesmen()]); }
     catch { customerError = "Customer data could not be loaded. Check the database connection and refresh."; }
-    return <AppShell userDisplayName={session.user?.displayName} fullWidth fillViewport><CustomerReportScreen kind="ar" rows={customers} salesmen={salesmen} error={customerError}/></AppShell>;
+    return <AppShell userDisplayName={session.user?.displayName} fullWidth fillViewport compactHeader><CustomerReportScreen kind="ar" rows={customers} salesmen={salesmen} error={customerError}/></AppShell>;
   }
   let rows:OpenInvoiceRow[]=[];
   let error="";
   try { rows=await getOpenInvoiceRows(); }
   catch { error="The accounts receivable report could not be loaded from the office database."; }
-  return <AppShell userDisplayName={session.user?.displayName} fullWidth fillViewport><AccountsReceivableReportScreen rows={rows} error={error}/></AppShell>;
+  return <AppShell userDisplayName={session.user?.displayName} fullWidth fillViewport compactHeader><AccountsReceivableReportScreen rows={rows} error={error}/></AppShell>;
 }

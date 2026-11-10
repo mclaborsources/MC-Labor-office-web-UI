@@ -24,6 +24,7 @@ import { CUSTOMER_ADMIN_INCLUDE_PROFILES } from "@/lib/customerSearchViewsLayout
 import { CUSTOMER_NAME_SEARCH_COLUMNS } from "@/lib/customerNameSearchColumns";
 
 export interface CustomerSearchScreenProps {
+  currentDuplicateFilter?:string;
   profileTypeLoading?:boolean;
   listLoading?:boolean;
   currentListNumber?:number;
@@ -654,6 +655,7 @@ export function CustomerSearchScreen({
   onAdminTransfer,
   userSettingsSelectedCount,
   onApplyUserFlag,
+  currentDuplicateFilter="",
   profileTypeLoading=false,
   listLoading=false,
   currentListNumber=0,
@@ -667,6 +669,7 @@ export function CustomerSearchScreen({
   const [columnFilters, setColumnFilters] = useState<Partial<Record<CustomerSearchColumnKey, string[]>>>({});
   const paginationQuery = Object.fromEntries(
     Object.entries({
+      duplicates:currentDuplicateFilter,
       listNumber:currentListNumber?String(currentListNumber):"",
       profileType:currentProfileType,
       search: currentSearch,
@@ -731,14 +734,24 @@ export function CustomerSearchScreen({
               />
 
               <CustomerSearchViewsPanel
+                duplicateFilter={currentDuplicateFilter}
+                onDuplicateFilterChange={value=>startProfileTransition(()=>{const url=new URL(window.location.href);if(value)url.searchParams.set("duplicates",value);else url.searchParams.delete("duplicates");url.searchParams.delete("page");router.replace(url.pathname+url.search);})}
                 profileTypeLoading={profileTypeLoading || profilePending}
                 listLoading={listLoading || listPending}
                 listNumber={currentListNumber}
                 onListNumberChange={list=>startListTransition(()=>{if(onListNumberChange){onListNumberChange(list);return;}const url=new URL(window.location.href);if(list)url.searchParams.set("listNumber",String(list));else url.searchParams.delete("listNumber");url.searchParams.delete("page");router.replace(url.pathname+url.search);})}
-                profileType={onAdminIncludeProfilesChange ? (adminIncludeProfiles?.length===1 ? (adminIncludeProfiles[0]==="Cust Search" ? "Customer Search" : adminIncludeProfiles[0]) : "All") : currentProfileType}
+                profileType={onAdminIncludeProfilesChange ? (adminIncludeProfiles?.length===CUSTOMER_ADMIN_INCLUDE_PROFILES.flat().filter(Boolean).length ? "All" : adminIncludeProfiles?.map(profile=>profile==="Cust Search"?"Customer Search":profile).join(",")||"__none__") : currentProfileType}
                 onProfileTypeChange={profile=>startProfileTransition(()=>{
-                  if(onAdminIncludeProfilesChange) {onAdminIncludeProfilesChange(profile==="All" ? CUSTOMER_ADMIN_INCLUDE_PROFILES.flat().filter((name):name is NonNullable<typeof name>=>name!==null) : [profile==="Customer Search"?"Cust Search":profile]);return;}
-                  const url=new URL(window.location.href); if(profile==="All")url.searchParams.delete("profileType");else url.searchParams.set("profileType",profile);url.searchParams.delete("page");router.replace(url.pathname+url.search);
+                  const allProfiles=CUSTOMER_ADMIN_INCLUDE_PROFILES.flat().filter((name):name is NonNullable<typeof name>=>name!==null);
+                  if(onAdminIncludeProfilesChange) {
+                    if(profile==="All"){onAdminIncludeProfilesChange(allProfiles);return;}
+                    const name=profile==="Customer Search"?"Cust Search":profile;
+                    const selected=adminIncludeProfiles?.length===allProfiles.length?[]:adminIncludeProfiles??[];
+                    onAdminIncludeProfilesChange(selected.includes(name)?selected.filter(item=>item!==name):[...selected,name]);return;
+                  }
+                  const selected=currentProfileType==="All"||currentProfileType==="__none__"?[]:currentProfileType.split(",");
+                  const next=profile==="All"?"All":(selected.includes(profile)?selected.filter(item=>item!==profile):[...selected,profile]).join(",")||"__none__";
+                  const url=new URL(window.location.href);if(next==="All")url.searchParams.delete("profileType");else url.searchParams.set("profileType",next);url.searchParams.delete("page");router.replace(url.pathname+url.search);
                 })}
                 filterRow={filterRow}
                 salesmen={salesmen}

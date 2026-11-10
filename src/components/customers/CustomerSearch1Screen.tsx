@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { matchesCustomerProfile } from "@/lib/customerProfileSelection";
+import { filterCustomerDuplicates } from "@/lib/customerDuplicateFilter";
 import { filterCustomerList } from "@/lib/customerListFilter";
 import { useRouter } from "next/navigation";
 import { CustomerSavedViewsProvider } from "./CustomerSavedViews";
@@ -22,10 +24,7 @@ const searchCache = new BrowserSessionCache();
 
 const EMPTY_CUSTOMERS: CustomerNameMatch[] = [];
 const ADMIN_PROFILE_NAMES = CUSTOMER_ADMIN_INCLUDE_PROFILES.flat().filter(Boolean) as string[];
-function profileNamesMatch(left: string, right: string) {
-  const normalize = (value: string) => value.trim().toLocaleLowerCase().replace(/\s+/g, " ").replace(/^cust search$/, "customer search");
-  return normalize(left) === normalize(right);
-}
+
 
 export function CustomerSearch1Screen({ cacheScope = "default", customers: suppliedCustomers, packedCustomers, fetchedCount, params, loadTimeMs, loadError, options, lastActionUsers }: {
   cacheScope?: string;
@@ -75,6 +74,7 @@ export function CustomerSearch1Screen({ cacheScope = "default", customers: suppl
     const query = new URLSearchParams(Object.entries(params).filter((entry): entry is [string, string] => entry[1] !== undefined));
     query.set("all", "1");
     query.set("packed", "1");
+    query.set("matchingVersion", "2");
     for (const key of ["customerName", "customerPhone", "contactName", "contactPhone", "contactEmail", "contactText", "search", "city", "state", "salesmanId", "customerTypeId", "statusId"]) query.delete(key);
     query.sort();
     recordsCache.get(cacheScope, query.toString(), () => fetch(`/api/customers/name-search?${query}`, { cache: "no-store" })
@@ -123,15 +123,18 @@ export function CustomerSearch1Screen({ cacheScope = "default", customers: suppl
   const previousFilters = useRef(filters);
   const candidateCustomers = useMemo(() => {
     const name = sidebarValues.customerName?.trim().toLowerCase();
-    const allIncluded = includedProfiles.length === ADMIN_PROFILE_NAMES.length;
     const activeMultiFilter = multiFilterIds ? new Set(multiFilterIds) : null;
     return customers.filter(row => (!name || row.customerName.toLowerCase().includes(name)) && (!matchingIds || matchingIds.has(row.customerId))
-      && (!activeMultiFilter || activeMultiFilter.has(row.customerId))
-      && (allIncluded || includedProfiles.some(profile => profileNamesMatch(profile, row.profileType ?? ""))));
-  }, [customers, matchingIds, sidebarValues.customerName, includedProfiles, multiFilterIds]);
+      && (!activeMultiFilter || activeMultiFilter.has(row.customerId)));
+  }, [customers, matchingIds, sidebarValues.customerName, multiFilterIds]);
   const [listNumber,setListNumber]=useState(0);
   const [allFilteredCustomers, setFilteredCustomers] = useState<CustomerNameMatch[]>(candidateCustomers);
-  const filteredCustomers=useMemo(()=>filterCustomerList(allFilteredCustomers,listNumber),[allFilteredCustomers,listNumber]);
+  const deferredViewsProfile=views3Filters.profile === "[ Cust Search -" ? "Customer Search" : ["Spare 1","Spare 2","Spare 3"].includes(views3Filters.profile??"") ? views3Filters.profile : undefined;
+  const filteredCustomers=useMemo(()=>{
+    const allIncluded=includedProfiles.length===ADMIN_PROFILE_NAMES.length;
+    const visible=allFilteredCustomers.filter(row=>(allIncluded || includedProfiles.some(profile=>matchesCustomerProfile(profile,row.profileType??""))) && (!filters.profileType || matchesCustomerProfile(filters.profileType,row.profileType??"")) && (!deferredViewsProfile || matchesCustomerProfile(deferredViewsProfile,row.profileType??"")));
+    return filterCustomerList(visible,listNumber);
+  },[allFilteredCustomers,listNumber,includedProfiles,filters.profileType,deferredViewsProfile,filters.duplicates]);
   useEffect(() => {
     const topFiltersChanged = previousFilters.current !== filters;
     previousFilters.current = filters;
@@ -144,10 +147,11 @@ export function CustomerSearch1Screen({ cacheScope = "default", customers: suppl
     let cancelled = false;
     setFiltersLoading(topFiltersChanged);
     (async () => {
-      const baseRows = await filterCustomerSearch1RowsAsync(candidateCustomers, filters, () => cancelled);
+      const baseRows = await filterCustomerSearch1RowsAsync(candidateCustomers, {...filters,duplicates:"",profileType:""}, () => cancelled);
       if (cancelled || !baseRows) return;
-      const result = await filterCustomerSearch1Views3RowsAsync(baseRows, views3Filters, () => cancelled);
-      if (!cancelled && result) setFilteredCustomers(result);
+      const deferProfile=views3Filters.profile === "[ Cust Search -" || ["Spare 1","Spare 2","Spare 3"].includes(views3Filters.profile??"");
+      const result = await filterCustomerSearch1Views3RowsAsync(baseRows, deferProfile ? {...views3Filters,profile:""} : views3Filters, () => cancelled);
+      if (!cancelled && result) setFilteredCustomers(filterCustomerDuplicates(result,filters.duplicates??""));
     })().finally(() => { if (!cancelled && topFiltersChanged) setFiltersLoading(false); });
     return () => { cancelled = true; };
   }, [candidateCustomers, filters, views3Filters, views3UpdateVersion]);
@@ -171,7 +175,7 @@ export function CustomerSearch1Screen({ cacheScope = "default", customers: suppl
     recordsCache.clear(); searchCache.clear(); setFetchError("");
     const started = performance.now();
     const query = new URLSearchParams(Object.entries(params).filter((entry): entry is [string, string] => entry[1] !== undefined));
-    query.set("all", "1"); query.set("packed", "1");
+    query.set("all", "1"); query.set("packed", "1"); query.set("matchingVersion","2");
     for (const key of ["customerName", "customerPhone", "contactName", "contactPhone", "contactEmail", "contactText", "search", "city", "state", "salesmanId", "customerTypeId", "statusId"]) query.delete(key);
     query.sort();
     const response = await fetch(`/api/customers/name-search?${query}`, { cache: "no-store" });

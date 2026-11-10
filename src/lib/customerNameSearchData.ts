@@ -283,6 +283,8 @@ export function toCustomerNameMatch(row: Record<string, unknown>): CustomerNameM
       ? row.noCommunication === true || row.noCommunication === 1
       : String(row[column.key] ?? fixedLabels[column.key] ?? "").trim();
   }
+  // Preserve significant tabs/punctuation for exact Access duplicate matching.
+  for(const key of ["customerName","street","city","state","phone","ctcFirst","ctcLast","ctcEmail","ctcCell"]) result[key]=String(row[key]??"");
   return result as CustomerNameMatch;
 }
 

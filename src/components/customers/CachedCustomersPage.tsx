@@ -54,8 +54,9 @@ export function CachedCustomersPage({ scope, params }: {
   const profileType=params.profileType??"All";
   const listNumber=Number(params.listNumber)||0;
   return <CustomerSearchScreen {...result.data}
+    currentDuplicateFilter={params.duplicates??""}
     currentProfileType={profileType} currentListNumber={listNumber}
-    profileTypeLoading={pending && profileType!==(result.data.currentProfileType??"All")}
+    profileTypeLoading={pending && (profileType!==(result.data.currentProfileType??"All") || (params.duplicates??"")!==(result.data.currentDuplicateFilter??""))}
     listLoading={pending && listNumber!==(result.data.currentListNumber??0)}
     onRefresh={refresh} />;
 }

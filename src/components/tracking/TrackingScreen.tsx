@@ -61,7 +61,6 @@ const TOOLBAR_ADMIN_ACTIONS = [
 ];
 
 const TRACKING_REPORT_OPTIONS = [
-  { label: "Reports", href: "/accounts-receivable" },
   { label: "Report Menu", href: "/reports" },
   { label: "Accounts Receivable Report", href: "/accounts-receivable" },
   { label: "Active Customers", href: "/active-customers" },

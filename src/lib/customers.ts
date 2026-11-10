@@ -1,3 +1,4 @@
+import { customerDuplicateSql } from "./customerDuplicateSql";
 import { queryReadOnly } from "@/lib/db/sql";
 import { loadCustomerNameMatches } from "@/lib/customerNameSearchData";
 import type { CustomerNameMatch } from "@/lib/customerNameSearchColumns";
@@ -135,7 +136,7 @@ WITH EligibleCustomers AS (
     AND (@profileType IS NULL OR EXISTS (
       SELECT 1 FROM tblPullDownCustomerProfileTypes pt WITH (NOLOCK)
       WHERE pt.PullDownCustomerProfileTypeID=c.CustomerProfileTypeID
-        AND REPLACE(LOWER(LTRIM(RTRIM(pt.PullDownCustomerProfileType))), 'cust search', 'customer search')=LOWER(@profileType)
+        AND REPLACE(LOWER(LTRIM(RTRIM(pt.PullDownCustomerProfileType))), 'cust search', 'customer search')IN (SELECT LOWER(LTRIM(RTRIM(value))) FROM STRING_SPLIT(@profileType,','))
     ))
     AND (@statusId       IS NULL OR c.CustStatusID   = @statusId)
     AND (@city  IS NULL OR c.City  = @city)
@@ -273,8 +274,9 @@ const CUSTOMER_SEARCH_SORT_COLUMNS: Record<string, string> = {
   contactCount: "ContactCount",
 };
 
-function customerSearchSql(sortKey?: string, sortDirection?: string, includeTotal = true, customerIds?: number[], listNumber?: number): string {
-  const column = listNumber ? "c.ListRank" : CUSTOMER_SEARCH_SORT_COLUMNS[sortKey ?? ""] ?? "c.CustBusName";
+function customerSearchSql(sortKey?: string, sortDirection?: string, includeTotal = true, customerIds?: number[], listNumber?: number, duplicates?:string): string {
+  const duplicate=customerDuplicateSql(duplicates??"");
+  const column = listNumber ? "c.ListRank" : duplicate ? "c.DuplicateValue" : CUSTOMER_SEARCH_SORT_COLUMNS[sortKey ?? ""] ?? "c.CustBusName";
   const direction = !listNumber && sortDirection === "desc" ? "DESC" : "ASC";
   const order = `${column} ${direction}`;
   let sqlText = CUSTOMER_SEARCH_LIST_SQL
@@ -283,6 +285,14 @@ function customerSearchSql(sortKey?: string, sortDirection?: string, includeTota
     .replace("__CUSTOMER_ID_FILTER__", customerIds?.length
       ? `AND c.CustomerID IN (${customerIds.join(",")})`
       : "");
+
+  if(duplicate) {
+    // Access marks duplicate groups before applying the Profile Type checkboxes.
+    const profileClause=sqlText.match(/AND \(@profileType IS NULL OR EXISTS \([\s\S]*?\n    \)\)/)?.[0];
+    if(profileClause) sqlText=sqlText.replace(profileClause,"");
+    sqlText=sqlText.replace("RankedCustomers AS (",duplicate.source+"RankedCustomers AS (")
+      .replace("AS ListRank FROM EligibleCustomers","AS ListRank FROM "+duplicate.sourceName+" c"+(profileClause?" WHERE "+profileClause.slice(4).replace("c.CustomerProfileTypeID","c.ListProfileTypeID"):""));
+  }
 
   if (!includeTotal) {
     sqlText = sqlText.replace("COUNT_BIG(*) OVER () AS TotalCount", "CAST(0 AS BIGINT) AS TotalCount");
@@ -649,6 +659,7 @@ function emptyCustomerSearchFields(): Omit<
 // ---------------------------------------------------------------------------
 
 export interface GetCustomersParams {
+  duplicates?:string;
   profileType?:string;
   listNumber?:number;
   search?: string;
@@ -727,7 +738,7 @@ export async function getCustomerSearchRows(
   }
 
   const [rows, typeMap, salesmanMap, statusMap] = await Promise.all([
-    queryReadOnly<CustomerSearchListRow>(customerSearchSql(params.sortKey, params.sortDirection, params.includeTotal, customerIds, params.listNumber), [
+    queryReadOnly<CustomerSearchListRow>(customerSearchSql(params.sortKey, params.sortDirection, params.includeTotal, customerIds, params.listNumber,params.duplicates), [
       { name: "searchPat", value: searchPat },
       { name: "searchId", value: searchId },
       { name: "customerNamePat", value: customerNamePat },

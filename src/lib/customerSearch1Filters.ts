@@ -1,3 +1,4 @@
+import { filterCustomerDuplicates } from "./customerDuplicateFilter";
 import { CUSTOMER_NAME_SEARCH_COLUMNS, customerNameCellValue, type CustomerNameMatch } from "./customerNameSearchColumns";
 
 export type CustomerSearch1Filters = Partial<Record<
@@ -97,15 +98,8 @@ function buildCustomerSearch1Predicate(rows: CustomerNameMatch[], filters: Custo
   const fromDate = filters.fromDate ? Date.parse(`${filters.fromDate}T00:00:00`) : null;
   const toDate = filters.toDate ? Date.parse(`${filters.toDate}T23:59:59.999`) : null;
   const exactKeys = ["customerType", "custStatus", "profileType", "state", "city", "internetSalesReady"] as const;
-  const duplicateKeys = ["customerName", "street", "ctcEmail", "ctcCell"] as const;
-  const duplicateKey = duplicateKeys.find(key => key === filters.duplicates);
   let clusterCities = new Set<string>();
   try { clusterCities = new Set(JSON.parse(filters.clusterCities ?? "[]") as string[]); } catch { /* ignore malformed saved filter state */ }
-  const counts = new Map<string, number>();
-  if (duplicateKey) for (const row of rows) {
-    const value = row[duplicateKey].trim().toLowerCase();
-    if (value) counts.set(value, (counts.get(value) ?? 0) + 1);
-  }
   return row => {
     if (query && !CUSTOMER_NAME_SEARCH_COLUMNS.some(column => customerNameCellValue(row, column.key).toLowerCase().includes(query))) return false;
     if (!exactKeys.every(key => !filters[key] || row[key] === filters[key])) return false;
@@ -116,14 +110,13 @@ function buildCustomerSearch1Predicate(rows: CustomerNameMatch[], filters: Custo
       const date = Date.parse(row.lastWeekEnding);
       if (!Number.isFinite(date) || fromDate !== null && date < fromDate || toDate !== null && date > toDate) return false;
     }
-    if (duplicateKey && (counts.get(row[duplicateKey].trim().toLowerCase()) ?? 0) < 2) return false;
     return true;
   };
 }
 
 export function filterCustomerSearch1Rows(rows: CustomerNameMatch[], filters: CustomerSearch1Filters): CustomerNameMatch[] {
   const predicate = buildCustomerSearch1Predicate(rows, filters);
-  return rows.filter(predicate);
+  return filterCustomerDuplicates(rows.filter(predicate),filters.duplicates??"");
 }
 
 export async function filterCustomerSearch1RowsAsync(
@@ -140,5 +133,5 @@ export async function filterCustomerSearch1RowsAsync(
     for (let index = start; index < end; index++) if (predicate(rows[index])) filtered.push(rows[index]);
     if (end < rows.length) await new Promise<void>(resolve => window.setTimeout(resolve, 0));
   }
-  return filtered;
+  return shouldCancel()?null:filterCustomerDuplicates(filtered,filters.duplicates??"");
 }
