@@ -1,4 +1,5 @@
 "use client";
+import {ReportStateSelect} from "@/components/reports/ReportStateSelect";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -52,7 +53,7 @@ export function CommissionsMainScreen({ initialWeekEnding, initialRows, initialE
       {salesmanSpecificView ? (salesmanView && <button data-action-status="complete" className="comm-slim-button" aria-label="Week options" onClick={() => action("Choose a week ending date, then refresh.")}>|</button>) : !clusterView && <button data-action-status="complete" aria-label="Previous week" onClick={() => { const date = shiftWeek(weekEnding,-7); void refresh(date); }}>‹</button>}
       <button data-action-status="complete" className="comm-refresh" onClick={() => void refresh()} disabled={loading}>{loading ? "Refreshing…" : "Refresh"}</button>
       <span className="comm-spacer"/>
-      {!salesmanSpecificView && <label className="comm-salesman"><select aria-label="Salesman filter" value={salesman} onChange={event => setSalesman(event.target.value)}><option value="">&lt;Salesman&gt;</option>{options.map(name => <option key={name}>{name}</option>)}</select></label>}
+      {!salesmanSpecificView && <label className="comm-salesman"><ReportStateSelect kind="salesman" aria-label="Salesman filter" value={salesman} onChange={event => setSalesman(event.target.value)}><option value="">&lt;Salesman&gt;</option>{options.map(name => <option key={name}>{name}</option>)}</ReportStateSelect></label>}
       <span className="comm-last-refresh">Last Refresh Week: <output>{lastRefresh || "—"}</output></span>
       <button data-action-status="partial" onClick={() => action("Refresh Week is not connected to the payroll refresh service yet.")}>RMV</button>
       {!salesmanSpecificView && <button data-action-status="partial" className="comm-refresh-week" onClick={() => action("Weekly commission refresh is not connected to the office refresh service yet.")}>Refresh Week</button>}

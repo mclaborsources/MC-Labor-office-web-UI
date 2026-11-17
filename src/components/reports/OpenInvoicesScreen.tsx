@@ -1,4 +1,5 @@
 "use client";
+import {ReportStateSelect} from "@/components/reports/ReportStateSelect";
 
 import { Fragment, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -89,7 +90,7 @@ export function OpenInvoicesScreen({initialRows,initialFilters,initialError}:{in
       <div className="oi-filters">
         <div>
           <select aria-label="Contract With" value={contract} onChange={e=>setContract(e.target.value)}><option value="">&lt;Contract With&gt;</option><option value={BLANK_FILTER}>[BLANK]</option>{filters.contracts.map(v=><option key={v.id} value={v.id}>{v.label}</option>)}</select>
-          <select aria-label="Salesman" value={salesman} onChange={e=>setSalesman(e.target.value)}><option value="">&lt;Salesman&gt;</option>{filters.salesmen.map(v=><option key={v}>{v}</option>)}</select>
+          <ReportStateSelect kind="salesman" aria-label="Salesman" value={salesman} onChange={e=>setSalesman(e.target.value)}><option value="">&lt;Salesman&gt;</option>{filters.salesmen.map(v=><option key={v}>{v}</option>)}</ReportStateSelect>
           <select aria-label="Aging" value={aging} onChange={e=>setAging(e.target.value)}><option value="">&lt;Aging&gt;</option>{filters.aging.map(v=><option key={v}>{v}</option>)}</select>
         </div>
         <fieldset><legend className="sr-only">Include terminated customers</legend><span>Include Terminated?</span>

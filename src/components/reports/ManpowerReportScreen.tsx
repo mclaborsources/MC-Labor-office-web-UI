@@ -1,4 +1,6 @@
 "use client";
+import {ReportStateSelect} from "@/components/reports/ReportStateSelect";
+import {AccountingReportTable} from "@/components/tables/AccountingReportTable";
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -108,7 +110,7 @@ export function ManpowerReportScreen() {
       <div className="manpower-filters">
         <select aria-label="In Tracking" value={tracking} onChange={(event) => { setTracking(event.target.value as typeof tracking); setPage(1); }}><option value="">&lt;In Tracking?&gt;</option><option value="yes">Has tracking history</option><option value="no">No tracking history</option></select>
         <select aria-label="Date Range" disabled><option>&lt;Date Range&gt;</option></select>
-        <select aria-label="Salesman" value={salesman} onChange={(event) => { setSalesman(event.target.value); setPage(1); }}><option value="">&lt;Salesman&gt;</option>{salesmen.map((name) => <option key={name}>{name}</option>)}</select>
+        <ReportStateSelect kind="salesman" aria-label="Salesman" value={salesman} onChange={(event) => { setSalesman(event.target.value); setPage(1); }}><option value="">&lt;Salesman&gt;</option>{salesmen.map((name) => <option key={name}>{name}</option>)}</ReportStateSelect>
         <select aria-label="Customer Type" value={type} onChange={(event) => { setType(event.target.value); setPage(1); }}><option value="">&lt;Customer Type&gt;</option>{customerTypes.map((name) => <option key={name}>{name}</option>)}</select>
       </div>
       <button data-action-status="linked" onClick={() => router.push("/tracking")}>Cancel</button>
@@ -127,13 +129,13 @@ export function ManpowerReportScreen() {
       <div className="manpower-note"><p>Money owed is unavailable until Seamus invoice data is connected. The contact list is paged to keep the report responsive.</p><button data-action-status="complete" onClick={clear}>Clear Filters</button></div>
     </div>
     {(error || message) && <p role="status" className="report-data-error">{error || message}</p>}
-    <div className="customer-report-grid"><table><colgroup>{widths.map((width, index) => <col key={index} style={{ width }} />)}</colgroup>
+    <div className="customer-report-grid"><AccountingReportTable columnLayoutKey="ManpowerReportScreen-0"><colgroup>{widths.map((width, index) => <col key={index} style={{ width }} />)}</colgroup>
       <thead><tr>{columns.map((label, index) => { const key = keys[index]; const sortable = key === "customer" || key === "salesman" || key === "contact"; return <th key={label}>{sortable && key ? <button data-action-status="complete" onClick={() => sortBy(key)}>{label} <span aria-hidden="true">⌄</span></button> : <span>{label}</span>}</th>; })}</tr></thead>
       <tbody>{rows.map((row, index) => <tr key={`${row.id}-${index}`} onDoubleClick={() => router.push(`/customers/${encodeURIComponent(row.id)}`)}>{keys.map((key, cellIndex) => { const value = key ? String(row[key] ?? "") : "—"; return <td key={cellIndex} title={value}>{value}</td>; })}</tr>)}
         {loading && !rows.length && <tr><td colSpan={14} role="status">Loading customer contacts…</td></tr>}
         {!loading && !error && !rows.length && <tr><td colSpan={14}>No contacts match the current filters.</td></tr>}
       </tbody>
-    </table></div>
+    </AccountingReportTable></div>
     <footer className="manpower-pagination">
       <span>{total.toLocaleString()} contacts</span>
       <button data-action-status="complete" disabled={page <= 1 || loading} onClick={() => setPage(1)}>First</button>

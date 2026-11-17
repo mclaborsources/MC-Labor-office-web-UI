@@ -7,6 +7,7 @@ import { UnhandledRejectionDiagnostics } from "@/components/layout/UnhandledReje
 import { VisitSessionGuard } from "@/components/layout/VisitSessionGuard";
 import { isOfficeStaffMode } from "@/lib/auth/mode";
 import { TableColumnResizing } from "@/components/layout/TableColumnResizing";
+import { ViewButtonToggleBehavior } from "@/components/layout/ViewButtonToggleBehavior";
 
 export const metadata: Metadata = {
   title: "MC Labor — Office Portal",
@@ -27,6 +28,7 @@ export default function RootLayout({
         <VisitSessionGuard enabled={isOfficeStaffMode()}>{children}</VisitSessionGuard>
         <CustomerCellNavigation />
         <TableColumnResizing />
+        <ViewButtonToggleBehavior />
         <UnhandledRejectionDiagnostics />
         <Suspense fallback={null}><RouteLoadingIndicator /></Suspense>
       </body>

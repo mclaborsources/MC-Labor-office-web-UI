@@ -1,4 +1,5 @@
 "use client";
+import {AccountingReportTable} from "@/components/tables/AccountingReportTable";
 
 import Link from "next/link";
 import { useState } from "react";
@@ -105,14 +106,14 @@ export function AllJobsReportScreen({ rows: initialRows, total: initialTotal, er
       <em>Click in the Select column for one job</em>
     </div>
     {error && <p className="ac-all-jobs-error" role="alert">{error}</p>}
-    <div className="ac-all-jobs-grid-wrap" aria-busy={loading}><table><colgroup><col style={{ width: 20 }} />{columns.map((column) => <col key={column.key} style={{ width: column.width }} />)}<col style={{ width: 35 }} /></colgroup>
+    <div className="ac-all-jobs-grid-wrap" aria-busy={loading}><AccountingReportTable columnLayoutKey="AllJobsReportScreen-0"><colgroup><col style={{ width: 20 }} />{columns.map((column) => <col key={column.key} style={{ width: column.width }} />)}<col style={{ width: 35 }} /></colgroup>
       <thead><tr><th aria-label="Row selector" />{columns.map((column) => <th id={`all-jobs-${column.key}`} key={column.key}>{column.label}<span>⌄</span></th>)}<th>Select</th></tr></thead>
       <tbody>{rows.map((row) => <tr key={row.projectId} className={selected === row.projectId ? "is-selected" : ""} onClick={() => setSelected(row.projectId)}>
         <td className="ac-all-jobs-row-marker">{selected === row.projectId ? "▶" : ""}</td>
         {columns.map((column) => <td key={column.key} title={row[column.key]}>{column.key === "job" ? <Link href={`/jobs/${encodeURIComponent(row.projectId)}`}>{row.job}</Link> : row[column.key]}</td>)}
         <td><input type="radio" name="all-jobs-select" aria-label={`Select ${row.job}`} checked={selected === row.projectId} onChange={() => setSelected(row.projectId)} /></td>
       </tr>)}{!rows.length && <tr><td colSpan={columns.length + 2} className="ac-all-jobs-empty">{loading ? "Loading jobs…" : error ? "" : "No jobs match these filters."}</td></tr>}</tbody>
-    </table></div>
+    </AccountingReportTable></div>
     <footer className="ac-all-jobs-recordbar"><span>Record:</span><button data-action-status="complete" onClick={() => void loadPage(1)} disabled={loading || currentPage <= 1}>◀◀</button><button data-action-status="complete" onClick={() => void loadPage(currentPage - 1)} disabled={loading || currentPage <= 1}>◀</button><input readOnly value={total ? (currentPage - 1) * pageSize + 1 : 0} aria-label="Current record" /><span>of {total.toLocaleString()}</span><button data-action-status="complete" onClick={() => void loadPage(currentPage + 1)} disabled={loading || currentPage * pageSize >= total}>▶</button><button data-action-status="complete" onClick={() => void loadPage(Math.max(1, Math.ceil(total / pageSize)))} disabled={loading || currentPage * pageSize >= total}>▶▶</button><span className="ac-all-jobs-filter-status">{appliedCustomer || appliedJob ? "Filtered" : "Unfiltered"}{loading ? " · Loading" : ""}</span><span>{rows.length ? `${(currentPage - 1) * pageSize + 1}–${Math.min(currentPage * pageSize, total)}` : "0"}</span><input placeholder="Search" aria-label="Search all job columns" /></footer>
   </section>;
 }

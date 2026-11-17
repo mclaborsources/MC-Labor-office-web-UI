@@ -1,0 +1,4 @@
+import {NextResponse} from "next/server";
+import {requireSession} from "@/lib/auth/session";
+import {queryReadOnlyUncached} from "@/lib/db/sql";
+export async function GET(){try{await requireSession();const states=await queryReadOnlyUncached<{code:string;name:string;valid:boolean}>("SELECT LTRIM(RTRIM(PullDownState)) code,ISNULL(PullDownStateName,'') name,CAST(ISNULL(PullDownStateValidated,0) AS bit) valid FROM dbo.tblPullDownStates WITH (NOLOCK) WHERE NULLIF(LTRIM(RTRIM(PullDownState)),'') IS NOT NULL ORDER BY PullDownStateSort,PullDownState");return NextResponse.json({states});}catch{return NextResponse.json({error:"States could not be loaded."},{status:503});}}

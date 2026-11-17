@@ -1,0 +1,13 @@
+import assert from "node:assert/strict";
+import {customerHistoryTableRows} from "../src/lib/customerHistoryTableRows";
+import type {CustomerHistoryRow} from "../src/lib/customerHistoryReport";
+const base={customerId:"1",customer:"Example",weekEnding:"01/02/2026",job:"Site",firstName:"A",middle:"",lastName:"B",sat:0,sun:0,mon:8,tue:0,wed:0,thu:0,fri:0,totalHours:8,payRate:10,payroll:80,invoice:100,weekHours:999,weekInvoice:999,customerHours:999,customerInvoice:999};
+const data=[{...base,id:"1"},{...base,id:"2",totalHours:11,invoice:385},{...base,id:"3",weekEnding:"01/09/2026",totalHours:16,invoice:944}] as CustomerHistoryRow[];
+const result=customerHistoryTableRows(data);
+assert.equal(result.rows.filter(r=>r.kind==="week").length,2);
+assert.equal(result.rows.find(r=>r.kind==="week")?.values[17],19);
+assert.equal(result.rows.find(r=>r.kind==="week")?.values[18],485);
+assert.equal(result.rows.find(r=>r.kind==="customer")?.values[19],35);
+assert.equal(result.grand.values[16],1429);
+assert.ok(result.rows.filter(r=>r.kind==="detail").every(r=>r.values.slice(17).every(v=>v==="")));
+console.log("Passed: detail columns, week/customer summaries, and grand totals without double-counting.");

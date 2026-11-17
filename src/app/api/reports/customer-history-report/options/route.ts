@@ -1,0 +1,4 @@
+import {NextResponse} from "next/server";
+import {requireSession} from "@/lib/auth/session";
+import {queryReadOnly} from "@/lib/db/sql";
+export async function GET(){try{await requireSession();const [customers,contracts]=await Promise.all([queryReadOnly<{id:string;name:string}>("SELECT CAST(c.CustomerID AS varchar(30)) id,c.CustBusName name FROM dbo.tblCustomer c WITH (NOLOCK) WHERE NULLIF(LTRIM(RTRIM(c.CustBusName)),'') IS NOT NULL AND EXISTS(SELECT 1 FROM dbo.tblTracking t WITH (NOLOCK) WHERE t.CustomerID=c.CustomerID) ORDER BY c.CustBusName"),queryReadOnly<{code:string;name:string}>("SELECT PullDownContractWith_PayrollCoInitials code,PullDownContractWith_PayrollCoName name FROM dbo.tblPullDownContractWith_PayrollCo WITH (NOLOCK) ORDER BY PullDownContractWith_PayrollCoID")]);return NextResponse.json({customers,contracts});}catch{return NextResponse.json({error:"Customer history dropdowns could not be loaded. Please retry."},{status:503});}}

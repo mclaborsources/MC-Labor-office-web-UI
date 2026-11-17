@@ -1,0 +1,19 @@
+"use client";
+import {useEffect,useState,useRef} from "react";
+import {createPortal} from "react-dom";
+type Company={code:string;name:string};
+export function PayrollCompanyDropdowns(){
+ const [companies,setCompanies]=useState<Company[]>([]),[target,setTarget]=useState<HTMLSelectElement|null>(null);const panel=useRef<HTMLDivElement>(null);
+ useEffect(()=>{let active=true;fetch('/api/reports/payroll-companies').then(r=>r.json()).then(data=>{if(active&&Array.isArray(data.companies))setCompanies(data.companies);}).catch(()=>{});return()=>{active=false;};},[]);
+ useEffect(()=>{
+ if(!companies.length)return;const main=document.querySelector('main');if(!main)return;
+ const isPayroll=(select:HTMLSelectElement)=>{const label=select.closest('label')?.textContent||select.getAttribute('aria-label')||select.parentElement?.textContent||'';return /payroll company|payroll co/i.test(label)||Array.from(select.options).some(o=>o.value==='IPG');};
+ const populate=()=>{for(const select of main.querySelectorAll<HTMLSelectElement>('select')){if(!isPayroll(select))continue;for(const c of companies){let option=Array.from(select.options).find(o=>o.value===c.code);if(!option){option=document.createElement('option');option.value=c.code;select.append(option);}option.value=c.code;if(option.text!==c.name)option.text=c.name;}}};populate();const observer=new MutationObserver(populate);observer.observe(main,{childList:true,subtree:true});
+ const open=(event:MouseEvent)=>{if(event.target instanceof HTMLSelectElement&&isPayroll(event.target)){event.preventDefault();setTarget(event.target);}};
+ const dismiss=(event:MouseEvent)=>{if(event.target instanceof HTMLSelectElement&&isPayroll(event.target))return;if(!panel.current?.contains(event.target as Node)&&event.target!==target)setTarget(null);};
+ const key=(event:KeyboardEvent)=>{if(event.key==='Escape')setTarget(null);if(event.target instanceof HTMLSelectElement&&isPayroll(event.target)&&(event.key==='F4'||event.key===' '||(event.altKey&&event.key==='ArrowDown'))){event.preventDefault();setTarget(event.target);}};
+ main.addEventListener('mousedown',open);document.addEventListener('mousedown',dismiss);document.addEventListener('keydown',key);return()=>{observer.disconnect();main.removeEventListener('mousedown',open);document.removeEventListener('mousedown',dismiss);document.removeEventListener('keydown',key);};
+ },[companies,target]);
+ if(!target)return null;const rect=target.getBoundingClientRect();const choices=Array.from(target.options).map(o=>({value:o.value,name:companies.find(c=>c.code===o.value)?.name??o.text,code:companies.find(c=>c.code===o.value)?.code??''}));
+ return createPortal(<div ref={panel} role="listbox" aria-label="Payroll companies" style={{position:'fixed',left:Math.min(rect.left,window.innerWidth-312),top:rect.bottom,width:Math.max(312,rect.width),maxHeight:Math.min(300,window.innerHeight-rect.bottom-8),overflowY:'auto',zIndex:20000,background:'white',border:'1px solid #777',font:'13px Arial',color:'black'}}>{choices.map(c=><div key={c.value} role="option" aria-selected={target.value===c.value} tabIndex={0} style={{display:'grid',gridTemplateColumns:'1fr 70px',minHeight:19,cursor:'pointer',background:target.value===c.value?'black':'white',color:target.value===c.value?'white':'black'}} onClick={()=>{const setter=Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value')?.set;setter?.call(target,c.value);target.dispatchEvent(new Event('change',{bubbles:true}));target.focus();setTarget(null);}} onKeyDown={e=>{if(e.key==='Enter'||e.key===' ')e.currentTarget.click();}}><span style={{padding:'1px 3px',borderRight:'1px solid #ddd'}}>{c.name}</span><span style={{padding:'1px 3px'}}>{c.code}</span></div>)}</div>,document.body);
+}

@@ -1,4 +1,5 @@
 "use client";
+import {AccountingReportTable} from "@/components/tables/AccountingReportTable";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -86,10 +87,10 @@ export function RatesInvoiceTotalScreen({ initialWeekEnding, initialRows, initia
       </div>
     </div>
     {error && <p className="rpr-error" role="alert">{error}</p>}{message && <p className="rpr-message" role="status">{message}</p>}
-    <div className="rpr-grid-wrap rit-grid-wrap"><table className="rpr-grid rit-grid"><thead><tr>{columns.map(([key, label]) => <th key={key}><button data-action-status="complete" onClick={() => setSort((current) => ({ key, desc: current.key === key ? !current.desc : false }))}>{label}<span>{sort.key === key ? sort.desc ? "▼" : "▲" : "⌄"}</span></button></th>)}</tr></thead>
+    <div className="rpr-grid-wrap rit-grid-wrap"><AccountingReportTable columnLayoutKey="RatesInvoiceTotalScreen-0" className="rpr-grid rit-grid"><thead><tr>{columns.map(([key, label]) => <th key={key}><button data-action-status="complete" onClick={() => setSort((current) => ({ key, desc: current.key === key ? !current.desc : false }))}>{label}<span>{sort.key === key ? sort.desc ? "▼" : "▲" : "⌄"}</span></button></th>)}</tr></thead>
       <tbody>{visible.map((row) => <tr key={row.id}>{columns.map(([key]) => <td key={key} className={Object.values(problemFor).includes(key) && Boolean(row[key]) ? "rit-problem-cell" : ""}>{key === "payRate" || key === "otPayRate" || key === "billRate" || key === "otBillRate" || key === "invoiceTotal" || key === "calcInvoiceTotal" ? money(row[key] as number | null) : String(row[key] ?? "")}</td>)}</tr>)}
         {Array.from({ length: Math.max(0, 16 - Math.min(visible.length, 16)) }, (_, index) => <tr className="rpr-empty-row" key={`empty-${index}`}>{columns.map(([key]) => <td key={key} />)}</tr>)}
-      </tbody></table></div>
+      </tbody></AccountingReportTable></div>
     <footer className="rpr-footer"><span>Record: {visible.length ? `1 of ${visible.length}` : "0"}</span><span>{search || problem !== "all" ? "Filtered" : "No Filter"}</span><input aria-label="Search report rows" placeholder="Search" value={search} onChange={(event) => setSearch(event.target.value)} /><span>{visible.length} records</span><AccessButton data-action-status="complete" onClick={exportView} disabled={!visible.length}>Export View</AccessButton></footer>
   </section>;
 }

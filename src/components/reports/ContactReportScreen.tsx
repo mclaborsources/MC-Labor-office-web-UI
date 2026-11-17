@@ -1,4 +1,6 @@
 "use client";
+import {ReportStateSelect} from "@/components/reports/ReportStateSelect";
+import {AccountingReportTable} from "@/components/tables/AccountingReportTable";
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -84,7 +86,7 @@ export function ContactReportScreen({ kind, rows: initialRows, total: initialTot
       <div className="contact-report-header-filters">
         <select aria-label="In Tracking" value={tracking} onChange={(e) => changeFilter(() => setTracking(e.target.value as "" | "yes" | "no"))}><option value="">&lt;In Tracking?&gt;</option><option value="yes">Yes</option><option value="no">No</option></select>
         <select aria-label="Date Range" value={accountFilter} onChange={(e) => changeFilter(() => setAccountFilter(e.target.value))}><option value="All Accounts">&lt;Date Range&gt;</option>{accountFilters.filter((x) => x.includes("30") || x.includes("60") || x.includes("90") || x.includes("120")).map((x) => <option key={x}>{x}</option>)}</select>
-        <select aria-label="Salesman" value={salesman} onChange={(e) => changeFilter(() => setSalesman(e.target.value))}><option value="">&lt;Salesman&gt;</option>{salesmen.map((name) => <option key={name}>{name}</option>)}</select>
+        <ReportStateSelect kind="salesman" aria-label="Salesman" value={salesman} onChange={(e) => changeFilter(() => setSalesman(e.target.value))}><option value="">&lt;Salesman&gt;</option>{salesmen.map((name) => <option key={name}>{name}</option>)}</ReportStateSelect>
       </div>
       <button data-action-status="linked" onClick={() => router.push("/tracking")}>Cancel</button>
     </header>
@@ -98,7 +100,7 @@ export function ContactReportScreen({ kind, rows: initialRows, total: initialTot
       <p>Money owed may not be accurate if more than one contact is listed for any customer.</p>
     </div>
     {(requestError || message) && <p role={requestError ? "alert" : "status"} className="report-data-error">{requestError || message}</p>}
-    <div className="contact-report-grid" aria-busy={loading}><table><thead><tr><th /><th>Customer</th><th /><th>Contact</th><th /><th>Phone</th><th /><th>Cell</th><th /><th>Email</th><th /><th>Position</th></tr></thead><tbody>{rows.map((row, i) => <tr key={`${row.customerId}-${i}`} className={i === 0 ? "is-current" : undefined} onDoubleClick={() => router.push(`/customers/${encodeURIComponent(row.customerId)}`)}><td /><td>{row.customer}</td><td /><td>{row.contact}</td><td /><td>{row.phone}</td><td /><td>{row.cell}</td><td /><td>{row.email}</td><td /><td>{row.contact ? label : ""}</td></tr>)}{!rows.length && <tr><td colSpan={12}>{requestError ? "Report data is unavailable." : loading ? "Loading contact records…" : "No contacts match the current filters."}</td></tr>}</tbody><tfoot><tr><td /><td>Total</td><td colSpan={10} /></tr></tfoot></table></div>
+    <div className="contact-report-grid" aria-busy={loading}><AccountingReportTable columnLayoutKey="ContactReportScreen-0"><thead><tr><th /><th>Customer</th><th /><th>Contact</th><th /><th>Phone</th><th /><th>Cell</th><th /><th>Email</th><th /><th>Position</th></tr></thead><tbody>{rows.map((row, i) => <tr key={`${row.customerId}-${i}`} className={i === 0 ? "is-current" : undefined} onDoubleClick={() => router.push(`/customers/${encodeURIComponent(row.customerId)}`)}><td /><td>{row.customer}</td><td /><td>{row.contact}</td><td /><td>{row.phone}</td><td /><td>{row.cell}</td><td /><td>{row.email}</td><td /><td>{row.contact ? label : ""}</td></tr>)}{!rows.length && <tr><td colSpan={12}>{requestError ? "Report data is unavailable." : loading ? "Loading contact records…" : "No contacts match the current filters."}</td></tr>}</tbody><tfoot><tr><td /><td>Total</td><td colSpan={10} /></tr></tfoot></AccountingReportTable></div>
     <footer>Record: {total ? `${(page - 1) * pageSize + 1}–${Math.min(page * pageSize, total)} of ${total.toLocaleString()}` : "0 of 0"}<button data-action-status="complete" onClick={clear}>Clear Filters</button><button data-action-status="complete" disabled={page <= 1 || loading} onClick={() => setPage(1)}>First</button><button data-action-status="complete" disabled={page <= 1 || loading} onClick={() => setPage((current) => current - 1)}>Previous</button><span>Page {page} of {pageCount}</span><button data-action-status="complete" disabled={page >= pageCount || loading} onClick={() => setPage((current) => current + 1)}>Next</button><button data-action-status="complete" disabled={page >= pageCount || loading} onClick={() => setPage(pageCount)}>Last</button><button data-action-status="complete" disabled={!rows.length} onClick={exportPage}>Export Page</button><span>{loading ? "Querying…" : `SQL query ${pageQueryMs < 1000 ? `${pageQueryMs} ms` : `${(pageQueryMs / 1000).toFixed(2)} s`}`}</span></footer>
   </section>;
 }

@@ -6,7 +6,7 @@ export type CustomerLoadProgress = { stage: "fetching" | "downloading" | "prepar
 
 const stages = ["Fetching records", "Downloading data", "Preparing table"];
 
-export function CustomerRecordsLoading({ progress, recordType = "customer" }: { progress: CustomerLoadProgress; recordType?: "customer" | "employee" }) {
+export function CustomerRecordsLoading({ progress, recordType = "customer" }: { progress: CustomerLoadProgress; recordType?: "customer" | "employee" | "report" }) {
   const [seconds, setSeconds] = useState(0);
   useEffect(() => {
     const started = performance.now();
@@ -21,7 +21,7 @@ export function CustomerRecordsLoading({ progress, recordType = "customer" }: { 
       {progress.count != null && <div className="ac-customer-records-loading-detail">Records returned by the query: {progress.count.toLocaleString()}</div>}
       <div className="ac-customer-loading-track" aria-hidden="true"><span className="ac-customer-loading-bar" /></div>
       <ol className="ac-customer-records-stages">{stages.map((label, index) => <li key={label} data-state={index < active ? "done" : index === active ? "active" : "pending"}><span aria-hidden="true">{index < active ? "✓" : index + 1}</span>{label}</li>)}</ol>
-      <div className="ac-customer-records-loading-detail">{progress.bytes > 0 ? `${(progress.bytes / 1024 / 1024).toFixed(1)} MB received (uncompressed)` : "All records • All columns • No row limit"}</div>
+      <div className="ac-customer-records-loading-detail">{progress.bytes > 0 ? `${(progress.bytes / 1024 / 1024).toFixed(1)} MB received (uncompressed)` : recordType === "report" ? "Preparing report records and columns" : "All records • All columns • No row limit"}</div>
       {seconds >= 10 && <div className="ac-customer-records-loading-detail">Still working. The table will appear automatically when ready.</div>}
     </div>
   </div>;

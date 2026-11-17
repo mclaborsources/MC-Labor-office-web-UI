@@ -1,0 +1,14 @@
+import {NextResponse} from "next/server";
+import {z} from "zod";
+import {createHash} from "node:crypto";
+import {requireSession} from "@/lib/auth/session";
+import {hasSameOrigin} from "@/lib/auth/origin";
+import {getPool,queryReadOnlyUncached} from "@/lib/db/sql";
+import {ensureAccountingSavedViewsTable,saveAccountingSavedView,deleteAccountingSavedView} from "@/lib/accountingSavedViewsDb";
+const reportSchema=z.string().regex(/^[a-z][a-z0-9-]{0,100}$/);
+const viewSchema=z.object({slot:z.number().int().min(1).max(64),name:z.string().trim().min(1).max(80),layout:z.record(z.unknown())});
+async function key(request:Request){const session=await requireSession();const report=reportSchema.parse(new URL(request.url).pathname.split("/")[3]);return createHash("sha256").update(`${session.user!.officeStaffId?`staff:${session.user!.officeStaffId}`:session.user!.userId}:${report}`).digest("hex");}
+function failure(error:unknown){return NextResponse.json({error:error instanceof z.ZodError?"Invalid view settings.":error instanceof Error&&error.message==="Unauthorized"?"Sign in to manage saved views.":"Saved views could not be loaded or saved. Check the database connection and retry."},{status:error instanceof z.ZodError?400:error instanceof Error&&error.message==="Unauthorized"?401:500});}
+export async function GET(request:Request){try{const user=await key(request);await ensureAccountingSavedViewsTable(await getPool());const rows=await queryReadOnlyUncached<{slot:number;name:string;layout:string}>("SELECT Slot slot,ViewName name,LayoutJson layout FROM dbo.WebAccountingSavedView WHERE UserKey=@user ORDER BY Slot",[{name:"user",value:user}]);return NextResponse.json({views:rows.map(r=>({...r,layout:JSON.parse(r.layout)}))},{headers:{"Cache-Control":"private, no-store"}});}catch(e){return failure(e);}}
+export async function PUT(request:Request){if(!hasSameOrigin(request))return NextResponse.json({error:"Invalid request origin."},{status:403});try{const user=await key(request);const body=await request.text();if(body.length>1000000)return NextResponse.json({error:"View settings are too large."},{status:413});const view=viewSchema.parse(JSON.parse(body));await ensureAccountingSavedViewsTable(await getPool());await saveAccountingSavedView(await getPool(),user,view.slot,view.name,JSON.stringify(view.layout));return NextResponse.json({view});}catch(e){return failure(e);}}
+export async function DELETE(request:Request){if(!hasSameOrigin(request))return NextResponse.json({error:"Invalid request origin."},{status:403});try{const user=await key(request);const {slot}=viewSchema.pick({slot:true}).parse(await request.json());await deleteAccountingSavedView(await getPool(),user,slot);return NextResponse.json({ok:true});}catch(e){return failure(e);}}

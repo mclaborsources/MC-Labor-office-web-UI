@@ -62,7 +62,7 @@ export function CustomerNameColumnHeader({ label, columnKey, kind = "text", getV
     };
   }, [open]);
 
-  return <div className="ac-column-filter" data-column={columnKey} draggable={Boolean(onDragStart)}
+  return <div className="ac-column-filter" data-column-label={label} data-column={columnKey} draggable={Boolean(onDragStart)}
     onDragStart={onDragStart} onDragOver={onDragOver} onDrop={onDrop} onDragEnd={onDragEnd}
     style={{ position: "relative", minWidth: 0, cursor: onDragStart ? "grab" : undefined, opacity: dragging ? 0.45 : 1, outline: dropTarget ? "2px solid #2563eb" : undefined, outlineOffset: -2 }}>
     <button ref={trigger} type="button" title={label} className={`ac-column-filter-trigger${selected || sort ? " is-active" : ""}`} aria-label={`Sort or filter ${label}`} aria-haspopup="dialog" aria-expanded={open} onClick={() => { onSelect?.(); if (!open) updateMenuPosition(); setOpen(!open); }}>

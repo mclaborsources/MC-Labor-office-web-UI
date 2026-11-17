@@ -1,0 +1,4 @@
+import {NextResponse} from "next/server";
+import {requireSession} from "@/lib/auth/session";
+import {queryReadOnlyUncached} from "@/lib/db/sql";
+export async function GET(){try{await requireSession();const rows=await queryReadOnlyUncached<Record<string,unknown>>("SELECT * FROM dbo.tblPullDownPayrollCoOnSite WITH (NOLOCK) ORDER BY PullDownPayrollCoOnSiteSort,PullDownPayrollCoOnSiteID");return NextResponse.json({companies:rows.map(r=>({active:Boolean(r.PullDownPayrollCoOnSiteActive),code:String(r.PullDownPayrollCoOnSiteInitials??'').trim(),name:String(r.PullDownPayrollCoOnSite??r.PullDownPayrollCoOnSiteName??r.PullDownPayrollCoOnSiteDesc??r.PullDownPayrollCoOnSiteInitials??'').trim()})).filter(r=>r.code) });}catch{return NextResponse.json({error:"Payroll companies could not be loaded."},{status:503});}}

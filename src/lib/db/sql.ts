@@ -1,6 +1,10 @@
+import {AsyncLocalStorage} from "node:async_hooks";
 import sql from "mssql";
 import { getDatabaseSettings, type DatabaseSettings } from "@/lib/config/database";
 import type { QueryParam } from "@/types/db";
+
+const readMode=new AsyncLocalStorage<boolean>();
+export function withFreshDatabaseReads<T>(work:()=>Promise<T>):Promise<T>{return readMode.run(true,work);}
 
 let pool: sql.ConnectionPool | null = null;
 let poolPromise: Promise<sql.ConnectionPool> | null = null;
@@ -70,6 +74,7 @@ export async function queryReadOnly<T = Record<string, unknown>>(
   query: string,
   params?: QueryParam[],
 ): Promise<T[]> {
+  if(readMode.getStore())return queryReadOnlyUncached<T>(query,params);
   if (!isReadOnlyQuery(query)) {
     throw new Error("Only read-only SELECT queries are allowed in Phase 1.");
   }

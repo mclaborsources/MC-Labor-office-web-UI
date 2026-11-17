@@ -1,3 +1,5 @@
+import {AccountingReportAppearance} from "@/components/reports/AccountingReportAppearance";
+import {ReportColumnHover} from "@/components/reports/ReportColumnHover";
 import type { ReactNode } from "react";
 import { AppPageTabs } from "@/components/layout/AppPageTabs";
 import { AccessWindowTabs, type WindowTab } from "@/components/access/AccessWindowTabs";
@@ -29,7 +31,7 @@ export function AppShell({ children, fillViewport, fullWidth, compactHeader = fa
             { label: "Employee Search 3", active: true },
           ]}
         />
-        <main className="flex min-h-0 w-full max-w-none flex-1 flex-col overflow-hidden">{children}</main>
+        <main className="flex min-h-0 w-full max-w-none flex-1 flex-col overflow-hidden"><AccountingReportAppearance /><ReportColumnHover />{children}</main>
       </div>
     );
   }
@@ -48,6 +50,7 @@ export function AppShell({ children, fillViewport, fullWidth, compactHeader = fa
           fullWidth ? "max-w-none" : "mx-auto max-w-[1680px]"
         } ${fillViewport ? "flex min-h-0 flex-1 flex-col overflow-hidden" : ""}`}
       >
+        <AccountingReportAppearance /><ReportColumnHover />
         {children}
       </main>
     </div>

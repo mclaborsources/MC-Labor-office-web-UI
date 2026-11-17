@@ -36,15 +36,20 @@ export async function middleware(request: NextRequest) {
     checkUrl.searchParams.set("path", pathname);
     checkUrl.searchParams.set("method", request.method);
     let status = 503;
-    try {
-      const checked = await fetch(checkUrl, { headers: { cookie: request.headers.get("cookie") ?? "" }, cache: "no-store" });
-      status = checked.status;
-    } catch { /* A failed permission check must not allow access. */ }
+    // A rebuild or transient database failure can interrupt the first check.
+    // Retry server failures once; authentication and permission denials are final.
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const checked = await fetch(checkUrl, { headers: { cookie: request.headers.get("cookie") ?? "" }, cache: "no-store" });
+        status = checked.status;
+      } catch { status = 503; }
+      if (status < 500) break;
+    }
     if (status === 200) return NextResponse.next();
     if (pathname.startsWith("/api/")) return NextResponse.json({ error: status === 401 ? "Sign-in required." : "Access denied or office permissions unavailable." }, { status });
     if (status === 401 || status === 409) {
       const target = new URL("/login", request.url);
-      target.searchParams.set("from", pathname);
+      target.searchParams.set("from", pathname + request.nextUrl.search);
       return NextResponse.redirect(target);
     }
     return new NextResponse(status === 403 ? "You do not have permission to open this screen. Contact your office administrator." : "Office permissions could not be checked. Please retry.", { status, headers: { "Content-Type": "text/plain; charset=utf-8" } });
