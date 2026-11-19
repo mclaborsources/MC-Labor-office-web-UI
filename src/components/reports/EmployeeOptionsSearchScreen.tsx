@@ -13,7 +13,6 @@ export function EmployeeOptionsSearchScreen({rows:initialRows=EMPTY_REPORT_ROWS,
  const {rows,error,loading:fetching,refetch}=useAccountingReportData(initialRows,initialError);
  const gridRef=useRef<HTMLDivElement>(null);
  const [scrollTop,setScrollTop]=useState(0);
- useEffect(()=>{if(loadOnOpen)void refetch();},[loadOnOpen,refetch]);
  const router=useRouter();const [name,setName]=useState('');const [view,setView]=useState('View 01');const [flagFilters,setFlagFilters]=useState<Record<string,string>>(excludedOnly?{"Exclude from Reports":"Yes"}:{});const [filters,setFilters]=useState<Record<string,string[]>>({});const [sort,setSort]=useState<{key:string;direction:'asc'|'desc'}|null>(null);const [selected,setSelected]=useState('Last Name');const [message,setMessage]=useState('');
  const cells=(r:typeof rows[number])=>[r.firstName,r.middle,r.lastName,...r.flags.map(v=>v==null?"":v?"Yes":"No")];
  const visible=useMemo(()=>rows.filter(r=>(r.firstName+" "+r.middle+" "+r.lastName).toLowerCase().includes(name.toLowerCase())&&flags.every((label,i)=>!flagFilters[label]||flagFilters[label]==="All"||cells(r)[i+3]===flagFilters[label])&&Object.entries(filters).every(([i,v])=>v.includes(String(cells(r)[Number(i)]??"")))).sort((a,b)=>{if(!sort)return 0;const c=String(cells(a)[Number(sort.key)]??"").localeCompare(String(cells(b)[Number(sort.key)]??""));return sort.direction==="asc"?c:-c;}),[rows,name,flagFilters,filters,sort]);

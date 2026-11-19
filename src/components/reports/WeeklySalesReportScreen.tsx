@@ -21,7 +21,7 @@ const breakdowns = [
 ] as const;
 const defaultColumns:[string,number][]=[["Week",64],["Year",55],["Week Ending",109],["Total Sales",125],["Per Diem",95],["SUB Sales",109],["Employee Sales",125],["Adj Total INV After 20%",172],...breakdowns.flatMap(([name,,before,after]):[string,number][]=>[[`b20${name?" "+name:""}`,before],[`a20${name?" "+name:""}`,after]])];
 export function WeeklySalesReportScreen({options,criteria,rows:initialRows=EMPTY_REPORT_ROWS,error:initialError=""}:{rows?:import("@/lib/weeklySalesReport").WeeklySalesRow[];error?:string;options:AccountingReportOptions;criteria:Record<string,string|undefined>}){
- const {rows,error,loading:fetching,refetch}=useAccountingReportData(initialRows,initialError);
+ const {rows,error,loading:fetching,refetch}=useAccountingReportData(initialRows,initialError,criteria);
  const [exportCompany,setExportCompany]=useState("");
  const router=useRouter();const iso=(x:string|undefined,f:string)=>{const d=new Date(x||f);return Number.isNaN(d.getTime())?f:d.toISOString().slice(0,10);};const [state,setState]=useState(criteria.state||'');const [contract,setContract]=useState(criteria.payrollCompany||criteria.contractWith||'');const [salesman,setSalesman]=useState(criteria.salesman||'');const [year,setYear]=useState(criteria.assignYear||'');const [start,setStart]=useState(iso(criteria.startDate,criteria.weekEnding||''));const [end,setEnd]=useState(iso(criteria.endDate,criteria.weekEnding||''));const [view,setView]=useState('View 01');const [message,setMessage]=useState('');const [filters,setFilters]=useState<Record<string,string[]>>({});const [sort,setSort]=useState<{key:string;direction:'asc'|'desc'}|null>(null);
  const invoiceCodes=["07","02","06","04","05","09","08","03","01","10",...Array(9).fill("11")];

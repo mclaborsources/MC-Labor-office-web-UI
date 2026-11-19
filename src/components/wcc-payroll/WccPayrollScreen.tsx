@@ -11,8 +11,7 @@ import {WccReportCriteria} from "./WccReportCriteria";
 
 export function WccPayrollScreen({options,criteria,rows:initialRows=EMPTY_REPORT_ROWS,customerRows:initialCustomerRows=EMPTY_REPORT_ROWS,error:initialError="",loadOnOpen=false}:{loadOnOpen?:boolean;options:import("@/lib/accountingReportOptions").AccountingReportOptions;customerRows?:import("@/lib/wccPayrollReport").WccCustomerRow[];rows?:import("@/lib/wccPayrollReport").WccPayrollRow[];error?:string;criteria:Record<string,string|undefined>}) {
   const byCustomer=criteria.groupBy==="customer";
-  const {rows:loadedRows,error,loading:fetching,refetch}=useAccountingReportData(byCustomer?initialCustomerRows:initialRows,initialError);
-  useEffect(()=>{if(loadOnOpen)void refetch("/wcc-payroll?"+new URLSearchParams(Object.fromEntries(Object.entries(criteria).filter((entry):entry is [string,string]=>typeof entry[1]==="string"))));},[loadOnOpen,refetch,criteria]);
+  const {rows:loadedRows,error,loading:fetching,refetch}=useAccountingReportData(byCustomer?initialCustomerRows:initialRows,initialError,criteria);
   const rows=byCustomer?EMPTY_REPORT_ROWS:loadedRows;const customerRows=byCustomer?loadedRows:EMPTY_REPORT_ROWS;
   const columns=byCustomer?["Customer","Salesman","WCC","Per Diem","Total Sales","SUB Sales","Employee Sales"]:["WCC","Regular Hours","Regular Payroll","OT Hours","OT Payroll = Hours","Gross Payroll","Adjusted OT for","Sick","Vacation","Commissions","Per Diem","Total Payroll WC","Total Reg Payroll","Total Sales","SUBs","SUB Sales","Employee Sales"];
   const formatSummary=(value:number,index:number)=>value.toLocaleString("en-US",{minimumFractionDigits:[1,3,14].includes(index)?0:2,maximumFractionDigits:index===14?0:2});

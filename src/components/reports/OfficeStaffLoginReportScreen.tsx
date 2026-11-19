@@ -11,7 +11,7 @@ import styles from './OfficeStaffLoginReportScreen.module.css';
 const rawColumns:[string,number][]=[['Office Staff',128],['Date',81],['Day',51],['Network Name',177],['Computer Name',177],['Login Timestamp',235],['Logout Timestamp',247],['Logout Type',103],['Hours and Minutes',144],['Hours',64],['Minutes',79]];
 const summaryColumns:[string,number][]=[['Office Staff',128],['Hours and Minutes',144],['Hours',76],['Minutes',79]];
 export function OfficeStaffLoginReportScreen({summary,criteria,rows:initialRows=EMPTY_REPORT_ROWS,error:initialError=""}:{rows?:import("@/lib/officeStaffLoginRaw").StaffLoginRawRow[];error?:string;summary:boolean;criteria:Record<string,string|undefined>}){
- const {rows,error,loading:fetching,refetch}=useAccountingReportData(initialRows,initialError);
+ const {rows,error,loading:fetching,refetch}=useAccountingReportData(initialRows,initialError,criteria);
  const router=useRouter();const title=summary?'Office Staff Login Summary Search':'Office Staff Login Raw Data Search';const prefix=summary?'office-staff-login-summary':'office-staff-login-raw';const columns=summary?summaryColumns:rawColumns;
  const iso=(value:string|undefined)=>{const d=new Date(value||'');return Number.isNaN(d.getTime())?'':d.toISOString().slice(0,10);};
  const [name,setName]=useState('');const [start,setStart]=useState(iso(criteria.startDate));const [end,setEnd]=useState(iso(criteria.endDate));const [view,setView]=useState('View 01');const [message,setMessage]=useState('');const [filters,setFilters]=useState<Record<string,string[]>>({});const [sort,setSort]=useState<{key:string;direction:'asc'|'desc'}|null>(null);

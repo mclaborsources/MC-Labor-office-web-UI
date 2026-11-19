@@ -36,6 +36,14 @@ export function AccessReferenceMenu({ activeView, policy, notes, trackingHref, t
       <header><span>Company Policy</span><button className="ac-access-menu-button" onClick={onPolicies}>Edit Policies</button></header>
       <div className="ac-access-menu-document"><DashboardRichText html={policy} emptyMessage="No policy text configured for this view." /></div>
     </section>
+    <section className="ac-access-menu-maintenance" aria-label="Main menu utilities">
+      {["Lock Weeks", "Knowledge Base", "Delete Blank Employees"].map(label => <button key={label} type="button" className="ac-access-menu-button" disabled title="Not connected yet">{label}</button>)}
+      <div className="ac-access-menu-delete-week"><label htmlFor="menu-delete-week">Week to Delete:</label><select id="menu-delete-week" disabled defaultValue=""><option value="" /></select><button type="button" className="ac-access-menu-button" disabled title="Not connected yet">Delete Week</button></div>
+      <button type="button" className="ac-access-menu-button" disabled title="Not connected yet">Reminders</button>
+      <SqlConnectionButton />
+      <button type="button" className="ac-access-menu-button" disabled title="Not connected yet">Current Logins</button>
+      <label className="ac-access-menu-alerts">Show Alerts screen when opening the Customer Menu screen <input type="checkbox" defaultChecked disabled /></label>
+    </section>
     <section className="ac-access-menu-work" aria-label="Work Area">
       <header><strong>Work Area</strong><div>
         <button className="ac-access-menu-button" onClick={onPdf}>PDF Map</button>
@@ -60,13 +68,15 @@ export function AccessReferenceMenu({ activeView, policy, notes, trackingHref, t
       <div className="ac-access-menu-document"><DashboardRichText html={notes} emptyMessage="No company history notes configured." /></div>
     </section>
     <section className="ac-access-menu-shortcuts" aria-label="Search and utilities">
+      <button type="button" className="ac-access-menu-button ac-menu-referral" disabled title="Not connected yet">Referral Agency<br />On Site Report</button>
+      <button type="button" className="ac-access-menu-button ac-menu-chrome" disabled title="Not connected yet">Update Chrome<br />Driver</button>
+      <button type="button" className="ac-access-menu-button ac-menu-email" disabled title="Not connected yet">Send Tracking Report<br />Email</button>
       <button type="button" className="ac-access-menu-button ac-access-menu-exit" disabled={loggingOut} onClick={() => {
         setLogoutError("");
         logoutDialog.current?.showModal();
       }}>Exit Database</button>
-      <Link href="/customers" className="ac-access-menu-button">Customer Search</Link><SqlConnectionButton/><Link href="/employees" className="ac-access-menu-button">Employee Search</Link>
-      <Link href="/customer-search-1" className="ac-access-menu-button">Customer Search 1</Link><Link href="/customers/name-search" className="ac-access-menu-button">Customer Name Search</Link>
-      <Link href="/employee-licenses" className="ac-access-menu-button">Licensed Employee Search</Link>
+      <Link href="/customers" className="ac-access-menu-button ac-menu-customers">Customer Search</Link><Link href="/employees" className="ac-access-menu-button ac-menu-employees">Employee Search</Link>
+      <Link href="/employee-licenses" className="ac-access-menu-button ac-menu-licenses">Licensed Employee<br />Search</Link>
     </section>
     <div className="ac-access-menu-screen-controls"><span>Screen Size</span><button className="ac-access-menu-button" aria-pressed={size === "normal"} onClick={() => setSize("normal")}>Normal</button><div>{[1, 2, 3, 4].map(n => <div key={n}><button className="ac-access-menu-button" aria-pressed={size === String(n)} onClick={() => setSize(String(n))}>{n}</button></div>)}</div></div>
     <div className="ac-access-menu-resource"><div>Size MB<span>{resourceSizeMb}</span></div><div>Max<span>2000</span></div></div>

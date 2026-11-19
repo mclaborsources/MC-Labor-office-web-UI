@@ -1,6 +1,7 @@
 "use client";
 import {useCallback,useEffect,useRef,useState} from "react";
 import {usePathname} from "next/navigation";
+import {initialReportUrl} from "@/lib/accountingReportRequest";
 export const EMPTY_REPORT_ROWS:never[]=[];
 const EMPTY_CRITERIA:Record<string,string|undefined>={};
 export function useAccountingReportData<T>(initialRows:T[],initialError="",initialCriteria:Record<string,string|undefined>=EMPTY_CRITERIA){
@@ -27,8 +28,12 @@ export function useAccountingReportData<T>(initialRows:T[],initialError="",initi
  },[pathname]);
  useEffect(()=>{
   if(initialRows.length||initialError||controller.current)return;
-  const routes=new Set(["total-payroll-report-search","office-staff-login-raw-data-search","office-staff-login-summary-search","tracking-report","sales-by-customer","sales-by-customer-by-state","sales-by-salesman-weekly-breakdown","customer-history-report","gross-payroll-by-week","employees-on-site-per-week-report","invoice-report","weekly-sales-report","yearly-sales-report","employee-referral-report","accounting-job-orders-report","ui-unemployment-report-search","wcc-payroll-by-customer","salesman-report","total-payroll-by-job-search"]);
-  if(routes.has(pathname.split("/")[1]))void refetch();
+  const routes=new Set(["wcc-payroll","employee-options-search","new-assignments-returned-employees","total-payroll-report-search","office-staff-login-raw-data-search","office-staff-login-summary-search","tracking-report","sales-by-customer","sales-by-customer-by-state","sales-by-salesman-weekly-breakdown","customer-history-report","gross-payroll-by-week","employees-on-site-per-week-report","invoice-report","weekly-sales-report","yearly-sales-report","employee-referral-report","accounting-job-orders-report","ui-unemployment-report-search","wcc-payroll-by-customer","salesman-report","total-payroll-by-job-search"]);
+  if(routes.has(pathname.split("/")[1])){
+   // Server pages resolve defaults (such as the latest week) without adding
+   // them to the browser URL. Include those criteria in the initial API call.
+   void refetch(initialReportUrl(window.location.href,initialCriteria));
+  }
  },[pathname,refetch]);
  return {rows,error,loading,refetch,criteria};
 }

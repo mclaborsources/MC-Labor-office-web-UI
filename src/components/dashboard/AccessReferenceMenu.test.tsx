@@ -12,7 +12,7 @@ test("reference main menu retains all eight policy views, live documents and wor
     resourceSizeMb: 123, onPolicies: noop, onNotes: noop, onPdf: noop, onSql: noop,
   }));
   for (let n = 1; n <= 8; n++) assert.ok(html.includes(`View 0${n}`));
-  for (const href of ["/customers", "/employees", "/customer-search-1", "/customers/name-search", "/employee-licenses"]) {
+  for (const href of ["/customers", "/employees", "/employee-licenses"]) {
     assert.ok(html.includes(`href="${href}"`));
   }
   assert.match(html, /Current company policy/);
@@ -29,5 +29,10 @@ test("reference main menu retains all eight policy views, live documents and wor
   assert.match(html, /MC Labor eagle with American and Irish flags/);
   assert.match(html, /ac-access-menu-exit[^>]*>Exit Database<\/button>/);
   assert.doesNotMatch(html, /ac-main-menu-hero/);
-  assert.doesNotMatch(html, /Delete Blank Employees|Lock Weeks|Update Chrome Driver|Fix System Resource|Show Alerts screen/);
+  for (const label of ["Lock Weeks", "Knowledge Base", "Delete Blank Employees", "Delete Week", "Reminders", "Current Logins"]) {
+    assert.ok(html.includes(label));
+  }
+  assert.doesNotMatch(html, /Disconnect SQL/);
+  for (const name of ["ac-menu-referral", "ac-menu-chrome", "ac-menu-email", "ac-menu-customers", "ac-menu-employees", "ac-menu-licenses"]) assert.ok(html.includes(name));
+  assert.match(html, /Show Alerts screen when opening the Customer Menu screen/);
 });

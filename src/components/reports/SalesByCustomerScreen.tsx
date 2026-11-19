@@ -12,7 +12,7 @@ import {TableRecordBar} from "@/components/tables/TableRecordBar";
 import {CustomerNameColumnHeader} from "@/components/customers/CustomerNameColumnHeader";
 const customerColumns:[string,number][]=[["Customer",330],["Customer Type",154],["Customer Since",124],["Salesman",112],["Total Sales",114],["Per Diem",114],["SUB Sales",114],["Employee Sales",125]];
 export function SalesByCustomerScreen({options,criteria,rows:initialRows=EMPTY_REPORT_ROWS,error:initialError="",byState=false}:{rows?:import("@/lib/salesByCustomer").SalesByCustomerRow[];error?:string;options:AccountingReportOptions;criteria:Record<string,string|undefined>;byState?:boolean}){
- const {rows,error,loading:fetching,refetch}=useAccountingReportData(initialRows,initialError);
+ const {rows,error,loading:fetching,refetch}=useAccountingReportData(initialRows,initialError,criteria);
  const [selectedRow,setSelectedRow]=useState("");
  const [state,setState]=useState(criteria.state||"");const storageKey=byState?"sales-by-customer-by-state":"sales-by-customer";
  const router=useRouter();const iso=(x:string|undefined,fallback:string)=>{const d=new Date(x||fallback);return Number.isNaN(d.getTime())?fallback:d.toISOString().slice(0,10);};const [name,setName]=useState('');const [company,setCompany]=useState(criteria.payrollCompany??'');const [exportCompany,setExportCompany]=useState('IPG');const [start,setStart]=useState(iso(criteria.startDate,criteria.weekEnding||''));const [end,setEnd]=useState(iso(criteria.endDate,criteria.weekEnding||''));const [view,setView]=useState('View 01');const [filters,setFilters]=useState<Record<string,string[]>>({});const [sort,setSort]=useState<{key:string;direction:'asc'|'desc'}|null>(null);const [message,setMessage]=useState('');

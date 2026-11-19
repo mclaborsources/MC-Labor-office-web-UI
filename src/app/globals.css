@@ -26097,3 +26097,26 @@ button[data-report-criteria-toggle][aria-pressed="true"] {
 .ac-accident-grid tfoot td{position:sticky;bottom:0;background:#fff;font-weight:400;}
 .ac-accident>.access-table-recordbar{margin:0 2px 0 10px!important;}
 .ac-access-menu-shortcuts>.ac-sql-disconnect{grid-column:1;grid-row:3;}
+.ac-access-menu-maintenance > .ac-access-menu-button { flex:none; width:169px; height:26px; }
+.ac-access-menu-maintenance .ac-access-menu-delete-week { width:316px; justify-content:center; }
+.ac-access-menu-maintenance .ac-access-menu-alerts { width:max-content; max-width:none; }
+/* Main menu utility positions follow the Access reference. */
+.ac-access-menu-shortcuts { left:67.6%; top:599px; width:28%; grid-template-columns:repeat(3,minmax(0,1fr)); grid-template-rows:41px 41px 41px 41px; column-gap:clamp(14px,3.3vw,64px); row-gap:23px; }
+.ac-access-menu-shortcuts > .ac-menu-referral { grid-column:1; grid-row:1; }
+.ac-access-menu-shortcuts > .ac-menu-chrome { grid-column:2; grid-row:1; }
+.ac-access-menu-shortcuts > .ac-menu-email { grid-column:3; grid-row:1; }
+.ac-access-menu-shortcuts > .ac-access-menu-exit { grid-column:2; grid-row:2; }
+.ac-access-menu-shortcuts > .ac-menu-customers { grid-column:1; grid-row:3; }
+.ac-access-menu-shortcuts > .ac-menu-employees { grid-column:2; grid-row:3; }
+.ac-access-menu-shortcuts > .ac-menu-licenses { grid-column:2; grid-row:4; margin-top:12px; }
+/* Keep the reference utility captions on their intended two lines. */
+.ac-access-menu-shortcuts { grid-template-columns:repeat(3,145px); column-gap:clamp(14px,3.3vw,64px); width:max-content; }
+.ac-access-menu-shortcuts > .ac-access-menu-button { width:145px; white-space:nowrap; line-height:17px; padding:2px 5px; }
+/* Loaded accounting grids retain compact Access datasheet rows. */
+:is(.uir-grid,.tpj-grid,.wcc-report__grid) table { border-collapse:collapse; table-layout:fixed; }
+:is(.uir-grid,.tpj-grid,.wcc-report__grid) tbody tr { height:20px; }
+:is(.uir-grid,.tpj-grid,.wcc-report__grid) tbody td { box-sizing:border-box; height:20px; padding:0 3px; line-height:19px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; vertical-align:middle; border:1px solid #e2ddd5; font-weight:400; }
+:is(.uir-grid,.tpj-grid,.wcc-report__grid) tbody tr:nth-child(even):not(.uir-total):not(.wcc-report__total) > td { background:#f2f2f2; }
+:is(.uir-grid,.tpj-grid,.wcc-report__grid) tbody td:first-child { background:#e3e6eb; padding:0; }
+.total-payroll-page .uir-grid td[data-numeric=true] { text-align:right; font-variant-numeric:tabular-nums; }
+.total-payroll-page .uir-grid .uir-total > td { background:#a6cfee; font-weight:700; }
