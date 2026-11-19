@@ -31,7 +31,7 @@ export async function middleware(request: NextRequest) {
       const expected = `${request.nextUrl.protocol}//${request.headers.get("host") ?? request.nextUrl.host}`;
       if (origin !== expected) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
     }
-    if (pathname === "/login" || pathname.startsWith("/api/auth/")) return NextResponse.next();
+    if (pathname === "/sql-disconnected" || pathname === "/login" || pathname.startsWith("/api/auth/")) return NextResponse.next();
     const checkUrl = new URL("/api/auth/access", request.url);
     checkUrl.searchParams.set("path", pathname);
     checkUrl.searchParams.set("method", request.method);
@@ -46,6 +46,7 @@ export async function middleware(request: NextRequest) {
       if (status < 500) break;
     }
     if (status === 200) return NextResponse.next();
+    if(status===423){if(pathname==="/setup"||pathname==="/api/admin/connection")return NextResponse.next();if(pathname.startsWith("/api/"))return NextResponse.json({error:"SQL connection is disconnected."},{status:423});return NextResponse.redirect(new URL("/sql-disconnected",request.url));}
     if (pathname.startsWith("/api/")) return NextResponse.json({ error: status === 401 ? "Sign-in required." : "Access denied or office permissions unavailable." }, { status });
     if (status === 401 || status === 409) {
       const target = new URL("/login", request.url);

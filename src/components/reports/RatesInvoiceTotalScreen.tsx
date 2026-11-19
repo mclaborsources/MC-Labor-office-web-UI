@@ -1,4 +1,5 @@
 "use client";
+import {ReportRenameViewButton} from "./ReportRenameViewButton";
 import {AccountingReportTable} from "@/components/tables/AccountingReportTable";
 
 import { useMemo, useState } from "react";
@@ -72,7 +73,7 @@ export function RatesInvoiceTotalScreen({ initialWeekEnding, initialRows, initia
   return <section className="regular-payroll-screen rates-invoice-screen">
     <header className="rpr-toolbar"><h1>Rates and Invoice Total Report</h1>
       <label>View:<select value={view} onChange={(event) => changeView(event.target.value)}>{views.map((item) => <option key={item}>{item}</option>)}</select></label>
-      <AccessButton data-action-status="complete" onClick={saveView}>Save View</AccessButton>
+      <AccessButton data-action-status="complete" onClick={saveView}>Save View</AccessButton><ReportRenameViewButton/>
       <AccessButton data-action-status="complete" onClick={() => { localStorage.removeItem(`rates-invoice-total-${view}`); setMessage(`${view} deleted.`); }}>Delete View</AccessButton>
       <AccessButton data-action-status="complete" onClick={() => void refresh()} disabled={loading}>{loading ? "Loading…" : "Refresh"}</AccessButton>
       <button data-action-status="linked" className="rpr-cancel" onClick={() => router.push("/reports")}>Cancel</button>

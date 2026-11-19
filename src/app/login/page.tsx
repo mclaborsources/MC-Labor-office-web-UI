@@ -1,3 +1,4 @@
+import {isSqlDisconnected} from "@/lib/db/connection-state";
 import { redirect } from "next/navigation";
 import { needsAccountSetup } from "@/lib/config/env";
 import LoginForm from "@/components/LoginForm";
@@ -9,6 +10,7 @@ import { LoginNotices } from "@/components/LoginNotices";
 
 export const dynamic = "force-dynamic";
 export default async function LoginPage() {
+  if(isSqlDisconnected())redirect("/setup");
   if (isLocalMode()) redirect("/");
   if (needsAccountSetup()) redirect("/welcome");
   if (isOfficeStaffMode()) {

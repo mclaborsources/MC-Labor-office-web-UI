@@ -1,4 +1,5 @@
 "use client";
+import {ReportRenameViewButton} from "@/components/reports/ReportRenameViewButton";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -121,7 +122,7 @@ export function CurrentJobsScreen({ initialPage, kind = "current", onClose }: { 
         <div className="ac-current-jobs-viewbar">
           {kind !== "employees" && <Link href="/jobs"><AccessButton data-action-status="linked" className="ac-current-jobs-post">Post a Job</AccessButton></Link>}
           <label htmlFor="current-jobs-view">View:</label><select id="current-jobs-view" value={selectedView} onChange={(event) => setSelectedView(event.target.value)}>{views.map((view) => <option key={view}>{view}</option>)}</select>
-          <AccessButton data-action-status="complete" onClick={saveView}>Save View</AccessButton><AccessButton data-action-status="complete" onClick={deleteView} disabled={views.length < 2}>Delete View</AccessButton>
+          <AccessButton data-action-status="complete" onClick={saveView}>Save View</AccessButton><ReportRenameViewButton/><AccessButton data-action-status="complete" onClick={deleteView} disabled={views.length < 2}>Delete View</AccessButton>
           <label htmlFor="current-jobs-go-to">Go To:</label><select id="current-jobs-go-to" defaultValue=""><option value="" />{columns.map((column) => <option key={column.key}>{column.label}</option>)}</select>
           <AccessButton data-action-status="complete" onClick={runSearch}>Refresh</AccessButton><AccessButton data-action-status="complete" onClick={clearFilters}>Zero</AccessButton><AccessButton data-action-status="complete" onClick={() => window.print()}>Export View</AccessButton>
         </div>

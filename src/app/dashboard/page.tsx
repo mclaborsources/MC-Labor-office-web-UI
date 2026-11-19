@@ -1,3 +1,5 @@
+import {isSqlDisconnected} from "@/lib/db/connection-state";
+import {redirect} from "next/navigation";
 import { AppShell } from "@/components/layout/AppShell";
 import { AccessMainMenu } from "@/components/dashboard/AccessMainMenu";
 import { getSessionOrDefault } from "@/lib/auth/session";
@@ -9,6 +11,7 @@ interface PageProps {
 }
 
 export default async function DashboardPage({ searchParams }: PageProps) {
+  if(isSqlDisconnected())redirect("/sql-disconnected");
   const session = await getSessionOrDefault();
   const params = await searchParams;
   const activeView = parseDashboardView(params.view);

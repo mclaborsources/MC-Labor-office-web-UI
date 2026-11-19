@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
          ORDER BY EmployeeID DESC`,
         [{ name: "first", value: first }, { name: "last", value: last }],
       ) : Promise.resolve([]),
-      queryReadOnly<{ value: string; label: string }>(`SELECT CAST(PullDownReferralAgencyID AS NVARCHAR(20)) value, ISNULL(PullDownReferralAgencyName, '') label FROM tblPullDownReferralAgency WITH (NOLOCK) ORDER BY PullDownReferralAgencyName`),
+      queryReadOnly<{ value: string; label: string }>(`SELECT CAST(PullDownReferralAgencyID AS NVARCHAR(20)) value, ISNULL(PullDownReferralAgency, '') label FROM tblPullDownReferralAgencies WITH (NOLOCK) ORDER BY PullDownReferralAgency`),
       queryReadOnly<{ value: string; label: string }>(`SELECT CAST(PullDownEmployeeStatusID AS NVARCHAR(20)) value, ISNULL(PullDownEmployeeStatus,'') label FROM tblPullDownEmployeeStatus WITH (NOLOCK) ORDER BY PullDownEmployeeStatusSort, PullDownEmployeeStatus`),
       queryReadOnly<{ value: string; label: string }>(`SELECT CAST(PullDownStateID AS NVARCHAR(20)) value, ISNULL(PullDownState,'') label FROM tblPullDownStates WITH (NOLOCK) ORDER BY PullDownStateSort, PullDownState`),
     ]);

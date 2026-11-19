@@ -1,4 +1,5 @@
 "use client";
+import {ReportDateInput} from "@/components/reports/ReportDateInput";
 import {ReportStateSelect} from "@/components/reports/ReportStateSelect";
 
 import { useMemo, useState } from "react";
@@ -49,7 +50,7 @@ export function CommissionsMainScreen({ initialWeekEnding, initialRows, initialE
       <h1>{salesmanView ? "Commissions for Salesman" : clusterSalesmanView ? "Cluster Commissions for Salesman" : clusterView ? "Cluster Commissions" : "Commissions"}</h1>
       {!salesmanSpecificView && !clusterView && <button data-action-status="partial" onClick={() => action("Commission reminders are not connected yet.")}>Reminders</button>}
       {!clusterView && !clusterSalesmanView && <button data-action-status="complete" className="comm-copy" aria-label="Copy week ending date" onClick={() => void navigator.clipboard?.writeText(weekEnding)}>▣</button>}
-      <label>Week Ending:<input type="date" value={weekEnding} onChange={event => event.target.value && setWeekEnding(event.target.value)}/></label>
+      <label>Week Ending:<ReportDateInput type="date" value={weekEnding} onChange={event => event.target.value && setWeekEnding(event.target.value)}/></label>
       {salesmanSpecificView ? (salesmanView && <button data-action-status="complete" className="comm-slim-button" aria-label="Week options" onClick={() => action("Choose a week ending date, then refresh.")}>|</button>) : !clusterView && <button data-action-status="complete" aria-label="Previous week" onClick={() => { const date = shiftWeek(weekEnding,-7); void refresh(date); }}>‹</button>}
       <button data-action-status="complete" className="comm-refresh" onClick={() => void refresh()} disabled={loading}>{loading ? "Refreshing…" : "Refresh"}</button>
       <span className="comm-spacer"/>

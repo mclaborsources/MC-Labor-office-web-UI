@@ -11,7 +11,7 @@ export default async function Page({searchParams}:{searchParams:Promise<Record<s
  let rows:AccountingPayrollRow[]=[];let error="";let applied=criteria;
  applyReportStartDefault(criteria);try{if(!criteria.weekEnding&&!criteria.endDate)criteria.weekEnding=(await getNewReportSearchWeeks())[0]?.value;
  applied=normalizeTotalPayrollCriteria(criteria);
- rows=groupPayrollRows(await getAccountingPayrollLedger(applied),r=>r.employeeId+"|"+r.company+"|"+r.status);
+ rows=[];
  }catch{error="Total payroll data could not be loaded. Check the dates and database connection.";}
  return <AppShell userDisplayName={session.user?.displayName} fullWidth fillViewport compactHeader><TotalPayrollReportScreen rows={rows} error={error} options={options} criteria={applied}/></AppShell>;
 }

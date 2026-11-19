@@ -1,4 +1,5 @@
 "use client";
+import {ReportRenameViewButton} from "./ReportRenameViewButton";
 import {AccountingReportTable} from "@/components/tables/AccountingReportTable";
 
 import Link from "next/link";
@@ -92,7 +93,7 @@ export function AllJobsReportScreen({ rows: initialRows, total: initialTotal, er
       <h1>All Jobs</h1>
       <button data-action-status="linked" className="ac-all-jobs-post" onClick={() => router.push("/jobs")}>Post a Job</button>
       <label>View:<select value={view} onChange={(event) => setView(event.target.value)}>{views.map((item) => <option key={item}>{item}</option>)}</select></label>
-      <button data-action-status="complete" onClick={saveView}>Save View</button><button data-action-status="complete" onClick={deleteView} disabled={views.length < 2}>Delete View</button>
+      <button data-action-status="complete" onClick={saveView}>Save View</button><ReportRenameViewButton/><button data-action-status="complete" onClick={deleteView} disabled={views.length < 2}>Delete View</button>
       <label>Go To:<select aria-label="Go to column" value={goTo} onChange={(event) => { setGoTo(event.target.value); document.getElementById(`all-jobs-${event.target.value}`)?.scrollIntoView({ block: "nearest", inline: "center" }); }}><option value="" />{columns.map((column) => <option key={column.key} value={column.key}>{column.label}</option>)}</select></label>
       <button data-action-status="complete" onClick={refresh} disabled={loading}>Refresh</button><button data-action-status="complete" onClick={zero} disabled={loading}>Zero</button><button data-action-status="complete" onClick={exportView}>Export View</button>
       <button data-action-status="linked" className="ac-all-jobs-cancel" onClick={() => router.push("/reports")}>Cancel</button>

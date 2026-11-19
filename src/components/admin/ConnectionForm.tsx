@@ -2,24 +2,26 @@
 import { useState } from "react";
 import type { DatabaseSettings } from "@/lib/config/database";
 
-export function ConnectionForm({ initial }: { initial: DatabaseSettings | null }) {
+export function ConnectionForm({ initial,requireCredentials=false }: { initial: DatabaseSettings | null;requireCredentials?:boolean }) {
   const [settings, setSettings] = useState<DatabaseSettings>(initial ?? { server: "", database: "McLabor", user: "mclabor", password: "", instance: "", encrypt: true, trustServerCertificate: true });
   const [busy, setBusy] = useState(false);
   const [cancelled, setCancelled] = useState(false);
   const [message, setMessage] = useState("");
+  const [compatibility,setCompatibility]=useState<{tablesChecked:number;issues:{object:string;problem:string}[]}|null>(null);
   const [success, setSuccess] = useState(false);
   function update(patch: Partial<DatabaseSettings>) {
-    setSettings({ ...settings, ...patch }); setMessage(""); setSuccess(false);
+    setCompatibility(null);setSettings({ ...settings, ...patch }); setMessage(""); setSuccess(false);
   }
   async function submit(action: "test" | "save") {
-    setBusy(true); setMessage(""); setSuccess(false);
+    setBusy(true); setMessage(""); setSuccess(false);setCompatibility(null);
     try {
       const response = await fetch("/api/admin/connection", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, settings }) });
       const data = await response.json();
+      if(data.compatibility)setCompatibility(data.compatibility);
       if (!response.ok) throw new Error(data.error ?? "Connection failed.");
       setSuccess(true);
-      setMessage(action === "test" ? "Connection successful. Click OK to save." : "Connection saved.");
-      if (action === "save") window.location.assign("/dashboard");
+      setMessage(action === "test" ? "Connection and compatibility checks passed. Click OK to save." : "Connection saved.");
+      if (action === "save") window.location.assign("/login");
     } catch (error) { setMessage(error instanceof Error ? error.message : "Unable to reach the app."); }
     finally { setBusy(false); }
   }
@@ -33,7 +35,7 @@ export function ConnectionForm({ initial }: { initial: DatabaseSettings | null }
     <form onSubmit={(event) => { event.preventDefault(); void submit("save"); }} className="flex min-h-80 flex-col justify-center border border-[#77738c] bg-[#c4c2c4] p-3">
       <fieldset disabled={busy} className="space-y-2">
         {([["server", "Server", "192.168.4.166"], ["database", "Database", "McLabor"], ["user", "Login", "mclabor"], ["password", "Password", "SQL password"]] as const).map(([key, label, placeholder]) => <label key={key} className="grid grid-cols-[64px_minmax(0,1fr)] items-center gap-2 text-sm text-black">{label}
-          <input autoFocus={key === "server"} className={`${inputClass} ${key === "user" || key === "password" ? "max-w-44" : ""}`} type={key === "password" ? "password" : "text"} autoComplete="off" required={key !== "password"} value={settings[key]} placeholder={placeholder} onChange={(event) => update({ [key]: event.target.value })} />
+          <input autoFocus={key === "server"} className={`${inputClass} ${key === "user" || key === "password" ? "max-w-44" : ""}`} type={key === "password" ? "password" : "text"} autoComplete="off" required={requireCredentials||key !== "password"} value={settings[key]} placeholder={placeholder} onChange={(event) => update({ [key]: event.target.value })} />
         </label>)}
         <div className="flex justify-center gap-4 pt-4">
           <button data-action-status="complete" className={buttonClass} type="submit">{busy ? "Connecting…" : "OK"}</button>
@@ -66,7 +68,7 @@ export function ConnectionForm({ initial }: { initial: DatabaseSettings | null }
         <p>In Microsoft SQL Server Management Studio, find the server IP address or name and enter it in the <strong>Server</strong> box.</p>
         <p>Find the database name under Databases and enter it in the <strong>Database</strong> box.</p>
         <p>Enter your SQL <strong>Login</strong> and <strong>Password</strong>. Leave the password blank only if an office password is already configured.</p>
-        <p>Click <strong>OK</strong> to test and save the connection.</p>
+        <p>Click <strong>OK</strong> to check the database schema and CRUD permissions before saving the connection.</p><p>Staff screen access and delete permissions continue to follow the accounts configured in that database.</p>{compatibility&&<div role="status"><strong>{compatibility.tablesChecked} database objects checked</strong>{compatibility.issues.length>0?<div style={{maxHeight:220,overflow:"auto",marginTop:8}}><table style={{width:"100%",fontSize:12}}><thead><tr><th>Object</th><th>Required fix</th></tr></thead><tbody>{compatibility.issues.map((issue,i)=><tr key={i}><td style={{padding:3}}>{issue.object}</td><td style={{padding:3}}>{issue.problem}</td></tr>)}</tbody></table></div>:<p>Required database access is available.</p>}</div>}
       </div>
     </aside>
   </div>;

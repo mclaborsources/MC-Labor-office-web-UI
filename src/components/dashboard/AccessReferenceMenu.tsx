@@ -1,5 +1,6 @@
 "use client";
 
+import {SqlConnectionButton} from "./SqlConnectionButton";
 import Link from "next/link";
 import Image from "next/image";
 import { useRef, useState, type ReactNode } from "react";
@@ -63,7 +64,7 @@ export function AccessReferenceMenu({ activeView, policy, notes, trackingHref, t
         setLogoutError("");
         logoutDialog.current?.showModal();
       }}>Exit Database</button>
-      <Link href="/customers" className="ac-access-menu-button">Customer Search</Link><Link href="/employees" className="ac-access-menu-button">Employee Search</Link>
+      <Link href="/customers" className="ac-access-menu-button">Customer Search</Link><SqlConnectionButton/><Link href="/employees" className="ac-access-menu-button">Employee Search</Link>
       <Link href="/customer-search-1" className="ac-access-menu-button">Customer Search 1</Link><Link href="/customers/name-search" className="ac-access-menu-button">Customer Name Search</Link>
       <Link href="/employee-licenses" className="ac-access-menu-button">Licensed Employee Search</Link>
     </section>

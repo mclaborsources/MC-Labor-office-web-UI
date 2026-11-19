@@ -1,0 +1,4 @@
+import {NextResponse} from "next/server";
+import {requireSession} from "@/lib/auth/session";
+import {queryReadOnly} from "@/lib/db/sql";
+export async function GET(){try{await requireSession();const [customers,jobs]=await Promise.all([queryReadOnly<{id:string;name:string}>("SELECT CAST(c.CustomerID AS varchar(30)) id,ISNULL(c.CustBusName,'') name FROM dbo.tblCustomer c WITH (NOLOCK) WHERE EXISTS(SELECT 1 FROM dbo.tblProject p WITH (NOLOCK) WHERE p.CustomerID=c.CustomerID) ORDER BY c.CustBusName"),queryReadOnly<{id:string;customerId:string;name:string}>("SELECT CAST(ProjectID AS varchar(30)) id,CAST(CustomerID AS varchar(30)) customerId,ISNULL(SiteName,'') name FROM dbo.tblProject WITH (NOLOCK) WHERE NULLIF(SiteName,'') IS NOT NULL ORDER BY SiteName")]);return NextResponse.json({customers,jobs});}catch{return NextResponse.json({error:"Job selector options could not be loaded."},{status:503});}}

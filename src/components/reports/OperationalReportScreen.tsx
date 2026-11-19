@@ -1,4 +1,6 @@
 "use client";
+import {ReportDateInput} from "@/components/reports/ReportDateInput";
+import {ReportRenameViewButton} from "./ReportRenameViewButton";
 import {ReportPayrollCompanySelect} from "@/components/reports/ReportPayrollCompanySelect";
 import {AccountingReportTable} from "@/components/tables/AccountingReportTable";
 
@@ -293,7 +295,7 @@ export function OperationalReportScreen({
       <h1>{title}</h1>
       {variant === "noi" && <>
         <label>View: <select value={view} onChange={(event) => setView(event.target.value)}>{Array.from({ length: 17 }, (_, index) => <option key={index} value={`View ${String(index + 1).padStart(2, "0")}`}>{index === 0 ? "View 01" : `View ${String(index + 1).padStart(2, "0")}`}</option>)}</select></label>
-        <button data-action-status="complete" onClick={save}>Save View</button>
+        <button data-action-status="complete" onClick={save}>Save View</button><ReportRenameViewButton/>
         <button data-action-status="complete" onClick={deleteView}>Delete View</button>
         <label>Go To: <select aria-label="Go To" value={noiGoTo} onChange={(event) => navigateNoiGoTo(event.target.value)}><option value="" /><option>Reports</option><option>Health Ins</option><option>Bonus Exp</option><option>Job App Problems</option><option>Missing WC</option><option>Contracts</option><option>Office Staff Notes</option><option>New Job App</option></select></label>
         <button data-action-status="complete" onClick={() => router.refresh()}>Refresh</button>
@@ -309,7 +311,7 @@ export function OperationalReportScreen({
       </>}
       {variant === "rates" && <>
         <label>View: <select value={view} onChange={(event) => setView(event.target.value)}>{Array.from({ length: 8 }, (_, index) => <option key={index}>{index === 0 ? "01 Default Check" : `View ${String(index + 1).padStart(2, "0")}`}</option>)}</select></label>
-        <button data-action-status="complete" onClick={save}>Save View</button>
+        <button data-action-status="complete" onClick={save}>Save View</button><ReportRenameViewButton/>
         <button data-action-status="complete" onClick={() => { localStorage.removeItem(`${variant}-report-view`); setMessage("Saved view deleted."); }}>Delete View</button>
         <button data-action-status="complete" onClick={() => void loadWeeklyRates()}>Refresh</button>
         <button data-action-status="complete" onClick={() => { setQuery(""); changePayroll("all"); }}>Zero</button>
@@ -325,7 +327,7 @@ export function OperationalReportScreen({
           const option = `View ${String(index + 1).padStart(2, "0")}`;
           return <option key={option} value={option}>{index === 0 ? "01 Default" : option}</option>;
         })}</select></label>
-        <button data-action-status="complete" onClick={save}>Save View</button>
+        <button data-action-status="complete" onClick={save}>Save View</button><ReportRenameViewButton/>
         <button data-action-status="complete" onClick={deleteView}>Delete View</button>
         <button data-action-status="complete" onClick={() => router.refresh()}>Refresh</button>
         {variant !== "noc" && <><button data-action-status="complete" onClick={() => setQuery("")}>Zero</button><button data-action-status="complete" disabled={!visible.length} onClick={exportRows}>Export View</button></>}
@@ -382,7 +384,7 @@ export function OperationalReportScreen({
       </section>
     </div> : variant === "rates" ? <div className="operational-rate-tools">
       <label>Search in Customer:<input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Customer name" /></label>
-      <label>Week Ending Friday:<input aria-label="Week Ending Friday" type="date" value={weekEnding} onChange={(event) => event.target.value && chooseDate(event.target.value)} /></label>
+      <label>Week Ending Friday:<ReportDateInput aria-label="Week Ending Friday" type="date" value={weekEnding} onChange={(event) => event.target.value && chooseDate(event.target.value)} /></label>
       <button data-action-status="complete" aria-label="Previous week" title="Previous week" onClick={() => chooseDate(shiftDate(weekEnding, -7))}>‹</button>
       <button data-action-status="complete" aria-label="Next week" title="Next week" onClick={() => chooseDate(shiftDate(weekEnding, 7))}>›</button>
       <div className="operational-rate-period"><span>Start and End Days of Report</span><span>{readableDate(weekStart)}</span><span>{readableDate(weekEnding)}</span></div>

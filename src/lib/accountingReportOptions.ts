@@ -13,10 +13,6 @@ export async function getAccountingReportOptions(includeSelectors=false):Promise
  const companyDetails=results[1].status==="fulfilled"?(results[1].value as {value:string;name:string}[]).map(r=>({code:r.value,name:r.name})):[];
  const base={companyDetails,contracts:contracts.map(c=>c.name),employeeExclusionsAvailable:columns.length>0,states:values(0),companies:values(1),years:values(2)};
  if(!includeSelectors)return base;
- const [customers,jobs,salesmen]=await Promise.all([
- queryReadOnly<{id:string;name:string}>("SELECT CAST(CustomerID AS varchar(30)) id,ISNULL(CustBusName,'') name FROM dbo.tblCustomer WITH (NOLOCK) WHERE NULLIF(CustBusName,'') IS NOT NULL ORDER BY CustBusName"),
- queryReadOnly<{id:string;customerId:string;name:string}>("SELECT CAST(ProjectID AS varchar(30)) id,CAST(CustomerID AS varchar(30)) customerId,ISNULL(SiteName,'') name FROM dbo.tblProject WITH (NOLOCK) WHERE NULLIF(SiteName,'') IS NOT NULL ORDER BY SiteName"),
- queryReadOnly<{id:string;name:string}>("SELECT CAST(PullDownSalesmanID AS varchar(30)) id,LTRIM(RTRIM(CONCAT(PullDownSalesmanFName,' ',PullDownSalesmanLName))) name FROM dbo.tblPullDownSalesman WITH (NOLOCK) ORDER BY PullDownSalesmanLName,PullDownSalesmanFName")
- ]);
- return {...base,customers,jobs,salesmen};
+ return {...base,customers:[],jobs:[],salesmen:[]};
+
 }

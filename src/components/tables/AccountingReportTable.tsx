@@ -2,7 +2,14 @@
 import React,{Children,Fragment,cloneElement,isValidElement,useEffect,useMemo,useRef,useState,type ReactNode,type ReactElement,type TableHTMLAttributes} from "react";
 import {createPortal} from "react-dom";
 import {CustomerNameColumnHeader} from "@/components/customers/CustomerNameColumnHeader";
+import {reportDateDisplay} from "@/lib/reportDateDisplay";
 type Node=ReactElement<Record<string,any>>;
+function dateDisplayChildren(children:ReactNode):ReactNode {
+ return Children.map(children,child=>typeof child==="string"?reportDateDisplay(child):isValidElement(child)&&typeof child.type==="string"&&!['input','select','textarea'].includes(child.type)?cloneElement(child as Node,{},dateDisplayChildren((child.props as any).children)):child);
+}
+function displayReportCell(cell:Node):Node {
+ return cloneElement(cell,{...(typeof cell.props.title==="string"?{title:reportDateDisplay(cell.props.title)}:{})},dateDisplayChildren(cell.props.children));
+}
 export function tableElements(children:ReactNode):Node[]{
  return Children.toArray(children).flatMap(child=>isValidElement(child)?child.type===Fragment?tableElements((child.props as {children?:ReactNode}).children):[child as Node]:[]);
 }
@@ -23,11 +30,18 @@ export function remapReportCells(row:Node,shown:number[],decorate?:(cell:Node,in
 interface Layout {widths:Record<number,number>;hidden:number[];order:number[]}
 export function AccountingReportTable({columnLayoutKey,defaultHiddenColumns=[],columnPreset,children,style,...props}:TableHTMLAttributes<HTMLTableElement>&{columnLayoutKey:string;defaultHiddenColumns?:number[];columnPreset?:{id:string;order:number[];hidden:number[];widths:Record<number,number>}|null}){
  const root=useRef<HTMLTableElement>(null);
- const [viewport,setViewport]=useState({top:0,height:900,rowHeight:20});
+ const [viewport,setViewport]=useState({top:0,height:900,rowHeight:20,scale:1});
  useEffect(()=>{
   const container=root.current?.parentElement;
   if(!container)return;
-  const update=()=>setViewport({top:container.scrollTop,height:container.clientHeight||900,rowHeight:root.current?.tBodies[0]?.rows[0]?.getBoundingClientRect().height||20});
+    const update=()=>{
+   const table=root.current;
+   const row=table?.tBodies[0]?.querySelector<HTMLTableRowElement>('tr:not([data-virtual-spacer]):not([aria-hidden="true"])');
+   const measured=row?.getBoundingClientRect().height;
+   setViewport(previous=>({top:container.scrollTop,height:container.clientHeight||900,
+    rowHeight:measured&&measured>0&&measured<100?measured:previous.rowHeight,
+    scale:row?.offsetHeight&&measured?measured/row.offsetHeight:previous.scale}));
+  };
   update();container.addEventListener("scroll",update,{passive:true});
   const observer=new ResizeObserver(update);observer.observe(container);
   return()=>{container.removeEventListener("scroll",update);observer.disconnect();};
@@ -119,13 +133,13 @@ export function AccountingReportTable({columnLayoutKey,defaultHiddenColumns=[],c
   return cloneElement(cell,{"data-column-label":label,title:label,style:{...cell.props.style,overflow:"visible"}},<CustomerNameColumnHeader {...original} {...common}/>);
  };
  const virtualize=filteredRows.length>500;
- const first=virtualize?Math.max(0,Math.floor(viewport.top/viewport.rowHeight)-12):0;
+ const first=virtualize?Math.min(Math.max(0,filteredRows.length-Math.ceil(viewport.height/viewport.rowHeight)-24),Math.max(0,Math.floor(viewport.top/viewport.rowHeight)-12)):0;
  const last=virtualize?Math.min(filteredRows.length,first+Math.ceil(viewport.height/viewport.rowHeight)+24):filteredRows.length;
- const spacer=(height:number,key:string)=><tr key={key} aria-hidden="true"><td colSpan={shown.length} style={{height,padding:0,border:0,background:"transparent"}}/></tr>;
+ const spacer=(height:number,key:string)=><tr key={key} data-virtual-spacer aria-hidden="true" style={{height:height/viewport.scale}}><td colSpan={shown.length} style={{height:height/viewport.scale,padding:0,border:0,lineHeight:0,fontSize:0,background:"transparent"}}/></tr>;
  const rendered=sections.filter(s=>s.type!=="colgroup").map(section=>{
   if(section.type==="thead")return cloneElement(section,{},headerRows.map((row,index)=>remapReportCells(row,shown,index===headerRows.length-1?decorate:undefined)));
-  if(section.type==="tbody")return cloneElement(section,{},[first>0?spacer(first*viewport.rowHeight,"virtual-top"):null,...filteredRows.slice(first,last).map(row=>remapReportCells(row,shown)),last<filteredRows.length?spacer((filteredRows.length-last)*viewport.rowHeight,"virtual-bottom"):null]);
-  if(section.type==="tfoot")return cloneElement(section,{},tableElements(section.props.children).map(row=>remapReportCells(row,shown)));
+  if(section.type==="tbody")return cloneElement(section,{},[first>0?spacer(first*viewport.rowHeight,"virtual-top"):null,...filteredRows.slice(first,last).map(row=>remapReportCells(row,shown,displayReportCell)),last<filteredRows.length?spacer((filteredRows.length-last)*viewport.rowHeight,"virtual-bottom"):null]);
+  if(section.type==="tfoot")return cloneElement(section,{},tableElements(section.props.children).map(row=>remapReportCells(row,shown,displayReportCell)));
   return section;
  });
  return <><table {...props} className={["accounting-report-table",props.className].filter(Boolean).join(" ")} ref={root} style={{...style,...(ready?{width:shown.reduce((sum,i)=>sum+width(i),0),minWidth:shown.reduce((sum,i)=>sum+width(i),0)}:{}),tableLayout:"fixed"}}>

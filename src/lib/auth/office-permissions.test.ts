@@ -4,6 +4,25 @@ import { officeRouteAllowed, officeFeatureAllowed } from "./office-permissions";
 import { matchesAccessPassword } from "./office-staff";
 const feature = (objectName: string, controlName = "") => ({ objectName, controlName, title: "" });
 
+test("Tracking Admin menu pages and data aliases share the Tracking grant",()=>{
+ const routes=["accident-report-search","accidents","vacation-hours-report","vacation-hours","employee-hours-by-week","employee-hours-by-month","full-time-employees-by-month","employee-health-insurance-by-month","employee-advance-report","employee-advance","insurance-certificate-request-search","insurance-certificate-requests","payroll-exclusions","weekly-customer-margin-report","weekly-customer-margin","employee-research","yearly-revenue","newsletter-search","newsletter","email-addresses","employee-licenses","id-drivers-license","interview-questions","osha","resume-work-history","smart-phone","face-meeting","tracking-search","compare-tracking-weeks","deleted-employees"];
+ for(const route of routes)for(const path of [`/${route}`,`/api/reports/${route}`,`/api/reports/${route}/options`]){
+  assert.equal(officeRouteAllowed(path,[feature("frmTrackingEdit")]),true,path);
+  assert.equal(officeRouteAllowed(path,[]),false,path);
+ }
+ assert.equal(officeRouteAllowed('/api/admin/connection',[feature('frmTrackingEdit')]),false);
+});
+
+test("UI Report and its request APIs require the Unemployment Requests feature",()=>{
+  for(const path of ["/ui-report","/api/reports/ui-requests","/api/reports/ui-requests/contacts"]){
+    assert.equal(officeRouteAllowed(path,[feature("frmTrackingEdit","cmdUnemploymentRequests")]),true);
+    assert.equal(officeRouteAllowed(path,[feature("frmEmployeeSearch3","cmdUI")]),true);
+    assert.equal(officeRouteAllowed(path,[feature("frmEmployeeSearch3","cmdPrint")]),false);
+    assert.equal(officeRouteAllowed(path,[feature("frmTrackingEdit","cmdPrint")]),false);
+    assert.equal(officeRouteAllowed(path,[]),false);
+  }
+});
+
 test("office route permissions apply to pages and APIs and deny unknown routes", () => {
   const grants = [feature("frmTrackingEdit"), feature("frmAccumulatedReferralSearch")];
   assert.equal(officeRouteAllowed("/tracking", grants), true);

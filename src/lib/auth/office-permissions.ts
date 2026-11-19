@@ -19,15 +19,31 @@ const objects: Record<string, string[]> = {
   setup: ["frmOfficeStaffPermission"], welcome: ["frmOfficeStaffPermission"],
 };
 const normalize = (name: string) => name.toLowerCase().replace(/^frm/, "").replace(/[^a-z0-9]/g, "").replace(/(search|report|holding)$/g, "");
+// These are the existing Tracking Admin menu entry points, not system settings.
+// Keep the page and its differently named data API under the same Tracking grant.
+const trackingAdminRoutes=new Set([
+  "accident-report-search","accidents","vacation-hours-report","vacation-hours",
+  "employee-hours-by-week","employee-hours-by-month","full-time-employees-by-month",
+  "employee-health-insurance-by-month","employee-advance-report","employee-advance",
+  "insurance-certificate-request-search","insurance-certificate-requests",
+  "payroll-exclusions","weekly-customer-margin-report","weekly-customer-margin",
+  "employee-research","yearly-revenue","newsletter-search","newsletter",
+  "email-addresses","employee-licenses","id-drivers-license","interview-questions",
+  "osha","resume-work-history","smart-phone","face-meeting","tracking-search",
+  "compare-tracking-weeks","deleted-employees",
+]);
 
 export function officeRouteAllowed(pathname: string, features: OfficeFeature[]): boolean {
   // The main-menu status check is available to authenticated staff; changing
   // database settings still requires the separate administrator feature.
-  if (pathname === "/api/health/db" || pathname === "/api/reports/payroll-companies" || pathname === "/api/reports/states" || pathname === "/api/reports/selectors") return true;
+  if (pathname === "/api/health/db" || pathname === "/api/reports/payroll-companies" || pathname === "/api/reports/assign-years" || pathname === "/api/reports/states" || pathname === "/api/reports/selectors") return true;
   let parts = pathname.split("/").filter(Boolean);
   if (parts[0] === "api") parts = parts.slice(1);
   if (parts[0] === "reports" && parts.length > 1) parts = parts.slice(1);
   let root = parts[0] ?? "dashboard";
+  if (root === "ui-report" || root === "ui-requests") return officeFeatureAllowed(features,"frmEmployeeSearch3","cmdUI")
+    || officeFeatureAllowed(features,"frmTrackingEdit","cmdUnemploymentRequests");
+  if(trackingAdminRoutes.has(root)&&officeFeatureAllowed(features,"frmTrackingEdit")) return true;
   if (root === "employee-exclusions" || root === "wcc-payroll-by-customer" || root === "ui-unemployment-report-search" || root === "tracking-report" || root === "sales-by-customer" || root === "sales-by-customer-by-state" || root === "sales-by-salesman-weekly-breakdown" || root === "customer-history-report" || root === "gross-payroll-by-week" || root === "employees-on-site-per-week-report" || root === "invoice-report" || root === "weekly-sales-report" || root === "yearly-sales-report" || root === "office-staff-login-raw-data-search" || root === "office-staff-login-summary-search" || root === "new-assignments-returned-employees" || root === "salesman-report" || root === "employee-referral-report" || root === "employee-options-search" || root === "accounting-job-orders-report") root = "wcc-payroll";
   // Total Payroll Report Search is a separate entry point that uses the same
   // office permission as the established Payroll Report Search screen.

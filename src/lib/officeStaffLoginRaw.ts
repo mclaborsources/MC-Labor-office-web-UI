@@ -27,3 +27,10 @@ export function summarizeStaffLogins(rows:StaffLoginRawRow[]):StaffLoginRawRow[]
  }
  return [...groups.values()].sort((a,b)=>a.staff.localeCompare(b.staff));
 }
+
+export async function getStaffLoginSummaryReport(criteria:Record<string,string|undefined>){
+ const report=await getStaffLoginRawReport(criteria);
+ const staff=await queryReadOnlyUncached<{id:string;name:string}>("SELECT CAST(OfficeStaffID AS varchar(30)) id,ISNULL(OfficeStaffFullName,'') name FROM dbo.tblOfficeStaff WITH (NOLOCK) WHERE OfficeStaffActive<>0 AND OfficeStaffID NOT IN (0,1) ORDER BY OfficeStaffFullName");
+ const totals=new Map(summarizeStaffLogins(report.rows).map(row=>[row.staffId,row]));
+ return {...report,rows:staff.map(person=>totals.get(person.id)??{id:'staff-'+person.id,staffId:person.id,staff:person.name,date:'',day:'',network:'',computer:'',login:'',logout:'',logoutType:'',durationMinutes:0})};
+}

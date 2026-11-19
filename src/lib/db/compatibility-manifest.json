@@ -1,0 +1,872 @@
+[
+  {
+    "table": "tblAlerts",
+    "permissions": [
+      "SELECT",
+      "UPDATE",
+      "INSERT",
+      "DELETE"
+    ]
+  },
+  {
+    "table": "tblClusterCities",
+    "permissions": [
+      "SELECT",
+      "INSERT",
+      "UPDATE"
+    ]
+  },
+  {
+    "table": "tblClusters",
+    "permissions": [
+      "SELECT",
+      "INSERT",
+      "UPDATE"
+    ]
+  },
+  {
+    "table": "tblCompanyContacts",
+    "permissions": [
+      "SELECT",
+      "DELETE",
+      "UPDATE",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblCompanyPolicies",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblCustomer",
+    "permissions": [
+      "SELECT",
+      "UPDATE",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblCustomerARNextDateNotes",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblCustomerBillRates",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblCustomerContacts",
+    "permissions": [
+      "SELECT",
+      "UPDATE",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblCustomerForeman",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblCustomerFutureCallNotes",
+    "permissions": [
+      "SELECT",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblCustomerInsuranceCertReqs",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblCustomerNotes",
+    "permissions": [
+      "SELECT",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblCustomerPayments",
+    "permissions": [
+      "SELECT",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblCustomerPermits",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblCustomerSalesHistory",
+    "permissions": [
+      "SELECT",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblCustomerWCCs",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblCustomerWeeks",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblEmailTemplates",
+    "permissions": [
+      "SELECT",
+      "DELETE",
+      "UPDATE",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblEmployee",
+    "permissions": [
+      "SELECT",
+      "INSERT",
+      "UPDATE"
+    ]
+  },
+  {
+    "table": "tblEmployeeAdjustments",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblEmployeeAdvances",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblEmployeeB",
+    "permissions": [
+      "SELECT",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblEmployeeContacts",
+    "permissions": [
+      "SELECT",
+      "UPDATE",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblEmployeeCovid19VaccinationStatusNotes",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblEmployeeHealthInsurance",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblEmployeeLicenses",
+    "permissions": [
+      "SELECT",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblEmployeeNotes",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblEmployeePayrollCoOnSite",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblEmployeeRates",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblEmployeeS2Notes",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblEmployeeSickHours",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblEmployeeVacationHours",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblFeature",
+    "permissions": [
+      "SELECT",
+      "UPDATE"
+    ]
+  },
+  {
+    "table": "tblInsuranceCompanies",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblInsuranceCompanyClaimsAdjusters",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblMileageLog",
+    "permissions": [
+      "SELECT",
+      "UPDATE",
+      "DELETE",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblNewsletterContacts",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblOfficeStaff",
+    "permissions": [
+      "SELECT",
+      "UPDATE",
+      "INSERT",
+      "DELETE"
+    ]
+  },
+  {
+    "table": "tblOfficeStaffLogin",
+    "permissions": [
+      "SELECT",
+      "INSERT",
+      "UPDATE"
+    ]
+  },
+  {
+    "table": "tblOfficeStaffLoginNotes",
+    "permissions": [
+      "SELECT",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblOfficeStaffNotes",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblOfficeStaffPermission",
+    "permissions": [
+      "SELECT",
+      "DELETE",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblPayrollAdjustments",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPayrollCheckNotes",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPayrollExclusions",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPlaceholderAssignmentHistory",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPlaceholderAssignmentHistoryNotes",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblProject",
+    "permissions": [
+      "SELECT",
+      "UPDATE"
+    ]
+  },
+  {
+    "table": "tblProjectAccidentReportContactHistory",
+    "permissions": [
+      "SELECT",
+      "INSERT",
+      "UPDATE",
+      "DELETE"
+    ]
+  },
+  {
+    "table": "tblProjectAccidentReportOurCosts",
+    "permissions": [
+      "SELECT",
+      "DELETE"
+    ]
+  },
+  {
+    "table": "tblProjectAccidentReports",
+    "permissions": [
+      "SELECT",
+      "INSERT",
+      "UPDATE",
+      "DELETE"
+    ]
+  },
+  {
+    "table": "tblProjectBMFs",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblProjectCertifiedPayroll",
+    "permissions": [
+      "SELECT",
+      "UPDATE",
+      "INSERT",
+      "DELETE"
+    ]
+  },
+  {
+    "table": "tblProjectContacts",
+    "permissions": [
+      "SELECT",
+      "UPDATE",
+      "INSERT",
+      "DELETE"
+    ]
+  },
+  {
+    "table": "tblProjectGCVerifyNotes",
+    "permissions": [
+      "SELECT",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblProjectGeneralContractors",
+    "permissions": [
+      "SELECT",
+      "UPDATE",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblProjectOwners",
+    "permissions": [
+      "SELECT",
+      "UPDATE"
+    ]
+  },
+  {
+    "table": "tblProjectPostHistory",
+    "permissions": [
+      "SELECT",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblProjectSiteAddressNotes",
+    "permissions": [
+      "SELECT",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblProjectWCCNotes",
+    "permissions": [
+      "SELECT",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblProjectWeeks",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownAccRefStatus",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownActionTypes",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownAging",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownAlertTypes",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownBenefitsStatus",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownCertifiedPayrollTitles",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownContactTypes",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownContractWith_PayrollCo",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownCovid19VaccinationStatus",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownCreditTermLimits",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownCustomerContactTitles",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownCustomerPaymentTypes",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownCustomerProfileTypes",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownCustomerTypes",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownCustPaymentStatus",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownCustStatus",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownDateAddIntervals",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownEmployeeProfileTypes",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownEmployeeStatus",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownExpenseTypes",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownGCVerifyMethods",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownGeneralContractors",
+    "permissions": [
+      "SELECT",
+      "UPDATE",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblPullDownGrades",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownHealthInsurance",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownHealthInsuranceFlags",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownHowReferred",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownIDTitles",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownInternetSalesReady",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownJobApplicationStatus",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownLegalStatus",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownLicenseExpDateFlags",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownLicenseTypes",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownMaps",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownOfficeStaffLoginNoteReasons",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownOSHA10Status",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownPayrollCoOnSite",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownProjectAccidentReportHistoryStatus",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownProjectLengths",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownProjStatus",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownQualifications",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownReferralAgencies",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownRegMailResponses",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownReportMenus",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownS1",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownS2",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownSalesHistoryStatus",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownSalesman",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownStateCities",
+    "permissions": [
+      "SELECT",
+      "INSERT",
+      "UPDATE"
+    ]
+  },
+  {
+    "table": "tblPullDownStateCounties",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownStates",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownStatusOfNOC",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownStatusOfNOI",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownTrackingReports",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownTrade",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownUnemploymentRequestContacts",
+    "permissions": [
+      "SELECT",
+      "UPDATE",
+      "INSERT",
+      "DELETE"
+    ]
+  },
+  {
+    "table": "tblPullDownUnemploymentRequestReasonCont",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownUnemploymentRequestReasons",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownWCC",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblPullDownWhereCustomerFound",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblQBOpenInvoices",
+    "permissions": [
+      "SELECT",
+      "UPDATE"
+    ]
+  },
+  {
+    "table": "tblReminders",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "tblSpecialJobInstructions",
+    "permissions": [
+      "SELECT",
+      "DELETE",
+      "UPDATE",
+      "INSERT"
+    ]
+  },
+  {
+    "table": "tblTracking",
+    "permissions": [
+      "SELECT",
+      "UPDATE"
+    ]
+  },
+  {
+    "table": "tblUnemploymentRequests",
+    "permissions": [
+      "SELECT",
+      "INSERT",
+      "UPDATE"
+    ]
+  },
+  {
+    "table": "tblWebsiteAccess",
+    "permissions": [
+      "SELECT"
+    ]
+  },
+  {
+    "table": "WebAccountingSavedView",
+    "permissions": [
+      "SELECT",
+      "INSERT",
+      "UPDATE",
+      "DELETE"
+    ]
+  },
+  {
+    "table": "WebCustomerSavedView",
+    "permissions": [
+      "SELECT",
+      "INSERT",
+      "UPDATE",
+      "DELETE"
+    ]
+  },
+  {
+    "table": "WebEmployeeSavedView",
+    "permissions": [
+      "SELECT",
+      "UPDATE",
+      "INSERT",
+      "DELETE"
+    ]
+  },
+  {
+    "table": "WebEmployeeSearchPreset",
+    "permissions": [
+      "SELECT",
+      "INSERT"
+    ]
+  }
+]

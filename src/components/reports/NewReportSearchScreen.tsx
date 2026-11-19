@@ -1,4 +1,5 @@
 "use client";
+import {ReportRenameViewButton} from "./ReportRenameViewButton";
 import {ReportPayrollCompanySelect} from "@/components/reports/ReportPayrollCompanySelect";
 import {AccountingReportTable} from "@/components/tables/AccountingReportTable";
 
@@ -97,7 +98,7 @@ export function NewReportSearchScreen({ companies, rows, initialWeekEnding, erro
     <header className="new-report-search-toolbar">
       <h1>New Report Search</h1>
       <label>View:<select value={view} onChange={(event)=>setView(event.target.value)}>{["View 01","All Columns","View 03","View 06","View 07","View 11","View 02","View 04","View 05","View 08","View 09","View 10"].map((name)=><option key={name}>{name}</option>)}</select></label>
-      <AccessButton data-action-status="complete" onClick={saveView}>Save View</AccessButton><AccessButton data-action-status="complete" onClick={deleteView}>Delete View</AccessButton>
+      <AccessButton data-action-status="complete" onClick={saveView}>Save View</AccessButton><ReportRenameViewButton/><AccessButton data-action-status="complete" onClick={deleteView}>Delete View</AccessButton>
       <label>Go To:<select value={selected} onChange={(event)=>{setSelected(event.target.value);if(event.target.value)router.push(`/employees/${event.target.value}`);}}><option value="" />{employeeOptions.map((row)=><option key={row.employeeId} value={row.employeeId}>{row.name}</option>)}</select></label>
       <AccessButton data-action-status="complete" onClick={()=>router.refresh()}>Refresh</AccessButton><AccessButton data-action-status="complete" onClick={zero}>Zero</AccessButton><AccessButton data-action-status="complete" onClick={exportView}>Export View</AccessButton>
       <ReportPayrollCompanySelect className="nrs-company-select" aria-label="Payroll Company" value={payrollCompany} onChange={(event)=>{setPayrollCompany(event.target.value);setPage(1);}}>

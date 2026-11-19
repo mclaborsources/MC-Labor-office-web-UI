@@ -698,9 +698,9 @@ export async function getEmployeeHealthInsuranceDropdownOptions(): Promise<{ ins
 
 export async function getEmployeeReferralAgencyOptions(): Promise<string[]> {
   const rows = await queryReadOnly<{ ReferralAgencyName: string | null }>(
-    `SELECT ISNULL(PullDownReferralAgencyName, '') AS ReferralAgencyName
-     FROM tblPullDownReferralAgency WITH (NOLOCK)
-     ORDER BY PullDownReferralAgencyName`,
+    `SELECT ISNULL(PullDownReferralAgency, '') AS ReferralAgencyName
+     FROM tblPullDownReferralAgencies WITH (NOLOCK)
+     ORDER BY PullDownReferralAgency`,
   ).catch(() => []);
   return toUniqueOptions(rows.map(row => safeStr(row.ReferralAgencyName))).map(option => option.label);
 }

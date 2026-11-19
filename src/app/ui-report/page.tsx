@@ -4,5 +4,5 @@ import { getSessionOrDefault } from "@/lib/auth/session";
 
 export default async function UiReportPage() {
   const session = await getSessionOrDefault();
-  return <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth><UiReportScreen /></AppShell>;
+  return <AppShell userDisplayName={session.user?.displayName} fillViewport fullWidth compactHeader><UiReportScreen /></AppShell>;
 }

@@ -15,7 +15,7 @@ export default async function Page({searchParams}:{searchParams:Promise<{startDa
   const date=new Date(iso+"T12:00:00Z");
   return !Number.isNaN(date.getTime())&&date.toISOString().slice(0,10)===iso?iso:"";
  };
- applyReportStartDefault(params);try{const weeks=await getNewReportSearchWeeks();end=normalize(params.endDate)||normalize(params.weekEnding)||weeks[0]?.value||"";start=normalize(params.startDate)||end;if(start&&end){if(start>end)throw new Error("Date range");rows=await getTotalPayrollByJobRows(start,end,params)??[];}}
+ applyReportStartDefault(params);try{const weeks=await getNewReportSearchWeeks();end=normalize(params.endDate)||normalize(params.weekEnding)||weeks[0]?.value||"";start=normalize(params.startDate)||end;if(start&&end){if(start>end)throw new Error("Date range");rows=[];}}
  catch{error="Total payroll by job could not be loaded. Check the date range and database connection.";}
  return <AppShell userDisplayName={session.user?.displayName} fullWidth fillViewport compactHeader><TotalPayrollByJobScreen rows={rows} initialStart={start} initialEnd={end} error={error} criteria={params}/></AppShell>;
 }

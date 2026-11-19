@@ -6,12 +6,13 @@ import { clearSavedPageTabs } from "@/lib/pageTabStorage";
 /** A new tab starts a new visit; pagehide closes the current web login. */
 export function VisitSessionGuard({ enabled, children }: { enabled: boolean; children: ReactNode }) {
   const pathname = usePathname();
+  const connectionSetup=pathname==="/setup"||pathname==="/sql-disconnected";
   const [ready, setReady] = useState(!enabled);
   useEffect(() => {
     if (pathname === "/login") clearSavedPageTabs();
   }, [pathname]);
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled||connectionSetup) {setReady(true);return;}
     let cancelled = false;
     let loginId: number | null = null;
     async function initialize() {
@@ -44,7 +45,7 @@ export function VisitSessionGuard({ enabled, children }: { enabled: boolean; chi
     const restoreVisit = (event: PageTransitionEvent) => { if (event.persisted) window.location.replace("/login"); };
     window.addEventListener("pageshow", restoreVisit);
     return () => { cancelled = true; window.removeEventListener("pagehide", closeVisit); window.removeEventListener("pageshow", restoreVisit); window.removeEventListener("mc-office-session-changed", initialize); };
-  }, [enabled, pathname]);
-  if (!ready) return <main role="status" className="flex min-h-screen items-center justify-center">Starting a new visit…</main>;
+  }, [enabled, pathname,connectionSetup]);
+  if (!ready&&!connectionSetup) return <main role="status" className="flex min-h-screen items-center justify-center">Starting a new visit…</main>;
   return children;
 }

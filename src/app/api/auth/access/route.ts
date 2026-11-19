@@ -1,3 +1,4 @@
+import {isSqlDisconnected} from "@/lib/db/connection-state";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
 import { getOfficeFeatures, endOfficeLogin } from "@/lib/auth/office-staff";
@@ -6,6 +7,7 @@ import { queryReadOnlyUncached } from "@/lib/db/sql";
 
 export async function GET(request: Request) {
   try {
+    if(isSqlDisconnected())return NextResponse.json({allowed:false,disconnected:true},{status:423});
     const session = await getSession();
     const id = session.user?.officeStaffId;
     if (!session.isLoggedIn || !id || !session.officeStaffLoginId) return NextResponse.json({ allowed: false }, { status: 401 });

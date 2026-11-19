@@ -1,4 +1,5 @@
 "use client";
+import {ReportRenameViewButton} from "./ReportRenameViewButton";
 import {ReportStateSelect} from "@/components/reports/ReportStateSelect";
 import {AccountingReportTable} from "@/components/tables/AccountingReportTable";
 
@@ -102,7 +103,7 @@ export function ManpowerReportScreen() {
     <header>
       <h1>Manpower Contact Report</h1>
       <label>View: <select value={view} onChange={(event) => setView(event.target.value)}>{Array.from({ length: 10 }, (_, index) => <option key={index}>{`View ${String(index + 1).padStart(2, "0")}`}</option>)}</select></label>
-      <button data-action-status="complete" onClick={() => { localStorage.setItem("manpower-report-view", JSON.stringify({ view, query, salesman, type, tracking, oneContact, sort, descending })); setMessage("View saved on this computer."); }}>Save View</button>
+      <button data-action-status="complete" onClick={() => { localStorage.setItem("manpower-report-view", JSON.stringify({ view, query, salesman, type, tracking, oneContact, sort, descending })); setMessage("View saved on this computer."); }}>Save View</button><ReportRenameViewButton/>
       <button data-action-status="complete" onClick={() => { localStorage.removeItem("manpower-report-view"); setView("View 01"); setMessage("Saved view deleted."); }}>Delete View</button>
       <button data-action-status="complete" onClick={() => setPage(1)}>Refresh</button>
       <button data-action-status="complete" onClick={clear}>Zero</button>

@@ -10,19 +10,21 @@ export function AccountingReportAppearance(){
  const pathname=usePathname();const enabled=routes.has(pathname.split("/")[1]);const reportOpen=enabled&&pathname.split("/")[1]!=="accounting-reports";
  const [pending,setPending]=useState(0);
  const [tableArea,setTableArea]=useState<HTMLElement|null>(null);
- useLayoutEffect(()=>{if(!pending){setTableArea(null);return;}const table=document.querySelector("main table");const area=table?.parentElement;if(!area)return;const previous=area.style.position;area.style.position="relative";setTableArea(area);return()=>{area.style.position=previous;};},[pending]);
+ useLayoutEffect(()=>{if(!pending){setTableArea(null);return;}const area=document.querySelector<HTMLElement>("main [data-report-table-area]")||document.querySelector("main table")?.parentElement;if(!area)return;const previous=area.style.position;area.style.position="relative";setTableArea(area);return()=>{area.style.position=previous;};},[pending]);
  useLayoutEffect(()=>{
   setPending(0);if(!reportOpen)return;
   let mounted=true;const original=window.fetch;
   const wrapped:typeof fetch=async(input,init)=>{
    const url=new URL(typeof input==="string"?input:input instanceof URL?input.href:input.url,window.location.origin);
-   if(url.origin!==window.location.origin||!url.pathname.startsWith("/api/")||url.pathname.endsWith("/saved-views"))return original(input,init);
+   if(url.origin!==window.location.origin||!url.pathname.startsWith("/api/")||url.pathname.endsWith("/saved-views")||!(/\/data$/.test(url.pathname)||/\/api\/(office-staff-hours|regular-payroll-report|detailed-payroll-report|xcelhr-payroll-report)$/.test(url.pathname)))return original(input,init);
    setPending(n=>n+1);let released=false;
    const release=()=>{if(!released){released=true;if(mounted)setPending(n=>Math.max(0,n-1));}};
    try{
     const response=await original(input,init);
     // Follow the response body too, so the loader stays until table data is ready.
-    void response.clone().arrayBuffer().then(release,release);
+        const json=response.json.bind(response);
+    response.json=async()=>{try{return await json();}finally{release();}};
+    if(!response.ok||response.status===204)release();
     return response;
    }catch(error){release();throw error;}
   };

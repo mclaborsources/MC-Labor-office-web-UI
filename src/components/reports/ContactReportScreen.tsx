@@ -1,4 +1,5 @@
 "use client";
+import {ReportRenameViewButton} from "./ReportRenameViewButton";
 import {ReportStateSelect} from "@/components/reports/ReportStateSelect";
 import {AccountingReportTable} from "@/components/tables/AccountingReportTable";
 
@@ -79,7 +80,7 @@ export function ContactReportScreen({ kind, rows: initialRows, total: initialTot
     <header>
       <h1>{label} Contact Report</h1>
       <label>View: <select value={view} onChange={(e) => setView(e.target.value)}>{Array.from({ length: 10 }, (_, i) => <option key={i}>{`View ${String(i + 1).padStart(2, "0")}`}</option>)}</select></label>
-      <button data-action-status="complete" onClick={() => { localStorage.setItem(`${kind}-contact-report-view`, JSON.stringify({ view, sort, descending })); setMessage("View saved on this computer."); }}>Save View</button>
+      <button data-action-status="complete" onClick={() => { localStorage.setItem(`${kind}-contact-report-view`, JSON.stringify({ view, sort, descending })); setMessage("View saved on this computer."); }}>Save View</button><ReportRenameViewButton/>
       <button data-action-status="complete" onClick={() => { localStorage.removeItem(`${kind}-contact-report-view`); setView("View 01"); setMessage("Saved view deleted."); }}>Delete View</button>
       <button data-action-status="complete" onClick={() => router.refresh()} disabled={loading}>Refresh</button>
       <label>Search: <input value={searchInput} onChange={(e) => setSearchInput(e.target.value)} /></label>

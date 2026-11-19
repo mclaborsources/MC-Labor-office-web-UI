@@ -1,4 +1,5 @@
 "use client";
+import {ReportDateInput} from "@/components/reports/ReportDateInput";
 
 import { AccessButton } from "@/components/access/AccessButton";
 import { thisWeekDayDate } from "@/lib/week";
@@ -21,7 +22,7 @@ export function ReportWeekControls({ date, onChange, onRefresh }: { date: string
   };
   const long = (value: Date) => value.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
   return <div className="report-week">
-    <label>Week Ending Friday<input type="date" value={date} onChange={(event) => {
+    <label>Week Ending Friday<ReportDateInput type="date" value={date} onChange={(event) => {
       if (!event.target.value) return;
       const selected = thisWeekDayDate(new Date(`${event.target.value}T12:00:00`), 7);
       onChange(`${selected.getFullYear()}-${String(selected.getMonth() + 1).padStart(2, "0")}-${String(selected.getDate()).padStart(2, "0")}`);

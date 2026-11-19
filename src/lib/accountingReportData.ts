@@ -12,7 +12,7 @@ import {getEmployeesOnSiteRows} from "@/lib/employeesOnSiteWeekly";
 import {getInvoiceReportRows} from "@/lib/invoiceReport";
 import {getWeeklySalesRows} from "@/lib/weeklySalesReport";
 import {getYearlySalesRows} from "@/lib/yearlySalesReport";
-import {getStaffLoginRawReport,summarizeStaffLogins} from "@/lib/officeStaffLoginRaw";
+import {getStaffLoginRawReport,getStaffLoginSummaryReport,summarizeStaffLogins} from "@/lib/officeStaffLoginRaw";
 import {getNewAssignmentRows} from "@/lib/newAssignmentsReport";
 import {getSalesmanReportRows} from "@/lib/salesmanReport";
 import {getEmployeeReferralRows} from "@/lib/employeeReferralReport";
@@ -28,7 +28,7 @@ export const accountingDataLoaders={
  "gross-payroll-by-week":getGrossPayrollByWeekRows,"employees-on-site-per-week-report":getEmployeesOnSiteRows,
  "invoice-report":getInvoiceReportRows,"weekly-sales-report":getWeeklySalesRows,"yearly-sales-report":getYearlySalesRows,
  "office-staff-login-raw-data-search":async(p:Record<string,string|undefined>)=>{const r=await getStaffLoginRawReport(p);return {rows:r.rows,criteria:{...p,startDate:r.start,endDate:r.end}};},
- "office-staff-login-summary-search":async(p:Record<string,string|undefined>)=>{const r=await getStaffLoginRawReport(p);return {rows:summarizeStaffLogins(r.rows),criteria:{...p,startDate:r.start,endDate:r.end}};},
+ "office-staff-login-summary-search":async(p:Record<string,string|undefined>)=>{const r=await getStaffLoginSummaryReport(p);return {rows:r.rows,criteria:{...p,startDate:r.start,endDate:r.end}};},
  "new-assignments-returned-employees":getNewAssignmentRows,"salesman-report":getSalesmanReportRows,
  "employee-referral-report":getEmployeeReferralRows,"employee-options-search":getEmployeeOptionsRows,"accounting-job-orders-report":getJobOrderReportRows
 };

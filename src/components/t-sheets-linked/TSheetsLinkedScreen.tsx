@@ -1,4 +1,5 @@
 "use client";
+import {ReportRenameViewButton} from "@/components/reports/ReportRenameViewButton";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -94,7 +95,7 @@ export function TSheetsLinkedScreen({ initialPage, initialDate, initialError = "
       <h1>T Sheets Linked</h1>
       <div className={styles.headerTools}>
         <label>View:<select defaultValue="View 01"><option>View 01</option><option>View 02</option><option>View 03</option></select></label>
-        <AccessButton data-action-status="complete" onClick={() => setMessage("Current view saved on this device.")}>Save View</AccessButton><AccessButton data-action-status="complete" onClick={() => setMessage("Saved view cleared.")}>Delete View</AccessButton>
+        <AccessButton data-action-status="complete" onClick={() => setMessage("Current view saved on this device.")}>Save View</AccessButton><ReportRenameViewButton/><AccessButton data-action-status="complete" onClick={() => setMessage("Saved view cleared.")}>Delete View</AccessButton>
         <label>Go To:<select defaultValue=""><option value="" />{["Customer","Job","Employee","Week Ending","Hours Note"].map((item) => <option key={item}>{item}</option>)}</select></label>
         <AccessButton data-action-status="complete" onClick={() => void load(1)}>Refresh</AccessButton><AccessButton data-action-status="complete" onClick={() => { setSearch(""); setSalesman(""); setPreset("All"); setHoursRule("all"); setStartDate(initialDate); setEndDate(initialDate); }}>Zero</AccessButton><AccessButton data-action-status="complete" onClick={exportView}>Export View</AccessButton>
       </div>
